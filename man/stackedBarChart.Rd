@@ -4,10 +4,12 @@
 \alias{stackedBarChart}
 \title{Stacked Bar Chart for The Mark Reporting}
 \usage{
-stackedBarChart(df)
+stackedBarChart(df, set_5_levels)
 }
 \arguments{
 \item{df}{A tibble/dataframe of survey items that are categorical/character variables, in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.}
+
+\item{set_5_levels}{character vector of 5 levels to set the scale for the plot}
 }
 \value{
 A ggplot object that plots the items into a stacked bar chart and can be exported.
@@ -16,9 +18,10 @@ A ggplot object that plots the items into a stacked bar chart and can be exporte
 Stacked Bar Chart for The Mark Reporting
 }
 \examples{
-items <- tibble(cat_Pre_Sources = c("Good","Moderate","Minimal","Slight","Slight","Moderate","Good"),
+items <- dplyr::tibble(cat_Pre_Sources = c("Good","Moderate","Minimal","Slight","Slight","Moderate","Good"),
               cat_Post_Sources = c("Good","Good","Minimal","Moderate","Moderate","Good","Extensive"),
               cat_Pre_Orgs = c("Good","Moderate","Minimal","Slight","Slight","Moderate","Moderate"),
               cat_Post_Orgs = c("Good","Moderate","Minimal","Moderate","Moderate","Good","Extensive"))
-stackedBarChart(items)
+levels_min_ext = c('Minimal', 'Slight', 'Moderate', 'Good', 'Extensive')
+stackedBarChart(items,levels_min_ext)
 }
