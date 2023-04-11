@@ -9,4 +9,5 @@
 library(testthat)
 library(themark)
 
-testthat::test_check("themark")
+test_check("themark")
+
