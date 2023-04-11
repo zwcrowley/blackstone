@@ -18,10 +18,15 @@ A ggplot object that plots the items into a stacked bar chart and can be exporte
 Stacked Bar Chart for The Mark Reporting
 }
 \examples{
-items <- dplyr::tibble(cat_Pre_Sources = c("Good","Moderate","Minimal","Slight","Slight","Moderate","Good"),
-              cat_Post_Sources = c("Good","Good","Minimal","Moderate","Moderate","Good","Extensive"),
-              cat_Pre_Orgs = c("Good","Moderate","Minimal","Slight","Slight","Moderate","Moderate"),
-              cat_Post_Orgs = c("Good","Moderate","Minimal","Moderate","Moderate","Good","Extensive"))
+items <- dplyr::tibble(
+cat_Pre_Sources =
+c("Good","Moderate","Minimal","Slight","Slight","Moderate","Good"),
+cat_Post_Sources =
+c("Good","Good","Minimal","Moderate","Moderate","Good","Extensive"),
+cat_Pre_Orgs =
+c("Good","Moderate","Minimal","Slight","Slight","Moderate","Moderate"),
+cat_Post_Orgs =
+c("Good","Moderate","Minimal","Moderate","Moderate","Good","Extensive"))
 levels_min_ext = c('Minimal', 'Slight', 'Moderate', 'Good', 'Extensive')
 stackedBarChart(items,levels_min_ext)
 }

@@ -1,9 +1,11 @@
 Package: themark
 Title: Helper Functions for The Mark, USA Inc
 Version: 0.0.0.9000
-Authors@R: 
-    person("Zack", "Crowley", , "zcrowley@themarkusa.com", role = c("aut", "cre"))
-Description: Functions that create visuals with The Mark USA, Inc. branding and helper functions for common data cleaning and manipulations tasks for use for everyone to use at The Mark, USA Inc.
+Authors@R: c(
+    person("Zack", "Crowley", , "zcrowley@themarkusa.com", role = c("aut", "cre")),
+    person("The Mark, USA Inc.", role = c("cph", "fnd")))
+Description: Functions that create visuals with The Mark USA, Inc. branding and helper functions 
+    for common data cleaning and manipulation tasks for use for everyone at The Mark, USA Inc.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -11,12 +13,16 @@ RoxygenNote: 7.2.3
 URL: https://github.com/zcrowleyTheMark/themark
 BugReports: https://github.com/zcrowleyTheMark/themark/issues
 Imports: 
-    magrittr,
     dplyr,
-    tidyr,
-    tidyselect,
-    stringr,
-    scales,
-    ggplot2,
+    extrafont,
     ggh4x,
-    extrafont
+    ggplot2,
+    magrittr,
+    rlang (>= 0.4.11),
+    scales,
+    stringr,
+    testthat,
+    tidyr,
+    tidyselect
+Suggests: 
+    roxygen2
