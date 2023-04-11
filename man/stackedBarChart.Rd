@@ -27,6 +27,6 @@ cat_Pre_Orgs =
 c("Good","Moderate","Minimal","Slight","Slight","Moderate","Moderate"),
 cat_Post_Orgs =
 c("Good","Moderate","Minimal","Moderate","Moderate","Good","Extensive"))
-levels_min_ext = c('Minimal', 'Slight', 'Moderate', 'Good', 'Extensive')
+levels_min_ext <- c('Minimal', 'Slight', 'Moderate', 'Good', 'Extensive')
 stackedBarChart(items,levels_min_ext)
 }
