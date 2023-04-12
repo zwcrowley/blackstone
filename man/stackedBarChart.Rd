@@ -2,12 +2,12 @@
 % Please edit documentation in R/stackedBarChart.R
 \name{stackedBarChart}
 \alias{stackedBarChart}
-\title{Stacked Bar Chart for The Mark Reporting}
+\title{Stacked Bar Chart for The Mark}
 \usage{
 stackedBarChart(df, set_5_levels)
 }
 \arguments{
-\item{df}{A tibble/dataframe of survey items that are categorical/character variables, in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.}
+\item{df}{A tibble/data frame of survey items that are categorical/character variables, in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.}
 
 \item{set_5_levels}{character vector of 5 levels to set the scale for the plot}
 }
@@ -15,7 +15,7 @@ stackedBarChart(df, set_5_levels)
 A ggplot object that plots the items into a stacked bar chart and can be exported.
 }
 \description{
-Stacked Bar Chart for The Mark Reporting
+Stacked Bar Chart for The Mark
 }
 \examples{
 items <- dplyr::tibble(
