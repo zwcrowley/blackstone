@@ -24,8 +24,6 @@ stackedBarChart <- function(df, set_5_levels) {
 
     fiveScale_theMark_colors <-  c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
 
-    twoScale_theMark_colors <-  c("#4B9FA6", "#2C2C4F")
-
     texts <- list(ggplot2::element_text(size = 14, family = "Gill Sans MT", hjust = 1),
                   ggplot2::element_text(size = 11, family = "Gill Sans MT",  hjust = 0.6))
 
