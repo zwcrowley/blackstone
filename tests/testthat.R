@@ -7,7 +7,7 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(themark)
+library(TheMarkUSA)
 
-test_check("themark")
+test_check("TheMarkUSA")
 
