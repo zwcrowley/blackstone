@@ -10,4 +10,3 @@ library(testthat)
 library(TheMarkUSA)
 
 test_check("TheMarkUSA")
-
