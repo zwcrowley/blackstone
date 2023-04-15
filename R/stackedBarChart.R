@@ -56,9 +56,9 @@ stackedBarChart <- function(df, set_5_levels) {
   stacked_bar_chart <- new_df  %>%
     ggplot2::ggplot(ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
                                  label = .data$n_answers, group = .data$question)) +
-    ggplot2::geom_col(size=3,position = ggplot2::position_stack(reverse = TRUE)) +
+    ggplot2::geom_col(size = 3, position = ggplot2::position_stack(reverse = TRUE)) +
     ggplot2::geom_text(ggplot2::aes(color = .data$label_color), family = "Gill Sans MT",
-              fontface = "bold",position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3) +
+              fontface = "bold",position = ggplot2::position_stack(vjust = .5,reverse = TRUE), size = 3) +
     ggplot2::scale_color_manual(values = c('black','white')) + #Sets up the color of the geom_text from the label_color in the df.
     # set the bars to a facet based on question and puts the labels to the left side:
     ggplot2::facet_wrap(~ question, ncol = 1, strip.position = "left") +

@@ -65,48 +65,35 @@ divBarChart <- function(df, set_5_levels) {
   df_neg <- dplyr::filter(new_df, .data$response %in% c(levels(.data$response)[1], levels(.data$response)[2], levels(.data$response)[3]))
 
   diverging_bar_chart <- ggplot2::ggplot() +
-    ggplot2::geom_col(
-      data = df_pos, ggplot2::aes(x = .data$question, y = .data$percent_answers, fill = .data$response),
-      width = 4, position = ggplot2::position_stack(reverse = TRUE)
-    ) +
-    ggplot2::geom_text(
-      data = df_pos, ggplot2::aes(
-        x = .data$question, y = .data$percent_answers,
-        label = .data$n_answers, group = .data$response, color = .data$label_color
-      ),
-      family = "Gill Sans MT", fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
-    ) +
-    ggplot2::geom_col(
-      data = df_neg, ggplot2::aes(x = .data$question, y = .data$percent_answers, fill = .data$response),
-      width = 4, position = ggplot2::position_stack()
-    ) +
-    ggplot2::geom_text(
-      data = df_neg, ggplot2::aes(
-        x = .data$question, y = .data$percent_answers,
-        label = .data$n_answers, group = .data$response, color = .data$label_color
-      ),
-      family = "Gill Sans MT", fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = F), size = 3
-    ) +
-    ggplot2::scale_color_manual(values = c("black", "white")) +
-    ggplot2::coord_flip() +
-    ggh4x::facet_nested(dplyr::vars(.data$question, .data$timing),
-      scales = "free_y", switch = "y", space = "free_y",
-      strip = ggh4x::strip_nested(text_y = texts, by_layer_y = TRUE)
-    ) +
-    ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(
-      size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
-      spacing.x = 14, spacing.y = 0
-    )) +
+    ggplot2::geom_col(data = df_pos, ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing),
+                                                  fill = .data$response, group = .data$question),
+                                              position = ggplot2::position_stack(reverse = TRUE)) +
+    ggplot2::geom_text(data = df_pos, ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing),
+                                                   group = .data$question, label = .data$n_answers, color = .data$label_color),
+                                                   family = "Gill Sans MT", fontface = "bold", position = ggplot2::position_stack(vjust = .5,reverse = T),
+                                                   size = 3) +
+    ggplot2::geom_col(data = df_neg, ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing),
+                                                  fill = .data$response, group = .data$question),
+                                                  position = ggplot2::position_stack()) +
+    ggplot2::geom_text(data = df_neg, ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing),
+                                                   group = .data$question, label = .data$n_answers, color = .data$label_color),
+                                                   family = "Gill Sans MT", fontface = "bold", position = ggplot2::position_stack(vjust = .5,reverse = F),
+                                                   size = 3) +
+    ggplot2::scale_color_manual(values = c('black','white')) +
+    ggplot2::facet_wrap(~ question, ncol = 1, strip.position = "left") +
     ggplot2::scale_fill_manual(values = fiveScale_theMark_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 10)) +
-    ggplot2::scale_y_discrete(expand = c(0, 0)) +
-    ggh4x::force_panelsizes(cols = c(8, 8), rows = c(.45, .45), respect = TRUE) +
-    ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = paste("N=", N_df, sep = "")) +
+    ggplot2::guides(color = "none",fill = ggh4x::guide_stringlegend(size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
+                                                    spacing.x = 14, spacing.y = 0)) +
+    ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = paste("N=",N_df,sep = "")) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
-    ggplot2::theme(
-      plot.margin = ggplot2::margin(.5, .5, .5, 0, "cm"),
-      panel.spacing.y = ggplot2::unit(.1, "inches"),
-      legend.position = "top"
-    )
+    ggplot2::theme(strip.placement = "outside",
+          axis.text.y = ggplot2::element_text(angle = 0, hjust = 1,color = "black", size = 10, family = "Gill Sans MT",
+                                     margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")),
+          strip.text.y.left = ggplot2::element_text(angle = 0, hjust = 1,color = "black", size = 12, family = "Gill Sans MT",
+                                           margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")),
+          panel.spacing.y = ggplot2::unit(10, "pt"),
+          plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
+          legend.position = "top")
 
   return(diverging_bar_chart)
 }
