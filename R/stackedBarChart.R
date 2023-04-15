@@ -53,34 +53,30 @@ stackedBarChart <- function(df, set_5_levels) {
     dplyr::summarise(dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE))) %>%
     max()
 
-  stacked_bar_chart <- new_df %>%
-    ggplot2::ggplot(ggplot2::aes(x = .data$question, y = .data$percent_answers, fill = .data$response, label = .data$n_answers)) +
-    ggplot2::geom_col(width = 3, position = ggplot2::position_stack(reverse = TRUE)) +
-    ggplot2::geom_text(ggplot2::aes(y = .data$percent_answers, label = .data$n_answers, group = .data$response, color = .data$label_color),
-      family = "Gill Sans MT", fontface = "bold",
-      position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
-    ) +
-    ggplot2::scale_color_manual(values = c("black", "white")) +
-    ggplot2::coord_flip() +
-    ggh4x::facet_nested_wrap(dplyr::vars(.data$question, .data$timing),
-      ncol = 1, scales = "free", strip.position = "left",
-      strip = ggh4x::strip_nested(text_y = texts, by_layer_y = TRUE)
-    ) +
+  stacked_bar_chart <- new_df  %>%
+    ggplot2::ggplot(ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
+                                 label = .data$n_answers, group = .data$question)) +
+    ggplot2::geom_col(size=3,position = ggplot2::position_stack(reverse = TRUE)) +
+    ggplot2::geom_text(ggplot2::aes(color = .data$label_color), family = "Gill Sans MT",
+              fontface = "bold",position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3) +
+    ggplot2::scale_color_manual(values = c('black','white')) + #Sets up the color of the geom_text from the label_color in the df.
+    # set the bars to a facet based on question and puts the labels to the left side:
+    ggplot2::facet_wrap(~ question, ncol = 1, strip.position = "left") +
+    # sets fill color, drop=F shows all values, and labels wraps the text in the legend
     ggplot2::scale_fill_manual(values = fiveScale_theMark_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 10)) +
-    ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(
-      size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
-      spacing.x = 14, spacing.y = 0
-    )) +
-    ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = paste("N=", N_df, sep = "")) +
-    ggplot2::scale_y_discrete(expand = c(0, 0)) +
-    ggh4x::force_panelsizes(cols = c(10, 10), rows = c(.5, .5), respect = TRUE) +
-    ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = paste("N=", N_df, sep = "")) +
+    # changes the legend text to color of fill, sets the size and family of text, spaces the labels:
+    ggplot2::guides(color = "none",fill = ggh4x::guide_stringlegend(size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
+                                                    spacing.x = 14, spacing.y = 0)) +
+    ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = paste("N=",N_df,sep = "")) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
-    ggplot2::theme(
-      plot.margin = ggplot2::margin(.5, .5, .5, 0, "cm"),
-      panel.spacing.y = ggplot2::unit(.1, "inches"),
-      legend.position = "top"
-    )
+    ggplot2::theme(strip.placement = "outside",
+          axis.text.y = ggplot2::element_text(angle = 0, hjust = 1,color = "black", size = 10, family = "Gill Sans MT",
+                                     margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")), # Sets timing labels theme
+          strip.text.y.left = ggplot2::element_text(angle = 0, hjust = 1,color = "black", size = 12, family = "Gill Sans MT",
+                                           margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")), # Sets question labels theme
+          panel.spacing.y = ggplot2::unit(10, "pt"),
+          plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
+          legend.position = "top")
 
   return(stacked_bar_chart)
 }
