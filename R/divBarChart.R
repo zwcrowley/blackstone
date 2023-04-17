@@ -60,12 +60,14 @@ divBarChart <- function(df, set_5_levels) {
     dplyr::summarise(dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE))) %>%
     max()
 
+  width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.3, 0.75)
+
   diverging_bar_chart <- new_df %>%
     ggplot2::ggplot(ggplot2::aes(
       x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
       label = .data$n_answers, group = .data$question
     )) +
-    ggplot2::geom_col(width = 0.9, position = ggplot2::position_stack(reverse = TRUE)) +
+    ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE)) +
     ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
       family = "Gill Sans MT", fontface = "bold",
       position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
