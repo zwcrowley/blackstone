@@ -29,5 +29,11 @@ items <- dplyr::tibble(
     c("Good", "Moderate", "Minimal", "Moderate", "Moderate", "Good", "Extensive")
 )
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+items <- items \%>\% dplyr::mutate(
+  cat_Pre_Orgs = factor(cat_Pre_Orgs, levels = levels_min_ext),
+  cat_Post_Orgs = factor(cat_Post_Orgs, levels = levels_min_ext),
+  cat_Pre_Sources = factor(cat_Pre_Sources, levels = levels_min_ext),
+  cat_Post_Sources = factor(cat_Post_Sources, levels = levels_min_ext)
+)
 stackedBarChart(items, levels_min_ext)
 }

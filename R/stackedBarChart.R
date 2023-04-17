@@ -19,16 +19,17 @@
 #'     c("Good", "Moderate", "Minimal", "Moderate", "Moderate", "Good", "Extensive")
 #' )
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+#' items <- items %>% dplyr::mutate(
+#'   cat_Pre_Orgs = factor(cat_Pre_Orgs, levels = levels_min_ext),
+#'   cat_Post_Orgs = factor(cat_Post_Orgs, levels = levels_min_ext),
+#'   cat_Pre_Sources = factor(cat_Pre_Sources, levels = levels_min_ext),
+#'   cat_Post_Sources = factor(cat_Post_Sources, levels = levels_min_ext)
+#' )
 #' stackedBarChart(items, levels_min_ext)
 stackedBarChart <- function(df, set_5_levels) {
   extrafont::loadfonts(quiet = TRUE)
 
   fiveScale_theMark_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
-
-  texts <- list(
-    ggplot2::element_text(size = 14, family = "Gill Sans MT", hjust = 1),
-    ggplot2::element_text(size = 11, family = "Gill Sans MT", hjust = 0.6)
-  )
 
   new_df <- {{ df }} %>%
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%

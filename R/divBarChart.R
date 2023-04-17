@@ -25,34 +25,26 @@ divBarChart <- function(df, set_5_levels) {
 
   fiveScale_theMark_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
 
-  texts <- list(
-    ggplot2::element_text(size = 14, family = "Gill Sans MT", hjust = 1),
-    ggplot2::element_text(size = 11, family = "Gill Sans MT", hjust = 0.6)
-  )
-
-  new_df <- {{ df }} %>%
+  new_df <- {{df}} %>%
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
     dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
     tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
+    dplyr::mutate(response = factor(.data$response, levels = set_5_levels)) %>%
     dplyr::group_by(.data$question, .data$timing, .data$response) %>%
-    dplyr::count(name = "n_answers") %>%
+    dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
     dplyr::ungroup() %>%
     dplyr::group_by(.data$question, .data$timing) %>%
-    dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers)) %>%
+    dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers),
+           percent_answers = dplyr::case_when(.data$response == levels(.data$response)[4] ~ percent_answers,
+                                       .data$response == levels(.data$response)[5] ~ percent_answers,
+                                       TRUE ~ -percent_answers),
+           percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
+           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white")) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(
-      response = factor(.data$response, levels = set_5_levels),
-      percent_answers = dplyr::case_when(
-        .data$response == levels(.data$response)[4] ~ percent_answers,
-        .data$response == levels(.data$response)[5] ~ percent_answers,
-        TRUE ~ -percent_answers
-      )
-    ) %>%
-    dplyr::mutate(
-      percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
-      timing = factor(.data$timing, levels = c("Pre", "Post")),
-      label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white")
-    )
+    dplyr::mutate(response = forcats::fct_relevel(.data$response, c(levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
+                                              levels(.data$response)[4], levels(.data$response)[5])),
+           timing = factor(.data$timing, levels = c("Pre","Post"))) %>%
+    dplyr::arrange(.data$response)
 
   N_df <- new_df %>%
     dplyr::select(-c(.data$percent_answers, .data$percent_answers_label)) %>%
@@ -60,37 +52,28 @@ divBarChart <- function(df, set_5_levels) {
     dplyr::summarise(dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE))) %>%
     max()
 
-
-  df_pos <- dplyr::filter(new_df, .data$response %in% c(levels(.data$response)[4], levels(.data$response)[5]))
-  df_neg <- dplyr::filter(new_df, .data$response %in% c(levels(.data$response)[1], levels(.data$response)[2], levels(.data$response)[3]))
-
-  diverging_bar_chart <- ggplot2::ggplot() +
-    ggplot2::geom_col(data = df_pos, ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing),
-                                                  fill = .data$response, group = .data$question),
-                                              position = ggplot2::position_stack(reverse = TRUE)) +
-    ggplot2::geom_text(data = df_pos, ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing),
-                                                   group = .data$question, label = .data$n_answers, color = .data$label_color),
-                                                   family = "Gill Sans MT", fontface = "bold", position = ggplot2::position_stack(vjust = .5,reverse = T),
-                                                   size = 3) +
-    ggplot2::geom_col(data = df_neg, ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing),
-                                                  fill = .data$response, group = .data$question),
-                                                  position = ggplot2::position_stack()) +
-    ggplot2::geom_text(data = df_neg, ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing),
-                                                   group = .data$question, label = .data$n_answers, color = .data$label_color),
-                                                   family = "Gill Sans MT", fontface = "bold", position = ggplot2::position_stack(vjust = .5,reverse = F),
-                                                   size = 3) +
-    ggplot2::scale_color_manual(values = c('black','white')) +
+  diverging_bar_chart <- new_df %>%
+    ggplot2::ggplot(ggplot2::aes(x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
+                                 label = .data$n_answers, group = .data$question)) +
+    ggplot2::geom_col(size = 3, position = ggplot2::position_stack(reverse = TRUE)) +
+    ggplot2::geom_text(ggplot2::aes(color = .data$label_color),family = "Gill Sans MT", fontface = "bold",
+                       position = ggplot2::position_stack(vjust = .5,reverse = T), size = 3) +
+    ggplot2::scale_color_manual(values = c('black','white')) + #Sets up the color of the geom_text from the label_color in the df.
+    # set the bars to a facet based on question and puts the labels to the left side:
     ggplot2::facet_wrap(~ question, ncol = 1, strip.position = "left") +
-    ggplot2::scale_fill_manual(values = fiveScale_theMark_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 10)) +
+    # sets fill color, drop=F shows all values, and labels wraps the text in the legend
+    ggplot2::scale_fill_manual(breaks = set_5_levels, values = fiveScale_theMark_colors, drop = FALSE,
+                      labels = function(response) stringr::str_wrap(response, width = 10)) +
+    # changes the legend text to color of fill, sets the size and family of text, spaces the labels:
     ggplot2::guides(color = "none",fill = ggh4x::guide_stringlegend(size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
                                                     spacing.x = 14, spacing.y = 0)) +
     ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = paste("N=",N_df,sep = "")) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
     ggplot2::theme(strip.placement = "outside",
           axis.text.y = ggplot2::element_text(angle = 0, hjust = 1,color = "black", size = 10, family = "Gill Sans MT",
-                                     margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")),
+                                     margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")), # Sets timing labels theme
           strip.text.y.left = ggplot2::element_text(angle = 0, hjust = 1,color = "black", size = 12, family = "Gill Sans MT",
-                                           margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")),
+                                           margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")), # Sets question labels theme
           panel.spacing.y = ggplot2::unit(10, "pt"),
           plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
           legend.position = "top")
