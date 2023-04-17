@@ -36,12 +36,20 @@ recodeFiveCat is a helper function to recode numeric data with 5 levels into cat
 
 ```{r recodeFiveCat}
 library(TheMarkUSA)
-items <- dplyr::tibble(
-  Pre_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-   Post_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1)
-)
+items <- dplyr::tibble(Pre_Organization = c(1,2,3,4,5,4,3,2,1), 
+                       Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
+                       Pre_Source = c(2,2,3,5,4,3,2,1,2), 
+                       Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
+                       Pre_Publish = c(1,1,1,2,2,2,3,3,3), 
+                       Post_Publish = Pre_Publish + 2,
+                       Pre_Write = c(2,2,2,3,3,3,4,4,4), 
+                       Post_Write = Pre_Write + 1,
+                       Pre_Research = c(1,1,2,2,3,3,4,4,4), 
+                       Post_Research = Pre_Research + 1)
+
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 cat_items_1 <- recodeFiveCat(items, levels_min_ext)
+cat_items_1
 ```
 
 The user simply passes a data frame of all the items to be recoded with a character vector of the 5 scale likert labels.
@@ -56,9 +64,9 @@ Both take in two arguments: **df** A tibble/data frame of survey items that are 
 stackedBarChart creates a fully stacked bar chart that has the branding/style of The Mark USA, INC.
 
 ```{r stackedBarChart}
-# Select only the categorical/factor vars from the df in the last chunk: cat_items_1
-cat_items_plot <- cat_items_1 %>% dplyr::select(cat_Pre_Orgs,cat_Post_Orgs)
-# Run the function with the categorical items and the character vector of the factor levels
+# Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):
+cat_items_plot <- cat_items_1 %>% dplyr::select(contains("cat"))
+# Run the function with the categorical items and the character vector of the factor levels:
 stacked_chart_1 <- stackedBarChart(cat_items_plot,levels_min_ext)
 
 stacked_chart_1
@@ -68,9 +76,9 @@ stacked_chart_1
 divBarChart creates a diverging and fully stacked bar chart that has the branding/style of The Mark USA, INC.
 
 ```{r divBarChart}
-# Select only the categorical/factor vars from the df in the last chunk: cat_items_1
-cat_items_plot <- cat_items_1 %>% dplyr::select(cat_Pre_Orgs,cat_Post_Orgs)
-# Run the function with the categorical items and the character vector of the factor levels
+# Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):
+cat_items_plot <- cat_items_1 %>% dplyr::select(contains("cat"))
+# Run the function with the categorical items and the character vector of the factor levels:
 div_chart_1 <- divBarChart(cat_items_plot,levels_min_ext)
 
 div_chart_1
