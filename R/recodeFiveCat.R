@@ -8,8 +8,10 @@
 #' @export
 #'
 #' @examples
-#' items <- dplyr::tibble(Pre_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-#'                        Post_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1))
+#' items <- dplyr::tibble(
+#'   Pre_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+#'   Post_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1)
+#' )
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #' recodeFiveCat(items, levels_min_ext)
 recodeFiveCat <- function(df, set_5_levels) {
