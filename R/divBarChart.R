@@ -4,7 +4,7 @@
 #'
 #' @param set_5_levels character vector of 5 levels to set the scale for the plot
 #'
-#' @return A ggplot object that plots the items into a diverging and stacked bar chart and can be exported.
+#' @return A ggplot object that plots the items into a diverging and stacked bar chart as a ggplot object. The chart is sorted by the highest positive valence, post items at the top by the post.
 #' @export
 #'
 #' @examples
@@ -42,16 +42,22 @@ divBarChart <- function(df, set_5_levels) {
         TRUE ~ -percent_answers
       ),
       percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
-      label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white")
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(
+      label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+      pos_valence_post = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Post" ~ n_answers,
+                                          .data$response == levels(.data$response)[5] & timing == "Post" ~ n_answers,
+                                                                                                    TRUE ~ 0),
+      pos_valence_pre = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Pre" ~ n_answers,
+                                         .data$response == levels(.data$response)[5] & .data$timing == "Pre" ~ n_answers,
+                                                                                                        TRUE ~ 0),
       response = forcats::fct_relevel(.data$response, c(
         levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
         levels(.data$response)[4], levels(.data$response)[5]
       )),
       timing = factor(.data$timing, levels = c("Pre", "Post"))
     ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(dplyr::desc(.data$pos_valence_post),dplyr::desc(.data$pos_valence_pre)) %>%
+    dplyr::mutate(question = forcats::fct_inorder(.data$question)) %>%
     dplyr::arrange(.data$response)
 
   N_df <- new_df %>%

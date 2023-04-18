@@ -18,6 +18,16 @@ test_that("plots accept same data types", {
 
   levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 
+  items_1 <- items_1 %>% dplyr::mutate(
+    cat_Pre_Sources = factor(cat_Pre_Sources, levels = levels_min_ext),
+    cat_Post_Sources = factor(cat_Post_Sources, levels = levels_min_ext)
+  )
+
+  items_2 <- items_2 %>% dplyr::mutate(
+    cat_Pre_Orgs = factor(cat_Pre_Orgs, levels = levels_min_ext),
+    cat_Post_Orgs = factor(cat_Post_Orgs, levels = levels_min_ext)
+  )
+
   stacked_chart_1 <- stackedBarChart(items_1, levels_min_ext)
   stacked_chart_2 <- stackedBarChart(items_2, levels_min_ext)
 

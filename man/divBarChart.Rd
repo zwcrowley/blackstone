@@ -12,7 +12,7 @@ divBarChart(df, set_5_levels)
 \item{set_5_levels}{character vector of 5 levels to set the scale for the plot}
 }
 \value{
-A ggplot object that plots the items into a diverging and stacked bar chart and can be exported.
+A ggplot object that plots the items into a diverging and stacked bar chart as a ggplot object. The chart is sorted by the highest positive valence, post items at the top by the post.
 }
 \description{
 Diverging and Stacked Bar Chart for The Mark

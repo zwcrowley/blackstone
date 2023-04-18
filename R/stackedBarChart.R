@@ -36,17 +36,26 @@ stackedBarChart <- function(df, set_5_levels) {
     dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
     tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
     dplyr::group_by(.data$question, .data$timing, .data$response) %>%
-    dplyr::count(name = "n_answers") %>%
+    dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
     dplyr::ungroup() %>%
     dplyr::group_by(.data$question, .data$timing) %>%
-    dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(
+    dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers),
       percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
-      timing = factor(.data$timing, levels = c("Pre", "Post")),
-      response = factor(.data$response, levels = set_5_levels),
-      label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white")
-    )
+      label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+      pos_valence_post = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Post" ~ n_answers,
+                                          .data$response == levels(.data$response)[5] & timing == "Post" ~ n_answers,
+                                          TRUE ~ 0),
+      pos_valence_pre = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Pre" ~ n_answers,
+                                         .data$response == levels(.data$response)[5] & .data$timing == "Pre" ~ n_answers,
+                                         TRUE ~ 0),
+      response = forcats::fct_relevel(.data$response, set_5_levels),
+      timing = factor(.data$timing, levels = c("Pre", "Post"))
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(dplyr::desc(.data$pos_valence_post),dplyr::desc(.data$pos_valence_pre)) %>%
+    dplyr::mutate(question = forcats::fct_inorder(.data$question)) %>%
+    dplyr::arrange(.data$response)
+
 
   N_df <- new_df %>%
     dplyr::select(-c(.data$percent_answers, .data$percent_answers_label)) %>%
