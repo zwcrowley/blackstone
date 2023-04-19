@@ -64,7 +64,8 @@ divBarChart <- function(df, set_5_levels) {
 
   N_df <- {{ df }} %>% nrow()
 
-  width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.3, 0.75)
+  width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
+                  dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95))
 
   diverging_bar_chart <- new_df %>%
     ggplot2::ggplot(ggplot2::aes(
