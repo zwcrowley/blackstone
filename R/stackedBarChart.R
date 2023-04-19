@@ -42,8 +42,8 @@ stackedBarChart <- function(df, set_5_levels) {
     dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers),
       percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
       label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-      pos_valence_post = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Post" ~ n_answers,
-                                          .data$response == levels(.data$response)[5] & timing == "Post" ~ n_answers,
+      pos_valence_post = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Post" ~ percent_answers,
+                                          .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
                                           TRUE ~ 0),
       response = forcats::fct_relevel(.data$response, set_5_levels),
       timing = factor(.data$timing, levels = c("Pre", "Post"))
@@ -58,11 +58,7 @@ stackedBarChart <- function(df, set_5_levels) {
 
   new_df <-  new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
 
-  N_df <- new_df %>%
-    dplyr::select(-c(.data$percent_answers, .data$percent_answers_label)) %>%
-    tidyr::pivot_wider(names_from = c(.data$question, .data$timing), values_from = c(.data$n_answers)) %>%
-    dplyr::summarise(dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE))) %>%
-    max()
+  N_df <- {{ df }} %>% nrow()
 
   width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.3, 0.75)
 
