@@ -45,17 +45,18 @@ stackedBarChart <- function(df, set_5_levels) {
       pos_valence_post = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Post" ~ n_answers,
                                           .data$response == levels(.data$response)[5] & timing == "Post" ~ n_answers,
                                           TRUE ~ 0),
-      pos_valence_pre = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Pre" ~ n_answers,
-                                         .data$response == levels(.data$response)[5] & .data$timing == "Pre" ~ n_answers,
-                                         TRUE ~ 0),
       response = forcats::fct_relevel(.data$response, set_5_levels),
       timing = factor(.data$timing, levels = c("Pre", "Post"))
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(dplyr::desc(.data$pos_valence_post),dplyr::desc(.data$pos_valence_pre)) %>%
-    dplyr::mutate(question = forcats::fct_inorder(.data$question)) %>%
     dplyr::arrange(.data$response)
 
+  question_order <- new_df %>% dplyr::group_by(.data$question, .data$timing) %>%
+    dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
+    dplyr::arrange(dplyr::desc(.data$n_pos_valence_post))  %>% dplyr::ungroup() %>% dplyr::filter(.data$timing == "Post") %>%
+    dplyr::select(.data$question) %>% dplyr::mutate(question = as.character(.data$question)) %>% unlist()
+
+  new_df <-  new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
 
   N_df <- new_df %>%
     dplyr::select(-c(.data$percent_answers, .data$percent_answers_label)) %>%
