@@ -92,7 +92,6 @@ stackedBarChart <- function(df, set_5_levels) {
         angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
         margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
       ),
-      panel.spacing.y = ggplot2::unit(10, "pt"),
       plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
       legend.position = "top"
     )
