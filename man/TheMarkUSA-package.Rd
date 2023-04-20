@@ -12,6 +12,7 @@ The goal of TheMarkUSA is to make data cleaning and the creation of visualizatio
 Useful links:
 \itemize{
   \item \url{https://github.com/zcrowleyTheMark/themark}
+  \item \url{https://zcrowleythemark.github.io/TheMarkUSA/}
   \item Report bugs at \url{https://github.com/zcrowleyTheMark/themark/issues}
 }
 
