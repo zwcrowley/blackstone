@@ -21,15 +21,17 @@ Title
 }
 \examples{
 items <- dplyr::tibble(
- Pre_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
- Post_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
- group = c("grad", "undergrad", "grad", "undergrad",
- "grad", "undergrad", "undergrad","grad", "undergrad")
+  Pre_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Post_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  group = c(
+    "grad", "undergrad", "grad", "undergrad",
+    "grad", "undergrad", "undergrad", "grad", "undergrad"
+  )
 )
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 items <- items \%>\% dplyr::mutate(
   group = factor(group, levels = c("grad", "undergrad"))
 )
-threeScale_theMark_colors <-  c("#79AB53", "#4B9FA6", "#2C2C4F")
+threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 arrowChart(items, levels_min_ext, threeScale_theMark_colors)
 }

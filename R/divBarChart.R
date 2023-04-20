@@ -43,9 +43,11 @@ divBarChart <- function(df, set_5_levels) {
       ),
       percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
       label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-      pos_valence_post = dplyr::case_when(.data$response == levels(.data$response)[4] & .data$timing == "Post" ~ n_answers,
-                                          .data$response == levels(.data$response)[5] & timing == "Post" ~ n_answers,
-                                                                                                    TRUE ~ 0),
+      pos_valence_post = dplyr::case_when(
+        .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ n_answers,
+        .data$response == levels(.data$response)[5] & timing == "Post" ~ n_answers,
+        TRUE ~ 0
+      ),
       response = forcats::fct_relevel(.data$response, c(
         levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
         levels(.data$response)[4], levels(.data$response)[5]
@@ -55,17 +57,23 @@ divBarChart <- function(df, set_5_levels) {
     dplyr::ungroup() %>%
     dplyr::arrange(.data$response)
 
-  question_order <- new_df %>% dplyr::group_by(.data$question, .data$timing) %>%
+  question_order <- new_df %>%
+    dplyr::group_by(.data$question, .data$timing) %>%
     dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
-    dplyr::arrange(dplyr::desc(.data$n_pos_valence_post))  %>% dplyr::ungroup() %>% dplyr::filter(.data$timing == "Post") %>%
-    dplyr::select(.data$question) %>% dplyr::mutate(question = as.character(.data$question)) %>% unlist()
+    dplyr::arrange(dplyr::desc(.data$n_pos_valence_post)) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(.data$timing == "Post") %>%
+    dplyr::select("question") %>%
+    dplyr::mutate(question = as.character(.data$question)) %>%
+    unlist()
 
-  new_df <-  new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
+  new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
 
   N_df <- {{ df }} %>% nrow()
 
   width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                  dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95))
+    dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+  )
 
   diverging_bar_chart <- new_df %>%
     ggplot2::ggplot(ggplot2::aes(

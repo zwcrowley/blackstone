@@ -6,12 +6,13 @@
 \alias{TheMarkUSA-package}
 \title{TheMarkUSA: Helper Functions for The Mark, USA Inc}
 \description{
-Functions that create visuals with The Mark USA, Inc. branding and helper functions for common data cleaning and manipulation tasks for use for everyone at The Mark, USA Inc.
+The goal of TheMarkUSA is to make data cleaning and the creation of visualizations easier and faster for The Mark USA, Inc. TheMarkUSA contains functions to create visuals with The Mark USA branding and helper functions for common data cleaning and manipulation tasks for use for everyone at The Mark USA, Inc.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://github.com/zcrowleyTheMark/themark}
+  \item \url{https://zcrowleythemark.github.io/TheMarkUSA/}
   \item Report bugs at \url{https://github.com/zcrowleyTheMark/themark/issues}
 }
 
