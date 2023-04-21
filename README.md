@@ -1,12 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# TheMarkUSA
-
-<!-- badges: start -->
-
 # TheMarkUSA <a href="https://zcrowleythemark.github.io/TheMarkUSA/"><img src="man/figures/logo.png" align="right" height="139" /></a>
 
+<!-- badges: start -->
 <!-- badges: end -->
 
 The goal of TheMarkUSA is to make data cleaning and the creation of
