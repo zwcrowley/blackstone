@@ -4,6 +4,9 @@
 # TheMarkUSA
 
 <!-- badges: start -->
+
+# TheMarkUSA <a href="https://zcrowleythemark.github.io/TheMarkUSA/"><img src="man/figures/logo.png" align="right" height="139" /></a>
+
 <!-- badges: end -->
 
 The goal of TheMarkUSA is to make data cleaning and the creation of
