@@ -2,32 +2,46 @@
 % Please edit documentation in R/divBarChart.R
 \name{divBarChart}
 \alias{divBarChart}
-\title{Diverging and Stacked Bar Chart for The Mark}
+\title{Diverging and Stacked Bar Chart for The Mark USA, Inc.}
 \usage{
 divBarChart(df, set_5_levels)
 }
 \arguments{
-\item{df}{A tibble/data frame of survey items that are categorical/character variables, in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.}
+\item{df}{A tibble/data frame of survey items that are categorical/character
+variables, in 5 point scales and pre-post, that will be inserted into a
+stacked bar chart with The Mark USA branding.}
 
-\item{set_5_levels}{character vector of 5 levels to set the scale for the plot}
+\item{set_5_levels}{character vector of 5 levels to set the scale for the
+plot}
 }
 \value{
-A ggplot object that plots the items into a diverging and stacked bar chart as a ggplot object. The chart is sorted by the highest positive valence, post items at the top by the post.
+A ggplot object that plots the items into a diverging and stacked bar
+chart as a ggplot object. The chart is sorted by the highest positive
+valence, post items at the top by the post.
 }
 \description{
-Diverging and Stacked Bar Chart for The Mark
+Diverging and Stacked Bar Chart for The Mark USA, Inc.
 }
 \examples{
 items <- dplyr::tibble(
-  cat_Pre_Sources =
-    c("Good", "Moderate", "Minimal", "Slight", "Slight", "Moderate", "Good"),
-  cat_Post_Sources =
-    c("Good", "Good", "Minimal", "Moderate", "Moderate", "Good", "Extensive"),
-  cat_Pre_Orgs =
-    c("Good", "Moderate", "Minimal", "Slight", "Slight", "Moderate", "Moderate"),
-  cat_Post_Orgs =
-    c("Good", "Moderate", "Minimal", "Moderate", "Moderate", "Good", "Extensive")
+  Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
+  Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
+  Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  Post_Publish = Pre_Publish + 2,
+  Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  Post_Write = Pre_Write + 1,
+  Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  Post_Research = Pre_Research + 1
 )
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-divBarChart(items, levels_min_ext)
+
+# Recode the numeric to factor variables using the levels from levels_min_ext:
+cat_items<- TheMarkUSA::recodeFiveCat(items, levels_min_ext)
+
+# Select the factor variables:
+cat_items <- cat_items \%>\% dplyr::select(dplyr::where(is.factor))
+
+divBarChart(cat_items, levels_min_ext)
 }

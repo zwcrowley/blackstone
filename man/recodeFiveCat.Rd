@@ -7,20 +7,33 @@
 recodeFiveCat(df, set_5_levels)
 }
 \arguments{
-\item{df}{A tibble/data frame of survey items that are categorical/character variables, in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.}
+\item{df}{A tibble/data frame of survey items that are categorical/character
+variables, in 5 point scales and pre-post, that will be inserted into a
+stacked bar chart with The Mark USA branding.}
 
-\item{set_5_levels}{character vector of 5 levels to set the numeric variables to factor/categorical values}
+\item{set_5_levels}{character vector of 5 levels to set the numeric variables
+to factor/categorical values}
 }
 \value{
-new tibble/data frame with the original numeric variables along with new variables mapped to categorical values from set_5_levels character vector.
+new tibble/data frame with the original numeric variables along with
+new variables mapped to categorical values from set_5_levels character
+vector.
 }
 \description{
 Recode Numeric Variables to 5 Category Factors
 }
 \examples{
 items <- dplyr::tibble(
-  Pre_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-  Post_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1)
+  Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
+  Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
+  Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  Post_Publish = Pre_Publish + 2,
+  Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  Post_Write = Pre_Write + 1,
+  Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  Post_Research = Pre_Research + 1
 )
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 recodeFiveCat(items, levels_min_ext)

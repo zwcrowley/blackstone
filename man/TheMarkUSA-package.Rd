@@ -6,6 +6,8 @@
 \alias{TheMarkUSA-package}
 \title{TheMarkUSA: Helper Functions for The Mark, USA Inc}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 The goal of TheMarkUSA is to make data cleaning and the creation of visualizations easier and faster for The Mark USA, Inc. TheMarkUSA contains functions to create visuals with The Mark USA branding and helper functions for common data cleaning and manipulation tasks for use for everyone at The Mark USA, Inc.
 }
 \seealso{

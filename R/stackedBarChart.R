@@ -1,31 +1,39 @@
-#' Stacked Bar Chart for The Mark
+#' Stacked Bar Chart for The Mark USA, Inc.
 #'
-#' @param df A tibble/data frame of survey items that are categorical/character variables, in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.
+#' @param df A tibble/data frame of survey items that are categorical/character
+#'   variables, in 5 point scales and pre-post, that will be inserted into a
+#'   stacked bar chart with The Mark USA branding.
 #'
-#' @param set_5_levels character vector of 5 levels to set the scale for the plot
+#' @param set_5_levels character vector of 5 levels to set the scale for the
+#'   plot
 #'
-#' @return A ggplot object that plots the items into a stacked bar chart and can be exported.
+#' @return A ggplot object that plots the items into a stacked bar chart and can
+#'   be exported.
 #' @export
 #'
 #' @examples
 #' items <- dplyr::tibble(
-#'   cat_Pre_Sources =
-#'     c("Good", "Moderate", "Minimal", "Slight", "Slight", "Moderate", "Good"),
-#'   cat_Post_Sources =
-#'     c("Good", "Good", "Minimal", "Moderate", "Moderate", "Good", "Extensive"),
-#'   cat_Pre_Orgs =
-#'     c("Good", "Moderate", "Minimal", "Slight", "Slight", "Moderate", "Moderate"),
-#'   cat_Post_Orgs =
-#'     c("Good", "Moderate", "Minimal", "Moderate", "Moderate", "Good", "Extensive")
+#'   Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+#'   Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
+#'   Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+#'   Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
+#'   Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+#'   Post_Publish = Pre_Publish + 2,
+#'   Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+#'   Post_Write = Pre_Write + 1,
+#'   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+#'   Post_Research = Pre_Research + 1
 #' )
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-#' items <- items %>% dplyr::mutate(
-#'   cat_Pre_Orgs = factor(cat_Pre_Orgs, levels = levels_min_ext),
-#'   cat_Post_Orgs = factor(cat_Post_Orgs, levels = levels_min_ext),
-#'   cat_Pre_Sources = factor(cat_Pre_Sources, levels = levels_min_ext),
-#'   cat_Post_Sources = factor(cat_Post_Sources, levels = levels_min_ext)
-#' )
-#' stackedBarChart(items, levels_min_ext)
+#'
+#' # Recode the numeric to factor variables using the levels from levels_min_ext:
+#' cat_items<- TheMarkUSA::recodeFiveCat(items, levels_min_ext)
+#'
+#' # Select the factor variables:
+#' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
+#'
+#' # Pass the factor variables and the levels to 'stackedBarChart()':
+#' stackedBarChart(cat_items, levels_min_ext)
 stackedBarChart <- function(df, set_5_levels) {
   extrafont::loadfonts(quiet = TRUE)
 

@@ -1,19 +1,37 @@
-#' Title
+#' Arrow Chart for The Mark USA, Inc.
 #'
-#' @param df A tibble or data frame of categorical data that has a group var to split up the data, e.g. role, gender, education level, etc.
-#' @param set_levels character vector of labels for the x-axis, usually a response to a set of likert items, needs to match the number of response items in the data.
-#' @param colors_group character vector of hex codes for colors to associate each group to, e.g. this data has two groups and this function creates an overall group so this function will need a colors_group char vector of three colors- colors need to be in the order you want them associated to the group based on the factor levels for the group variable, last color will be the overall group of "all".
+#' `arrowChart()` creates an pre-post arrow chart of group averages and returns
+#' a ggplot object.
 #'
-#' @return A ggplot object that plots the items into a arrow bar chart and can be exported.
-#' @export
+#' @param df A tibble or data frame of numeric data that has a categorical group
+#'   variable to split up the data, e.g. role, gender, education level, etc.
+#' @param set_levels character vector of labels for the x-axis, usually a
+#'   response to a set of likert items, needs to match the number of response
+#'   items in the data.
+#' @param colors_group character vector of hex codes for colors to associate
+#'   each group to, e.g. this data has two groups and this function creates an
+#'   overall group so this function will need a colors_group char vector of
+#'   three colors- colors need to be in the order you want them associated to
+#'   the group based on the factor levels for the group variable, last color
+#'   will be the overall group of "all".
+#'
+#' @return A ggplot object that plots the items into a arrow bar chart.
 #'
 #' @examples
 #' items <- dplyr::tibble(
-#'   Pre_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-#'   Post_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+#'   Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+#'   Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
+#'   Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+#'   Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
+#'   Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+#'   Post_Publish = Pre_Publish + 2,
+#'   Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+#'   Post_Write = Pre_Write + 1,
+#'   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+#'   Post_Research = Pre_Research + 1,
 #'   group = c(
-#'     "grad", "undergrad", "grad", "undergrad",
-#'     "grad", "undergrad", "undergrad", "grad", "undergrad"
+#'     "grad", "grad", "grad", "grad",
+#'     "undergrad", "undergrad", "undergrad", "undergrad", "undergrad"
 #'   )
 #' )
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
@@ -22,6 +40,7 @@
 #' )
 #' threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 #' arrowChart(items, levels_min_ext, threeScale_theMark_colors)
+#' @export
 arrowChart <- function(df, set_levels, colors_group) {
   extrafont::loadfonts(quiet = TRUE)
 
