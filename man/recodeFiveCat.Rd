@@ -7,9 +7,8 @@
 recodeFiveCat(df, set_5_levels)
 }
 \arguments{
-\item{df}{A tibble/data frame of survey items that are categorical/character
-variables, in 5 point scales and pre-post, that will be inserted into a
-stacked bar chart with The Mark USA branding.}
+\item{df}{A tibble/data frame of survey items that are numeric
+variables, in 5 point scales and pre-post, that need to be converted into factor variables.}
 
 \item{set_5_levels}{character vector of 5 levels to set the numeric variables
 to factor/categorical values}

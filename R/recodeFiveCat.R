@@ -1,8 +1,7 @@
 #' Recode Numeric Variables to 5 Category Factors
 #'
-#' @param df A tibble/data frame of survey items that are categorical/character
-#'   variables, in 5 point scales and pre-post, that will be inserted into a
-#'   stacked bar chart with The Mark USA branding.
+#' @param df A tibble/data frame of survey items that are numeric
+#'   variables, in 5 point scales and pre-post, that need to be converted into factor variables.
 #'
 #' @param set_5_levels character vector of 5 levels to set the numeric variables
 #'   to factor/categorical values
