@@ -1,6 +1,6 @@
 #' Creates a summary table of counts and percentages
 #'
-#' @param df A tibble/data frame single selected column of a categorical/factor variable to that needs to be summarized into a table.
+#' @param var A column selected from a tibble/data frame that is a categorical/factor variable to that to be summarized into a table.
 #'
 #' @return a new tibble/data frame with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
 #' Item is the name of the original item, Response is all of the categorical responses possible for the item. n_answers is the count of each response,
@@ -22,8 +22,8 @@
 #' data %>%
 #'   dplyr::select(role) %>%
 #'   dataSumm()
-dataSumm <- function(df) {
-  clean_df <- {{ df }} %>%
+dataSumm <- function(var) {
+  clean_df <- {{ var }} %>%
     tidyr::drop_na() %>%
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
     dplyr::group_by(.data$question, .data$response) %>%

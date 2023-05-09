@@ -3,7 +3,7 @@
 \name{tblSumm}
 \alias{tblSumm}
 \title{Creates a summary table of counts and percentages from a data frame pre-processed with the
-dataSumm() using flextable().}
+dataSumm() and returns a flextable object.}
 \usage{
 tblSumm(df, totals = TRUE)
 }
@@ -24,7 +24,7 @@ Colors are set to The Mark, USA Inc. branding
 }
 \description{
 Creates a summary table of counts and percentages from a data frame pre-processed with the
-dataSumm() using flextable().
+dataSumm() and returns a flextable object.
 }
 \examples{
 data <- dplyr::tibble(
@@ -33,7 +33,7 @@ data <- dplyr::tibble(
     "Graduate student", "Postdoc", "Postdoc", "Faculty",
     "Faculty", "Graduate student", "Graduate student", "Postdoc",
     "Faculty", "Faculty", "Faculty", "Faculty", "Faculty", "Graduate student",
-    "Undergraduate student","Undergraduate student"
+    "Undergraduate student", "Undergraduate student"
   )
 )
 

@@ -4,10 +4,10 @@
 \alias{dataSumm}
 \title{Creates a summary table of counts and percentages}
 \usage{
-dataSumm(df)
+dataSumm(var)
 }
 \arguments{
-\item{df}{A tibble/data frame single selected column of a categorical/factor variable to that needs to be summarized into a table.}
+\item{var}{A column selected from a tibble/data frame that is a categorical/factor variable to that to be summarized into a table.}
 }
 \value{
 a new tibble/data frame with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.

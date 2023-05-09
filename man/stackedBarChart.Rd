@@ -4,15 +4,32 @@
 \alias{stackedBarChart}
 \title{Stacked Bar Chart for The Mark USA, Inc.}
 \usage{
-stackedBarChart(df, set_5_levels)
+stackedBarChart(
+  df,
+  scale_labels,
+  pre_post = FALSE,
+  percent_label = TRUE,
+  question_order = NULL,
+  question_labels = NULL,
+  width = NULL
+)
 }
 \arguments{
-\item{df}{A tibble/data frame of survey items that are categorical/character
+\item{df}{Required, A tibble/data frame of survey items that are categorical/character
 variables, in 5 point scales and pre-post, that will be inserted into a
 stacked bar chart with The Mark USA branding.}
 
-\item{set_5_levels}{character vector of 5 levels to set the scale for the
-plot}
+\item{scale_labels}{Required, a character vector of 5 levels to set the scale for the plot.}
+
+\item{pre_post}{Default is FALSE. If true, returns a pre-post stacked bar chart.}
+
+\item{percent_label}{Default is TRUE. If FALSE, labels the bars with the number of answers per response.}
+
+\item{question_order}{Takes in a character vector to sort the order of the questions. Default is NULL.}
+
+\item{question_labels}{Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.}
+
+\item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
 \value{
 A ggplot object that plots the items into a stacked bar chart and can
@@ -34,14 +51,31 @@ items <- dplyr::tibble(
   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   Post_Research = Pre_Research + 1
 )
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 
+items_single <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+)
+
+levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items<- TheMarkUSA::recodeFiveCat(items, levels_min_ext)
+cat_items <- TheMarkUSA::recodeFiveCat(items, levels_min_ext)
+cat_items_single <- TheMarkUSA::recodeFiveCat(items_single, levels_min_ext)
 
 # Select the factor variables:
 cat_items <- cat_items \%>\% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- cat_items_single \%>\% dplyr::select(dplyr::where(is.factor))
 
 # Pass the factor variables and the levels to 'stackedBarChart()':
-stackedBarChart(cat_items, levels_min_ext)
+stackedBarChart(
+  df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
+  question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
+)
+stackedBarChart(
+  df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+  question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
+)
 }
