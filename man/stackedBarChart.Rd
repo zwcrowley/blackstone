@@ -32,8 +32,7 @@ stacked bar chart with The Mark USA branding.}
 \item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
 \value{
-A ggplot object that plots the items into a stacked bar chart and can
-be exported.
+A ggplot object that plots the items into a stacked bar chart and can be exported.
 }
 \description{
 Stacked Bar Chart for The Mark USA, Inc.
