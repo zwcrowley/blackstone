@@ -1,6 +1,6 @@
-#' Title
+#' Horizontal Bar Chart for The Mark USA, Inc.
 #'
-#' @param df a datafram that has been pre-processed with dataSumm(),
+#' @param df Required, a tibble or data frame that has been pre-processed with dataSumm(),
 #' @param color_scale a char vector of the colors for the scale items
 #' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'
@@ -26,6 +26,7 @@
 #'
 #' horzBarChart(role_summ, role_color, width = 0.6)
 horzBarChart <- function(df, color_scale, width = NULL) {
+    extrafont::loadfonts(quiet = TRUE)
 
     bar_chart <- {{ df }} %>% ggplot2::ggplot(ggplot2::aes(x = forcats::fct_rev(.data$response), y = .data$n_answers, label = .data$percent_answers_label)) +
         ggplot2::geom_col(ggplot2::aes(fill = .data$response), width = width, color = "black") +

@@ -43,7 +43,9 @@ A common problem with the current workflow at The Mark is converting numeric dat
 `recodeFiveCat()` is a helper function to recode numeric data with 5 levels into factor variables with the desired levels.
 
 `recodeFiveCat()` takes in two arguments: 
+
 **df** Required, a tibble or data frame of survey items that are numeric variables, in 5 point scales, can be a single time point or pre-post.
+
 **scale_labels** Required, a character vector of labels of the desired 5 point scale levels. The function will use this vector to convert the numeric variables into factor variables, must be arranged low to high.
 
 ```{r recodeFiveCat}
@@ -73,9 +75,10 @@ The user simply passes a data frame of all the items to be recoded with a charac
 
 ### `stackedBarChart()`
 
-`stackedBarChart()` creates a fully stacked bar chart that has the branding/style of The Mark USA, INC.
+`stackedBarChart()` creates a fully stacked bar chart that has the branding/style of The Mark USA, Inc.
 
-`stackedBarChart()` takes up to 5 arguments, first 2 are required: 
+`stackedBarChart()` takes up to 7 arguments, first 2 are required: 
+
 **df** Required, A tibble or data frame of survey items that are categorical/factor variables, in 5 point scales, can be a single time point or pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.
 
 **scale_labels** Required, a character vector of 5 levels to set the scale for the plot.
@@ -92,18 +95,22 @@ The user simply passes a data frame of all the items to be recoded with a charac
 
 #### Pre-Post Data Example for `stackedBarChart()`
 
-```{r stackedBarChart Pre Post}
+```{r stackedBarChart_pre_post}
 # Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):
 cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
 
 # Run the function with the categorical items and the character vector of the factor levels:
-stacked_chart_pre_post <- TheMarkUSA::stackedBarChart(cat_items_plot, levels_min_ext, pre_post = TRUE)
+stacked_chart_pre_post <- TheMarkUSA::stackedBarChart(
+  df = cat_items_plot, scale_labels = levels_min_ext,
+  pre_post = TRUE, percent_label = FALSE
+)
 
 stacked_chart_pre_post
 ```
+
 #### Single Time Point Data with Percentage labels Example for `stackedBarChart()`
 
-```{r stackedBarChart Single}
+```{r stackedBarChart_single}
 # Single time point data:
 items_single <- dplyr::tibble(
   Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
@@ -120,17 +127,19 @@ cat_items_single <- TheMarkUSA::recodeFiveCat(items_single, levels_min_ext)
 cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 # Pass the factor variables and the levels to 'stackedBarChart()':
 stacked_chart_single <- TheMarkUSA::stackedBarChart(
-  df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext, percent_label = FALSE, width = NULL
+  df = cat_items_single, scale_labels = levels_min_ext, width = 0.45
 )
 stacked_chart_single
 ```
 
 ### `divBarChart()`
 
-`divBarChart()` creates a diverging and fully stacked bar chart that has the branding and style of The Mark USA, INC.
+`divBarChart()` creates a diverging and fully stacked bar chart that has the branding and style of The Mark USA, Inc.
 
 `divBarChart()` takes in two arguments: 
+
 **df** Required, A tibble or data frame of survey items that are categorical/factor variables, in 5 point scales, must be pre-post data, that will be inserted into a stacked bar chart with The Mark USA branding.
+
 **scale_labels** Required, character vector of levels of the factor variables to be added to the plot, this will set the scale for the x-axis of the bar chart and its labels.
 
 
@@ -146,28 +155,34 @@ div_chart_1
 ### `arrowChart()`
 
 `arrowChart()` take in three arguments: 
+
 **df** A tibble/data frame of survey items that are numeric variables, must be in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.
+
 **scale_labels** character vector to set up the labels for the x-axis, this will match the numeric response in the data.
+
 **color_groups** character vector of hex codes for colors to associate to each group to, e.g. this data has two groups and this function creates an overall group so the user needs to pass the function in the colors_group argument a character vector of three colors- colors need to be in the order you want them associated to the group based on the factor levels for the group variable, last color will be the overall group of "all".
 
-`arrowChart()` creates an arrow chart from numeric data based on the pre-post averages for each group and the overall group for the whole data set with the branding and style of The Mark USA, INC. `arrowChart()` sorts the chart with the highest post scores on the top and lowest on the bottom.
+`arrowChart()` creates an arrow chart from numeric data based on the pre-post averages for each group and the overall group for the whole data set with the branding and style of The Mark USA, Inc. `arrowChart()` sorts the chart with the highest post scores on the top and lowest on the bottom.
 
 ```{r arrowChart}
 # Select only the numeric variables from the df in the last chunk (cat_items_1) using tidy select(contains("cat")), adding a group variable that is set as a factor:
-arrow_items <- cat_items_1 %>% dplyr::select(tidyselect::where(is.numeric)) %>% 
-                          dplyr::mutate(group = c(
-                                            "grad", "undergrad", "grad", "undergrad","grad", "undergrad", "undergrad", "grad", "undergrad"
-                                          ),
-                                        group = factor(group, levels = c("grad", "undergrad")))
+arrow_items <- cat_items_1 %>%
+  dplyr::select(tidyselect::where(is.numeric)) %>%
+  dplyr::mutate(
+    group = c(
+      "grad", "undergrad", "grad", "undergrad", "grad", "undergrad", "undergrad", "grad", "undergrad"
+    ),
+    group = factor(group, levels = c("grad", "undergrad"))
+  )
 # Set up the labels for the x-axis, this will match the numeric response in the data:
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 
 threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
 # Run the function with the first argument being the data frame of numeric items and factor group variable, second argument is the levels for the x-axis labels, and the third argument is the colors to pass as the  and the character vector of the factor levels:
-div_chart_1 <- TheMarkUSA::arrowChart(arrow_items, levels_min_ext, threeScale_theMark_colors)
+arrow_chart_1 <- TheMarkUSA::arrowChart(arrow_items, levels_min_ext, threeScale_theMark_colors)
 
-div_chart_1
+arrow_chart_1
 ```
 
 

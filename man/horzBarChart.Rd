@@ -2,12 +2,12 @@
 % Please edit documentation in R/horzBarChart.R
 \name{horzBarChart}
 \alias{horzBarChart}
-\title{Title}
+\title{Horizontal Bar Chart for The Mark USA, Inc.}
 \usage{
 horzBarChart(df, color_scale, width = NULL)
 }
 \arguments{
-\item{df}{a datafram that has been pre-processed with dataSumm(),}
+\item{df}{Required, a tibble or data frame that has been pre-processed with dataSumm(),}
 
 \item{color_scale}{a char vector of the colors for the scale items}
 
@@ -17,7 +17,7 @@ horzBarChart(df, color_scale, width = NULL)
 A ggplot object that plots the items into a stacked bar chart and can be exported.
 }
 \description{
-Title
+Horizontal Bar Chart for The Mark USA, Inc.
 }
 \examples{
 data <- dplyr::tibble(

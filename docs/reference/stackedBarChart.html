@@ -48,28 +48,54 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stackedBarChart</span><span class="op">(</span><span class="va">df</span>, <span class="va">set_5_levels</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stackedBarChart</span><span class="op">(</span></span>
+<span>  <span class="va">df</span>,</span>
+<span>  <span class="va">scale_labels</span>,</span>
+<span>  pre_post <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  percent_label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  question_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  question_labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  width <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>df</dt>
-<dd><p>A tibble/data frame of survey items that are categorical/character
+<dd><p>Required, A tibble/data frame of survey items that are categorical/character
 variables, in 5 point scales and pre-post, that will be inserted into a
 stacked bar chart with The Mark USA branding.</p></dd>
 
 
-<dt>set_5_levels</dt>
-<dd><p>character vector of 5 levels to set the scale for the
-plot</p></dd>
+<dt>scale_labels</dt>
+<dd><p>Required, a character vector of 5 levels to set the scale for the plot.</p></dd>
+
+
+<dt>pre_post</dt>
+<dd><p>Default is FALSE. If true, returns a pre-post stacked bar chart.</p></dd>
+
+
+<dt>percent_label</dt>
+<dd><p>Default is TRUE. If FALSE, labels the bars with the number of answers per response.</p></dd>
+
+
+<dt>question_order</dt>
+<dd><p>Takes in a character vector to sort the order of the questions. Default is NULL.</p></dd>
+
+
+<dt>question_labels</dt>
+<dd><p>Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.</p></dd>
+
+
+<dt>width</dt>
+<dd><p>Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A ggplot object that plots the items into a stacked bar chart and can
-be exported.</p>
+<p>A ggplot object that plots the items into a stacked bar chart and can be exported.</p>
     </div>
 
     <div class="section level2">
@@ -86,17 +112,35 @@ be exported.</p>
 <span class="r-in"><span>  Pre_Research <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  Post_Research <span class="op">=</span> <span class="va">Pre_Research</span> <span class="op">+</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span>, <span class="st">"Slight"</span>, <span class="st">"Moderate"</span>, <span class="st">"Good"</span>, <span class="st">"Extensive"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">items_single</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  Source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  Publish <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  Write <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  Research <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span>, <span class="st">"Slight"</span>, <span class="st">"Moderate"</span>, <span class="st">"Good"</span>, <span class="st">"Extensive"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Recode the numeric to factor variables using the levels from levels_min_ext:</span></span></span>
-<span class="r-in"><span><span class="va">cat_items</span><span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="recodeFiveCat.html">recodeFiveCat</a></span><span class="op">(</span><span class="va">items</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="recodeFiveCat.html">recodeFiveCat</a></span><span class="op">(</span><span class="va">items</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cat_items_single</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="recodeFiveCat.html">recodeFiveCat</a></span><span class="op">(</span><span class="va">items_single</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Select the factor variables:</span></span></span>
 <span class="r-in"><span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="va">cat_items</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cat_items_single</span> <span class="op">&lt;-</span> <span class="va">cat_items_single</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Pass the factor variables and the levels to 'stackedBarChart()':</span></span></span>
-<span class="r-in"><span><span class="fu">stackedBarChart</span><span class="op">(</span><span class="va">cat_items</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">stackedBarChart</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  df <span class="op">=</span> <span class="va">cat_items</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>,</span></span>
+<span class="r-in"><span>  question_order <span class="op">=</span> <span class="cn">NULL</span>, question_labels <span class="op">=</span> <span class="cn">NULL</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="stackedBarChart-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu">stackedBarChart</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  df <span class="op">=</span> <span class="va">cat_items_single</span>, pre_post <span class="op">=</span> <span class="cn">FALSE</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>,</span></span>
+<span class="r-in"><span>  question_order <span class="op">=</span> <span class="cn">NULL</span>, question_labels <span class="op">=</span> <span class="cn">NULL</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="stackedBarChart-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

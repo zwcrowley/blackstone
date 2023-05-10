@@ -60,6 +60,8 @@
 #'   question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
 #' )
 stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = TRUE, question_order = NULL, question_labels = NULL, width = NULL) {
+  extrafont::loadfonts(quiet = TRUE)
+
   . <- NULL
 
   fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
