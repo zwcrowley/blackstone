@@ -5,7 +5,7 @@
 #'
 #' @param df A tibble or data frame of numeric data that has a categorical group
 #'   variable to split up the data, e.g. role, gender, education level, etc.
-#' @param set_levels character vector of labels for the x-axis, usually a
+#' @param scale_labels character vector of labels for the x-axis, usually a
 #'   response to a set of likert items, needs to match the number of response
 #'   items in the data.
 #' @param colors_group character vector of hex codes for colors to associate
@@ -41,7 +41,7 @@
 #' threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 #' arrowChart(items, levels_min_ext, threeScale_theMark_colors)
 #' @export
-arrowChart <- function(df, set_levels, colors_group) {
+arrowChart <- function(df, scale_labels, colors_group) {
   extrafont::loadfonts(quiet = TRUE)
 
   N_df <- {{ df }} %>% nrow()
@@ -97,7 +97,7 @@ arrowChart <- function(df, set_levels, colors_group) {
     ) +
     ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
     ggplot2::scale_color_manual(values = colors_group, labels = function(group) stringr::str_to_title(group)) +
-    ggplot2::scale_x_continuous(limits = c(1, 5), labels = set_levels) +
+    ggplot2::scale_x_continuous(limits = c(1, 5), labels = scale_labels) +
     ggplot2::labs(tag = paste("N=", N_df, sep = ""), color = NULL) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
     ggplot2::theme(

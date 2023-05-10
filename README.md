@@ -22,15 +22,24 @@ You can install the development version of TheMarkUSA from
 devtools::install_github("zcrowleyTheMark/TheMarkUSA")
 ```
 
-## Example
+## Examples
 
 A common problem with the current workflow at The Mark is converting
 numeric data to factor variables, especially 5 item likert scales:
-recodeFiveCat is a helper function to recode numeric data with 5 levels
-into factor variables with the desired levels.
+
+### `recodeFiveCat()`
+
+`recodeFiveCat()` is a helper function to recode numeric data with 5
+levels into factor variables with the desired levels.
+
+`recodeFiveCat()` takes in two arguments: **df** Required, a tibble or
+data frame of survey items that are numeric variables, in 5 point
+scales, can be a single time point or pre-post. **scale_labels**
+Required, a character vector of labels of the desired 5 point scale
+levels. The function will use this vector to convert the numeric
+variables into factor variables, must be arranged low to high.
 
 ``` r
-library(TheMarkUSA)
 items <- dplyr::tibble(
   Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
@@ -43,9 +52,9 @@ items <- dplyr::tibble(
   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   Post_Research = Pre_Research + 1
 )
-
+# scale_labels
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-cat_items_1 <- recodeFiveCat(items, levels_min_ext)
+cat_items_1 <- TheMarkUSA::recodeFiveCat(items, levels_min_ext)
 cat_items_1
 #> # A tibble: 9 × 20
 #>   Pre_Organization Post_Organization Pre_Source Post_Source Pre_Publish
@@ -70,57 +79,168 @@ The user simply passes a data frame of all the items to be recoded with
 a character vector of the 5 scale likert levels in the corresponding
 order as the numeric data.
 
-## Data Visualizitons Examples
+## Data Visualizations Examples
 
-TheMarkUSA currently contains three helper functions for generating
-visualizations: stackedBarChart, divBarChart, and arrowChart.
+**TheMarkUSA** currently contains three helper functions for generating
+visualizations: `stackedBarChart()`, `divBarChart()`, and
+`arrowChart()`.
 
-stackedBarChart and divBarChart both take in two arguments: **df** A
-tibble or data frame of survey items that are categorical/character
-variables, in 5 point scales and pre-post, that will be inserted into a
-stacked bar chart with The Mark USA branding. **set_5\_levels**
+### `stackedBarChart()`
+
+`stackedBarChart()` creates a fully stacked bar chart that has the
+branding/style of The Mark USA, INC.
+
+`stackedBarChart()` takes up to 5 arguments, first 2 are required:
+**df** Required, A tibble or data frame of survey items that are
+categorical/factor variables, in 5 point scales, can be a single time
+point or pre-post, that will be inserted into a stacked bar chart with
+The Mark USA branding.
+
+**scale_labels** Required, a character vector of 5 levels to set the
+scale for the plot.
+
+**pre_post** Default is FALSE. If true, returns a pre-post stacked bar
+chart, arranged by question.
+
+**percent_label** Default is TRUE. Labels the bars based on percentages.
+If FALSE, labels the bars with the number of answers per response.
+
+**question_order** Takes in a character vector to sort the order of the
+questions. Default is NULL.
+
+**question_labels** Takes in a character vector that will label the
+questions. Needs to be in same order as question_order. Default is NULL.
+
+**width** Input a value between 0.3 and 0.8 to set the thickness of the
+bars. Default is NULL.
+
+#### Pre-Post Data Example for `stackedBarChart()`
+
+``` r
+# Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):
+cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
+
+# Run the function with the categorical items and the character vector of the factor levels:
+stacked_chart_pre_post <- TheMarkUSA::stackedBarChart(cat_items_plot, levels_min_ext, pre_post = TRUE)
+
+stacked_chart_pre_post
+#> Warning in grid.Call(C_stringMetric, as.graphicsAnnot(x$label)): font family
+#> not found in Windows font database
+
+#> Warning in grid.Call(C_stringMetric, as.graphicsAnnot(x$label)): font family
+#> not found in Windows font database
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+#> Warning in grid.Call(C_stringMetric, as.graphicsAnnot(x$label)): font family
+#> not found in Windows font database
+#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+```
+
+<img src="man/figures/README-stackedBarChart Pre Post-1.png" width="100%" />
+\#### Single Time Point Data with Percentage labels Example for
+`stackedBarChart()`
+
+``` r
+# Single time point data:
+items_single <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+)
+# scale_labels
+levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+# Recode the numeric to factor variables using the levels from levels_min_ext:
+cat_items_single <- TheMarkUSA::recodeFiveCat(items_single, levels_min_ext)
+# Select the factor variables:
+cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
+# Pass the factor variables and the levels to 'stackedBarChart()':
+stacked_chart_single <- TheMarkUSA::stackedBarChart(
+  df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext, percent_label = FALSE, width = NULL
+)
+stacked_chart_single
+#> Warning in grid.Call(C_stringMetric, as.graphicsAnnot(x$label)): font family
+#> not found in Windows font database
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+#> family not found in Windows font database
+```
+
+<img src="man/figures/README-stackedBarChart Single-1.png" width="100%" />
+
+### `divBarChart()`
+
+`divBarChart()` creates a diverging and fully stacked bar chart that has
+the branding and style of The Mark USA, INC.
+
+`divBarChart()` takes in two arguments: **df** Required, A tibble or
+data frame of survey items that are categorical/factor variables, in 5
+point scales, must be pre-post data, that will be inserted into a
+stacked bar chart with The Mark USA branding. **scale_labels** Required,
 character vector of levels of the factor variables to be added to the
 plot, this will set the scale for the x-axis of the bar chart and its
 labels.
 
-### stackedBarChart
-
-stackedBarChart creates a fully stacked bar chart that has the
-branding/style of The Mark USA, INC.
-
 ``` r
 # Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):
 cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
 # Run the function with the categorical items and the character vector of the factor levels:
-stacked_chart_1 <- stackedBarChart(cat_items_plot, levels_min_ext)
-
-stacked_chart_1
-```
-
-<img src="man/figures/README-stackedBarChart-1.png" width="100%" />
-
-### divBarChart
-
-divBarChart creates a diverging and fully stacked bar chart that has the
-branding and style of The Mark USA, INC.
-
-``` r
-# Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):
-cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
-# Run the function with the categorical items and the character vector of the factor levels:
-div_chart_1 <- divBarChart(cat_items_plot, levels_min_ext)
+div_chart_1 <- TheMarkUSA::divBarChart(cat_items_plot, levels_min_ext)
 
 div_chart_1
 ```
 
 <img src="man/figures/README-divBarChart-1.png" width="100%" />
 
-### arrowChart
+### `arrowChart()`
 
-arrowChart take in three arguments: **df** A tibble/data frame of survey
-items that are categorical/character variables, in 5 point scales and
+`arrowChart()` take in three arguments: **df** A tibble/data frame of
+survey items that are numeric variables, must be in 5 point scales and
 pre-post, that will be inserted into a stacked bar chart with The Mark
-USA branding. **set_levels** character vector to set up the labels for
+USA branding. **scale_labels** character vector to set up the labels for
 the x-axis, this will match the numeric response in the data.
 **color_groups** character vector of hex codes for colors to associate
 to each group to, e.g. this data has two groups and this function
@@ -130,11 +250,11 @@ be in the order you want them associated to the group based on the
 factor levels for the group variable, last color will be the overall
 group of “all”.
 
-arrowChart creates an arrow chart from numeric data based on the
+`arrowChart()` creates an arrow chart from numeric data based on the
 pre-post averages for each group and the overall group for the whole
-data set with the branding and style of The Mark USA, INC. arrowChart
-sorts the chart with the highest post scores on the top and lowest on
-the bottom.
+data set with the branding and style of The Mark USA, INC.
+`arrowChart()` sorts the chart with the highest post scores on the top
+and lowest on the bottom.
 
 ``` r
 # Select only the numeric variables from the df in the last chunk (cat_items_1) using tidy select(contains("cat")), adding a group variable that is set as a factor:
@@ -149,7 +269,7 @@ levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
 # Run the function with the first argument being the data frame of numeric items and factor group variable, second argument is the levels for the x-axis labels, and the third argument is the colors to pass as the  and the character vector of the factor levels:
-div_chart_1 <- arrowChart(arrow_items, levels_min_ext, threeScale_theMark_colors)
+div_chart_1 <- TheMarkUSA::arrowChart(arrow_items, levels_min_ext, threeScale_theMark_colors)
 
 div_chart_1
 ```

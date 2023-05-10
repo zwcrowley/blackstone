@@ -4,18 +4,18 @@
 \alias{recodeFiveCat}
 \title{Recode Numeric Variables to 5 Category Factors}
 \usage{
-recodeFiveCat(df, set_5_levels)
+recodeFiveCat(df, scale_labels)
 }
 \arguments{
 \item{df}{A tibble/data frame of survey items that are numeric
 variables, in 5 point scales and pre-post, that need to be converted into factor variables.}
 
-\item{set_5_levels}{character vector of 5 levels to set the numeric variables
+\item{scale_labels}{character vector of 5 levels to set the numeric variables
 to factor/categorical values}
 }
 \value{
 new tibble/data frame with the original numeric variables along with
-new variables mapped to categorical values from set_5_levels character
+new variables mapped to categorical values from scale_labels character
 vector.
 }
 \description{

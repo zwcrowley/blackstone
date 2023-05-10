@@ -4,14 +4,14 @@
 \alias{divBarChart}
 \title{Diverging and Stacked Bar Chart for The Mark USA, Inc.}
 \usage{
-divBarChart(df, set_5_levels)
+divBarChart(df, scale_labels)
 }
 \arguments{
 \item{df}{A tibble/data frame of survey items that are categorical/character
 variables, in 5 point scales and pre-post, that will be inserted into a
 stacked bar chart with The Mark USA branding.}
 
-\item{set_5_levels}{character vector of 5 levels to set the scale for the
+\item{scale_labels}{character vector of 5 levels to set the scale for the
 plot}
 }
 \value{

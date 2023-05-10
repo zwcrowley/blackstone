@@ -3,11 +3,11 @@
 #' @param df A tibble/data frame of survey items that are numeric
 #'   variables, in 5 point scales and pre-post, that need to be converted into factor variables.
 #'
-#' @param set_5_levels character vector of 5 levels to set the numeric variables
+#' @param scale_labels character vector of 5 levels to set the numeric variables
 #'   to factor/categorical values
 #'
 #' @return new tibble/data frame with the original numeric variables along with
-#'   new variables mapped to categorical values from set_5_levels character
+#'   new variables mapped to categorical values from scale_labels character
 #'   vector.
 #' @export
 #'
@@ -26,13 +26,13 @@
 #' )
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #' recodeFiveCat(items, levels_min_ext)
-recodeFiveCat <- function(df, set_5_levels) {
+recodeFiveCat <- function(df, scale_labels) {
   new_df <- df %>% dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ factor(dplyr::case_match(
-    ., 1 ~ set_5_levels[1],
-    2 ~ set_5_levels[2],
-    3 ~ set_5_levels[3],
-    4 ~ set_5_levels[4],
-    5 ~ set_5_levels[5]
-  ), levels = set_5_levels), .names = "cat_{.col}"))
+    ., 1 ~ scale_labels[1],
+    2 ~ scale_labels[2],
+    3 ~ scale_labels[3],
+    4 ~ scale_labels[4],
+    5 ~ scale_labels[5]
+  ), levels = scale_labels), .names = "cat_{.col}"))
   return(new_df)
 }

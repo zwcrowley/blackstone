@@ -4,7 +4,7 @@
 #'   variables, in 5 point scales and pre-post, that will be inserted into a
 #'   stacked bar chart with The Mark USA branding.
 #'
-#' @param set_5_levels character vector of 5 levels to set the scale for the
+#' @param scale_labels character vector of 5 levels to set the scale for the
 #'   plot
 #'
 #' @return A ggplot object that plots the items into a diverging and stacked bar
@@ -34,7 +34,7 @@
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
 #'
 #' divBarChart(cat_items, levels_min_ext)
-divBarChart <- function(df, set_5_levels) {
+divBarChart <- function(df, scale_labels) {
   extrafont::loadfonts(quiet = TRUE)
 
   fiveScale_theMark_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
@@ -43,7 +43,7 @@ divBarChart <- function(df, set_5_levels) {
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
     dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
     tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
-    dplyr::mutate(response = factor(.data$response, levels = set_5_levels)) %>%
+    dplyr::mutate(response = factor(.data$response, levels = scale_labels)) %>%
     dplyr::group_by(.data$question, .data$timing, .data$response) %>%
     dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
     dplyr::ungroup() %>%
@@ -102,7 +102,7 @@ divBarChart <- function(df, set_5_levels) {
     ggplot2::scale_color_manual(values = c("black", "white")) +
     ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
     ggplot2::scale_fill_manual(
-      breaks = set_5_levels, values = fiveScale_theMark_colors, drop = FALSE,
+      breaks = scale_labels, values = fiveScale_theMark_colors, drop = FALSE,
       labels = function(response) stringr::str_wrap(response, width = 10)
     ) +
     ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(

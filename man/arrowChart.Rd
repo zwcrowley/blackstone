@@ -4,13 +4,13 @@
 \alias{arrowChart}
 \title{Arrow Chart for The Mark USA, Inc.}
 \usage{
-arrowChart(df, set_levels, colors_group)
+arrowChart(df, scale_labels, colors_group)
 }
 \arguments{
 \item{df}{A tibble or data frame of numeric data that has a categorical group
 variable to split up the data, e.g. role, gender, education level, etc.}
 
-\item{set_levels}{character vector of labels for the x-axis, usually a
+\item{scale_labels}{character vector of labels for the x-axis, usually a
 response to a set of likert items, needs to match the number of response
 items in the data.}
 
