@@ -4,20 +4,34 @@
 \alias{divBarChart}
 \title{Diverging and Stacked Bar Chart for The Mark USA, Inc.}
 \usage{
-divBarChart(df, scale_labels)
+divBarChart(
+  df,
+  scale_labels,
+  percent_label = TRUE,
+  question_order = NULL,
+  question_labels = NULL,
+  width = NULL
+)
 }
 \arguments{
 \item{df}{A tibble/data frame of survey items that are categorical/character
 variables, in 5 point scales and pre-post, that will be inserted into a
-stacked bar chart with The Mark USA branding.}
+diverging bar chart with The Mark USA branding.}
 
-\item{scale_labels}{character vector of 5 levels to set the scale for the
-plot}
+\item{scale_labels}{Required, a character vector of 5 levels to set the scale for the plot.}
+
+\item{percent_label}{Default is TRUE. If FALSE, labels the bars with the number of answers per response.}
+
+\item{question_order}{Takes in a character vector to sort the order of the questions. Default is NULL.}
+
+\item{question_labels}{Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.}
+
+\item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
 \value{
 A ggplot object that plots the items into a diverging and stacked bar
 chart as a ggplot object. The chart is sorted by the highest positive
-valence, post items at the top by the post.
+valence post items at the top, or by user supplied question order.
 }
 \description{
 Diverging and Stacked Bar Chart for The Mark USA, Inc.

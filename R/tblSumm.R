@@ -34,7 +34,7 @@
 tblSumm <- function(df, totals = TRUE) {
   . <- NULL
 
-  if (totals == TRUE) {
+  if (isTRUE(totals)) {
     tbl <- {{ df }} %>%
       dplyr::select(.data$response, .data$percent_answers_label, .data$n_answers) %>%
       janitor::adorn_totals("row") %>%

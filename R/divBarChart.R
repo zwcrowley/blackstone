@@ -2,14 +2,21 @@
 #'
 #' @param df A tibble/data frame of survey items that are categorical/character
 #'   variables, in 5 point scales and pre-post, that will be inserted into a
-#'   stacked bar chart with The Mark USA branding.
+#'   diverging bar chart with The Mark USA branding.
 #'
-#' @param scale_labels character vector of 5 levels to set the scale for the
-#'   plot
+#' @param scale_labels Required, a character vector of 5 levels to set the scale for the plot.
+#'
+#' @param percent_label Default is TRUE. If FALSE, labels the bars with the number of answers per response.
+#'
+#' @param question_order Takes in a character vector to sort the order of the questions. Default is NULL.
+#'
+#' @param question_labels Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.
+#'
+#' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'
 #' @return A ggplot object that plots the items into a diverging and stacked bar
 #'   chart as a ggplot object. The chart is sorted by the highest positive
-#'   valence, post items at the top by the post.
+#'   valence post items at the top, or by user supplied question order.
 #' @export
 #'
 #' @examples
@@ -34,10 +41,12 @@
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
 #'
 #' divBarChart(cat_items, levels_min_ext)
-divBarChart <- function(df, scale_labels) {
+divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order = NULL, question_labels = NULL, width = NULL) {
   extrafont::loadfonts(quiet = TRUE)
 
-  fiveScale_theMark_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+  . <- NULL
+
+  fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
 
   new_df <- {{ df }} %>%
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
@@ -57,9 +66,16 @@ divBarChart <- function(df, scale_labels) {
       ),
       percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
       label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-      pos_valence_post = dplyr::case_when(
-        .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ n_answers,
-        .data$response == levels(.data$response)[5] & timing == "Post" ~ n_answers,
+      top_cat = dplyr::case_when(
+        .data$response == levels(.data$response)[5] & .data$timing == "Post" ~ percent_answers,
+        TRUE ~ 0
+      ),
+      sec_top_cat = dplyr::case_when(
+        .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ percent_answers,
+        TRUE ~ 0
+      ),
+      third_top_cat = dplyr::case_when(
+        .data$response == levels(.data$response)[3] & .data$timing == "Post" ~ percent_answers,
         TRUE ~ 0
       ),
       response = forcats::fct_relevel(.data$response, c(
@@ -71,38 +87,56 @@ divBarChart <- function(df, scale_labels) {
     dplyr::ungroup() %>%
     dplyr::arrange(.data$response)
 
-  question_order <- new_df %>%
-    dplyr::group_by(.data$question, .data$timing) %>%
-    dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
-    dplyr::arrange(dplyr::desc(.data$n_pos_valence_post)) %>%
-    dplyr::ungroup() %>%
-    dplyr::filter(.data$timing == "Post") %>%
-    dplyr::select("question") %>%
-    dplyr::mutate(question = as.character(.data$question)) %>%
-    unlist()
 
-  new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
+  if (is.null(question_order)) {
+    question_order <- new_df %>%
+      dplyr::filter(.data$timing == "Post") %>%
+      dplyr::arrange(dplyr::desc(.data$response), dplyr::desc(.data$top_cat), dplyr::desc(.data$sec_top_cat), dplyr::desc(.data$third_top_cat)) %>%
+      dplyr::select("question") %>%
+      unique() %>%
+      dplyr::mutate(question = as.character(.data$question)) %>%
+      unlist()
+  }
+
+  if (is.null(question_labels)) {
+    new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order))
+  } else {
+    question_labels <- question_labels %>% stringr::str_wrap(., width = 45)
+    new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order, labels = question_labels))
+  }
 
   N_df <- {{ df }} %>% nrow()
 
-  width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-    dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
-  )
+  if (is.null(width)) {
+    width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
+                            dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+    )
+  }
 
-  diverging_bar_chart <- new_df %>%
-    ggplot2::ggplot(ggplot2::aes(
-      x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
-      label = .data$n_answers, group = .data$question
-    )) +
+  if (isTRUE(percent_label)) {
+    diverging_bar_chart <- new_df %>%
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
+        label = .data$percent_answers_label, group = .data$question
+      ))
+  } else{
+    diverging_bar_chart <- new_df %>%
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
+        label = .data$n_answers, group = .data$question
+      ))
+  }
+
+  diverging_bar_chart <- diverging_bar_chart +
     ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE)) +
     ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-      family = "Gill Sans MT", fontface = "bold",
-      position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
+                       family = "Gill Sans MT", fontface = "bold",
+                       position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
     ) +
     ggplot2::scale_color_manual(values = c("black", "white")) +
     ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
     ggplot2::scale_fill_manual(
-      breaks = scale_labels, values = fiveScale_theMark_colors, drop = FALSE,
+      breaks = scale_labels, values = fill_colors, drop = FALSE,
       labels = function(response) stringr::str_wrap(response, width = 10)
     ) +
     ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(
@@ -118,7 +152,7 @@ divBarChart <- function(df, scale_labels) {
         margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
       ),
       strip.text.y.left = ggplot2::element_text(
-        angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
+        angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT", face = "bold",
         margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
       ),
       plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),

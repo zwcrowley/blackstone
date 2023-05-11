@@ -55,7 +55,9 @@ dataSumm <- function(var, na.rm = TRUE) {
       dplyr::ungroup() %>%
       dplyr::mutate(percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1)) %>%
       dplyr::arrange(dplyr::desc(.data$n_answers)) %>%
-      dplyr::mutate(response = forcats::fct_inorder(.data$response))
+      dplyr::mutate(response = addNA(.data$response),
+                    response = forcats::fct_inorder(.data$response),
+                    response = forcats::fct_relevel(.data$response, NA, after = Inf))
   }
 
   return(clean_df)

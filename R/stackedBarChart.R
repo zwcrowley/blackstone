@@ -66,7 +66,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
 
   fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
 
-  if (pre_post == TRUE) {
+  if (isTRUE(pre_post)) {
     new_df <- {{ df }} %>%
       tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
       dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
@@ -122,7 +122,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
       )
     }
 
-    if (percent_label == TRUE) {
+    if (isTRUE(percent_label)) {
       stacked_bar_chart <- new_df %>% ggplot2::ggplot(ggplot2::aes(
         x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
         label = .data$percent_answers_label, group = .data$question
@@ -219,7 +219,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
       )
     }
 
-    if (percent_label == TRUE) {
+    if (isTRUE(percent_label)) {
       stacked_bar_chart <- new_df %>% ggplot2::ggplot(ggplot2::aes(
         x = .data$percent_answers, y = forcats::fct_rev(.data$question), fill = .data$response,
         label = .data$percent_answers_label, group = .data$question
