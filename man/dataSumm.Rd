@@ -2,12 +2,14 @@
 % Please edit documentation in R/dataSumm.R
 \name{dataSumm}
 \alias{dataSumm}
-\title{Creates a summary table of counts and percentages}
+\title{Creates a data frame that is a summary table of counts and percentages}
 \usage{
-dataSumm(var)
+dataSumm(var, na.rm = TRUE)
 }
 \arguments{
 \item{var}{A column selected from a tibble/data frame that is a categorical/factor variable to that to be summarized into a table.}
+
+\item{na.rm}{Drops NA values. Defaults to TRUE.}
 }
 \value{
 a new tibble/data frame with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
@@ -15,7 +17,7 @@ Item is the name of the original item, Response is all of the categorical respon
 percent_answers is the percentage of each response and percent_answers_label is a character variable of percentage labelled with percent sign for use as a label.
 }
 \description{
-Creates a summary table of counts and percentages
+Creates a data frame that is a summary table of counts and percentages
 }
 \examples{
 data <- dplyr::tibble(
@@ -24,11 +26,16 @@ data <- dplyr::tibble(
     "Graduate student", "Postdoc", "Postdoc", "Faculty",
     "Faculty", "Graduate student", "Graduate student", "Postdoc",
     "Faculty", "Faculty", "Faculty", "Faculty", "Faculty", "Graduate student",
-    "Undergraduate student","Undergraduate student"
+    "Undergraduate student","Undergraduate student", "NA", "NA"
   )
 )
 
 data \%>\%
   dplyr::select(role) \%>\%
   dataSumm()
+
+# Includes NA values:
+data \%>\%
+  dplyr::select(role) \%>\%
+  dataSumm(na.rm = TRUE)
 }

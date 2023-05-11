@@ -5,9 +5,11 @@
 #'
 #' @param df A tibble or data frame of numeric data that has a categorical group
 #'   variable to split up the data, e.g. role, gender, education level, etc.
+#'
 #' @param scale_labels character vector of labels for the x-axis, usually a
 #'   response to a set of likert items, needs to match the number of response
 #'   items in the data.
+#'
 #' @param colors_group character vector of hex codes for colors to associate
 #'   each group to, e.g. this data has two groups and this function creates an
 #'   overall group so this function will need a colors_group char vector of
