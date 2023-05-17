@@ -32,13 +32,13 @@ horzBarChart <- function(df, scale_colors, width = NULL) {
 
     bar_chart <- {{ df }} %>% ggplot2::ggplot(ggplot2::aes(x = forcats::fct_rev(.data$response), y = .data$n_answers, label = .data$percent_answers_label)) +
         ggplot2::geom_col(ggplot2::aes(fill = .data$response), width = width, color = "black") +
-        ggplot2::scale_fill_manual(values = color_scale) +
+        ggplot2::scale_fill_manual(values = scale_colors) +
         ggplot2::geom_text(nudge_y = 0.8, fontface = "bold",size = 4) +
         ggplot2::coord_flip() + ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12)  +
         ggplot2::theme(legend.position = "none",
-              axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, color = "#767171",
+              axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, color = "black",
                                          margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")),
-              axis.text.x = ggplot2::element_text(angle = 0, hjust = 1, color = "black",
+              axis.text.x = ggplot2::element_text(angle = 0, hjust = 1, color = "#767171",
                                          margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")),
               plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"))
 

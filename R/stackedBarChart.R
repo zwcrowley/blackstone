@@ -79,30 +79,25 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         percent_answers = .data$n_answers / sum(.data$n_answers),
         percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
         label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-        top_cat = dplyr::case_when(
-          .data$response == levels(.data$response)[5] & .data$timing == "Post" ~ percent_answers,
-          TRUE ~ 0
-        ),
-        sec_top_cat = dplyr::case_when(
+        pos_valence_post = dplyr::case_when(
           .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ percent_answers,
-          TRUE ~ 0
-        ),
-        third_top_cat = dplyr::case_when(
-          .data$response == levels(.data$response)[3] & .data$timing == "Post" ~ percent_answers,
+          .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
           TRUE ~ 0
         ),
         response = forcats::fct_relevel(.data$response, scale_labels),
         timing = factor(.data$timing, levels = c("Pre", "Post"))
-      ) %>%
+        ) %>%
       dplyr::ungroup() %>%
       dplyr::arrange(.data$response)
 
     if (is.null(question_order)) {
       question_order <- new_df %>%
+        dplyr::group_by(.data$question, .data$timing) %>%
+        dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
+        dplyr::arrange(dplyr::desc(.data$n_pos_valence_post)) %>%
+        dplyr::ungroup() %>%
         dplyr::filter(.data$timing == "Post") %>%
-        dplyr::arrange(dplyr::desc(.data$response), dplyr::desc(.data$top_cat), dplyr::desc(.data$sec_top_cat), dplyr::desc(.data$third_top_cat)) %>%
         dplyr::select("question") %>%
-        unique() %>%
         dplyr::mutate(question = as.character(.data$question)) %>%
         tibble::deframe()
     }
@@ -182,26 +177,21 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
         percent_answers = .data$n_answers / sum(.data$n_answers),
         percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
-        top_cat = dplyr::case_when(
-          .data$response == levels(.data$response)[5] ~ percent_answers,
-          TRUE ~ 0
-        ),
-        sec_top_cat = dplyr::case_when(
+        pos_valence_post = dplyr::case_when(
           .data$response == levels(.data$response)[4] ~ percent_answers,
-          TRUE ~ 0
-        ),
-        third_top_cat = dplyr::case_when(
-          .data$response == levels(.data$response)[3] ~ percent_answers,
+          .data$response == levels(.data$response)[5] ~ percent_answers,
           TRUE ~ 0
         )
       ) %>%
       dplyr::ungroup()
 
     if (is.null(question_order)) {
-      question_order <- question_order <- new_df %>%
-        dplyr::arrange(dplyr::desc(.data$response), dplyr::desc(.data$top_cat), dplyr::desc(.data$sec_top_cat), dplyr::desc(.data$third_top_cat)) %>%
+      question_order <- new_df %>%
+        dplyr::group_by(.data$question) %>%
+        dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
+        dplyr::arrange(dplyr::desc(.data$n_pos_valence_post)) %>%
+        dplyr::ungroup() %>%
         dplyr::select("question") %>%
-        unique() %>%
         dplyr::mutate(question = as.character(.data$question)) %>%
         tibble::deframe()
     }

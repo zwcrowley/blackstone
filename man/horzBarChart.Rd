@@ -4,12 +4,12 @@
 \alias{horzBarChart}
 \title{Horizontal Bar Chart for The Mark USA, Inc.}
 \usage{
-horzBarChart(df, color_scale, width = NULL)
+horzBarChart(df, scale_colors, width = NULL)
 }
 \arguments{
-\item{df}{Required, a tibble or data frame that has been pre-processed with dataSumm(),}
+\item{df}{Required, a tibble or data frame that has been pre-processed with dataSumm().}
 
-\item{color_scale}{a char vector of the colors for the scale items}
+\item{scale_colors}{Required, a character vector of the colors for the scale items.}
 
 \item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
@@ -36,5 +36,5 @@ role_summ <- data \%>\%
 
 role_color <- c("#2C2C4F", "#4B9FA6", "#79AB53", "#767171")
 
-horzBarChart(role_summ, role_color, width = 0.6)
+horzBarChart(df = role_summ, scale_colors = role_color, width = 0.6)
 }
