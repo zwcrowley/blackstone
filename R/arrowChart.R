@@ -10,10 +10,10 @@
 #'   response to a set of likert items, needs to match the number of response
 #'   items in the data.
 #'
-#' @param colors_group character vector of hex codes for colors to associate
+#' @param group_colors character vector of hex codes for colors to associate
 #'   each group to, e.g. this data has two groups and this function creates an
-#'   overall group so this function will need a colors_group char vector of
-#'   three colors- colors need to be in the order you want them associated to
+#'   overall group so this function will need a 'group_colors' character vector of
+#'   three colors. 'group_colors' need to be in the order you want them associated to
 #'   the group based on the factor levels for the group variable, last color
 #'   will be the overall group of "all".
 #'
@@ -41,9 +41,9 @@
 #'   group = factor(group, levels = c("grad", "undergrad"))
 #' )
 #' threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
-#' arrowChart(items, levels_min_ext, threeScale_theMark_colors)
+#' arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors)
 #' @export
-arrowChart <- function(df, scale_labels, colors_group) {
+arrowChart <- function(df, scale_labels, group_colors) {
   extrafont::loadfonts(quiet = TRUE)
 
   N_df <- {{ df }} %>% nrow()
@@ -98,7 +98,7 @@ arrowChart <- function(df, scale_labels, colors_group) {
       family = "Gill Sans MT", size = 3.5
     ) +
     ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
-    ggplot2::scale_color_manual(values = colors_group, labels = function(group) stringr::str_to_title(group)) +
+    ggplot2::scale_color_manual(values = group_colors, labels = function(group) stringr::str_to_title(group)) +
     ggplot2::scale_x_continuous(limits = c(1, 5), labels = scale_labels) +
     ggplot2::labs(tag = paste("N=", N_df, sep = ""), color = NULL) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +

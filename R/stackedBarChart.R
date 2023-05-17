@@ -114,7 +114,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
       new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order, labels = question_labels))
     }
 
-    N_df <- {{ df }} %>% nrow()
+    # Get total n for each question, grouped by question and timing:
+    totals_new_df <- new_df %>% dplyr::group_by(.data$question, .data$timing) %>% dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
+      dplyr::ungroup()
+
+    # Get overall n if it is the same for each item:
+    N_df <- totals_new_df %>% dplyr::summarize(N = mean(.data$total)) %>% tibble::deframe()
 
     if (is.null(width)) {
       width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
@@ -212,10 +217,11 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
     }
 
     # Get total n for each question:
-    totals_new_df <- new_df %>% dplyr::group_by(.data$question) %>% dplyr::summarize(total = sum(.data$n_answers))
+    totals_new_df <- new_df %>% dplyr::group_by(.data$question) %>% dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
+      dplyr::ungroup()
 
     # Get overall n if it is the same for each item:
-    N_df <- totals_new_df %>% dplyr::summarize(N = mean(.data$total)) %>% unlist()
+    N_df <- totals_new_df %>% dplyr::summarize(N = mean(.data$total)) %>% tibble::deframe()
 
     if (is.null(width)) {
       width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,

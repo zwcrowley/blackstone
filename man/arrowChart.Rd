@@ -4,7 +4,7 @@
 \alias{arrowChart}
 \title{Arrow Chart for The Mark USA, Inc.}
 \usage{
-arrowChart(df, scale_labels, colors_group)
+arrowChart(df, scale_labels, group_colors)
 }
 \arguments{
 \item{df}{A tibble or data frame of numeric data that has a categorical group
@@ -14,10 +14,10 @@ variable to split up the data, e.g. role, gender, education level, etc.}
 response to a set of likert items, needs to match the number of response
 items in the data.}
 
-\item{colors_group}{character vector of hex codes for colors to associate
+\item{group_colors}{character vector of hex codes for colors to associate
 each group to, e.g. this data has two groups and this function creates an
-overall group so this function will need a colors_group char vector of
-three colors- colors need to be in the order you want them associated to
+overall group so this function will need a 'group_colors' character vector of
+three colors. 'group_colors' need to be in the order you want them associated to
 the group based on the factor levels for the group variable, last color
 will be the overall group of "all".}
 }
@@ -50,5 +50,5 @@ items <- items \%>\% dplyr::mutate(
   group = factor(group, levels = c("grad", "undergrad"))
 )
 threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
-arrowChart(items, levels_min_ext, threeScale_theMark_colors)
+arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors)
 }
