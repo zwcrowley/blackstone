@@ -250,5 +250,5 @@ arrow_chart_1
 
 <img src="man/figures/README-arrowChart-1.png" width="100%" />
 
-More functions and visuals will be added to TheMarkUSA as needed, be
+More functions and visuals will be added to `TheMarkUSA` as needed, be
 sure to reach out with any ideas for the package or issues!

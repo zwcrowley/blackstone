@@ -48,7 +48,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">divBarChart</span><span class="op">(</span><span class="va">df</span>, <span class="va">scale_labels</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">divBarChart</span><span class="op">(</span></span>
+<span>  <span class="va">df</span>,</span>
+<span>  <span class="va">scale_labels</span>,</span>
+<span>  percent_label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  question_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  question_labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  width <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -56,12 +63,27 @@
     <dl><dt>df</dt>
 <dd><p>A tibble/data frame of survey items that are categorical/character
 variables, in 5 point scales and pre-post, that will be inserted into a
-stacked bar chart with The Mark USA branding.</p></dd>
+diverging bar chart with The Mark USA branding.</p></dd>
 
 
 <dt>scale_labels</dt>
-<dd><p>character vector of 5 levels to set the scale for the
-plot</p></dd>
+<dd><p>Required, a character vector of 5 levels to set the scale for the plot.</p></dd>
+
+
+<dt>percent_label</dt>
+<dd><p>Default is TRUE. If FALSE, labels the bars with the number of answers per response.</p></dd>
+
+
+<dt>question_order</dt>
+<dd><p>Takes in a character vector to sort the order of the questions. Default is NULL.</p></dd>
+
+
+<dt>question_labels</dt>
+<dd><p>Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.</p></dd>
+
+
+<dt>width</dt>
+<dd><p>Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -70,7 +92,7 @@ plot</p></dd>
 
 <p>A ggplot object that plots the items into a diverging and stacked bar
 chart as a ggplot object. The chart is sorted by the highest positive
-valence, post items at the top by the post.</p>
+valence post items at the top, or by user supplied question order.</p>
     </div>
 
     <div class="section level2">

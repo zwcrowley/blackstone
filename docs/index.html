@@ -112,7 +112,7 @@
 <span><span class="op">)</span></span>
 <span><span class="co"># scale_labels</span></span>
 <span><span class="va">levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span>, <span class="st">"Slight"</span>, <span class="st">"Moderate"</span>, <span class="st">"Good"</span>, <span class="st">"Extensive"</span><span class="op">)</span></span>
-<span><span class="va">cat_items_1</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/recodeFiveCat.html">recodeFiveCat</a></span><span class="op">(</span><span class="va">items</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span>
+<span><span class="va">cat_items_1</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/recodeFiveCat.html">recodeFiveCat</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span><span class="op">)</span></span>
 <span><span class="va">cat_items_1</span></span>
 <span><span class="co">#&gt; # A tibble: 9 × 20</span></span>
 <span><span class="co">#&gt;   Pre_Organization Post_Organization Pre_Source Post_Source Pre_Publish</span></span>
@@ -152,27 +152,10 @@
 <p><strong>question_labels</strong> Takes in a character vector that will label the questions. Needs to be in same order as question_order. Default is NULL.</p>
 <p><strong>width</strong> Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.</p>
 <div class="section level4">
-<h4 id="pre-post-data-example-for-stackedbarchart">Pre-Post Data Example for <code>stackedBarChart()</code>
-<a class="anchor" aria-label="anchor" href="#pre-post-data-example-for-stackedbarchart"></a>
-</h4>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):</span></span>
-<span><span class="va">cat_items_plot</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run the function with the categorical items and the character vector of the factor levels:</span></span>
-<span><span class="va">stacked_chart_pre_post</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/stackedBarChart.html">stackedBarChart</a></span><span class="op">(</span></span>
-<span>  df <span class="op">=</span> <span class="va">cat_items_plot</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>,</span>
-<span>  pre_post <span class="op">=</span> <span class="cn">TRUE</span>, percent_label <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">stacked_chart_pre_post</span></span></code></pre></div>
-<p><img src="reference/figures/README-stackedBarChart_pre_post-1.png" width="100%"></p>
-</div>
-<div class="section level4">
 <h4 id="single-time-point-data-with-percentage-labels-example-for-stackedbarchart">Single Time Point Data with Percentage labels Example for <code>stackedBarChart()</code>
 <a class="anchor" aria-label="anchor" href="#single-time-point-data-with-percentage-labels-example-for-stackedbarchart"></a>
 </h4>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single time point data:</span></span>
 <span><span class="va">items_single</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -194,20 +177,44 @@
 <span><span class="va">stacked_chart_single</span></span></code></pre></div>
 <p><img src="reference/figures/README-stackedBarChart_single-1.png" width="100%"></p>
 </div>
+<div class="section level4">
+<h4 id="pre-post-data-example-for-stackedbarchart">Pre-Post Data Example for <code>stackedBarChart()</code>
+<a class="anchor" aria-label="anchor" href="#pre-post-data-example-for-stackedbarchart"></a>
+</h4>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Select only the categorical/factor vars from the df in the from the oriinal recodeFiveCat() in the first chunk (cat_items_1) using select(tidyselect::where(is.factor):</span></span>
+<span><span class="va">cat_items_plot</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run the function with the categorical items and the character vector of the factor levels:</span></span>
+<span><span class="va">stacked_chart_pre_post</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/stackedBarChart.html">stackedBarChart</a></span><span class="op">(</span></span>
+<span>  df <span class="op">=</span> <span class="va">cat_items_plot</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>,</span>
+<span>  pre_post <span class="op">=</span> <span class="cn">TRUE</span>, percent_label <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">stacked_chart_pre_post</span></span></code></pre></div>
+<p><img src="reference/figures/README-stackedBarChart_pre_post-1.png" width="100%"></p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="divbarchart">
 <code>divBarChart()</code><a class="anchor" aria-label="anchor" href="#divbarchart"></a>
 </h3>
 <p><code><a href="reference/divBarChart.html">divBarChart()</a></code> creates a diverging and fully stacked bar chart that has the branding and style of The Mark USA, Inc.</p>
-<p><code><a href="reference/divBarChart.html">divBarChart()</a></code> takes in two arguments:</p>
+<p><code><a href="reference/divBarChart.html">divBarChart()</a></code> takes in up to six arguments, first two are required:</p>
 <p><strong>df</strong> Required, A tibble or data frame of survey items that are categorical/factor variables, in 5 point scales, must be pre-post data, that will be inserted into a stacked bar chart with The Mark USA branding.</p>
 <p><strong>scale_labels</strong> Required, character vector of levels of the factor variables to be added to the plot, this will set the scale for the x-axis of the bar chart and its labels.</p>
+<p><strong>percent_label</strong> Default is TRUE. Labels the bars based on percentages. If FALSE, labels the bars with the number of answers per response.</p>
+<p><strong>question_order</strong> A character vector to sort the order of the questions. Default is NULL.</p>
+<p><strong>question_labels</strong> A character vector that will label the questions. Needs to be in same order as question_order. Default is NULL.</p>
+<p><strong>width</strong> Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):</span></span>
 <span><span class="va">cat_items_plot</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># Run the function with the categorical items and the character vector of the factor levels:</span></span>
-<span><span class="va">div_chart_1</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/divBarChart.html">divBarChart</a></span><span class="op">(</span><span class="va">cat_items_plot</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span>
+<span><span class="va">div_chart_1</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/divBarChart.html">divBarChart</a></span><span class="op">(</span></span>
+<span>  df <span class="op">=</span> <span class="va">cat_items_plot</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>,</span>
+<span>  percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="fl">0.7</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">div_chart_1</span></span></code></pre></div>
 <p><img src="reference/figures/README-divBarChart-1.png" width="100%"></p>
@@ -219,7 +226,7 @@
 <p><code><a href="reference/arrowChart.html">arrowChart()</a></code> take in three arguments:</p>
 <p><strong>df</strong> A tibble/data frame of survey items that are numeric variables, must be in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.</p>
 <p><strong>scale_labels</strong> character vector to set up the labels for the x-axis, this will match the numeric response in the data.</p>
-<p><strong>color_groups</strong> character vector of hex codes for colors to associate to each group to, e.g. this data has two groups and this function creates an overall group so the user needs to pass the function in the colors_group argument a character vector of three colors- colors need to be in the order you want them associated to the group based on the factor levels for the group variable, last color will be the overall group of “all”.</p>
+<p><strong>group_colors</strong> character vector of hex codes for colors to associate to each group to, e.g. this data has two groups and this function creates an overall group so the user needs to pass the function in the group_colors argument a character vector of three colors- colors need to be in the order you want them associated to the group based on the factor levels for the group variable, last color will be the overall group of “all”.</p>
 <p><code><a href="reference/arrowChart.html">arrowChart()</a></code> creates an arrow chart from numeric data based on the pre-post averages for each group and the overall group for the whole data set with the branding and style of The Mark USA, Inc. <code><a href="reference/arrowChart.html">arrowChart()</a></code> sorts the chart with the highest post scores on the top and lowest on the bottom.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the numeric variables from the df in the last chunk (cat_items_1) using tidy select(contains("cat")), adding a group variable that is set as a factor:</span></span>
@@ -237,11 +244,11 @@
 <span><span class="va">threeScale_theMark_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#79AB53"</span>, <span class="st">"#4B9FA6"</span>, <span class="st">"#2C2C4F"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Run the function with the first argument being the data frame of numeric items and factor group variable, second argument is the levels for the x-axis labels, and the third argument is the colors to pass as the  and the character vector of the factor levels:</span></span>
-<span><span class="va">arrow_chart_1</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span><span class="va">arrow_items</span>, <span class="va">levels_min_ext</span>, <span class="va">threeScale_theMark_colors</span><span class="op">)</span></span>
+<span><span class="va">arrow_chart_1</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">threeScale_theMark_colors</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">arrow_chart_1</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChart-1.png" width="100%"></p>
-<p>More functions and visuals will be added to TheMarkUSA as needed, be sure to reach out with any ideas for the package or issues!</p>
+<p>More functions and visuals will be added to <code>TheMarkUSA</code> as needed, be sure to reach out with any ideas for the package or issues!</p>
 </div>
 </div>
 </div>

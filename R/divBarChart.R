@@ -66,16 +66,9 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
       ),
       percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
       label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-      top_cat = dplyr::case_when(
-        .data$response == levels(.data$response)[5] & .data$timing == "Post" ~ percent_answers,
-        TRUE ~ 0
-      ),
-      sec_top_cat = dplyr::case_when(
-        .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ percent_answers,
-        TRUE ~ 0
-      ),
-      third_top_cat = dplyr::case_when(
-        .data$response == levels(.data$response)[3] & .data$timing == "Post" ~ percent_answers,
+      pos_valence_post = dplyr::case_when(
+        .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ n_answers,
+        .data$response == levels(.data$response)[5] & .data$timing == "Post" ~ n_answers,
         TRUE ~ 0
       ),
       response = forcats::fct_relevel(.data$response, c(
@@ -87,15 +80,17 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
     dplyr::ungroup() %>%
     dplyr::arrange(.data$response)
 
-
+  # Sorts question order by the highest sum of the top two response categories (pos_valence_post) from post:
   if (is.null(question_order)) {
     question_order <- new_df %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
+      dplyr::arrange(dplyr::desc(.data$n_pos_valence_post)) %>%
+      dplyr::ungroup() %>%
       dplyr::filter(.data$timing == "Post") %>%
-      dplyr::arrange(dplyr::desc(.data$response), dplyr::desc(.data$top_cat), dplyr::desc(.data$sec_top_cat), dplyr::desc(.data$third_top_cat)) %>%
       dplyr::select("question") %>%
-      unique() %>%
       dplyr::mutate(question = as.character(.data$question)) %>%
-      unlist()
+      tibble::deframe()
   }
 
   if (is.null(question_labels)) {
@@ -157,7 +152,7 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
         margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
       ),
       strip.text.y.left = ggplot2::element_text(
-        angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT", face = "bold",
+        angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
         margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
       ),
       plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
@@ -166,3 +161,4 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
 
   return(diverging_bar_chart)
 }
+
