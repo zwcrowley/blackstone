@@ -6,15 +6,15 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of TheMarkUSA is to make data cleaning and the creation of
+The goal of `TheMarkUSA` is to make data cleaning and the creation of
 visualizations easier and faster for The Mark USA, Inc. The functions in
-TheMarkUSA create visuals with The Mark USA branding and helper
+`TheMarkUSA` create visuals with The Mark USA branding and helper
 functions for common data cleaning and manipulation tasks for use for
 everyone at The Mark USA, Inc.
 
 ## Installation
 
-You can install the development version of TheMarkUSA from
+You can install the development version of `TheMarkUSA` from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -22,10 +22,14 @@ You can install the development version of TheMarkUSA from
 devtools::install_github("zcrowleyTheMark/TheMarkUSA")
 ```
 
-## Examples
+## Usage
 
-A common problem with the current workflow at The Mark is converting
-numeric data to factor variables, especially 5 item likert scales:
+``` r
+library(TheMarkUSA)
+```
+
+To begin, it is best to convert our numeric data that we use at The Mark
+USA, Inc. to factor variables, especially 5 item likert scales:
 
 ### `recodeFiveCat()`
 
@@ -83,7 +87,7 @@ order as the numeric data.
 
 ## Data Visualizations Examples
 
-**TheMarkUSA** currently contains three helper functions for generating
+`TheMarkUSA` currently contains three helper functions for generating
 visualizations: `stackedBarChart()`, `divBarChart()`, and
 `arrowChart()`.
 

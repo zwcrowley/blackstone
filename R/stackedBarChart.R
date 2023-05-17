@@ -257,7 +257,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
       ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(",expression(italic(n)),"==",N_df,")"))) +
       ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
       ggplot2::theme(
-        axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, color = "black", size = 14, family = "Gill Sans MT"),
+        axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT"),
         plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
         panel.spacing.x = ggplot2::unit(1, "in"),
         legend.position = "top"

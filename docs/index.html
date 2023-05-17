@@ -76,19 +76,21 @@
 </div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>The goal of TheMarkUSA is to make data cleaning and the creation of visualizations easier and faster for The Mark USA, Inc. The functions in TheMarkUSA create visuals with The Mark USA branding and helper functions for common data cleaning and manipulation tasks for use for everyone at The Mark USA, Inc.</p>
+<p>The goal of <code>TheMarkUSA</code> is to make data cleaning and the creation of visualizations easier and faster for The Mark USA, Inc. The functions in <code>TheMarkUSA</code> create visuals with The Mark USA branding and helper functions for common data cleaning and manipulation tasks for use for everyone at The Mark USA, Inc.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of TheMarkUSA from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version of <code>TheMarkUSA</code> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"zcrowleyTheMark/TheMarkUSA"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>A common problem with the current workflow at The Mark is converting numeric data to factor variables, especially 5 item likert scales:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zcrowleyTheMark/themark" class="external-link">TheMarkUSA</a></span><span class="op">)</span></span></code></pre></div>
+<p>To begin, it is best to convert our numeric data that we use at The Mark USA, Inc. to factor variables, especially 5 item likert scales:</p>
 <div class="section level3">
 <h3 id="recodefivecat">
 <code>recodeFiveCat()</code><a class="anchor" aria-label="anchor" href="#recodefivecat"></a>
@@ -97,7 +99,7 @@
 <p><code><a href="reference/recodeFiveCat.html">recodeFiveCat()</a></code> takes in two arguments:</p>
 <p><strong>df</strong> Required, a tibble or data frame of survey items that are numeric variables, in 5 point scales, can be a single time point or pre-post.</p>
 <p><strong>scale_labels</strong> Required, a character vector of labels of the desired 5 point scale levels. The function will use this vector to convert the numeric variables into factor variables, must be arranged low to high.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  Pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  Post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">Pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">Pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">Pre_Organization</span><span class="op">)</span>,</span>
@@ -137,7 +139,7 @@
 <div class="section level2">
 <h2 id="data-visualizations-examples">Data Visualizations Examples<a class="anchor" aria-label="anchor" href="#data-visualizations-examples"></a>
 </h2>
-<p><strong>TheMarkUSA</strong> currently contains three helper functions for generating visualizations: <code><a href="reference/stackedBarChart.html">stackedBarChart()</a></code>, <code><a href="reference/divBarChart.html">divBarChart()</a></code>, and <code><a href="reference/arrowChart.html">arrowChart()</a></code>.</p>
+<p><code>TheMarkUSA</code> currently contains three helper functions for generating visualizations: <code><a href="reference/stackedBarChart.html">stackedBarChart()</a></code>, <code><a href="reference/divBarChart.html">divBarChart()</a></code>, and <code><a href="reference/arrowChart.html">arrowChart()</a></code>.</p>
 <div class="section level3">
 <h3 id="stackedbarchart">
 <code>stackedBarChart()</code><a class="anchor" aria-label="anchor" href="#stackedbarchart"></a>
@@ -155,7 +157,7 @@
 <h4 id="single-time-point-data-with-percentage-labels-example-for-stackedbarchart">Single Time Point Data with Percentage labels Example for <code>stackedBarChart()</code>
 <a class="anchor" aria-label="anchor" href="#single-time-point-data-with-percentage-labels-example-for-stackedbarchart"></a>
 </h4>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single time point data:</span></span>
 <span><span class="va">items_single</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -181,7 +183,7 @@
 <h4 id="pre-post-data-example-for-stackedbarchart">Pre-Post Data Example for <code>stackedBarChart()</code>
 <a class="anchor" aria-label="anchor" href="#pre-post-data-example-for-stackedbarchart"></a>
 </h4>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the categorical/factor vars from the df in the from the oriinal recodeFiveCat() in the first chunk (cat_items_1) using select(tidyselect::where(is.factor):</span></span>
 <span><span class="va">cat_items_plot</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -207,7 +209,7 @@
 <p><strong>question_order</strong> A character vector to sort the order of the questions. Default is NULL.</p>
 <p><strong>question_labels</strong> A character vector that will label the questions. Needs to be in same order as question_order. Default is NULL.</p>
 <p><strong>width</strong> Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):</span></span>
 <span><span class="va">cat_items_plot</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># Run the function with the categorical items and the character vector of the factor levels:</span></span>
@@ -228,7 +230,7 @@
 <p><strong>scale_labels</strong> character vector to set up the labels for the x-axis, this will match the numeric response in the data.</p>
 <p><strong>group_colors</strong> character vector of hex codes for colors to associate to each group to, e.g. this data has two groups and this function creates an overall group so the user needs to pass the function in the group_colors argument a character vector of three colors- colors need to be in the order you want them associated to the group based on the factor levels for the group variable, last color will be the overall group of “all”.</p>
 <p><code><a href="reference/arrowChart.html">arrowChart()</a></code> creates an arrow chart from numeric data based on the pre-post averages for each group and the overall group for the whole data set with the branding and style of The Mark USA, Inc. <code><a href="reference/arrowChart.html">arrowChart()</a></code> sorts the chart with the highest post scores on the top and lowest on the bottom.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the numeric variables from the df in the last chunk (cat_items_1) using tidy select(contains("cat")), adding a group variable that is set as a factor:</span></span>
 <span><span class="va">arrow_items</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>

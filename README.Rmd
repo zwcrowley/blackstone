@@ -18,25 +18,27 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of TheMarkUSA is to make data cleaning and the creation of visualizations easier and faster for The Mark USA, Inc.
-The functions in TheMarkUSA create visuals with The Mark USA branding and helper functions for
+The goal of `TheMarkUSA` is to make data cleaning and the creation of visualizations easier and faster for The Mark USA, Inc.
+The functions in `TheMarkUSA` create visuals with The Mark USA branding and helper functions for
 common data cleaning and manipulation tasks for use for everyone at The Mark USA, Inc.
 
 ## Installation
 
-You can install the development version of TheMarkUSA from [GitHub](https://github.com/) with:
+You can install the development version of `TheMarkUSA` from [GitHub](https://github.com/) with:
 
-``` r
+``` {r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("zcrowleyTheMark/TheMarkUSA")
 ```
-```{r load library, include=FALSE}
+
+## Usage
+
+```{r load library}
 library(TheMarkUSA)
 ```
 
-## Examples
 
-A common problem with the current workflow at The Mark is converting numeric data to factor variables, especially 5 item likert scales:
+To begin, it is best to convert our numeric data that we use at The Mark USA, Inc. to factor variables, especially 5 item likert scales:
 
 ### `recodeFiveCat()`
 
@@ -71,7 +73,7 @@ The user simply passes a data frame of all the items to be recoded with a charac
 
 ## Data Visualizations Examples
 
-**TheMarkUSA** currently contains three helper functions for generating visualizations: `stackedBarChart()`, `divBarChart()`, and `arrowChart()`.
+`TheMarkUSA` currently contains three helper functions for generating visualizations: `stackedBarChart()`, `divBarChart()`, and `arrowChart()`.
 
 ### `stackedBarChart()`
 
