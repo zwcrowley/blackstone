@@ -2,24 +2,31 @@
 % Please edit documentation in R/recodeCat.R
 \name{recodeCat}
 \alias{recodeCat}
-\title{Recode Numeric Variables to Factors Variables}
+\title{Recode Numeric Variables to Factor Variables}
 \usage{
-recodeCat(df, scale_labels)
+recodeCat(df, scale_labels, number_levels = NULL)
 }
 \arguments{
-\item{df}{A tibble/data frame of survey items that are numeric
-variables that need to be converted into factor variables.}
+\item{df}{Required, a tibble/data frame of survey items that are numeric variables that need to be converted
+into factor variables, Can be anywhere from 3 to 7 point scales.}
 
-\item{scale_labels}{character vector of levels to set the numeric variables
-to factor/categorical values}
+\item{scale_labels}{Required, a character vector of labels of the desired scale levels. The function will use this vector to convert
+the numeric variables into factor variables, must be arranged low to high with the exact number of levels as the data contains,
+or else NA will be returned for variables outside the range of user supplied values.}
+
+\item{number_levels}{A character vector that is all of the numeric values from the numeric variables that are to be recoded in order.
+Both scale_labels and number_levels should be in the same order that the user wants the variables to be recoded. For example, if
+a variable from df has 3 numeric values of 1,2,and 3, to be recoded to as "Minimal", "Slight", "Moderate",
+number_levels should equal: c(1,2,3) and scale_labels should equal: c("Minimal", "Slight", "Moderate"). See more examples below.
+Defaults to NULL.}
 }
 \value{
 a \link[tibble:tibble-package]{tibble} with the original numeric variables along with
-new variables mapped to categorical values from scale_labels character
+new variables that are now factors withe the prefix "cat_{variable_name}", with levels taken from scale_labels character
 vector.
 }
 \description{
-Recode Numeric Variables to Factors Variables
+Recode Numeric Variables to Factor Variables
 }
 \examples{
 items <- dplyr::tibble(
@@ -35,5 +42,5 @@ items <- dplyr::tibble(
   Post_Research = Pre_Research + 1
 )
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-recodeCat(items, levels_min_ext)
+recodeCat(df = items, scale_labels = levels_min_ext)
 }
