@@ -28,7 +28,7 @@
 #'
 #' horzBarChart(df = role_summ, scale_colors = role_color, width = 0.6)
 horzBarChart <- function(df, scale_colors, width = NULL) {
-  extrafont::loadfonts(quiet = TRUE)
+  extrafont::loadfonts("all", quiet = TRUE)
 
   bar_chart <- {{ df }} %>% ggplot2::ggplot(ggplot2::aes(x = forcats::fct_rev(.data$response), y = .data$n_answers, label = .data$percent_answers_label)) +
     ggplot2::geom_col(ggplot2::aes(fill = .data$response), width = width, color = "black") +

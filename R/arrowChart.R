@@ -44,7 +44,7 @@
 #' arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors)
 #' @export
 arrowChart <- function(df, scale_labels, group_colors) {
-  extrafont::loadfonts(quiet = TRUE)
+  extrafont::loadfonts("all", quiet = TRUE)
 
   N_df <- {{ df }} %>% nrow()
 

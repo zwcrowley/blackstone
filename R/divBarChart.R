@@ -42,7 +42,7 @@
 #'
 #' divBarChart(cat_items, levels_min_ext)
 divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order = NULL, question_labels = NULL, width = NULL) {
-  extrafont::loadfonts(quiet = TRUE)
+  extrafont::loadfonts("all", quiet = TRUE)
 
   . <- NULL
 
