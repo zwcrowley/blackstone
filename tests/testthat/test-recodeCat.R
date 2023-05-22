@@ -3,7 +3,7 @@ test_that("function outputs expected data types and structure", {
 
   levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 
-  cat_items_1 <- recodeFiveCat(items_1, levels_min_ext)
+  cat_items_1 <- recodeCat(items_1, levels_min_ext)
 
   df_expected <- dplyr::tibble(
     Pre_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1), Post_Orgs = c(1, 2, 3, 4, 5, 4, 3, 2, 1),

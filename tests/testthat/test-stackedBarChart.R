@@ -22,8 +22,8 @@ test_that("plots accept same data types", {
 
  levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
  # Recode the numeric to factor variables using the levels from levels_min_ext:
- cat_items <- TheMarkUSA::recodeFiveCat(items, levels_min_ext)
- cat_items_single <- TheMarkUSA::recodeFiveCat(items_single, levels_min_ext)
+ cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
+ cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
 
  # Select the factor variables:
  cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))

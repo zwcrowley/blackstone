@@ -43,8 +43,8 @@
 #'
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #' # Recode the numeric to factor variables using the levels from levels_min_ext:
-#' cat_items <- TheMarkUSA::recodeFiveCat(items, levels_min_ext)
-#' cat_items_single <- TheMarkUSA::recodeFiveCat(items_single, levels_min_ext)
+#' cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
+#' cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
 #'
 #' # Select the factor variables:
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
@@ -82,7 +82,6 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
       dplyr::mutate(
         percent_answers = .data$n_answers / sum(.data$n_answers),
         percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
-        label_color = "black",
         pos_valence_post = dplyr::case_when(
           .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ percent_answers,
           .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,

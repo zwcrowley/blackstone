@@ -38,19 +38,19 @@ library(TheMarkUSA)
 ```
 
 
-To begin, it is best to convert our numeric data that we use at The Mark USA, Inc. to factor variables, especially 5 item likert scales:
+To begin, it is best to convert our numeric data that we use at The Mark USA, Inc. to factor variables:
 
-### `recodeFiveCat()`
+### `recodeCat()`
 
-`recodeFiveCat()` is a helper function to recode numeric data with 5 levels into factor variables with the desired levels.
+`recodeCat()` is a helper function to recode numeric data into factor variables with the desired levels.
 
-`recodeFiveCat()` takes in two arguments: 
+`recodeCat()` takes in two arguments: 
 
-**df** Required, a tibble or data frame of survey items that are numeric variables, in 5 point scales, can be a single time point or pre-post.
+**df** Required, a tibble or data frame of survey items that are numeric variables, in anywhere from 3 to 7 point scales, can be a single time point or pre-post.
 
-**scale_labels** Required, a character vector of labels of the desired 5 point scale levels. The function will use this vector to convert the numeric variables into factor variables, must be arranged low to high.
+**scale_labels** Required, a character vector of labels of the desired scale levels. The function will use this vector to convert the numeric variables into factor variables, must be arranged low to high with the exact number of levels as the data contains, or else NA will be returned.
 
-```{r recodeFiveCat}
+```{r recodeCat}
 items <- dplyr::tibble(
   Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
@@ -63,9 +63,9 @@ items <- dplyr::tibble(
   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   Post_Research = Pre_Research + 1
 )
-# scale_labels
+# scale_labels for 5 item example
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-cat_items_1 <- TheMarkUSA::recodeFiveCat(df = items, scale_labels = levels_min_ext)
+cat_items_1 <- TheMarkUSA::recodeCat(df = items, scale_labels = levels_min_ext)
 cat_items_1
 ```
 
@@ -110,7 +110,7 @@ items_single <- dplyr::tibble(
 # scale_labels
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items_single <- TheMarkUSA::recodeFiveCat(items_single, levels_min_ext)
+cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
 # Select the factor variables:
 cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 # Pass the factor variables and the levels to 'stackedBarChart()':
@@ -124,7 +124,7 @@ stacked_chart_single
 #### Pre-Post Data Example for `stackedBarChart()`
 
 ```{r stackedBarChart_pre_post}
-# Select only the categorical/factor vars from the df in the from the oriinal recodeFiveCat() in the first chunk (cat_items_1) using select(tidyselect::where(is.factor):
+# Select only the categorical/factor vars from the df in the from the oriinal recodeCat() in the first chunk (cat_items_1) using select(tidyselect::where(is.factor):
 cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
 
 # Run the function with the categorical items and the character vector of the factor levels:
