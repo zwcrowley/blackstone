@@ -65,10 +65,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
   . <- NULL
 
   # Changes scale_labels to tibble pulls out index and saves that as a vector, gets number of levels from scale_labels:
-  number_levels <- scale_labels %>% tibble::enframe() %>% dplyr::select("name") %>% tibble::deframe()
+  number_levels <- scale_labels %>%
+    tibble::enframe() %>%
+    dplyr::select("name") %>%
+    tibble::deframe()
 
   if (isTRUE(pre_post)) {
-
     # Sets up new_df if pre_post is TRUE:
     new_df <- {{ df }} %>%
       tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
@@ -157,7 +159,6 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
 
       # 7 colors for chart:
       fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
-
     }
 
     if (is.null(question_order)) {
@@ -181,15 +182,19 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
     }
 
     # Get total n for each question, grouped by question and timing:
-    totals_new_df <- new_df %>% dplyr::group_by(.data$question, .data$timing) %>% dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
+    totals_new_df <- new_df %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
       dplyr::ungroup()
 
     # Get overall n if it is the same for each item:
-    N_df <- totals_new_df %>% dplyr::summarize(N = mean(.data$total)) %>% tibble::deframe()
+    N_df <- totals_new_df %>%
+      dplyr::summarize(N = mean(.data$total)) %>%
+      tibble::deframe()
 
     if (is.null(width)) {
       width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                              dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+        dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
       )
     }
 
@@ -208,8 +213,8 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
     stacked_bar_chart <- stacked_bar_chart +
       ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
       ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-                         family = "Gill Sans MT",
-                         fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
+        family = "Gill Sans MT",
+        fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
       ) +
       ggplot2::scale_color_manual(values = c("black", "white")) +
       ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
@@ -218,7 +223,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
         spacing.x = 14, spacing.y = 0
       )) +
-      ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(",expression(italic(n)),"==",N_df,")"))) +
+      ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) +
       ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
       ggplot2::theme(
         strip.placement = "outside",
@@ -314,7 +319,6 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
 
       # 7 colors for chart:
       fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
-
     }
 
     if (is.null(question_order)) {
@@ -340,15 +344,19 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
     }
 
     # Get total n for each question:
-    totals_new_df <- new_df %>% dplyr::group_by(.data$question) %>% dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
+    totals_new_df <- new_df %>%
+      dplyr::group_by(.data$question) %>%
+      dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
       dplyr::ungroup()
 
     # Get overall n if it is the same for each item:
-    N_df <- totals_new_df %>% dplyr::summarize(N = mean(.data$total)) %>% tibble::deframe()
+    N_df <- totals_new_df %>%
+      dplyr::summarize(N = mean(.data$total)) %>%
+      tibble::deframe()
 
     if (is.null(width)) {
       width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                              dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+        dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
       )
     }
 
@@ -367,8 +375,8 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
     stacked_bar_chart <- stacked_bar_chart +
       ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
       ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-                         family = "Gill Sans MT",
-                         fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
+        family = "Gill Sans MT",
+        fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
       ) +
       ggplot2::scale_color_manual(values = c("black", "white")) +
       ggplot2::scale_fill_manual(values = fill_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 20)) +
@@ -376,7 +384,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 6,
         spacing.x = 25, spacing.y = 0
       )) +
-      ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(",expression(italic(n)),"==",N_df,")"))) +
+      ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) +
       ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
       ggplot2::theme(
         axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT"),

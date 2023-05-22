@@ -2,24 +2,24 @@
 % Please edit documentation in R/recodeCat.R
 \name{recodeCat}
 \alias{recodeCat}
-\title{Recode Numeric Variables to 5 Category Factors}
+\title{Recode Numeric Variables to Factors Variables}
 \usage{
 recodeCat(df, scale_labels)
 }
 \arguments{
 \item{df}{A tibble/data frame of survey items that are numeric
-variables, in 5 point scales and pre-post, that need to be converted into factor variables.}
+variables that need to be converted into factor variables.}
 
-\item{scale_labels}{character vector of 5 levels to set the numeric variables
+\item{scale_labels}{character vector of levels to set the numeric variables
 to factor/categorical values}
 }
 \value{
-new tibble/data frame with the original numeric variables along with
+a \link[tibble:tibble-package]{tibble} with the original numeric variables along with
 new variables mapped to categorical values from scale_labels character
 vector.
 }
 \description{
-Recode Numeric Variables to 5 Category Factors
+Recode Numeric Variables to Factors Variables
 }
 \examples{
 items <- dplyr::tibble(

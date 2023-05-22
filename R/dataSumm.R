@@ -4,7 +4,7 @@
 #'
 #' @param na.rm Drops NA values. Defaults to TRUE.
 #'
-#' @return a new tibble/data frame with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
+#' @return a [tibble][tibble::tibble-package] with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
 #' Item is the name of the original item, Response is all of the categorical responses possible for the item. n_answers is the count of each response,
 #' percent_answers is the percentage of each response and percent_answers_label is a character variable of percentage labelled with percent sign for use as a label.
 #'
@@ -17,7 +17,7 @@
 #'     "Graduate student", "Postdoc", "Postdoc", "Faculty",
 #'     "Faculty", "Graduate student", "Graduate student", "Postdoc",
 #'     "Faculty", "Faculty", "Faculty", "Faculty", "Faculty", "Graduate student",
-#'     "Undergraduate student","Undergraduate student", "NA", "NA"
+#'     "Undergraduate student", "Undergraduate student", "NA", "NA"
 #'   )
 #' )
 #'
@@ -30,7 +30,6 @@
 #'   dplyr::select(role) %>%
 #'   dataSumm(na.rm = TRUE)
 dataSumm <- function(var, na.rm = TRUE) {
-
   clean_df <- {{ var }} %>%
     tidyr::drop_na() %>%
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
@@ -55,12 +54,12 @@ dataSumm <- function(var, na.rm = TRUE) {
       dplyr::ungroup() %>%
       dplyr::mutate(percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1)) %>%
       dplyr::arrange(dplyr::desc(.data$n_answers)) %>%
-      dplyr::mutate(response = addNA(.data$response),
-                    response = forcats::fct_inorder(.data$response),
-                    response = forcats::fct_relevel(.data$response, NA, after = Inf))
+      dplyr::mutate(
+        response = addNA(.data$response),
+        response = forcats::fct_inorder(.data$response),
+        response = forcats::fct_relevel(.data$response, NA, after = Inf)
+      )
   }
 
   return(clean_df)
-
-
 }

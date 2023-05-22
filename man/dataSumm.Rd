@@ -12,7 +12,7 @@ dataSumm(var, na.rm = TRUE)
 \item{na.rm}{Drops NA values. Defaults to TRUE.}
 }
 \value{
-a new tibble/data frame with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
+a \link[tibble:tibble-package]{tibble} with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
 Item is the name of the original item, Response is all of the categorical responses possible for the item. n_answers is the count of each response,
 percent_answers is the percentage of each response and percent_answers_label is a character variable of percentage labelled with percent sign for use as a label.
 }
@@ -26,7 +26,7 @@ data <- dplyr::tibble(
     "Graduate student", "Postdoc", "Postdoc", "Faculty",
     "Faculty", "Graduate student", "Graduate student", "Postdoc",
     "Faculty", "Faculty", "Faculty", "Faculty", "Faculty", "Graduate student",
-    "Undergraduate student","Undergraduate student", "NA", "NA"
+    "Undergraduate student", "Undergraduate student", "NA", "NA"
   )
 )
 

@@ -35,7 +35,7 @@
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #'
 #' # Recode the numeric to factor variables using the levels from levels_min_ext:
-#' cat_items<- TheMarkUSA::recodeCat(items, levels_min_ext)
+#' cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
 #'
 #' # Select the factor variables:
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
@@ -101,15 +101,19 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
   }
 
   # Get total n for each question, grouped by question and timing:
-  totals_new_df <- new_df %>% dplyr::group_by(.data$question, .data$timing) %>% dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
+  totals_new_df <- new_df %>%
+    dplyr::group_by(.data$question, .data$timing) %>%
+    dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
     dplyr::ungroup()
 
   # Get overall n if it is the same for each item:
-  N_df <- totals_new_df %>% dplyr::summarize(N = mean(.data$total)) %>% tibble::deframe()
+  N_df <- totals_new_df %>%
+    dplyr::summarize(N = mean(.data$total)) %>%
+    tibble::deframe()
 
   if (is.null(width)) {
     width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                            dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+      dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
     )
   }
 
@@ -119,7 +123,7 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
         x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
         label = .data$percent_answers_label, group = .data$question
       ))
-  } else{
+  } else {
     diverging_bar_chart <- new_df %>%
       ggplot2::ggplot(ggplot2::aes(
         x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
@@ -130,8 +134,8 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
   diverging_bar_chart <- diverging_bar_chart +
     ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
     ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-                       family = "Gill Sans MT", fontface = "bold",
-                       position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
+      family = "Gill Sans MT", fontface = "bold",
+      position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
     ) +
     ggplot2::scale_color_manual(values = c("black", "white")) +
     ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
@@ -143,7 +147,7 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
       size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
       spacing.x = 14, spacing.y = 0
     )) +
-    ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(",expression(italic(n)),"==",N_df,")"))) +
+    ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
     ggplot2::theme(
       strip.placement = "outside",
@@ -161,4 +165,3 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
 
   return(diverging_bar_chart)
 }
-

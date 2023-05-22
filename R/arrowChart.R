@@ -100,7 +100,7 @@ arrowChart <- function(df, scale_labels, group_colors) {
     ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
     ggplot2::scale_color_manual(values = group_colors, labels = function(group) stringr::str_to_title(group)) +
     ggplot2::scale_x_continuous(limits = c(1, 5), labels = scale_labels) +
-    ggplot2::labs(tag = parse(text = paste0("(",expression(italic(n)),"==",N_df,")")), color = NULL) +
+    ggplot2::labs(tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")")), color = NULL) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(
