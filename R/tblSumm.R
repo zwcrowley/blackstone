@@ -1,7 +1,7 @@
 #' Creates a summary table of counts and percentages from a data frame pre-processed with the
 #'  dataSumm() and returns a flextable object.
 #'
-#' @param df data frame pre-processed with the dataSumm() so that it has a summary that includes
+#' @param df a [tibble][tibble::tibble-package] or data frame pre-processed with the dataSumm() so that it has a summary that includes
 #' 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
 #' Item is the name of the original item, Response is all of the categorical responses possible
 #' for the item. n_answers is the count of each response,
@@ -11,7 +11,7 @@
 #' @param totals If true, returns a summary table with a last row of totals,
 #' if false, does not have a final row of totals. Set True by default.
 #'
-#' @return a flextable() object with the 3 columns, response, counts and percentages,
+#' @return a [flextable][flextable::flextable-package] object with the 3 columns, response, counts and percentages,
 #' Colors are set to The Mark, USA Inc. branding
 #' @export
 #'

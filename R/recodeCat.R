@@ -1,6 +1,6 @@
 #' Recode Numeric Variables to Factor Variables
 #'
-#' @param df Required, a tibble/data frame of survey items that are numeric variables that need to be converted
+#' @param df Required, a [tibble][tibble::tibble-package]/data frame of survey items that are numeric variables that need to be converted
 #' into factor variables, Can be anywhere from 3 to 7 point scales.
 #'
 #' @param scale_labels Required, a character vector of labels of the desired scale levels. The function will use this vector to convert
@@ -14,7 +14,7 @@
 #' Defaults to NULL.
 #'
 #' @return a [tibble][tibble::tibble-package] with the original numeric variables along with
-#'   new variables that are now factors withe the prefix "cat_{variable_name}", with levels taken from scale_labels character
+#'   new variables that are now factors with the prefix "cat_{variable_name}", with levels taken from scale_labels character
 #'   vector.
 #' @export
 #'

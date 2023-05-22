@@ -16,7 +16,7 @@
 #'
 #' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'
-#' @return A ggplot object that plots the items into a stacked bar chart and can be exported.
+#' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a stacked bar chart and can be exported.
 #' @export
 #'
 #' @examples

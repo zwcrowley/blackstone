@@ -1,6 +1,6 @@
 #' Creates a data frame that is a summary table of counts and percentages
 #'
-#' @param var A column selected from a tibble/data frame that is a categorical/factor variable to that to be summarized into a table.
+#' @param var A column selected from a [tibble][tibble::tibble-package]/data frame that is a categorical/factor variable to that to be summarized into a table.
 #'
 #' @param na.rm Drops NA values. Defaults to TRUE.
 #'

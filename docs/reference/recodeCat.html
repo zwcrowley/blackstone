@@ -54,7 +54,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>df</dt>
-<dd><p>Required, a tibble/data frame of survey items that are numeric variables that need to be converted
+<dd><p>Required, a <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a>/data frame of survey items that are numeric variables that need to be converted
 into factor variables, Can be anywhere from 3 to 7 point scales.</p></dd>
 
 
@@ -65,7 +65,7 @@ or else NA will be returned for variables outside the range of user supplied val
 
 
 <dt>number_levels</dt>
-<dd><p>A character vector that is all of the numeric values from the numeric variables that are to be recoded in order.
+<dd><p>A character vector that of all the numeric values original numeric variables that are to be recoded, in the correct order.
 Both scale_labels and number_levels should be in the same order that the user wants the variables to be recoded. For example, if
 a variable from df has 3 numeric values of 1,2,and 3, to be recoded to as "Minimal", "Slight", "Moderate",
 number_levels should equal: c(1,2,3) and scale_labels should equal: c("Minimal", "Slight", "Moderate"). See more examples below.
@@ -77,7 +77,7 @@ Defaults to NULL.</p></dd>
     
 
 <p>a <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with the original numeric variables along with
-new variables that are now factors withe the prefix "cat_variable_name", with levels taken from scale_labels character
+new variables that are now factors with the prefix "cat_variable_name", with levels taken from scale_labels character
 vector.</p>
     </div>
 

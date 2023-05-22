@@ -22,7 +22,7 @@ the group based on the factor levels for the group variable, last color
 will be the overall group of "all".}
 }
 \value{
-A ggplot object that plots the items into a arrow bar chart.
+A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arrow bar chart.
 }
 \description{
 \code{arrowChart()} creates an pre-post arrow chart of group averages and returns

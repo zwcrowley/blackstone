@@ -14,7 +14,7 @@ horzBarChart(df, scale_colors, width = NULL)
 \item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
 \value{
-A ggplot object that plots the items into a stacked bar chart and can be exported.
+A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a horizontal bar chart and can be exported.
 }
 \description{
 Horizontal Bar Chart for The Mark USA, Inc.

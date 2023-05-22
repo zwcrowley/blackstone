@@ -14,7 +14,7 @@
 #'
 #' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'
-#' @return A ggplot object that plots the items into a diverging and stacked bar
+#' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a diverging and stacked bar
 #'   chart as a ggplot object. The chart is sorted by the highest positive
 #'   valence post items at the top, or by user supplied question order.
 #' @export

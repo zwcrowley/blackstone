@@ -7,7 +7,7 @@
 dataSumm(var, na.rm = TRUE)
 }
 \arguments{
-\item{var}{A column selected from a tibble/data frame that is a categorical/factor variable to that to be summarized into a table.}
+\item{var}{A column selected from a \link[tibble:tibble-package]{tibble}/data frame that is a categorical/factor variable to that to be summarized into a table.}
 
 \item{na.rm}{Drops NA values. Defaults to TRUE.}
 }

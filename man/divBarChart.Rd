@@ -29,7 +29,7 @@ diverging bar chart with The Mark USA branding.}
 \item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
 \value{
-A ggplot object that plots the items into a diverging and stacked bar
+A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a diverging and stacked bar
 chart as a ggplot object. The chart is sorted by the highest positive
 valence post items at the top, or by user supplied question order.
 }

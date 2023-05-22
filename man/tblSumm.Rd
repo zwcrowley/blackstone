@@ -8,7 +8,7 @@ dataSumm() and returns a flextable object.}
 tblSumm(df, totals = TRUE)
 }
 \arguments{
-\item{df}{data frame pre-processed with the dataSumm() so that it has a summary that includes
+\item{df}{a \link[tibble:tibble-package]{tibble} or data frame pre-processed with the dataSumm() so that it has a summary that includes
 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
 Item is the name of the original item, Response is all of the categorical responses possible
 for the item. n_answers is the count of each response,
@@ -19,7 +19,7 @@ character variable of percentage labelled with percent sign for use as a label.}
 if false, does not have a final row of totals. Set True by default.}
 }
 \value{
-a flextable() object with the 3 columns, response, counts and percentages,
+a \link[flextable:flextable-package]{flextable} object with the 3 columns, response, counts and percentages,
 Colors are set to The Mark, USA Inc. branding
 }
 \description{

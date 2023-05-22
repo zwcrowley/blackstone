@@ -17,7 +17,7 @@
 #'   the group based on the factor levels for the group variable, last color
 #'   will be the overall group of "all".
 #'
-#' @return A ggplot object that plots the items into a arrow bar chart.
+#' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a arrow bar chart.
 #'
 #' @examples
 #' items <- dplyr::tibble(
