@@ -64,9 +64,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
 
   . <- NULL
 
-  fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+  # Changes scale_labels to tibble pulls out index and saves that as a vector, gets number of levels from scale_labels:
+  number_levels <- scale_labels %>% tibble::enframe() %>% dplyr::select("name") %>% tibble::deframe()
 
   if (isTRUE(pre_post)) {
+
+    # Sets up new_df if pre_post is TRUE:
     new_df <- {{ df }} %>%
       tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
       dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
@@ -74,11 +77,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
       dplyr::group_by(.data$question, .data$timing, .data$response) %>%
       dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
       dplyr::ungroup() %>%
+      tidyr::drop_na() %>%
       dplyr::group_by(.data$question, .data$timing) %>%
       dplyr::mutate(
         percent_answers = .data$n_answers / sum(.data$n_answers),
         percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
-        label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+        label_color = "black",
         pos_valence_post = dplyr::case_when(
           .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ percent_answers,
           .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
@@ -86,9 +90,76 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         ),
         response = forcats::fct_relevel(.data$response, scale_labels),
         timing = factor(.data$timing, levels = c("Pre", "Post"))
-        ) %>%
+      ) %>%
       dplyr::ungroup() %>%
       dplyr::arrange(.data$response)
+
+    # IF/ELSE statement, first if number_levels equals 3, sets up the label_color and fill color:
+    if (length(number_levels) == 3) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question, .data$timing) %>%
+        dplyr::mutate(
+          label_color = "black",
+        ) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(.data$response)
+
+      # 3 colors for chart:
+      fill_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+
+      # If number_levels) == 4
+    } else if (length(number_levels) == 4) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question, .data$timing) %>%
+        dplyr::mutate(
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
+        ) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(.data$response)
+
+      # 4 colors for chart:
+      fill_colors <- c("#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+
+      # If number_levels) == 5
+    } else if (length(number_levels) == 5) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question, .data$timing) %>%
+        dplyr::mutate(
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+        ) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(.data$response)
+
+      # 5 colors for chart:
+      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+
+      # If number_levels) == 6
+    } else if (length(number_levels) == 6) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question, .data$timing) %>%
+        dplyr::mutate(
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+        ) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(.data$response)
+
+      # 6 colors for chart:
+      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F", "gray")
+
+      # If number_levels) == 7
+    } else if (length(number_levels) == 7) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question, .data$timing) %>%
+        dplyr::mutate(
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+        ) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(.data$response)
+
+      # 7 colors for chart:
+      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
+
+    }
 
     if (is.null(question_order)) {
       question_order <- new_df %>%
@@ -134,7 +205,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         label = .data$n_answers, group = .data$question
       ))
     }
-
+    # ggplot call for when pre_post is TRUE:
     stacked_bar_chart <- stacked_bar_chart +
       ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
       ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
@@ -164,6 +235,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         legend.position = "top"
       )
   } else {
+    # If pre_post is FALSE, set up new_df:
     new_df <- {{ df }} %>%
       tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
       dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
@@ -174,7 +246,6 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
       dplyr::group_by(.data$question) %>%
       dplyr::mutate(
         response = factor(.data$response, scale_labels),
-        label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
         percent_answers = .data$n_answers / sum(.data$n_answers),
         percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
         pos_valence_post = dplyr::case_when(
@@ -184,6 +255,68 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         )
       ) %>%
       dplyr::ungroup()
+
+    # IF/ELSE statement, first if number_levels equals 3, sets up the label_color and fill color:
+    if (length(number_levels) == 3) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question) %>%
+        dplyr::mutate(
+          label_color = "black",
+        ) %>%
+        dplyr::ungroup()
+
+      # 3 colors for chart:
+      fill_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+
+      # If number_levels) == 4
+    } else if (length(number_levels) == 4) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question) %>%
+        dplyr::mutate(
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
+        ) %>%
+        dplyr::ungroup()
+
+      # 4 colors for chart:
+      fill_colors <- c("#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+
+      # If number_levels) == 5
+    } else if (length(number_levels) == 5) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question) %>%
+        dplyr::mutate(
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+        ) %>%
+        dplyr::ungroup()
+
+      # 5 colors for chart:
+      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+
+      # If number_levels) == 6
+    } else if (length(number_levels) == 6) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question) %>%
+        dplyr::mutate(
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+        ) %>%
+        dplyr::ungroup()
+
+      # 6 colors for chart:
+      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F", "gray")
+
+      # If number_levels) == 7
+    } else if (length(number_levels) == 7) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question) %>%
+        dplyr::mutate(
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+        ) %>%
+        dplyr::ungroup()
+
+      # 7 colors for chart:
+      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
+
+    }
 
     if (is.null(question_order)) {
       question_order <- new_df %>%
@@ -231,7 +364,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, percent_label = 
         label = .data$n_answers, group = .data$question
       ))
     }
-
+    # ggplot call for when pre_post is FALSE:
     stacked_bar_chart <- stacked_bar_chart +
       ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
       ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
