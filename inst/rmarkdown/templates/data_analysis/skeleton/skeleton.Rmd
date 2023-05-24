@@ -1,0 +1,53 @@
+---
+title: "Untitled"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+## Set global options for compiled document
+knitr::opts_chunk$set(
+    echo = FALSE, 
+    warning = FALSE, 
+    message = FALSE, 
+    out.width = 6.5,
+    out.height = 4
+    )
+
+```
+
+```{r load libraries, include=FALSE}
+library(tidyverse)  # tidy data manipulation
+library(ggplot2) # all viz
+library(ggh4x) # ggplot helpers
+library(scales) # percent and other helper functions
+library(readxl) # read in excel files
+library(janitor) # data cleanup helpers
+library(lubridate) # helpers for dealing with dates
+library(gtsummary) # tbl_summary and other table set up
+library(kableExtra) # kable extras, produces tables mostly in html
+library(flextable) # table exports that work well in .pptx and .doc Word files
+library(ftExtra) # extras for flextable
+library(magrittr) # pipe operators
+library(extraInserts) # extra symbol helpers like %<>% 
+library(extrafont) # load fonts espcially "Gill Sans MT" font for use in visuals
+loadfonts(device = "win", quiet = TRUE)
+
+# If you haven't installed "TheMarkUSA", un-comment and run the next two lines then load library(TheMarkUSA):
+# install.packages("devtools")
+# devtools::install_github("zcrowleyTheMark/TheMarkUSA")
+library(TheMarkUSA) # The Mark helpers
+```
+
+## RMarkdown Template for Data Analysis at The Mark USA, Inc.:
+
+This file is the starting point for any data analysis task at The Mark. The examples provided are for an baseline-annual survey comparison, but there are many ways this workflow can be used for other data tasks. Please provide any feedback from the use of this template to determine if there are more tasks to include or other templates to construct. 
+
+First, change the title and author in the yaml header above on lines 2 and 3, (leave in quotes), these will then render to the html document. Clicking the "knit" button in the RStudio interface will render this document as an .html file. 
+
+```{r load in data}
+
+
+```
+
