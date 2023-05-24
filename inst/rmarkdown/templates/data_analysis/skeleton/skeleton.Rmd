@@ -25,7 +25,7 @@ library(scales) # percent and other helper functions
 library(readxl) # read in excel files
 library(janitor) # data cleanup helpers
 library(lubridate) # helpers for dealing with dates
-library(gtsummary) # tbl_summary and other table set up
+library(gtsummary) # one package for making summary tables, tbl_summary and other table set up
 library(kableExtra) # kable extras, produces tables mostly in html
 library(flextable) # table exports that work well in .pptx and .doc Word files
 library(ftExtra) # extras for flextable
@@ -42,12 +42,158 @@ library(TheMarkUSA) # The Mark helpers
 
 ## RMarkdown Template for Data Analysis at The Mark USA, Inc.:
 
-This file is the starting point for any data analysis task at The Mark. The examples provided are for an baseline-annual survey comparison, but there are many ways this workflow can be used for other data tasks. Please provide any feedback from the use of this template to determine if there are more tasks to include or other templates to construct. 
+This file is the starting point for any data analysis task at The Mark. The examples provided are for a baseline-annual (pre-post) survey comparison, but there are many ways this workflow can be used for other data tasks. Please provide any feedback from the use of this template to determine if there are more tasks to include or other templates to construct. 
 
 First, change the title and author in the yaml header above on lines 2 and 3, (leave in quotes), these will then render to the html document. Clicking the "knit" button in the RStudio interface will render this document as an .html file. 
 
-```{r load in data}
+## Loading baseline and annual data from .csv and .xlsx:
+### How to read in .xlsx data:
+```{r load in .csv data example}
+# readxl is a package that has the most up to date function for reading in excel files either .xls or xlsx, read_excel(), if you know the file is .xlsx you can use 
+# the function read_xlsx(), both are shown below:
+# For this example, the baseline data is in a folder called "extdata" which is located up four folders so ../ moves up one folder-
+# Read in the baseline.xlsx data using read_excel():
+baseline <- read_excel("../../../../extdata/baseline.xlsx")
 
-
+# Read in the annual.xlsx data using read_xlsx():
+annual <- read_xlsx("../../../../extdata/annual.xlsx")
+# Remove to resuse names:
+rm(annual, baseline)
 ```
+
+### How to read in .csv data:
+```{r load in .csv data example}
+# readr is a package included in "tidyverse" that has the most up to date function for reading in .csv data, read_csv():
+# For this example, the baseline data is in a folder called "extdata" which is located up four folders so ../ moves up one folder-
+# Read in the baseline.csv data:
+baseline <- read_csv("../../../../extdata/baseline.csv")
+
+# Read in the annual.csv data:
+annual <- read_csv("../../../../extdata/annual.csv")
+```
+
+
+#### Info about example data in baseline and annual datasets:
+
+Each dataset contains 7 variables and 20 observations. 
+
+- Unique Identifier: a unique ID (1 to 20)
+- role: 1= "Undergraduate student", 2 ="Graduate student", 3= "Postdoc", 4 = "Faculty"
+- Gender: 1 = "male", 2 = "female", 3 = "other"
+- Institution: 1 = "University of Place", 2 = "State University of Another Place", 3 = "Technical State", 4 = "University of One More Place"
+- 5 variables of that make up a composite scale: Organization, Source, Publish, Write, Research
+ - these are all on a 5-point likert scale of 1 to 5 needs to be recoded to: c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+
+## Merging data:
+
+The R package `dplyr`, which is included in `tidyverse`, includes many functions to merge data sets, the most common of the "outer join" functions are `left_join()` and `full_join()`.
+
+Use `full_join()` if you want to merge two datasets and include all the observations of both datasets, this is most commonly used if you want to join the datasets top to bottom, see the [dpylr's documentation for more examples](https://dplyr.tidyverse.org/reference/mutate-joins.html).
+
+For most uses at The Mark, data will be merged using `left_join()`, this function is used to merge data that share a common unique identifier and only keep observations that occur in one of the datasets. Specically, `left_join()` keeps all of the observations in the first supplied dataset and merges all of the observations in the second dataset that matches the user supplied "by" variable in the first dataset.
+
+```{r Merge data}
+# Merge the baseline and annual datasets using the variable `Unique Identifier` as the by argument inside join_by(""), this is the variable that will match the observations from both datasets, the suffix argument is a c() of length two which is added to variables taken from the respective datasets, so for this example variables from baseline will have a suffix of "{variable_name}_pre" and variables from annual will have  "{variable_name}_post":
+merged_data <- baseline %>% left_join(., annual, by = join_by("Unique Identifier"), suffix = c("_pre","_post"))
+# can also be written: merged_data <- left_join(baseline, annual, by = join_by("Unique Identifier", "role"), suffix = c("_pre","_post"))
+# the new merged data has 14 variables, the original 9 from baseline and the 5 that match from the annuals dataset.
+# head(merged_data, n = 4)
+
+
+# If you would rather use a prefix for pre and post this is one way to do that:
+# add prefix before joining, for baseline skip the first 4 vars and annual skip first var:
+names(baseline)[5:9] <- paste0("pre_", names(baseline)[5:9])
+names(annual)[2:6] <- paste0("post_", names(annual)[2:6])
+# in join, use names with prefixes
+merged_data <- baseline %>% left_join(annual, by = join_by("Unique Identifier")) 
+# check variables from the merged_data using str() and summary():
+str(merged_data)
+# merged_data contains all numeric variables with has 14 variables and 20 observations. 
+```
+## Clean up variable names:
+```{r clean var names}
+# The janitor package has a lot of functions to help clean data below will do the following:
+# Clean up column names and take out empty/constant columns (not necessary here but showing its available):
+merged_data <- merged_data %>% clean_names() %>% remove_empty() %>% remove_constant() 
+
+# Get a list of all columns names:
+colnames(merged_data)
+
+# All the column names are pretty easy to use but one change may be better- 
+# Rename column names, this renames unique_identifier as unique_id:
+merged_data <- merged_data %>% rename(., unique_id = unique_identifier)
+```
+
+
+## How to recode numeric variables to factor/categorical variables:
+
+First, in order to use the variable "role" from the merged_data we need to change it to a factor/categorical variables:
+```{r recode role}
+# For all of the data analysis in this template, the tidyverse will be the basis of all the data manipulation, the use of the mutate() and case_when() from "dplyr" is a simple way to create a new variable in R, I will add a prefix of "cat_{variable_name}" to signifiy the new variable is a category not numeric:
+# role = role of respondent takes on a scale of 1 to 4 needs to be recoded to:1= "Undergraduate student", 2 ="Graduate student", 3= "Postdoc", 4 = "Faculty"
+merged_data <- merged_data %>% mutate(cat_role = factor(case_when(
+                                           role == 1 ~ "Undergraduate student",
+                                           role == 2 ~ "Graduate student",
+                                           role == 3 ~ "Postdoc",
+                                           role == 4 ~ "Faculty"
+                                          ), levels = c("Undergraduate student", "Graduate student", "Postdoc", "Faculty"))
+                      )
+# case_when() takes in a statement on the left side of the ~ and when that is true returns the statement on the right side of the ~ to the new variable, in this case cat_role
+# so when role == 1 then cat_role will be == "Undergraduate student" and so on.
+# TheMarkUSA package also has a function that works similar to the above code called recodeCat(), This function takes in a df, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument, returns a the original variable(s) new factor variable named "cat_{variable(s)}":
+cat_role <- merged_data %>% select(role) %>% 
+    recodeCat(scale_labels = c("Undergraduate student", "Graduate student", "Postdoc", "Faculty"), number_levels = c(1,2,3,4)) %>% select(cat_role) 
+# Add new cat_role variable back to merged data:
+merged_data <- merged_data %>% mutate(cat_role)
+```
+
+Next, in order to use the variable "gender" from the merged_data we need to change it to a factor/categorical variables:
+
+```{r recode gender}
+# recode gender with recodeCat():
+cat_gender <- merged_data %>% select(gender) %>% 
+    recodeCat(scale_labels = c("male", "female", "other")) %>% select(cat_gender) 
+# Add new cat_gender variable back to merged data:
+merged_data <- merged_data %>% mutate(cat_gender)
+```
+
+Recode institution from the merged_data and change it to a factor/categorical variable:
+
+```{r recode institution}
+# recode institution with recodeCat():
+cat_institution <- merged_data %>% select(institution) %>% 
+    recodeCat(scale_labels = c("University of Place", "State University of Another Place", "Technical State", "University of One More Place")) %>% 
+    select(cat_institution) 
+# Add new cat_institution variable back to merged data:
+merged_data <- merged_data %>% mutate(cat_institution)
+```
+
+## Frequency Tables for all demographics:
+
+A common task at The Mark for data analysis is creating frequency tables, the next examples will show how to do with with TheMarkUSA package.
+
+```{r freq table for role}
+# The first step is to us the dataSumm() from "TheMarkUSA" to calculate frequency and percentages of the variable, be sure to use the recoded factor var with "cat_" prefix:
+role_summ <- merged_data %>% select(cat_role) %>% TheMarkUSA::dataSumm()
+role_summ
+# Next, the tblSumm() from "TheMarkUSA" will use flextable() to create a nice formatted table that can be rendered to html and also works nicely in .pptx and .docx
+tbl_role <- role_summ %>% tblSumm()
+tbl_role
+```
+
+Now, do the same thing for gender and institution:
+
+```{r freq tables for gender and institution}
+# dataSumm() and tblSumm() from "TheMarkUSA" can be used in one line to calculate frequency and percentages of the variable and make flextable output:
+# gender
+tbl_gender <- merged_data %>% select(cat_gender) %>% dataSumm() %>% tblSumm()
+tbl_gender
+# institution
+tbl_institution <- merged_data %>% select(cat_institution) %>% dataSumm() %>% tblSumm()
+tbl_institution
+```
+
+## How to recode likert scale items
+
+In the current The Mark workflow, the most common dat analysis is with survey items with likert scalse, usually 1-5 point scales.
 
