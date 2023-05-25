@@ -38,6 +38,10 @@ loadfonts(device = "win", quiet = TRUE)
 # install.packages("devtools")
 # devtools::install_github("zcrowleyTheMark/TheMarkUSA")
 library(TheMarkUSA) # The Mark helpers
+
+# Prevents sci notation:
+options(scipen = 999)
+
 ```
 
 ## RMarkdown Template for Data Analysis at The Mark USA, Inc.:
@@ -82,7 +86,7 @@ Each dataset contains 7 variables and 20 observations.
 - Gender: 1 = "male", 2 = "female", 3 = "other"
 - Institution: 1 = "University of Place", 2 = "State University of Another Place", 3 = "Technical State", 4 = "University of One More Place"
 - 5 variables of that make up a composite scale: Organization, Source, Publish, Write, Research
- - these are all on a 5-point likert scale of 1 to 5 needs to be recoded to: c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+ - these are all on a 5-point Likert scale of 1 to 5 needs to be recoded to: c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 
 ## Merging data:
 
@@ -170,7 +174,7 @@ merged_data <- merged_data %>% mutate(cat_institution)
 
 ## Frequency Tables for all demographics:
 
-A common task at The Mark for data analysis is creating frequency tables, the next examples will show how to do with with TheMarkUSA package.
+A common task at The Mark for data analysis is creating frequency tables, the next examples will show how to do with with *TheMarkUSA* package.
 
 ```{r freq table for role}
 # The first step is to us the dataSumm() from "TheMarkUSA" to calculate frequency and percentages of the variable, be sure to use the recoded factor var with "cat_" prefix:
@@ -193,7 +197,78 @@ tbl_institution <- merged_data %>% select(cat_institution) %>% dataSumm() %>% tb
 tbl_institution
 ```
 
-## How to recode likert scale items
+## How to recode Likert scale items: 
 
-In the current The Mark workflow, the most common dat analysis is with survey items with likert scalse, usually 1-5 point scales.
+In the current The Mark workflow, the most common data analysis is with survey items with Likert scales, usually 1-5 point scales. In the example data provided, the 5 variables named: Organization, Source, Publish, Write, Research, represent items with 5-point Likert scales. The following code will create new factor variables from the numeric variables on 1-5 point scales with the correct labels of: "Minimal", "Slight", "Moderate", "Good", "Extensive".
+
+```{r recode likert items}
+# recodeCat() from TheMarkUSA package takes in a tibble/data frame of as many variables that share the same desired scale_labels, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument.
+# Returns the original variable(s) and the new factor variable(s) named "cat_{variable(s)}":
+# use the : symbol to select all the variables that are consecutive in the tibble, i.e. select(pre_organization:post_write) selects all the likert scale items,
+# the second select call (select()) selects all the new variables created with the prefix "cat_{variable(s)}":
+cat_likert_items <- merged_data %>% select(pre_organization:post_research) %>% 
+    recodeCat(scale_labels = c("Minimal", "Slight", "Moderate", "Good", "Extensive"), number_levels = c(1,2,3,4,5)) %>% select(contains("cat")) 
+# Add the new cat_items df to merged data:
+merged_data <- merged_data %>% mutate(cat_likert_items)
+# Check the data:
+str(merged_data)
+```
+
+The new items are added to the merged_data tibble and are now factor variables ready for use.
+
+## Table with Mean and Standard Deviation (SD) for Numeric Items:
+
+The following code with create a three new variables: mean for the "pre_" "post_" Likert items, mean for the "post_" Likert items, and a difference score of "post_" mean minus "pre_" mean. Then, it will create a table with the mean and SD using the function tbl_summary from the *gtsummary* package:
+
+```{r table with mean and SD}
+# use the original numeric variables: pre Likert items = pre_organization:pre_research, post Likert items = post_organization:post_research
+# First, if we needed to change a value to NA this is one way to do it quickly, not needed for this data so will comment out:
+# merged_data <- merged_data %>% mutate(across(pre_organization:pre_research, ~ifelse(. == 9, NA, .)),
+#                                      (across(post_organization:post_research, ~ifelse(. == 9, NA, .))))
+
+# Create Composites means for the 5 pre Likert items (pre_items) and 5 post Likert items (post_items):
+# Also, create a new variable for difference btw pre and post= diff_items (this will be used in a test for normality, shapiro test), rowwise() is a function from dplyr package that allows you to compute new row by row, this will return means for pre and post for each individual row, not overall:
+merged_data <- merged_data %>% rowwise() %>% mutate(pre_items = mean(c_across(pre_organization:pre_research), na.rm = TRUE),
+                                                    post_items = mean(c_across(post_organization:post_research), na.rm = TRUE),
+                                                    diff_items = post_items - pre_items)
+
+
+# Table for M and SD for pre-post composites:
+merged_data %>%
+  select(pre_items, post_items) %>%
+  tbl_summary(statistic = list(all_continuous()~ "{mean}, ({sd})"),
+              type = list(pre_items ~ 'continuous', post_items ~ 'continuous'),
+              label =  list(pre_items~ 'Pre Likert Items',
+                            post_items ~ 'Post Likert Items'),
+              missing_text = "Missing")%>%
+  add_stat_label() %>%
+  bold_labels() %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_caption("Mean and SD of Likert Items")
+
+```
+
+## How to Test for Normality using pre-post difference scores:
+
+If we want to check to see if a pre-post means/composite scores are normally distributed (in order to use parametric tests like t-tests), we should use the Shapiro-Wilk Test. This requires a difference score of the pre-post means. Shapiro-Wilk tests have a null hypothesis that the data is distributed *normally*, so if the test is significant that means that the data is *not* distributed normally and parametric tests should *not* be used. (Use non-parametric tests like Wilcoxon test). If the Shapiro-Wilk is not significant the data is distributed normally and parametric tests (like t-tests) can be used.
+```{r Check normality assumption for difference scores-Shapiro Test}
+# test for normality on the differences score of the Likert items:
+shapiro.test(merged_data$diff_items)
+```
+Test was *not* significant so the data is normally distributed, will can use a t-test for pre-post analysis.
+
+## How to use a t-test with pre-post mean/composite scores.
+
+If data is pre-post then a paired t-test should be used, below shows the code for that:
+```{r t-test for pre-post items, warning=FALSE}
+#for parametric analysis
+t_test_items <- t.test(merged_data$pre_items, merged_data$post_items, paired = TRUE)
+t_test_items
+```
+
+
+The t-test has a null hypothesis that the data is not meaningfully different, so if the test is significant we can reject the null hypothesis and conclude that the pre-post means are meaningfully different. The t-test above was significant as shown by the very small p-value = `r t_test_items$p.value`.
+
+
+
 
