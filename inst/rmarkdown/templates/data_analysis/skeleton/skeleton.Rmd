@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-## Set global options for compiled document
+## Set default options for R code chunks:
 knitr::opts_chunk$set(
     echo = FALSE, 
     warning = FALSE, 
@@ -39,9 +39,8 @@ loadfonts(device = "win", quiet = TRUE)
 # devtools::install_github("zcrowleyTheMark/TheMarkUSA")
 library(TheMarkUSA) # The Mark helpers
 
-# Prevents sci notation:
-options(scipen = 999)
-
+# Prevents sci notation and sets the output of decimals to 4 (0.0000):
+options(scipen = 999, digits = 4)
 ```
 
 ## RMarkdown Template for Data Analysis at The Mark USA, Inc.:
@@ -199,7 +198,7 @@ tbl_institution
 
 ## How to recode Likert scale items: 
 
-In the current The Mark workflow, the most common data analysis is with survey items with Likert scales, usually 1-5 point scales. In the example data provided, the 5 variables named: Organization, Source, Publish, Write, Research, represent items with 5-point Likert scales. The following code will create new factor variables from the numeric variables on 1-5 point scales with the correct labels of: "Minimal", "Slight", "Moderate", "Good", "Extensive".
+In the current The Mark workflow, the most common data analysis is with survey items with Likert scales, usually 1-5 point scales. In the example data provided, the 5 variables named: Organization, Source, Publish, Write, Research. These variables represent items with 5-point Likert scales. The following code will create new factor variables from the numeric variables on 1-5 point scales with the correct labels of: "Minimal", "Slight", "Moderate", "Good", "Extensive".
 
 ```{r recode likert items}
 # recodeCat() from TheMarkUSA package takes in a tibble/data frame of as many variables that share the same desired scale_labels, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument.
@@ -215,6 +214,60 @@ str(merged_data)
 ```
 
 The new items are added to the merged_data tibble and are now factor variables ready for use.
+
+## Frequency Table for Likert Scale Items:
+```{r freq table for indiviual likert scale items}
+# Try new code for freq table of multiple items that share the same resonse/scale_labels:
+scale_labels = c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+
+tbl_likert_items <- merged_data %>%
+    select(cat_pre_organization:cat_post_research) %>%
+    tidyr::drop_na() %>%
+    tidyr::pivot_longer(tidyselect::everything(), names_to = "Variable", values_to = "response") %>%
+    dplyr::group_by(.data$Variable, .data$response) %>%
+    dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$Variable) %>%
+    dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
+                  percent_answers_label = paste0("(",percent_answers_label,")"),
+                   response = factor(.data$response, scale_labels)) %>%
+  pivot_wider(-percent_answers,
+    names_from = response,
+    names_glue = "{response}_{.value}",
+    names_vary = "slowest",
+    values_from = c(n_answers, percent_answers_label),
+    names_sort = TRUE,
+  )  %>% mutate(across(contains('n_answers'), replace_na, 0),
+                across(contains('percent_answers_label'), replace_na, "-")) %>% 
+    janitor::adorn_totals("col", name = "n") %>% 
+    unite(., col = !!sym(scale_labels[1]), starts_with(scale_labels[1]), na.rm = FALSE, remove = TRUE, sep = " ") %>% 
+    unite(., col = !!sym(scale_labels[2]), starts_with(scale_labels[2]), na.rm = FALSE, remove = TRUE, sep = " ") %>% 
+    unite(., col = !!sym(scale_labels[3]), starts_with(scale_labels[3]), na.rm = FALSE, remove = TRUE, sep = " ") %>% 
+    unite(., col = !!sym(scale_labels[4]), starts_with(scale_labels[4]), na.rm = FALSE, remove = TRUE, sep = " ") %>% 
+    unite(., col = !!sym(scale_labels[5]), starts_with(scale_labels[5]), na.rm = FALSE, remove = TRUE, sep = " ") 
+
+tbl_likert_items
+
+# tbl_likert_items %>% select(-"Variable", -"n") %>% 
+#   lapply(function(x){unite(tbl_likert_items, x, starts_with(matches(scale_labels)), 
+#                             sep = " ", remove = TRUE)}) %>%
+#   bind_cols() %>% mutate(site = as.character(df$site)) %>% select(site, starts_with('D'))
+
+# Display the freq and %:
+# Pre
+# merged_data %>%
+#   select(cat_pre_organization:cat_post_research) %>%
+#   dataSumm() %>% tblSumm()
+
+# Post
+# merged_data %>%
+#   select(cat_Post_Confidence1:cat_Post_Confidence4) %>%
+#   tbl_likert()
+
+```
+
 
 ## Table with Mean and Standard Deviation (SD) for Numeric Items:
 
@@ -257,11 +310,12 @@ shapiro.test(merged_data$diff_items)
 ```
 Test was *not* significant so the data is normally distributed, will can use a t-test for pre-post analysis.
 
-## How to use a t-test with pre-post mean/composite scores.
+## How to use a t-test with pre-post mean/composite scores:
 
 If data is pre-post then a paired t-test should be used, below shows the code for that:
+
 ```{r t-test for pre-post items, warning=FALSE}
-#for parametric analysis
+# t-tests for parametric analysis
 t_test_items <- t.test(merged_data$pre_items, merged_data$post_items, paired = TRUE)
 t_test_items
 ```
@@ -270,5 +324,32 @@ t_test_items
 The t-test has a null hypothesis that the data is not meaningfully different, so if the test is significant we can reject the null hypothesis and conclude that the pre-post means are meaningfully different. The t-test above was significant as shown by the very small p-value = `r t_test_items$p.value`.
 
 
+## How to use a Wilcoxon test with pre-post mean/composite scores:
 
+If the data was not normally distributed, then use a Wilcoxon test, it the data  is pre-post then a paired Wilcoxon test should be used, below shows the code for that:
+
+```{r t-test for pre-post items, warning=FALSE}
+# Wilcoxon test for non-parametric analysis
+wilcox_test_items <- wilcox.test(merged_data$pre_items, merged_data$post_items, paired = TRUE)
+wilcox_test_items
+```
+
+
+## t-tests for individual items:
+
+Here is how you would run t-test for all the likert items, again paired t-tests since the data is pre-post from the same individuals:
+
+```{r t-test for pre-post items, warning=FALSE}
+# t-tests for parametric analysis: Organization, Source, Publish, Write, Research
+# organization:
+t.test(merged_data$pre_organization, merged_data$post_organization, paired = TRUE)
+# Source:
+t.test(merged_data$pre_source, merged_data$post_source, paired = TRUE)
+# Publish:
+t.test(merged_data$pre_publish, merged_data$post_publish, paired = TRUE)
+# Write:
+t.test(merged_data$pre_write, merged_data$post_write, paired = TRUE)
+# Research:
+t.test(merged_data$pre_research, merged_data$post_research, paired = TRUE)
+```
 
