@@ -8,6 +8,7 @@ stackedBarChart(
   df,
   scale_labels,
   pre_post = FALSE,
+  overall_n = FALSE,
   percent_label = TRUE,
   question_order = NULL,
   question_labels = NULL,
@@ -19,9 +20,11 @@ stackedBarChart(
 variables, in 5 point scales and pre-post, that will be inserted into a
 stacked bar chart with The Mark USA branding.}
 
-\item{scale_labels}{Required, a character vector of 5 levels to set the scale for the plot.}
+\item{scale_labels}{Required, a character vector of levels to set the scale for the plot, accepts a character vector of 3 to 7 items.}
 
 \item{pre_post}{Default is FALSE. If true, returns a pre-post stacked bar chart.}
+
+\item{overall_n}{Default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.}
 
 \item{percent_label}{Default is TRUE. If FALSE, labels the bars with the number of answers per response.}
 

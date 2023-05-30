@@ -4,9 +4,11 @@
 #'   variables, in 5 point scales and pre-post, that will be inserted into a
 #'   diverging bar chart with The Mark USA branding.
 #'
-#' @param scale_labels Required, a character vector of 5 levels to set the scale for the plot.
+#' @param scale_labels Required, a character vector of levels to set the scale for the plot, accepts a character vector of 3 to 7 items.
 #'
-#' @param percent_label Default is TRUE. If FALSE, labels the bars with the number of answers per response.
+#' @param overall_n Default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
+#'
+#' @param percent_label Default is TRUE. Returns a plot with bar labelled by percentage of responses. If FALSE, returns a plot with bars labelled with the response count.
 #'
 #' @param question_order Takes in a character vector to sort the order of the questions. Default is NULL.
 #'
@@ -41,13 +43,15 @@
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
 #'
 #' divBarChart(cat_items, levels_min_ext)
-divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order = NULL, question_labels = NULL, width = NULL) {
+divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRUE, question_order = NULL, question_labels = NULL, width = NULL) {
   extrafont::loadfonts("all", quiet = TRUE)
 
   . <- NULL
 
-  fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+  # Changes scale_labels to tibble pulls out index and saves that as a vector, gets number of levels from scale_labels:
+  number_levels <- scale_labels %>% tibble::enframe() %>% dplyr::select("name") %>% tibble::deframe()
 
+  # Main data manipulation:
   new_df <- {{ df }} %>%
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
     dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
@@ -80,6 +84,73 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
     dplyr::ungroup() %>%
     dplyr::arrange(.data$response)
 
+  # IF/ELSE statement, first if number_levels equals 3, sets up the label_color and fill color:
+  if (length(number_levels) == 3) {
+    new_df <- new_df %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::mutate(
+        label_color = "black",
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(.data$response)
+
+    # 3 colors for chart:
+    fill_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+
+    # If number_levels) == 4
+  } else if (length(number_levels) == 4) {
+    new_df <- new_df %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::mutate(
+        label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(.data$response)
+
+    # 4 colors for chart:
+    fill_colors <- c("#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+
+    # If number_levels) == 5
+  } else if (length(number_levels) == 5) {
+    new_df <- new_df %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::mutate(
+        label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(.data$response)
+
+    # 5 colors for chart:
+    fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+
+    # If number_levels) == 6
+  } else if (length(number_levels) == 6) {
+    new_df <- new_df %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::mutate(
+        label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(.data$response)
+
+    # 6 colors for chart:
+    fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F", "gray")
+
+    # If number_levels) == 7
+  } else if (length(number_levels) == 7) {
+    new_df <- new_df %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::mutate(
+        label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(.data$response)
+
+    # 7 colors for chart:
+    fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
+
+  }
+
   # Sorts question order by the highest sum of the top two response categories (pos_valence_post) from post:
   if (is.null(question_order)) {
     question_order <- new_df %>%
@@ -106,10 +177,13 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
     dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
     dplyr::ungroup()
 
-  # Get overall n if it is the same for each item:
-  N_df <- totals_new_df %>%
-    dplyr::summarize(N = mean(.data$total)) %>%
-    tibble::deframe()
+  # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal:
+  if (length(unique(totals_new_df$total)) == 1) {
+    # Get overall n if it is the same for each item:
+    N_df <- totals_new_df %>%
+      dplyr::summarize(N = mean(.data$total)) %>%
+      tibble::deframe()
+  }
 
   if (is.null(width)) {
     width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
@@ -131,37 +205,75 @@ divBarChart <- function(df, scale_labels, percent_label = TRUE, question_order =
       ))
   }
 
-  diverging_bar_chart <- diverging_bar_chart +
-    ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
-    ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-      family = "Gill Sans MT", fontface = "bold",
-      position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
-    ) +
-    ggplot2::scale_color_manual(values = c("black", "white")) +
-    ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
-    ggplot2::scale_fill_manual(
-      breaks = scale_labels, values = fill_colors, drop = FALSE,
-      labels = function(response) stringr::str_wrap(response, width = 10)
-    ) +
-    ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(
-      size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
-      spacing.x = 14, spacing.y = 0
-    )) +
-    ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) +
-    ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
-    ggplot2::theme(
-      strip.placement = "outside",
-      axis.text.y = ggplot2::element_text(
-        angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT",
-        margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
-      ),
-      strip.text.y.left = ggplot2::element_text(
-        angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
-        margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
-      ),
-      plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
-      legend.position = "top"
-    )
+  if (isTRUE(overall_n)) {
+    diverging_bar_chart <- diverging_bar_chart +
+      ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
+      ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
+        family = "Gill Sans MT", fontface = "bold",
+        position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
+      ) +
+      ggplot2::scale_color_manual(values = c("black", "white")) +
+      ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
+      ggplot2::scale_fill_manual(
+        breaks = scale_labels, values = fill_colors, drop = FALSE,
+        labels = function(response) stringr::str_wrap(response, width = 10)
+      ) +
+      ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(
+        size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
+        spacing.x = 14, spacing.y = 0
+      )) +
+      ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) +
+      ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
+      ggplot2::theme(
+        strip.placement = "outside",
+        axis.text.y = ggplot2::element_text(
+          angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT",
+          margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
+        ),
+        strip.text.y.left = ggplot2::element_text(
+          angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
+          margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
+        ),
+        plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
+        legend.position = "top"
+      )
+    # Otherwise, if overall_n == FALSE, return a diverging_bar_chart with n for each question appended to the question label:
+  } else {
+    diverging_bar_chart <- diverging_bar_chart +
+      ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
+      ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
+        family = "Gill Sans MT", fontface = "bold",
+        position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
+      ) +
+      ggplot2::scale_color_manual(values = c("black", "white")) +
+      ggplot2::facet_wrap(~question,
+        ncol = 1, strip.position = "left",
+        labeller = ggplot2::as_labeller(~ paste0(.x, " ~ ", "(italic(n)==", totals_new_df$total, ")"), ggplot2::label_parsed)
+      ) +
+      ggplot2::scale_fill_manual(
+        breaks = scale_labels, values = fill_colors, drop = FALSE,
+        labels = function(response) stringr::str_wrap(response, width = 10)
+      ) +
+      ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(
+        size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
+        spacing.x = 14, spacing.y = 0
+      )) +
+      ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = NULL) +
+      ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
+      ggplot2::theme(
+        strip.placement = "outside",
+        axis.text.y = ggplot2::element_text(
+          angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT",
+          margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
+        ),
+        strip.text.y.left = ggplot2::element_text(
+          angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
+          margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
+        ),
+        plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
+        legend.position = "top"
+      )
+  }
 
   return(diverging_bar_chart)
 }

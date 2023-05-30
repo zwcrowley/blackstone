@@ -7,6 +7,7 @@
 divBarChart(
   df,
   scale_labels,
+  overall_n = FALSE,
   percent_label = TRUE,
   question_order = NULL,
   question_labels = NULL,
@@ -18,9 +19,11 @@ divBarChart(
 variables, in 5 point scales and pre-post, that will be inserted into a
 diverging bar chart with The Mark USA branding.}
 
-\item{scale_labels}{Required, a character vector of 5 levels to set the scale for the plot.}
+\item{scale_labels}{Required, a character vector of levels to set the scale for the plot, accepts a character vector of 3 to 7 items.}
 
-\item{percent_label}{Default is TRUE. If FALSE, labels the bars with the number of answers per response.}
+\item{overall_n}{Default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.}
+
+\item{percent_label}{Default is TRUE. Returns a plot with bar labelled by percentage of responses. If FALSE, returns a plot with bars labelled with the response count.}
 
 \item{question_order}{Takes in a character vector to sort the order of the questions. Default is NULL.}
 
