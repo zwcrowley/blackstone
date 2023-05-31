@@ -167,7 +167,7 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
   if (is.null(question_labels)) {
     new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order))
   } else {
-    question_labels <- question_labels %>% stringr::str_wrap(., width = 45)
+    question_labels <- question_labels %>% stringr::str_wrap(., width = 30) %>% gsub("\n","<br>",.)
     new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order, labels = question_labels))
   }
 
@@ -191,21 +191,24 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
     )
   }
 
-  if (isTRUE(percent_label)) {
-    diverging_bar_chart <- new_df %>%
-      ggplot2::ggplot(ggplot2::aes(
-        x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
-        label = .data$percent_answers_label, group = .data$question
-      ))
-  } else {
-    diverging_bar_chart <- new_df %>%
-      ggplot2::ggplot(ggplot2::aes(
-        x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
-        label = .data$n_answers, group = .data$question
-      ))
-  }
 
+  # If overall_n == TRUE:
   if (isTRUE(overall_n)) {
+
+    if (isTRUE(percent_label)) {
+      diverging_bar_chart <- new_df %>%
+        ggplot2::ggplot(ggplot2::aes(
+          x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
+          label = .data$percent_answers_label, group = .data$question
+        ))
+    } else {
+      diverging_bar_chart <- new_df %>%
+        ggplot2::ggplot(ggplot2::aes(
+          x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
+          label = .data$n_answers, group = .data$question
+        ))
+    }
+
     diverging_bar_chart <- diverging_bar_chart +
       ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
       ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
@@ -239,6 +242,32 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       )
     # Otherwise, if overall_n == FALSE, return a diverging_bar_chart with n for each question appended to the question label:
   } else {
+
+    # Change the label of the variable "question" by adding n of each to the end of the character string and add string wrap of 20:
+    labels_n_questions <- new_df %>%
+      dplyr::mutate(labels = paste0(.data$question, " ","(*n* = ",totals_new_df$total,")"),
+                    labels = factor(.data$labels)) %>% dplyr::arrange(.data$question) %>%
+      dplyr::distinct(.data$labels) %>% tibble::deframe()
+
+    # Set factor labels for question to labels_n_questions:
+    new_df <- new_df %>%
+      dplyr::mutate(question = factor(.data$question, labels = labels_n_questions)) %>%
+      dplyr::arrange(.data$question)
+
+    if (isTRUE(percent_label)) {
+      diverging_bar_chart <- new_df %>%
+        ggplot2::ggplot(ggplot2::aes(
+          x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
+          label = .data$percent_answers_label, group = .data$question
+        ))
+    } else {
+      diverging_bar_chart <- new_df %>%
+        ggplot2::ggplot(ggplot2::aes(
+          x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
+          label = .data$n_answers, group = .data$question
+        ))
+    }
+
     diverging_bar_chart <- diverging_bar_chart +
       ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
       ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
@@ -246,10 +275,7 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
         position = ggplot2::position_stack(vjust = .5, reverse = T), size = 3
       ) +
       ggplot2::scale_color_manual(values = c("black", "white")) +
-      ggplot2::facet_wrap(~question,
-        ncol = 1, strip.position = "left",
-        labeller = ggplot2::as_labeller(~ paste0(.x, " ~ ", "(italic(n)==", totals_new_df$total, ")"), ggplot2::label_parsed)
-      ) +
+      ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
       ggplot2::scale_fill_manual(
         breaks = scale_labels, values = fill_colors, drop = FALSE,
         labels = function(response) stringr::str_wrap(response, width = 10)
@@ -262,11 +288,11 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
       ggplot2::theme(
         strip.placement = "outside",
-        axis.text.y = ggplot2::element_text(
+        axis.text.y = ggtext::element_markdown(
           angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT",
           margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
         ),
-        strip.text.y.left = ggplot2::element_text(
+        strip.text.y.left = ggtext::element_markdown(
           angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
           margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
         ),
