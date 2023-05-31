@@ -16,7 +16,7 @@ stackedBarChart(
 )
 }
 \arguments{
-\item{df}{Required, A tibble/data frame of survey items that are categorical/character
+\item{df}{Required, A \link[tibble:tibble-package]{tibble}/data frame of survey items that are categorical/character
 variables, in 5 point scales and pre-post, that will be inserted into a
 stacked bar chart with The Mark USA branding.}
 

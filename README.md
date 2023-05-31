@@ -41,9 +41,10 @@ variables with the desired levels.
 
 `recodeCat()` takes in three arguments:
 
-**df** Required, a tibble/data frame of survey items that are numeric
-variables that need to be converted into factor variables. Numeric
-variables in the data can be anywhere from 3 to 7 point scales.
+**df** Required, a \[tibble\]\[tibble::tibble-package\]/data frame of
+survey items that are numeric variables that need to be converted into
+factor variables. Numeric variables in the data can be anywhere from 3
+to 7 point scales.
 
 **scale_labels** Required, a character vector of labels of the desired
 scale levels. The function will use this vector to convert the numeric
@@ -113,10 +114,10 @@ branding/style of The Mark USA, Inc.
 
 `stackedBarChart()` takes up to 7 arguments, first 2 are required:
 
-**df** Required, A tibble or data frame of survey items that are
-categorical/factor variables, in 5 point scales, can be a single time
-point or pre-post, that will be inserted into a stacked bar chart with
-The Mark USA branding.
+**df** Required, A \[tibble\]\[tibble::tibble-package\] or data frame of
+survey items that are categorical/factor variables, in 5 point scales,
+can be a single time point or pre-post, that will be inserted into a
+stacked bar chart with The Mark USA branding.
 
 **scale_labels** Required, a character vector of 5 levels to set the
 scale for the plot.
@@ -186,10 +187,10 @@ the branding and style of The Mark USA, Inc.
 
 `divBarChart()` takes in up to six arguments, first two are required:
 
-**df** Required, A tibble or data frame of survey items that are
-categorical/factor variables, in 5 point scales, must be pre-post data,
-that will be inserted into a stacked bar chart with The Mark USA
-branding.
+**df** Required, A \[tibble\]\[tibble::tibble-package\] or data frame of
+survey items that are categorical/factor variables, in 5 point scales,
+must be pre-post data, that will be inserted into a stacked bar chart
+with The Mark USA branding.
 
 **scale_labels** Required, character vector of levels of the factor
 variables to be added to the plot, this will set the scale for the
@@ -225,9 +226,9 @@ div_chart_1
 
 `arrowChart()` take in three arguments:
 
-**df** A tibble/data frame of survey items that are numeric variables,
-must be in 5 point scales and pre-post, that will be inserted into a
-stacked bar chart with The Mark USA branding.
+**df** A \[tibble\]\[tibble::tibble-package\]/data frame of survey items
+that are numeric variables, must be in 5 point scales and pre-post, that
+will be inserted into a stacked bar chart with The Mark USA branding.
 
 **scale_labels** character vector to set up the labels for the x-axis,
 this will match the numeric response in the data.

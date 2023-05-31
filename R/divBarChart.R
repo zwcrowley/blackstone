@@ -1,6 +1,6 @@
 #' Diverging and Stacked Bar Chart for The Mark USA, Inc.
 #'
-#' @param df A tibble/data frame of survey items that are categorical/character
+#' @param df A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
 #'   variables, in 5 point scales and pre-post, that will be inserted into a
 #'   diverging bar chart with The Mark USA branding.
 #'

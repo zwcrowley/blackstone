@@ -4,22 +4,34 @@
 \alias{arrowChart}
 \title{Arrow Chart for The Mark USA, Inc.}
 \usage{
-arrowChart(df, scale_labels, group_colors)
+arrowChart(
+  df,
+  scale_labels,
+  group_colors,
+  overall_n = FALSE,
+  question_order = NULL,
+  question_labels = NULL
+)
 }
 \arguments{
-\item{df}{A tibble or data frame of numeric data that has a categorical group
+\item{df}{Required, a \link[tibble:tibble-package]{tibble} or data frame of \strong{numeric} data that has a categorical group
 variable to split up the data, e.g. role, gender, education level, etc.}
 
-\item{scale_labels}{character vector of labels for the x-axis, usually a
-response to a set of likert items, needs to match the number of response
-items in the data.}
+\item{scale_labels}{Required, a character vector of levels to set the scale for the plot.}
 
-\item{group_colors}{character vector of hex codes for colors to associate
+\item{group_colors}{Required, a character vector of hex codes for colors to associate
 each group to, e.g. this data has two groups and this function creates an
 overall group so this function will need a 'group_colors' character vector of
 three colors. 'group_colors' need to be in the order you want them associated to
 the group based on the factor levels for the group variable, last color
 will be the overall group of "all".}
+
+\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
+If False, adds \emph{n} to each question/item after the respective labels.}
+
+\item{question_order}{Takes in a character vector to sort the order of the questions. Default is NULL.}
+
+\item{question_labels}{Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.}
 }
 \value{
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arrow bar chart.
@@ -50,5 +62,6 @@ items <- items \%>\% dplyr::mutate(
   group = factor(group, levels = c("grad", "undergrad"))
 )
 threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
-arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors)
+arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+    overall_n = FALSE, question_order = NULL, question_labels = NULL)
 }

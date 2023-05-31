@@ -3,21 +3,27 @@
 #' `arrowChart()` creates an pre-post arrow chart of group averages and returns
 #' a ggplot object.
 #'
-#' @param df A tibble or data frame of numeric data that has a categorical group
+#' @param df Required, a [tibble][tibble::tibble-package] or data frame of **numeric** data that has a categorical group
 #'   variable to split up the data, e.g. role, gender, education level, etc.
 #'
-#' @param scale_labels character vector of labels for the x-axis, usually a
-#'   response to a set of likert items, needs to match the number of response
-#'   items in the data.
+#' @param scale_labels Required, a character vector of levels to set the scale for the plot.
 #'
-#' @param group_colors character vector of hex codes for colors to associate
+#' @param group_colors Required, a character vector of hex codes for colors to associate
 #'   each group to, e.g. this data has two groups and this function creates an
 #'   overall group so this function will need a 'group_colors' character vector of
 #'   three colors. 'group_colors' need to be in the order you want them associated to
 #'   the group based on the factor levels for the group variable, last color
 #'   will be the overall group of "all".
 #'
+#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
+#'    If False, adds *n* to each question/item after the respective labels.
+#'
+#' @param question_order Takes in a character vector to sort the order of the questions. Default is NULL.
+#'
+#' @param question_labels Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.
+#'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a arrow bar chart.
+#' @export
 #'
 #' @examples
 #' items <- dplyr::tibble(
@@ -41,12 +47,12 @@
 #'   group = factor(group, levels = c("grad", "undergrad"))
 #' )
 #' threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
-#' arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors)
-#' @export
-arrowChart <- function(df, scale_labels, group_colors) {
+#' arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+#'     overall_n = FALSE, question_order = NULL, question_labels = NULL)
+arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, question_order = NULL, question_labels = NULL) {
   extrafont::loadfonts("all", quiet = TRUE)
 
-  N_df <- {{ df }} %>% nrow()
+  . <- NULL
 
   arrow_df_group <- {{ df }} %>%
     dplyr::group_by(.data$group) %>%
@@ -68,52 +74,135 @@ arrowChart <- function(df, scale_labels, group_colors) {
     dplyr::ungroup() %>%
     dplyr::mutate(group = "all")
 
+  # Full join the data by groups and overall:
   arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by("group", "question", "timing", "score_avg"))
-
+  # Rev the factor order of "group":
   arrow_df <- arrow_df %>%
     dplyr::group_by(.data$group, .data$question, .data$timing) %>%
     dplyr::mutate(
-      question = factor(.data$question, levels = .data$question),
       group = forcats::fct_rev(factor(.data$group))
     ) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(dplyr::desc(.data$timing), dplyr::desc(.data$score_avg)) %>%
-    dplyr::mutate(question = forcats::fct_reorder2(.data$question, .data$timing, .data$score_avg, .desc = TRUE))
+    dplyr::ungroup()
 
-  arrow <- arrow_df %>%
-    ggplot2::ggplot(ggplot2::aes(
-      x = .data$score_avg, y = forcats::fct_rev(.data$group), color = forcats::fct_rev(.data$group),
-      label = scales::number(.data$score_avg, accuracy = 0.01), group = .data$group
-    )) +
-    ggplot2::geom_line(
-      lineend = "round", linejoin = "round", linewidth = 1,
-      arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.1, "inches"))
-    ) +
-    ggplot2::geom_text(
-      data = dplyr::filter(arrow_df, .data$timing == "Pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
-      family = "Gill Sans MT", size = 3.5
-    ) +
-    ggplot2::geom_text(
-      data = dplyr::filter(arrow_df, .data$timing == "Post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
-      family = "Gill Sans MT", size = 3.5
-    ) +
-    ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
-    ggplot2::scale_color_manual(values = group_colors, labels = function(group) stringr::str_to_title(group)) +
-    ggplot2::scale_x_continuous(limits = c(1, 5), labels = scale_labels) +
-    ggplot2::labs(tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")")), color = NULL) +
-    ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
-    ggplot2::theme(
-      axis.text.x = ggplot2::element_text(
-        color = "#767171", size = 12, family = "Gill Sans MT",
-        margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
-      ),
-      strip.text.y.left = ggplot2::element_text(
-        angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
-        margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
-      ),
-      plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
-      legend.position = "top"
-    )
+  if (is.null(question_order)) {
+    # Set up question as a factor and arrange by the top score_avg:
+    question_order <- arrow_df %>%
+      dplyr::arrange(dplyr::desc(.data$timing), dplyr::desc(.data$score_avg)) %>%
+      dplyr::distinct(.data$question) %>%
+      dplyr::mutate(question = as.character(.data$question)) %>%
+      tibble::deframe()
+  }
+
+  if (is.null(question_labels)) {
+    arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order))
+  } else {
+    question_labels <- question_labels %>% stringr::str_wrap(., width = 30) %>% gsub("\n","<br>",.)
+    arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order, labels = question_labels))
+  }
+
+  # Get total n for each question, grouped by question and timing:
+  totals_new_df <- {{ df }}  %>%
+    dplyr::select(!"group") %>%
+    tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+    tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
+    dplyr::group_by(.data$question, .data$timing) %>%
+    dplyr::mutate(timing = factor(.data$timing, levels = c("Pre", "Post"))) %>%
+    dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+    dplyr::ungroup()
+
+  # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal:
+  if (length(unique(totals_new_df$total)) == 1) {
+    # Get overall n if it is the same for each item:
+    N_df <- totals_new_df %>%
+      dplyr::summarize(N = mean(.data$total)) %>%
+      tibble::deframe()
+  }
+
+  # If overall_n == TRUE:
+  if (isTRUE(overall_n)) {
+    arrow <- arrow_df %>%
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$score_avg, y = forcats::fct_rev(.data$group), color = forcats::fct_rev(.data$group),
+        label = scales::number(.data$score_avg, accuracy = 0.01), group = .data$group
+      )) +
+      ggplot2::geom_line(
+        lineend = "round", linejoin = "round", linewidth = 1,
+        arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.1, "inches"))
+      ) +
+      ggplot2::geom_text(
+        data = dplyr::filter(arrow_df, .data$timing == "Pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
+        family = "Gill Sans MT", size = 3.5
+      ) +
+      ggplot2::geom_text(
+        data = dplyr::filter(arrow_df, .data$timing == "Post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
+        family = "Gill Sans MT", size = 3.5
+      ) +
+      ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
+      ggplot2::scale_color_manual(values = group_colors, labels = function(group) stringr::str_to_title(group)) +
+      ggplot2::scale_x_continuous(limits = c(1, 5), labels = scale_labels) +
+      ggplot2::labs(tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")")), color = NULL) +
+      ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
+      ggplot2::theme(
+        axis.text.x = ggtext::element_markdown(
+          color = "#767171", size = 12, family = "Gill Sans MT",
+          margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
+        ),
+        strip.text.y.left = ggtext::element_markdown(
+          angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
+          margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
+        ),
+        plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
+        legend.position = "top"
+      )
+  # Otherwise, if overall_n == FALSE and pre_post == TRUE, return a stacked_bar_chart with n for each question appended to the question label:
+  } else {
+    # Change the label of the variable "question" by adding n of each to the end of the character string and add string wrap of 20:
+    # Set up labels for question:
+    labels_n_questions <- arrow_df %>%
+      dplyr::mutate(labels = paste0(.data$question, " ","(*n* = ",totals_new_df$total,")"),
+                    labels = factor(.data$labels)) %>% dplyr::arrange(.data$question) %>%
+      dplyr::distinct(.data$labels) %>% tibble::deframe()
+
+    # Set factor labels for question to labels_n_questions:
+    arrow_df <- arrow_df %>%
+      dplyr::mutate(question = factor(.data$question, labels = labels_n_questions)) %>%
+      dplyr::arrange(.data$question)
+
+    arrow <- arrow_df %>%
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$score_avg, y = forcats::fct_rev(.data$group), color = forcats::fct_rev(.data$group),
+        label = scales::number(.data$score_avg, accuracy = 0.01), group = .data$group
+      )) +
+      ggplot2::geom_line(
+        lineend = "round", linejoin = "round", linewidth = 1,
+        arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.1, "inches"))
+      ) +
+      ggplot2::geom_text(
+        data = dplyr::filter(arrow_df, .data$timing == "Pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
+        family = "Gill Sans MT", size = 3.5
+      ) +
+      ggplot2::geom_text(
+        data = dplyr::filter(arrow_df, .data$timing == "Post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
+        family = "Gill Sans MT", size = 3.5
+      ) +
+      ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
+      ggplot2::scale_color_manual(values = group_colors, labels = function(group) stringr::str_to_title(group)) +
+      ggplot2::scale_x_continuous(limits = c(1, 5), labels = scale_labels) +
+      ggplot2::labs(tag = NULL, color = NULL) +
+      ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
+      ggplot2::theme(
+        axis.text.x = ggtext::element_markdown(
+          color = "#767171", size = 12, family = "Gill Sans MT",
+          margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
+        ),
+        strip.text.y.left = ggtext::element_markdown(
+          angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
+          margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
+        ),
+        plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
+        legend.position = "top"
+      )
+  }
 
   return(arrow)
 }
