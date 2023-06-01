@@ -21,6 +21,14 @@ test_that("plots accept same data types", {
   )
 
   levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+  # Question order/labels as a named vector with the new names as the names and
+  # the old vars as the character strings:
+  question_labels <- c("Publish and lot a get a job" =  "Publish",
+                           "Write a lot of papers and look smart" = "Write",
+                            "Research gets tedious and very boring" = "Research",
+                            "Organization is important and hard to do" = "Organization",
+                            "Source work for students" = "Source")
+
   # Recode the numeric to factor variables using the levels from levels_min_ext:
   cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
   cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
@@ -32,11 +40,11 @@ test_that("plots accept same data types", {
   # Pass the factor variables and the levels to 'stackedBarChart()':
   stacked_chart_1 <- TheMarkUSA::stackedBarChart(
     df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
-    question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
+    question_order = TRUE, question_labels = question_labels, percent_label = TRUE, width = NULL
   )
   stacked_chart_2 <- TheMarkUSA::stackedBarChart(
     df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
-    question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
+    question_order = TRUE, question_labels = question_labels, percent_label = TRUE, width = NULL
   )
 
   expect_type(stacked_chart_1, "list")

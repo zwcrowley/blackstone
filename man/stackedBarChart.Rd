@@ -10,8 +10,8 @@ stackedBarChart(
   pre_post = FALSE,
   overall_n = FALSE,
   percent_label = TRUE,
-  question_order = NULL,
   question_labels = NULL,
+  question_order = TRUE,
   width = NULL
 )
 }
@@ -28,9 +28,12 @@ stacked bar chart with The Mark USA branding.}
 
 \item{percent_label}{Default is TRUE. If FALSE, labels the bars with the number of answers per response.}
 
-\item{question_order}{Takes in a character vector to sort the order of the questions. Default is NULL.}
+\item{question_labels}{Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
+The named character vector should have the new labels as the "name" and the old labels as the "variable" sorted in the
+desired order of appearing in the plot, first item will appear at the top of the plot. See examples.}
 
-\item{question_labels}{Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.}
+\item{question_order}{Default is TRUE. Logical, if TRUE the question order will be the questions with highest positive valenced response options
+on the top of the plot descending. If FALSE, takes in the question order supplied by the named character vector passed to question_labels}
 
 \item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
@@ -63,6 +66,14 @@ items_single <- dplyr::tibble(
 )
 
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+# Question order/labels as a named vector with the new names as the names and
+# the old vars as the character strings:
+question_labels <- c("Publish and lot a get a job" =  "Publish",
+                         "Write a lot of papers and look smart" = "Write",
+                          "Research gets tedious and very boring" = "Research",
+                          "Organization is important and hard to do" = "Organization",
+                          "Source work for students" = "Source")
+
 # Recode the numeric to factor variables using the levels from levels_min_ext:
 cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
 cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
@@ -74,10 +85,18 @@ cat_items_single <- cat_items_single \%>\% dplyr::select(dplyr::where(is.factor)
 # Pass the factor variables and the levels to 'stackedBarChart()':
 stackedBarChart(
   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
-  question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
+  question_labels= NULL, percent_label = TRUE, width = NULL
 )
 stackedBarChart(
   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
-  question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
+  question_labels= NULL, percent_label = TRUE, width = NULL
+)
+stackedBarChart(
+  df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
+  question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
+)
+stackedBarChart(
+  df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+  question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 )
 }

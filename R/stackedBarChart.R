@@ -12,9 +12,12 @@
 #'
 #' @param percent_label Default is TRUE. If FALSE, labels the bars with the number of answers per response.
 #'
-#' @param question_order Takes in a character vector to sort the order of the questions. Default is NULL.
+#' @param question_labels Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
+#'    The named character vector should have the new labels as the "name" and the old labels as the "variable" sorted in the
+#'    desired order of appearing in the plot, first item will appear at the top of the plot. See examples.
 #'
-#' @param question_labels Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.
+#' @param question_order Default is TRUE. Logical, if TRUE the question order will be the questions with highest positive valenced response options
+#'    on the top of the plot descending. If FALSE, takes in the question order supplied by the named character vector passed to question_labels
 #'
 #' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'
@@ -44,6 +47,14 @@
 #' )
 #'
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+#' # Question order/labels as a named vector with the new names as the names and
+#' # the old vars as the character strings:
+#' question_labels <- c("Publish and lot a get a job" =  "Publish",
+#'                          "Write a lot of papers and look smart" = "Write",
+#'                           "Research gets tedious and very boring" = "Research",
+#'                           "Organization is important and hard to do" = "Organization",
+#'                           "Source work for students" = "Source")
+#'
 #' # Recode the numeric to factor variables using the levels from levels_min_ext:
 #' cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
 #' cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
@@ -55,13 +66,21 @@
 #' # Pass the factor variables and the levels to 'stackedBarChart()':
 #' stackedBarChart(
 #'   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
-#'   question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
+#'   question_labels= NULL, percent_label = TRUE, width = NULL
 #' )
 #' stackedBarChart(
 #'   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
-#'   question_order = NULL, question_labels = NULL, percent_label = TRUE, width = NULL
+#'   question_labels= NULL, percent_label = TRUE, width = NULL
 #' )
-stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE, question_order = NULL, question_labels = NULL, width = NULL) {
+#' stackedBarChart(
+#'   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
+#'   question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
+#' )
+#' stackedBarChart(
+#'   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+#'   question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
+#' )
+stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE, question_labels = NULL, question_order= TRUE, width = NULL) {
   extrafont::loadfonts("all", quiet = TRUE)
 
   . <- NULL
@@ -72,9 +91,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
     dplyr::select("name") %>%
     tibble::deframe()
 
-  # If pre_post == TRUE:
   if (isTRUE(pre_post)) {
-
     # Sets up new_df if pre_post is TRUE:
     new_df <- {{ df }} %>%
       tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
@@ -88,16 +105,26 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       dplyr::mutate(
         percent_answers = .data$n_answers / sum(.data$n_answers),
         percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
-        pos_valence_post = dplyr::case_when(
-          .data$response == levels(.data$response)[4] & .data$timing == "Post" ~ percent_answers,
-          .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
-          TRUE ~ 0
-        ),
         response = forcats::fct_relevel(.data$response, scale_labels),
         timing = factor(.data$timing, levels = c("Pre", "Post"))
       ) %>%
-      dplyr::ungroup() %>%
-      dplyr::arrange(.data$response)
+      dplyr::ungroup()
+
+    # If the user supplies a named vector for questions labels:
+    if (!is.null(question_labels)) {
+      names(question_labels) <- names(question_labels) %>%
+        stringr::str_wrap(., width = 30) %>%
+        gsub("\n", "<br>", .)
+      new_df <- new_df %>%
+        dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels)) %>%
+        dplyr::ungroup()
+    }
+
+    # Get total n for each question, grouped by question and timing:
+    totals_new_df <- new_df %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
+      dplyr::ungroup()
 
     # IF/ELSE statement, first if number_levels equals 3, sets up the label_color and fill color:
     if (length(number_levels) == 3) {
@@ -105,9 +132,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
           label_color = "black",
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[3] & timing == "Post" ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
-        dplyr::ungroup() %>%
-        dplyr::arrange(.data$response)
+        dplyr::ungroup()
 
       # 3 colors for chart:
       fill_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
@@ -118,6 +148,11 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[3] & timing == "Post" ~ percent_answers,
+            .data$response == levels(.data$response)[4] & timing == "Post" ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(.data$response)
@@ -131,6 +166,11 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[4] & timing == "Post" ~ percent_answers,
+            .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(.data$response)
@@ -144,6 +184,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[4] & timing == "Post" ~ percent_answers,
+            .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
+            .data$response == levels(.data$response)[6] & timing == "Post" ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(.data$response)
@@ -157,16 +203,23 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
+            .data$response == levels(.data$response)[6] & timing == "Post" ~ percent_answers,
+            .data$response == levels(.data$response)[7] & timing == "Post" ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(.data$response)
 
       # 7 colors for chart:
       fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
-
     }
 
-    if (is.null(question_order)) {
+    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
+    # (top levels depending on total response levels):
+    if (isTRUE(question_order)) {
       question_order <- new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
@@ -176,20 +229,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::select("question") %>%
         dplyr::mutate(question = as.character(.data$question)) %>%
         tibble::deframe()
-    }
 
-    if (is.null(question_labels)) {
       new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order))
     } else {
-      question_labels <- question_labels %>% stringr::str_wrap(., width = 30) %>% gsub("\n","<br>",.)
-      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order, labels = question_labels))
+      # If FALSE, use user supplied by order based on the set up the levels for question using- names(question_labels):
+      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
     }
-
-    # Get total n for each question, grouped by question and timing:
-    totals_new_df <- new_df %>%
-      dplyr::group_by(.data$question, .data$timing) %>%
-      dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
-      dplyr::ungroup()
 
     # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal:
     if (length(unique(totals_new_df$total)) == 1) {
@@ -201,12 +246,11 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
 
     if (is.null(width)) {
       width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                              dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+        dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
       )
     }
-    # If overall_n == TRUE and pre_post == TRUE:
-    if (isTRUE(overall_n)) {
 
+    if (isTRUE(overall_n)) {
       if (isTRUE(percent_label)) {
         stacked_bar_chart <- new_df %>% ggplot2::ggplot(ggplot2::aes(
           x = .data$percent_answers, y = forcats::fct_rev(.data$timing), fill = .data$response,
@@ -222,43 +266,53 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       stacked_bar_chart <- stacked_bar_chart +
         ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
         ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-                           family = "Gill Sans MT",
-                           fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
+          family = "Gill Sans MT",
+          fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
         ) +
         ggplot2::scale_color_manual(values = c("black", "white")) +
         ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
-        ggplot2::scale_fill_manual(values = fill_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 10)) +
+        ggplot2::scale_fill_manual(
+          values = fill_colors, drop = FALSE,
+          labels = function(response) stringr::str_wrap(response, width = 10)
+        ) +
         ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(
           size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 5,
           spacing.x = 14, spacing.y = 0
         )) +
-        ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(",expression(italic(n)),"==",N_df,")"))) +
+        ggplot2::labs(
+          title = NULL, fill = NULL, y = NULL, x = NULL,
+          tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))
+        ) +
         ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
         ggplot2::theme(
           strip.placement = "outside",
-          axis.text.y = ggplot2::element_text(
+          axis.text.y = ggtext::element_markdown(
             angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT",
             margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
           ),
-          strip.text.y.left = ggplot2::element_text(
+          strip.text.y.left = ggtext::element_markdown(
             angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
             margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
           ),
           plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
           legend.position = "top"
         )
-      # Otherwise, if overall_n == FALSE and pre_post == TRUE, return a stacked_bar_chart with n for each question appended to the question label:
+      # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
     } else {
       # Change the label of the variable "question" by adding n of each to the end of the character string and add string wrap of 20:
       labels_n_questions <- new_df %>%
-        dplyr::mutate(labels = paste0(.data$question, " ","(*n* = ",totals_new_df$total,")"),
-                      labels = factor(.data$labels)) %>% dplyr::arrange(.data$question) %>%
-        dplyr::distinct(.data$labels) %>% tibble::deframe()
+        dplyr::mutate(
+          labels = paste0(.data$question, " ", "(*n* = ", totals_new_df$total, ")"),
+          labels = factor(.data$labels)
+        ) %>%
+        dplyr::arrange(.data$question) %>%
+        dplyr::distinct(.data$labels) %>%
+        tibble::deframe()
 
-      # Set factor labels for question to labels_n_questions:
+      # Change the label of the variable "question" by adding n of each to the end of the character string and
+      # Set factor labels for question to labels:
       new_df <- new_df %>%
-        dplyr::mutate(question = factor(.data$question, labels = labels_n_questions)) %>%
-        dplyr::arrange(.data$question)
+        dplyr::mutate(question = factor(.data$question, labels = labels_n_questions))
 
       if (isTRUE(percent_label)) {
         stacked_bar_chart <- new_df %>% ggplot2::ggplot(ggplot2::aes(
@@ -275,8 +329,8 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       stacked_bar_chart <- stacked_bar_chart +
         ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
         ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-                           family = "Gill Sans MT",
-                           fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
+          family = "Gill Sans MT",
+          fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
         ) +
         ggplot2::scale_color_manual(values = c("black", "white")) +
         ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
@@ -316,15 +370,26 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       tidyr::drop_na() %>%
       dplyr::group_by(.data$question) %>%
       dplyr::mutate(
-        response = factor(.data$response, scale_labels),
         percent_answers = .data$n_answers / sum(.data$n_answers),
         percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
-        pos_valence_post = dplyr::case_when(
-          .data$response == levels(.data$response)[4] ~ percent_answers,
-          .data$response == levels(.data$response)[5] ~ percent_answers,
-          TRUE ~ 0
-        )
+        response = forcats::fct_relevel(.data$response, scale_labels)
       ) %>%
+      dplyr::ungroup()
+
+    # If the user supplies a named vector for questions labels:
+    if (!is.null(question_labels)) {
+      names(question_labels) <- names(question_labels) %>%
+        stringr::str_wrap(., width = 30) %>%
+        gsub("\n", "<br>", .)
+      new_df <- new_df %>%
+        dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels)) %>%
+        dplyr::ungroup()
+    }
+
+    # Get total n for each question, grouped by question and timing:
+    totals_new_df <- new_df %>%
+      dplyr::group_by(.data$question) %>%
+      dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
       dplyr::ungroup()
 
     # IF/ELSE statement, first if number_levels equals 3, sets up the label_color and fill color:
@@ -333,6 +398,10 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
           label_color = "black",
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[3] ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup()
 
@@ -345,6 +414,11 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[3] ~ percent_answers,
+            .data$response == levels(.data$response)[4] ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup()
 
@@ -357,6 +431,11 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[4] ~ percent_answers,
+            .data$response == levels(.data$response)[5] ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup()
 
@@ -369,6 +448,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[4] ~ percent_answers,
+            .data$response == levels(.data$response)[5] ~ percent_answers,
+            .data$response == levels(.data$response)[6] ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup()
 
@@ -381,15 +466,22 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[5] ~ percent_answers,
+            .data$response == levels(.data$response)[6] ~ percent_answers,
+            .data$response == levels(.data$response)[7] ~ percent_answers,
+            TRUE ~ 0
+          )
         ) %>%
         dplyr::ungroup()
 
       # 7 colors for chart:
       fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
-
     }
 
-    if (is.null(question_order)) {
+    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
+    # (top levels depending on total response levels):
+    if (isTRUE(question_order)) {
       question_order <- new_df %>%
         dplyr::group_by(.data$question) %>%
         dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
@@ -398,13 +490,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::select("question") %>%
         dplyr::mutate(question = as.character(.data$question)) %>%
         tibble::deframe()
-    }
 
-    # Get total n for each question, grouped by question and timing:
-    totals_new_df <- new_df %>%
-      dplyr::group_by(.data$question) %>%
-      dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
-      dplyr::ungroup()
+      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order))
+    } else {
+      # If supplied by user set up the levels for question using the user supplied order = question_order (not NULL):
+      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
+    }
 
     # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal:
     if (length(unique(totals_new_df$total)) == 1) {
@@ -414,23 +505,14 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         tibble::deframe()
     }
 
-    if (is.null(question_labels)) {
-      new_df <- new_df %>%
-        dplyr::mutate(question = factor(.data$question, levels = question_order)) %>%
-        dplyr::arrange(.data$question)
-    } else {
-      question_labels <- question_labels %>% stringr::str_wrap(., width = 30) %>% gsub("\n","<br>",.)
-      new_df <- new_df %>%
-        dplyr::mutate(question = factor(.data$question, levels = question_order, labels = question_labels))
-    }
-
+    # Set default width for geom_col() bars if not supplied by user:
     if (is.null(width)) {
       width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                              dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+        dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
       )
     }
 
-    # If overall_n == TRUE and pre_post == FALSE:
+    # If overall_n == TRUE and pre_post == FALSE::
     if (isTRUE(overall_n)) {
       # Set labels to percent or n_answers:
       if (isTRUE(percent_label)) {
@@ -444,11 +526,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
           label = .data$n_answers, group = .data$question
         ))
       }
+
       stacked_bar_chart <- stacked_bar_chart +
         ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
         ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-                           family = "Gill Sans MT",
-                           fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
+          family = "Gill Sans MT",
+          fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
         ) +
         ggplot2::scale_color_manual(values = c("black", "white")) +
         ggplot2::scale_fill_manual(values = fill_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 20)) +
@@ -456,7 +539,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
           size = 12, family = "Gill Sans MT", face = "bold", hjust = 0, vjust = 0, ncol = 6,
           spacing.x = 25, spacing.y = 0
         )) +
-        ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(",expression(italic(n)),"==",N_df,")"))) +
+        ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) +
         ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
         ggplot2::theme(
           axis.text.y = ggtext::element_markdown(angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT"),
@@ -464,17 +547,22 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
           panel.spacing.x = ggplot2::unit(1, "in"),
           legend.position = "top"
         )
-      # Otherwise, if overall_n == FALSE and pre_post == FALSE, return a diverging_bar_chart with n for each question appended to the question label:
+      # Otherwise, if overall_n == FALSE, return a diverging_bar_chart with n for each question appended to the question label:
     } else {
       # Change the label of the variable "question" by adding n of each to the end of the character string and add string wrap of 20:
       labels_n_questions <- new_df %>%
-        dplyr::mutate(labels = paste0(.data$question, " ","(*n* = ",totals_new_df$total,")"),
-                      labels = factor(.data$labels)) %>% dplyr::arrange(.data$question) %>%
-        dplyr::distinct(.data$labels) %>% tibble::deframe()
-      # Set factor labels for question to labels_n_questions:
+        dplyr::mutate(
+          labels = paste0(.data$question, " ", "(*n* = ", totals_new_df$total, ")"),
+          labels = factor(.data$labels)
+        ) %>%
+        dplyr::arrange(.data$question) %>%
+        dplyr::distinct(.data$labels) %>%
+        tibble::deframe()
+
+      # Change the label of the variable "question" by adding n of each to the end of the character string and
+      # Set factor labels for question to labels:
       new_df <- new_df %>%
-        dplyr::mutate(question = factor(.data$question, labels = labels_n_questions)) %>%
-        dplyr::arrange(.data$question)
+        dplyr::mutate(question = factor(.data$question, labels = labels_n_questions))
 
       # Set labels to percent or n_answers:
       if (isTRUE(percent_label)) {
@@ -492,8 +580,8 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       stacked_bar_chart <- stacked_bar_chart +
         ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
         ggplot2::geom_text(ggplot2::aes(color = .data$label_color),
-                           family = "Gill Sans MT",
-                           fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
+          family = "Gill Sans MT",
+          fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
         ) +
         ggplot2::scale_color_manual(values = c("black", "white")) +
         ggplot2::scale_fill_manual(values = fill_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 20)) +
