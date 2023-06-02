@@ -1,5 +1,7 @@
 #' Stacked Bar Chart for The Mark USA, Inc.
 #'
+#' `stackedBarChart()` creates a stacked bar chart and returns a ggplot object with The Mark USA, Inc branding.
+#'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
 #'   variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with The Mark USA branding.
 #'
@@ -8,7 +10,8 @@
 #'
 #' @param pre_post Logical, default is FALSE. If true, returns a pre-post stacked bar chart.
 #'
-#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
+#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
+#'    If False, adds *n* to each question/item after the respective labels.
 #'
 #' @param percent_label Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.
 #'

@@ -3,8 +3,8 @@
 #' `arrowChart()` creates an pre-post arrow chart of group averages and returns
 #' a ggplot object.
 #'
-#' @param df Required, a [tibble][tibble::tibble-package] or data frame of **numeric** data that has a categorical group
-#'   variable to split up the data, e.g. role, gender, education level, etc.
+#' @param df Required, a [tibble][tibble::tibble-package] or data frame of **numeric** data that also has a categorical group
+#'  variable to split up the data, e.g. role, gender, education level, etc. must be in 5 point scales and pre-post.
 #'
 #' @param scale_labels Required, a character vector of levels to set the scale for the plot.
 #'
@@ -15,12 +15,16 @@
 #'   the group based on the factor levels for the group variable, last color
 #'   will be the overall group of "all".
 #'
-#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
+#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.
 #'
-#' @param question_order Takes in a character vector to sort the order of the questions. Default is NULL.
+#' @param question_labels Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
+#'    The named character vector should have the new labels as the "name" and the old labels as the "variable" sorted in the
+#'    desired order of appearing in the plot, first item will appear at the top of the plot. See examples.
 #'
-#' @param question_labels Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.
+#' @param question_order Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
+#'    question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
+#'    post score average on the top of the plot descending.
 #'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a arrow bar chart.
 #' @export
@@ -37,23 +41,41 @@
 #'   Post_Write = Pre_Write + 1,
 #'   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
 #'   Post_Research = Pre_Research + 1,
-#'   group = c(
-#'     "grad", "grad", "grad", "grad",
-#'     "undergrad", "undergrad", "undergrad", "undergrad", "undergrad"
-#'   )
+#'   group = factor(c(
+#'       "grad", "undergrad", "grad", "undergrad", "grad",
+#'       "undergrad", "undergrad", "grad", "undergrad"
+#'  ), levels = c("grad", "undergrad"))
 #' )
+#' # Labels for response scales to recode the numeric variables to on the plot:
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-#' items <- items %>% dplyr::mutate(
-#'   group = factor(group, levels = c("grad", "undergrad"))
-#' )
+#' # Question labels as a named vector with the naming structure
+#' # like this: c("{new label}" = "{original variable name}"):
+#' question_labels <- c("Publish a lot of high quality papers" =  "Publish",
+#'                      "Write a lot of research papers" = "Write",
+#'                      "Research in a lab with faculty" = "Research",
+#'                      "Organization of a large research project" = "Organization",
+#'                      "Source work for a research paper" = "Source")
+#'
+#' # Set up a character vector of scale colors to pass to the argument group_colors:
 #' threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+#'
+#' # Example with n for each question and original labels:
 #' arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
-#'     overall_n = FALSE, question_order = NULL, question_labels = NULL)
-arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, question_order = NULL, question_labels = NULL) {
+#'     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+#'
+#' # With new labels, question_order = FALSE, and overall_n set to TRUE:
+#' arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+#'     overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
+#'
+#' # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
+#' arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+#'     overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
+arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, question_labels = NULL, question_order = FALSE) {
   extrafont::loadfonts("all", quiet = TRUE)
 
   . <- NULL
 
+  # Set up a df for the original groups separate average:
   arrow_df_group <- {{ df }} %>%
     dplyr::group_by(.data$group) %>%
     tidyr::pivot_longer(-"group", names_to = "question", values_to = "response") %>%
@@ -64,6 +86,7 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
     dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
     dplyr::ungroup()
 
+  # Set up a df for an overall average
   arrow_df_all <- {{ df }} %>%
     dplyr::select(!"group") %>%
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
@@ -76,6 +99,7 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
 
   # Full join the data by groups and overall:
   arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by("group", "question", "timing", "score_avg"))
+
   # Rev the factor order of "group":
   arrow_df <- arrow_df %>%
     dplyr::group_by(.data$group, .data$question, .data$timing) %>%
@@ -84,20 +108,28 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
     ) %>%
     dplyr::ungroup()
 
-  if (is.null(question_order)) {
+  # If the user supplies a named vector for questions labels:
+  if (!is.null(question_labels)) {
+    names(question_labels) <- names(question_labels) %>%
+      stringr::str_wrap(., width = 30) %>%
+      gsub("\n", "<br>", .)
+    arrow_df <- arrow_df %>%
+      dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels)) %>%
+      dplyr::ungroup()
+  }
+
+  # Set up a new question order if not supplied by the user by using the highest post score_avg:
+  if (isFALSE(question_order)) {
     # Set up question as a factor and arrange by the top score_avg:
     question_order <- arrow_df %>%
       dplyr::arrange(dplyr::desc(.data$timing), dplyr::desc(.data$score_avg)) %>%
       dplyr::distinct(.data$question) %>%
       dplyr::mutate(question = as.character(.data$question)) %>%
       tibble::deframe()
-  }
-
-  if (is.null(question_labels)) {
     arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order))
   } else {
-    question_labels <- question_labels %>% stringr::str_wrap(., width = 30) %>% gsub("\n","<br>",.)
-    arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data$question, levels = question_order, labels = question_labels))
+    # If FALSE, use user supplied by order based on the set up the levels for question using- names(question_labels):
+    arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
   }
 
   # Get total n for each question, grouped by question and timing:
@@ -154,20 +186,24 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
         plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
         legend.position = "top"
       )
-  # Otherwise, if overall_n == FALSE and pre_post == TRUE, return a stacked_bar_chart with n for each question appended to the question label:
+    # Otherwise, if overall_n == FALSE and, return an arrow chart with n for each question appended to the question label:
   } else {
-    # Change the label of the variable "question" by adding n of each to the end of the character string and add string wrap of 20:
+    # Change the label of the variable "question" by adding n of each to the end of the character string:
     # Set up labels for question:
     labels_n_questions <- arrow_df %>%
-      dplyr::mutate(labels = paste0(.data$question, " ","(*n* = ",totals_new_df$total,")"),
-                    labels = factor(.data$labels)) %>% dplyr::arrange(.data$question) %>%
-      dplyr::distinct(.data$labels) %>% tibble::deframe()
+      dplyr::mutate(
+        labels = paste0(.data$question, " ", "(*n* = ", totals_new_df$total, ")"),
+        labels = factor(.data$labels)
+      ) %>%
+      dplyr::arrange(.data$question) %>%
+      dplyr::distinct(.data$labels) %>%
+      tibble::deframe()
 
-    # Set factor labels for question to labels_n_questions:
+    # Set factor labels for question to labels = labels_n_questions:
     arrow_df <- arrow_df %>%
-      dplyr::mutate(question = factor(.data$question, labels = labels_n_questions)) %>%
-      dplyr::arrange(.data$question)
+      dplyr::mutate(question = factor(.data$question, labels = labels_n_questions))
 
+    # ggplot call for overall_n == FALSE
     arrow <- arrow_df %>%
       ggplot2::ggplot(ggplot2::aes(
         x = .data$score_avg, y = forcats::fct_rev(.data$group), color = forcats::fct_rev(.data$group),

@@ -112,7 +112,7 @@ visualizations: `stackedBarChart()`, `divBarChart()`, and
 `stackedBarChart()` creates a fully stacked bar chart that has the
 branding/style of The Mark USA, Inc.
 
-`stackedBarChart()` takes up to 8 arguments, first 2 are required:
+`stackedBarChart()` takes up to 8 arguments, first 2 are *required*:
 
 **df** Required, A \[tibble\]\[tibble::tibble-package\] or data frame of
 survey items that are categorical/factor variables, in 5 point scales,
@@ -127,8 +127,9 @@ stacked bar chart, arranged by question, this requires data structured
 as pre-post. If FALSE, returns a stacked bar chart of a single time
 point.
 
-**overall_n** Logical, default is FALSE. If TRUE, returns an overall n
-for all questions that is in the upper left tag of the plot.
+**overall_n** Logical, default is FALSE. If TRUE, returns an overall *n*
+for all questions that is in the upper left tag of the plot. If False,
+adds *n* to each question/item after the respective labels.
 
 **percent_label** Logical, default is TRUE. Labels the bars based on
 percentages. If FALSE, labels the bars with the number of answers per
@@ -229,7 +230,7 @@ stacked_chart_pre_post_labels
 `divBarChart()` creates a diverging and fully stacked bar chart that has
 the branding and style of The Mark USA, Inc.
 
-`divBarChart()` takes in up to 7 arguments, the first 2 are required:
+`divBarChart()` takes in up to 7 arguments, the first 2 are *required*:
 
 **df** Required, A \[tibble\]\[tibble::tibble-package\]/data frame of
 survey items that are categorical/character variables, in 3 to 7 point
@@ -239,8 +240,9 @@ USA branding.
 **scale_labels** Required, a character vector of levels to set the scale
 for the plot, accepts a character vector of 3 to 7 items.
 
-**overall_n** Logical, default is FALSE. If TRUE, returns an overall n
-for all questions that is in the upper left tag of the plot.
+**overall_n** Logical, default is FALSE. If TRUE, returns an overall *n*
+for all questions that is in the upper left tag of the plot. If False,
+adds *n* to each question/item after the respective labels.
 
 **percent_label** Logical, default is TRUE. If FALSE, labels the bars
 with the number of answers per response.
@@ -311,22 +313,39 @@ div_chart_labels
 
 ### `arrowChart()`
 
-`arrowChart()` take in three arguments:
+`arrowChart()` takes in 6 arguments, the first 3 are *required*:
 
-**df** A \[tibble\]\[tibble::tibble-package\]/data frame of survey items
-that are numeric variables, must be in 5 point scales and pre-post, that
-will be inserted into a stacked bar chart with The Mark USA branding.
+**df** Required, a \[tibble\]\[tibble::tibble-package\] or data frame of
+**numeric** data that also has a categorical group variable to split up
+the data, e.g. role, gender, education level, etc. must be in 5 point
+scales and pre-post.
 
-**scale_labels** character vector to set up the labels for the x-axis,
-this will match the numeric response in the data.
+**scale_labels** Required, a character vector of levels to set the scale
+for the plot.
 
-**group_colors** character vector of hex codes for colors to associate
-to each group to, e.g. this data has two groups and this function
-creates an overall group so the user needs to pass the function in the
-group_colors argument a character vector of three colors- colors need to
-be in the order you want them associated to the group based on the
-factor levels for the group variable, last color will be the overall
-group of “all”.
+**group_colors** Required, a character vector of hex codes for colors to
+associate each group to, e.g. this data has two groups and this function
+creates an overall group so this function will need a ‘group_colors’
+character vector of three colors. ‘group_colors’ need to be in the order
+you want them associated to the group based on the factor levels for the
+group variable, last color will be the overall group of “all”
+
+**overall_n** Logical, default is FALSE. If TRUE, returns an overall *n*
+for all questions that is in the upper left tag of the plot. If False,
+adds *n* to each question/item after the respective labels.
+
+**question_labels** Default is NULL. Takes in a named character vector
+to both supply labels the questions and sort the order of the questions.
+The named character vector should have the new labels as the “name” and
+the old labels as the “variable” sorted in the desired order of
+appearing in the plot, first item will appear at the top of the plot.
+See examples.
+
+**question_order** Logical, default is FALSE. If TRUE, the question
+order will be taken from the user supplied named character vector passed
+to question_labels, where the first item will be at the top of the plot
+and so on. If FALSE, the question order will be the questions with
+highest post score average on the top of the plot descending.
 
 `arrowChart()` creates an arrow chart from numeric data based on the
 pre-post averages for each group and the overall group for the whole
@@ -341,23 +360,51 @@ top and lowest on the bottom.
 arrow_items <- cat_items_1 %>%
   dplyr::select(tidyselect::where(is.numeric)) %>%
   dplyr::mutate(
-    group = c(
+    group = factor(c(
       "grad", "undergrad", "grad", "undergrad", "grad", "undergrad", "undergrad", "grad", "undergrad"
-    ),
-    group = factor(group, levels = c("grad", "undergrad"))
+    ), levels = c("grad", "undergrad"))
   )
+
 # Set up the labels for the x-axis, this will match the numeric response in the data:
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 
+# Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):
+question_labels <- c("Publish a lot of high quality papers" =  "Publish",
+                    "Write a lot of research papers" = "Write",
+                    "Research in a lab with faculty" = "Research",
+                    "Organization of a large research project" = "Organization",
+                    "Source work for a research paper" = "Source")
+
+# Set up a character vector of scale colors to pass to the argument group_colors:
 threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
-# Run the function with the first argument being the data frame of numeric items and factor group variable, second argument is the levels for the x-axis labels, and the third argument is the colors to pass as the  and the character vector of the factor levels:
-arrow_chart_1 <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors)
-
+# Example with n for each question and original labels:
+arrow_chart_1 <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 arrow_chart_1
 ```
 
 <img src="man/figures/README-arrowChart-1.png" width="100%" />
+
+``` r
+
+# With new labels, question_order = FALSE, and overall_n set to TRUE:
+arrow_chart_labels_all_n <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+     overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
+arrow_chart_labels_all_n
+```
+
+<img src="man/figures/README-arrowChart-2.png" width="100%" />
+
+``` r
+
+# With new labels and order taken from question_labels argument, and overall_n set to FALSE:
+arrow_chart_labels_all_n <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+     overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
+arrow_chart_labels_all_n
+```
+
+<img src="man/figures/README-arrowChart-3.png" width="100%" />
 
 More functions and visuals will be added to `TheMarkUSA` package as
 needed, be sure to reach out with any ideas for the package or issues!

@@ -1,6 +1,8 @@
 #' Horizontal Bar Chart for The Mark USA, Inc.
 #'
-#' @param df Required, a tibble or data frame that has been pre-processed with dataSumm().
+#' `horzBarChart()` creates a horizontal bar chart and returns a ggplot object with The Mark USA, Inc branding.
+#'
+#' @param df Required, a [tibble][tibble::tibble-package]/data frame that has been pre-processed with dataSumm().
 #'
 #' @param scale_colors Required, a character vector of the colors for the scale items.
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/divBarChart.R
 \name{divBarChart}
 \alias{divBarChart}
-\title{Diverging and Stacked Bar Chart for The Mark USA, Inc.}
+\title{Diverging Bar Chart for The Mark USA, Inc.}
 \usage{
 divBarChart(
   df,
@@ -21,7 +21,8 @@ variables, in 3 to 7 point scales, that will be inserted into a diverging bar ch
 \item{scale_labels}{Required, a character vector of levels to set the scale for the plot,
 accepts a character vector of 3 to 7 items.}
 
-\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.}
+\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
+If False, adds \emph{n} to each question/item after the respective labels.}
 
 \item{percent_label}{Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.}
 
@@ -39,5 +40,5 @@ positive valenced response options on the top of the plot descending.}
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a diverging bar chart and can be exported.
 }
 \description{
-Diverging and Stacked Bar Chart for The Mark USA, Inc.
+\code{divBarChart()} creates a diverging bar chart and returns a ggplot object with The Mark USA, Inc branding.
 }

@@ -24,7 +24,8 @@ accepts a character vector of 3 to 7 items.}
 
 \item{pre_post}{Logical, default is FALSE. If true, returns a pre-post stacked bar chart.}
 
-\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.}
+\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
+If False, adds \emph{n} to each question/item after the respective labels.}
 
 \item{percent_label}{Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.}
 
@@ -42,5 +43,5 @@ positive valenced response options on the top of the plot descending.}
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a stacked bar chart and can be exported.
 }
 \description{
-Stacked Bar Chart for The Mark USA, Inc.
+\code{stackedBarChart()} creates a stacked bar chart and returns a ggplot object with The Mark USA, Inc branding.
 }

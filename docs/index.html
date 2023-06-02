@@ -150,11 +150,11 @@
 <code>stackedBarChart()</code><a class="anchor" aria-label="anchor" href="#stackedbarchart"></a>
 </h3>
 <p><code><a href="reference/stackedBarChart.html">stackedBarChart()</a></code> creates a fully stacked bar chart that has the branding/style of The Mark USA, Inc.</p>
-<p><code><a href="reference/stackedBarChart.html">stackedBarChart()</a></code> takes up to 8 arguments, first 2 are required:</p>
+<p><code><a href="reference/stackedBarChart.html">stackedBarChart()</a></code> takes up to 8 arguments, first 2 are <em>required</em>:</p>
 <p><strong>df</strong> Required, A [tibble][tibble::tibble-package] or data frame of survey items that are categorical/factor variables, in 5 point scales, can be a single time point or pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.</p>
 <p><strong>scale_labels</strong> Required, a character vector of levels to set the scale for the plot, accepts a character vector of 3 to 7 items.</p>
 <p><strong>pre_post</strong> Logical, default is FALSE. If true, returns a pre-post stacked bar chart, arranged by question, this requires data structured as pre-post. If FALSE, returns a stacked bar chart of a single time point.</p>
-<p><strong>overall_n</strong> Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.</p>
+<p><strong>overall_n</strong> Logical, default is FALSE. If TRUE, returns an overall <em>n</em> for all questions that is in the upper left tag of the plot. If False, adds <em>n</em> to each question/item after the respective labels.</p>
 <p><strong>percent_label</strong> Logical, default is TRUE. Labels the bars based on percentages. If FALSE, labels the bars with the number of answers per response.</p>
 <p><strong>question_labels</strong> Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions. The named character vector should have the new labels as the “name” and the old labels as the “variable” sorted in the desired order of appearing in the plot, first item will appear at the top of the plot. See examples.</p>
 <p><strong>question_order</strong> Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest positive valenced response options on the top of the plot descending.</p>
@@ -235,10 +235,10 @@
 <code>divBarChart()</code><a class="anchor" aria-label="anchor" href="#divbarchart"></a>
 </h3>
 <p><code><a href="reference/divBarChart.html">divBarChart()</a></code> creates a diverging and fully stacked bar chart that has the branding and style of The Mark USA, Inc.</p>
-<p><code><a href="reference/divBarChart.html">divBarChart()</a></code> takes in up to 7 arguments, the first 2 are required:</p>
+<p><code><a href="reference/divBarChart.html">divBarChart()</a></code> takes in up to 7 arguments, the first 2 are <em>required</em>:</p>
 <p><strong>df</strong> Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.</p>
 <p><strong>scale_labels</strong> Required, a character vector of levels to set the scale for the plot, accepts a character vector of 3 to 7 items.</p>
-<p><strong>overall_n</strong> Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.</p>
+<p><strong>overall_n</strong> Logical, default is FALSE. If TRUE, returns an overall <em>n</em> for all questions that is in the upper left tag of the plot. If False, adds <em>n</em> to each question/item after the respective labels.</p>
 <p><strong>percent_label</strong> Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.</p>
 <p><strong>question_labels</strong> Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions. The named character vector should have the new labels as the “name” and the old labels as the “variable” sorted in the desired order of appearing in the plot, first item will appear at the top of the plot. See examples.</p>
 <p><strong>question_order</strong> Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest positive valenced response options on the top of the plot descending.</p>
@@ -293,10 +293,13 @@
 <h3 id="arrowchart">
 <code>arrowChart()</code><a class="anchor" aria-label="anchor" href="#arrowchart"></a>
 </h3>
-<p><code><a href="reference/arrowChart.html">arrowChart()</a></code> take in three arguments:</p>
-<p><strong>df</strong> A [tibble][tibble::tibble-package]/data frame of survey items that are numeric variables, must be in 5 point scales and pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.</p>
-<p><strong>scale_labels</strong> character vector to set up the labels for the x-axis, this will match the numeric response in the data.</p>
-<p><strong>group_colors</strong> character vector of hex codes for colors to associate to each group to, e.g. this data has two groups and this function creates an overall group so the user needs to pass the function in the group_colors argument a character vector of three colors- colors need to be in the order you want them associated to the group based on the factor levels for the group variable, last color will be the overall group of “all”.</p>
+<p><code><a href="reference/arrowChart.html">arrowChart()</a></code> takes in 6 arguments, the first 3 are <em>required</em>:</p>
+<p><strong>df</strong> Required, a [tibble][tibble::tibble-package] or data frame of <strong>numeric</strong> data that also has a categorical group variable to split up the data, e.g. role, gender, education level, etc. must be in 5 point scales and pre-post.</p>
+<p><strong>scale_labels</strong> Required, a character vector of levels to set the scale for the plot.</p>
+<p><strong>group_colors</strong> Required, a character vector of hex codes for colors to associate each group to, e.g. this data has two groups and this function creates an overall group so this function will need a ‘group_colors’ character vector of three colors. ‘group_colors’ need to be in the order you want them associated to the group based on the factor levels for the group variable, last color will be the overall group of “all”</p>
+<p><strong>overall_n</strong> Logical, default is FALSE. If TRUE, returns an overall <em>n</em> for all questions that is in the upper left tag of the plot. If False, adds <em>n</em> to each question/item after the respective labels.</p>
+<p><strong>question_labels</strong> Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions. The named character vector should have the new labels as the “name” and the old labels as the “variable” sorted in the desired order of appearing in the plot, first item will appear at the top of the plot. See examples.</p>
+<p><strong>question_order</strong> Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest post score average on the top of the plot descending.</p>
 <p><code><a href="reference/arrowChart.html">arrowChart()</a></code> creates an arrow chart from numeric data based on the pre-post averages for each group and the overall group for the whole data set with the branding and style of The Mark USA, Inc. <code><a href="reference/arrowChart.html">arrowChart()</a></code> sorts the chart with the highest post scores on the top and lowest on the bottom.</p>
 <div class="section level4">
 <h4 id="examples-using-arrowchart">
@@ -308,21 +311,43 @@
 <span><span class="va">arrow_items</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>      <span class="st">"grad"</span>, <span class="st">"undergrad"</span>, <span class="st">"grad"</span>, <span class="st">"undergrad"</span>, <span class="st">"grad"</span>, <span class="st">"undergrad"</span>, <span class="st">"undergrad"</span>, <span class="st">"grad"</span>, <span class="st">"undergrad"</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">group</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grad"</span>, <span class="st">"undergrad"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grad"</span>, <span class="st">"undergrad"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Set up the labels for the x-axis, this will match the numeric response in the data:</span></span>
 <span><span class="va">levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span>, <span class="st">"Slight"</span>, <span class="st">"Moderate"</span>, <span class="st">"Good"</span>, <span class="st">"Extensive"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):</span></span>
+<span><span class="va">question_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Publish a lot of high quality papers"</span> <span class="op">=</span>  <span class="st">"Publish"</span>,</span>
+<span>                    <span class="st">"Write a lot of research papers"</span> <span class="op">=</span> <span class="st">"Write"</span>,</span>
+<span>                    <span class="st">"Research in a lab with faculty"</span> <span class="op">=</span> <span class="st">"Research"</span>,</span>
+<span>                    <span class="st">"Organization of a large research project"</span> <span class="op">=</span> <span class="st">"Organization"</span>,</span>
+<span>                    <span class="st">"Source work for a research paper"</span> <span class="op">=</span> <span class="st">"Source"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Set up a character vector of scale colors to pass to the argument group_colors:</span></span>
 <span><span class="va">threeScale_theMark_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#79AB53"</span>, <span class="st">"#4B9FA6"</span>, <span class="st">"#2C2C4F"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Run the function with the first argument being the data frame of numeric items and factor group variable, second argument is the levels for the x-axis labels, and the third argument is the colors to pass as the  and the character vector of the factor levels:</span></span>
-<span><span class="va">arrow_chart_1</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">threeScale_theMark_colors</span><span class="op">)</span></span>
-<span></span>
+<span><span class="co"># Example with n for each question and original labels:</span></span>
+<span><span class="va">arrow_chart_1</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">threeScale_theMark_colors</span>,</span>
+<span>     overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="cn">NULL</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_1</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChart-1.png" width="100%"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># With new labels, question_order = FALSE, and overall_n set to TRUE:</span></span>
+<span><span class="va">arrow_chart_labels_all_n</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">threeScale_theMark_colors</span>,</span>
+<span>     overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">arrow_chart_labels_all_n</span></span></code></pre></div>
+<p><img src="reference/figures/README-arrowChart-2.png" width="100%"></p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># With new labels and order taken from question_labels argument, and overall_n set to FALSE:</span></span>
+<span><span class="va">arrow_chart_labels_all_n</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">threeScale_theMark_colors</span>,</span>
+<span>     overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">arrow_chart_labels_all_n</span></span></code></pre></div>
+<p><img src="reference/figures/README-arrowChart-3.png" width="100%"></p>
 <p>More functions and visuals will be added to <code>TheMarkUSA</code> package as needed, be sure to reach out with any ideas for the package or issues!</p>
 </div>
 </div>

@@ -9,8 +9,8 @@ arrowChart(
   scale_labels,
   group_colors,
   overall_n = FALSE,
-  question_order = NULL,
-  question_labels = NULL
+  question_labels = NULL,
+  question_order = FALSE
 )
 }
 \arguments{
@@ -26,12 +26,16 @@ three colors. 'group_colors' need to be in the order you want them associated to
 the group based on the factor levels for the group variable, last color
 will be the overall group of "all".}
 
-\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
+\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
 If False, adds \emph{n} to each question/item after the respective labels.}
 
-\item{question_order}{Takes in a character vector to sort the order of the questions. Default is NULL.}
+\item{question_labels}{Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
+The named character vector should have the new labels as the "name" and the old labels as the "variable" sorted in the
+desired order of appearing in the plot, first item will appear at the top of the plot. See examples.}
 
-\item{question_labels}{Takes in a character vector to label the questions. Needs to be in same order as question_order. Default is NULL.}
+\item{question_order}{Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
+question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
+post score average on the top of the plot descending.}
 }
 \value{
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arrow bar chart.
@@ -52,16 +56,33 @@ items <- dplyr::tibble(
   Post_Write = Pre_Write + 1,
   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   Post_Research = Pre_Research + 1,
-  group = c(
-    "grad", "grad", "grad", "grad",
-    "undergrad", "undergrad", "undergrad", "undergrad", "undergrad"
-  )
+  group = factor(c(
+      "grad", "undergrad", "grad", "undergrad", "grad",
+      "undergrad", "undergrad", "grad", "undergrad"
+ ), levels = c("grad", "undergrad"))
 )
+# Labels for response scales to recode the numeric variables to on the plot:
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-items <- items \%>\% dplyr::mutate(
-  group = factor(group, levels = c("grad", "undergrad"))
-)
+# Question labels as a named vector with the naming structure
+# like this: c("{new label}" = "{original variable name}"):
+question_labels <- c("Publish a lot of high quality papers" =  "Publish",
+                     "Write a lot of research papers" = "Write",
+                     "Research in a lab with faculty" = "Research",
+                     "Organization of a large research project" = "Organization",
+                     "Source work for a research paper" = "Source")
+
+# Set up a character vector of scale colors to pass to the argument group_colors:
 threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+
+# Example with n for each question and original labels:
 arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
-    overall_n = FALSE, question_order = NULL, question_labels = NULL)
+    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+
+# With new labels, question_order = FALSE, and overall_n set to TRUE:
+arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+    overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
+
+# With new labels and order taken from question_labels argument, and overall_n set to FALSE:
+arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+    overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 }

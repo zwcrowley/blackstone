@@ -7,7 +7,7 @@
 horzBarChart(df, scale_colors, width = NULL)
 }
 \arguments{
-\item{df}{Required, a tibble or data frame that has been pre-processed with dataSumm().}
+\item{df}{Required, a \link[tibble:tibble-package]{tibble}/data frame that has been pre-processed with dataSumm().}
 
 \item{scale_colors}{Required, a character vector of the colors for the scale items.}
 
@@ -17,7 +17,7 @@ horzBarChart(df, scale_colors, width = NULL)
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a horizontal bar chart and can be exported.
 }
 \description{
-Horizontal Bar Chart for The Mark USA, Inc.
+\code{horzBarChart()} creates a horizontal bar chart and returns a ggplot object with The Mark USA, Inc branding.
 }
 \examples{
 data <- dplyr::tibble(

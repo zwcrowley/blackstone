@@ -1,4 +1,6 @@
-#' Diverging and Stacked Bar Chart for The Mark USA, Inc.
+#' Diverging Bar Chart for The Mark USA, Inc.
+#'
+#' `divBarChart()` creates a diverging bar chart and returns a ggplot object with The Mark USA, Inc branding.
 #'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
 #'   variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.
@@ -6,7 +8,8 @@
 #' @param scale_labels Required, a character vector of levels to set the scale for the plot,
 #'    accepts a character vector of 3 to 7 items.
 #'
-#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
+#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
+#'    If False, adds *n* to each question/item after the respective labels.
 #'
 #' @param percent_label Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.
 #'
@@ -292,7 +295,7 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       )
     # Otherwise, if overall_n == FALSE, return a diverging_bar_chart with n for each question appended to the question label:
   } else {
-    # Change the label of the variable "question" by adding n of each to the end of the character string and add string wrap of 20:
+    # Change the label of the variable "question" by adding n of each to the end of the character string:
     labels_n_questions <- new_df %>%
       dplyr::mutate(
         labels = paste0(.data$question, " ", "(*n* = ", totals_new_df$total, ")"),
@@ -302,8 +305,7 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       dplyr::distinct(.data$labels) %>%
       tibble::deframe()
 
-    # Change the label of the variable "question" by adding n of each to the end of the character string and
-    # Set factor labels for question to labels:
+    # Set factor labels for question to labels = labels_n_questions:
     new_df <- new_df %>%
       dplyr::mutate(question = factor(.data$question, labels = labels_n_questions))
 
