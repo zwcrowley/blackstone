@@ -50,9 +50,11 @@
 #'   Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
 #' )
 #'
+#' # Set scale_labels:
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #'
-#' # Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):
+#' # Question labels as a named vector with the naming structure
+#' # like this: c("new label" = "original variable name"):
 #' question_labels <- c("Publish a lot of high quality papers" =  "Publish",
 #'                      "Write a lot of research papers" = "Write",
 #'                      "Research in a lab with faculty" = "Research",
@@ -67,7 +69,7 @@
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
 #' cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 #'
-#' # Pass the factor variables and the levels to 'stackedBarChart()':
+#' # Pass the factor variables and the levels to stackedBarChart:
 #' stackedBarChart(
 #'   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
 #'   question_labels= NULL, percent_label = TRUE, width = NULL

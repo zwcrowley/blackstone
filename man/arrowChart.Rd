@@ -14,8 +14,8 @@ arrowChart(
 )
 }
 \arguments{
-\item{df}{Required, a \link[tibble:tibble-package]{tibble} or data frame of \strong{numeric} data that has a categorical group
-variable to split up the data, e.g. role, gender, education level, etc.}
+\item{df}{Required, a \link[tibble:tibble-package]{tibble} or data frame of \strong{numeric} data that also has a categorical group
+variable to split up the data, e.g. role, gender, education level, etc. must be in 5 point scales and pre-post.}
 
 \item{scale_labels}{Required, a character vector of levels to set the scale for the plot.}
 
