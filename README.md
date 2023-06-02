@@ -112,7 +112,7 @@ visualizations: `stackedBarChart()`, `divBarChart()`, and
 `stackedBarChart()` creates a fully stacked bar chart that has the
 branding/style of The Mark USA, Inc.
 
-`stackedBarChart()` takes up to 7 arguments, first 2 are required:
+`stackedBarChart()` takes up to 8 arguments, first 2 are required:
 
 **df** Required, A \[tibble\]\[tibble::tibble-package\] or data frame of
 survey items that are categorical/factor variables, in 5 point scales,
@@ -141,11 +141,12 @@ the old labels as the “variable” sorted in the desired order of
 appearing in the plot, first item will appear at the top of the plot.
 See examples.
 
-**question_order**Logical, default is FALSE. If TRUE, the question order
-will be taken from the user supplied named character vector passed to
-question_labels, where the first item will be at the top of the plot and
-so on. If FALSE, the question order will be the questions with highest
-positive valenced response options on the top of the plot descending.
+**question_order** Logical, default is FALSE. If TRUE, the question
+order will be taken from the user supplied named character vector passed
+to question_labels, where the first item will be at the top of the plot
+and so on. If FALSE, the question order will be the questions with
+highest positive valenced response options on the top of the plot
+descending.
 
 **width** Input a value between 0.3 and 0.8 to set the thickness of the
 bars. Default is NULL.
@@ -228,42 +229,85 @@ stacked_chart_pre_post_labels
 `divBarChart()` creates a diverging and fully stacked bar chart that has
 the branding and style of The Mark USA, Inc.
 
-`divBarChart()` takes in up to six arguments, first two are required:
+`divBarChart()` takes in up to 7 arguments, the first 2 are required:
 
-**df** Required, A \[tibble\]\[tibble::tibble-package\] or data frame of
-survey items that are categorical/factor variables, in 5 point scales,
-must be pre-post data, that will be inserted into a stacked bar chart
-with The Mark USA branding.
+**df** Required, A \[tibble\]\[tibble::tibble-package\]/data frame of
+survey items that are categorical/character variables, in 3 to 7 point
+scales, that will be inserted into a diverging bar chart with The Mark
+USA branding.
 
-**scale_labels** Required, character vector of levels of the factor
-variables to be added to the plot, this will set the scale for the
-x-axis of the bar chart and its labels.
+**scale_labels** Required, a character vector of levels to set the scale
+for the plot, accepts a character vector of 3 to 7 items.
 
-**percent_label** Default is TRUE. Labels the bars based on percentages.
-If FALSE, labels the bars with the number of answers per response.
+**overall_n** Logical, default is FALSE. If TRUE, returns an overall n
+for all questions that is in the upper left tag of the plot.
 
-**question_order** A character vector to sort the order of the
-questions. Default is NULL.
+**percent_label** Logical, default is TRUE. If FALSE, labels the bars
+with the number of answers per response.
 
-**question_labels** A character vector that will label the questions.
-Needs to be in same order as question_order. Default is NULL.
+**question_labels** Default is NULL. Takes in a named character vector
+to both supply labels the questions and sort the order of the questions.
+The named character vector should have the new labels as the “name” and
+the old labels as the “variable” sorted in the desired order of
+appearing in the plot, first item will appear at the top of the plot.
+See examples.
+
+**question_order** Logical, default is FALSE. If TRUE, the question
+order will be taken from the user supplied named character vector passed
+to question_labels, where the first item will be at the top of the plot
+and so on. If FALSE, the question order will be the questions with
+highest positive valenced response options on the top of the plot
+descending.
 
 **width** Input a value between 0.3 and 0.8 to set the thickness of the
 bars. Default is NULL.
 
-``` r
-# Select only the categorical/factor vars from the df in the last chunk (cat_items_1) using tidy select(contains("cat")):
-cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
-# Run the function with the categorical items and the character vector of the factor levels:
-div_chart_1 <- TheMarkUSA::divBarChart(
-  df = cat_items_plot, scale_labels = levels_min_ext,
-  percent_label = TRUE, width = 0.7
-)
+#### **Examples using** `divBarChart()`
 
-div_chart_1
+``` r
+items <- dplyr::tibble(
+ Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+ Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
+ Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+ Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
+ Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+ Post_Publish = Pre_Publish + 2,
+ Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+ Post_Write = Pre_Write + 1,
+ Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+ Post_Research = Pre_Research + 1
+)
+levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+# Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):
+question_labels <- c("Publish a lot of high quality papers" =  "Publish",
+                    "Write a lot of research papers" = "Write",
+                    "Research in a lab with faculty" = "Research",
+                    "Organization of a large research project" = "Organization",
+                    "Source work for a research paper" = "Source")
+# Recode the numeric to factor variables using the levels from levels_min_ext:
+cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
+# Select the factor variables:
+cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
+# Pass the factor variables and the levels to 'divBarChart()', set so that it 
+# returns the percent labels on the bars:
+div_chart <- divBarChart(
+ df = cat_items, scale_labels = levels_min_ext, percent_label = TRUE
+)
+div_chart
 ```
 
 <img src="man/figures/README-divBarChart-1.png" width="100%" />
+
+``` r
+# With new labels and order taken from question_labels argument:
+div_chart_labels <- divBarChart(
+ df = cat_items, scale_labels = levels_min_ext,
+ question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = NULL
+)
+div_chart_labels
+```
+
+<img src="man/figures/README-divBarChart-2.png" width="100%" />
 
 ### `arrowChart()`
 
@@ -290,6 +334,8 @@ data set with the branding and style of The Mark USA,
 Inc. `arrowChart()` sorts the chart with the highest post scores on the
 top and lowest on the bottom.
 
+#### **Examples using** `arrowChart()`
+
 ``` r
 # Select only the numeric variables from the df in the last chunk (cat_items_1) using tidy select(contains("cat")), adding a group variable that is set as a factor:
 arrow_items <- cat_items_1 %>%
@@ -313,5 +359,5 @@ arrow_chart_1
 
 <img src="man/figures/README-arrowChart-1.png" width="100%" />
 
-More functions and visuals will be added to `TheMarkUSA` as needed, be
-sure to reach out with any ideas for the package or issues!
+More functions and visuals will be added to `TheMarkUSA` package as
+needed, be sure to reach out with any ideas for the package or issues!

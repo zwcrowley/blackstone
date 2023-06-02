@@ -11,14 +11,13 @@ stackedBarChart(
   overall_n = FALSE,
   percent_label = TRUE,
   question_labels = NULL,
-  question_order = TRUE,
+  question_order = FALSE,
   width = NULL
 )
 }
 \arguments{
 \item{df}{Required, A \link[tibble:tibble-package]{tibble}/data frame of survey items that are categorical/character
-variables, in 5 point scales and pre-post, that will be inserted into a
-stacked bar chart with The Mark USA branding.}
+variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with The Mark USA branding.}
 
 \item{scale_labels}{Required, a character vector of levels to set the scale for the plot,
 accepts a character vector of 3 to 7 items.}

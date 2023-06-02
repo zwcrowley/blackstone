@@ -1,8 +1,7 @@
 #' Stacked Bar Chart for The Mark USA, Inc.
 #'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
-#'   variables, in 5 point scales and pre-post, that will be inserted into a
-#'   stacked bar chart with The Mark USA branding.
+#'   variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with The Mark USA branding.
 #'
 #' @param scale_labels Required, a character vector of levels to set the scale for the plot,
 #'    accepts a character vector of 3 to 7 items.
