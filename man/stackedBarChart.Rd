@@ -20,20 +20,22 @@ stackedBarChart(
 variables, in 5 point scales and pre-post, that will be inserted into a
 stacked bar chart with The Mark USA branding.}
 
-\item{scale_labels}{Required, a character vector of levels to set the scale for the plot, accepts a character vector of 3 to 7 items.}
+\item{scale_labels}{Required, a character vector of levels to set the scale for the plot,
+accepts a character vector of 3 to 7 items.}
 
-\item{pre_post}{Default is FALSE. If true, returns a pre-post stacked bar chart.}
+\item{pre_post}{Logical, default is FALSE. If true, returns a pre-post stacked bar chart.}
 
-\item{overall_n}{Default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.}
+\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.}
 
-\item{percent_label}{Default is TRUE. If FALSE, labels the bars with the number of answers per response.}
+\item{percent_label}{Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.}
 
 \item{question_labels}{Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
 The named character vector should have the new labels as the "name" and the old labels as the "variable" sorted in the
 desired order of appearing in the plot, first item will appear at the top of the plot. See examples.}
 
-\item{question_order}{Default is TRUE. Logical, if TRUE the question order will be the questions with highest positive valenced response options
-on the top of the plot descending. If FALSE, takes in the question order supplied by the named character vector passed to question_labels}
+\item{question_order}{Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
+question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
+positive valenced response options on the top of the plot descending.}
 
 \item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
@@ -42,61 +44,4 @@ A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a sta
 }
 \description{
 Stacked Bar Chart for The Mark USA, Inc.
-}
-\examples{
-items <- dplyr::tibble(
-  Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-  Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
-  Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
-  Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
-  Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-  Post_Publish = Pre_Publish + 2,
-  Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
-  Post_Write = Pre_Write + 1,
-  Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
-  Post_Research = Pre_Research + 1
-)
-
-items_single <- dplyr::tibble(
-  Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
-  Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
-  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
-)
-
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-# Question order/labels as a named vector with the new names as the names and
-# the old vars as the character strings:
-question_labels <- c("Publish and lot a get a job" =  "Publish",
-                         "Write a lot of papers and look smart" = "Write",
-                          "Research gets tedious and very boring" = "Research",
-                          "Organization is important and hard to do" = "Organization",
-                          "Source work for students" = "Source")
-
-# Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
-cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
-
-# Select the factor variables:
-cat_items <- cat_items \%>\% dplyr::select(dplyr::where(is.factor))
-cat_items_single <- cat_items_single \%>\% dplyr::select(dplyr::where(is.factor))
-
-# Pass the factor variables and the levels to 'stackedBarChart()':
-stackedBarChart(
-  df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
-  question_labels= NULL, percent_label = TRUE, width = NULL
-)
-stackedBarChart(
-  df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
-  question_labels= NULL, percent_label = TRUE, width = NULL
-)
-stackedBarChart(
-  df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
-  question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
-)
-stackedBarChart(
-  df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
-  question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
-)
 }

@@ -4,20 +4,22 @@
 #'   variables, in 5 point scales and pre-post, that will be inserted into a
 #'   stacked bar chart with The Mark USA branding.
 #'
-#' @param scale_labels Required, a character vector of levels to set the scale for the plot, accepts a character vector of 3 to 7 items.
+#' @param scale_labels Required, a character vector of levels to set the scale for the plot,
+#'    accepts a character vector of 3 to 7 items.
 #'
-#' @param pre_post Default is FALSE. If true, returns a pre-post stacked bar chart.
+#' @param pre_post Logical, default is FALSE. If true, returns a pre-post stacked bar chart.
 #'
-#' @param overall_n Default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
+#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall n for all questions that is in the upper left tag of the plot.
 #'
-#' @param percent_label Default is TRUE. If FALSE, labels the bars with the number of answers per response.
+#' @param percent_label Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.
 #'
 #' @param question_labels Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
 #'    The named character vector should have the new labels as the "name" and the old labels as the "variable" sorted in the
 #'    desired order of appearing in the plot, first item will appear at the top of the plot. See examples.
 #'
-#' @param question_order Default is TRUE. Logical, if TRUE the question order will be the questions with highest positive valenced response options
-#'    on the top of the plot descending. If FALSE, takes in the question order supplied by the named character vector passed to question_labels
+#' @param question_order Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
+#'    question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
+#'    positive valenced response options on the top of the plot descending.
 #'
 #' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'
@@ -47,13 +49,13 @@
 #' )
 #'
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-#' # Question order/labels as a named vector with the new names as the names and
-#' # the old vars as the character strings:
-#' question_labels <- c("Publish and lot a get a job" =  "Publish",
-#'                          "Write a lot of papers and look smart" = "Write",
-#'                           "Research gets tedious and very boring" = "Research",
-#'                           "Organization is important and hard to do" = "Organization",
-#'                           "Source work for students" = "Source")
+#'
+#' # Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):
+#' question_labels <- c("Publish a lot of high quality papers" =  "Publish",
+#'                      "Write a lot of research papers" = "Write",
+#'                      "Research in a lab with faculty" = "Research",
+#'                      "Organization of a large research project" = "Organization",
+#'                      "Source work for a research paper" = "Source")
 #'
 #' # Recode the numeric to factor variables using the levels from levels_min_ext:
 #' cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
@@ -80,7 +82,7 @@
 #'   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
 #'   question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
-stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE, question_labels = NULL, question_order= TRUE, width = NULL) {
+stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE, question_labels = NULL, question_order= FALSE, width = NULL) {
   extrafont::loadfonts("all", quiet = TRUE)
 
   . <- NULL
@@ -219,7 +221,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
 
     # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
     # (top levels depending on total response levels):
-    if (isTRUE(question_order)) {
+    if (isFALSE(question_order)) {
       question_order <- new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
@@ -481,7 +483,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
 
     # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
     # (top levels depending on total response levels):
-    if (isTRUE(question_order)) {
+    if (isFALSE(question_order)) {
       question_order <- new_df %>%
         dplyr::group_by(.data$question) %>%
         dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
