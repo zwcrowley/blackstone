@@ -11,8 +11,8 @@ knitr::opts_chunk$set(
     echo = FALSE, 
     warning = FALSE, 
     message = FALSE, 
-    out.width = 6.5,
-    out.height = 4
+    fig.width = 6.5,
+    fig.height = 4
     )
 
 ```
@@ -51,7 +51,7 @@ First, change the title and author in the yaml header above on lines 2 and 3, (l
 
 ## Loading baseline and annual data from .csv and .xlsx:
 ### How to read in .xlsx data:
-```{r load in .csv data example}
+```{r load in .xlsx data example}
 # readxl is a package that has the most up to date function for reading in excel files either .xls or xlsx, read_excel(), if you know the file is .xlsx you can use 
 # the function read_xlsx(), both are shown below:
 # For this example, the baseline data is in a folder called "extdata" which is located up four folders so ../ moves up one folder-
@@ -328,7 +328,7 @@ The t-test has a null hypothesis that the data is not meaningfully different, so
 
 If the data was not normally distributed, then use a Wilcoxon test, it the data  is pre-post then a paired Wilcoxon test should be used, below shows the code for that:
 
-```{r t-test for pre-post items, warning=FALSE}
+```{r Wilcoxon test for pre-post items, warning=FALSE}
 # Wilcoxon test for non-parametric analysis
 wilcox_test_items <- wilcox.test(merged_data$pre_items, merged_data$post_items, paired = TRUE)
 wilcox_test_items
@@ -339,7 +339,7 @@ wilcox_test_items
 
 Here is how you would run t-test for all the likert items, again paired t-tests since the data is pre-post from the same individuals:
 
-```{r t-test for pre-post items, warning=FALSE}
+```{r t-test for individual items, warning=FALSE}
 # t-tests for parametric analysis: Organization, Source, Publish, Write, Research
 # organization:
 t.test(merged_data$pre_organization, merged_data$post_organization, paired = TRUE)
