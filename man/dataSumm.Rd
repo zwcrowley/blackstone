@@ -4,12 +4,15 @@
 \alias{dataSumm}
 \title{Creates a data frame that is a summary table of counts and percentages}
 \usage{
-dataSumm(var, na.rm = TRUE)
+dataSumm(var, na.rm = TRUE, sort_n = FALSE)
 }
 \arguments{
 \item{var}{A column selected from a \link[tibble:tibble-package]{tibble}/data frame that is a categorical/factor variable to that to be summarized into a table.}
 
-\item{na.rm}{Drops NA values. Defaults to TRUE.}
+\item{na.rm}{Logical, defaults to TRUE. Drops NA values.}
+
+\item{sort_n}{Logical, defaults to FALSE. If TRUE, sorts the data by the count of each response (n_answers).
+If FALSE., sorts by response.}
 }
 \value{
 a \link[tibble:tibble-package]{tibble} with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
@@ -21,21 +24,21 @@ Creates a data frame that is a summary table of counts and percentages
 }
 \examples{
 data <- dplyr::tibble(
-  role = c(
+  role = factor(c(
     "Faculty", "Postdoc", "Undergraduate student", "Graduate student",
     "Graduate student", "Postdoc", "Postdoc", "Faculty",
     "Faculty", "Graduate student", "Graduate student", "Postdoc",
     "Faculty", "Faculty", "Faculty", "Faculty", "Faculty", "Graduate student",
     "Undergraduate student", "Undergraduate student", "NA", "NA"
-  )
+  ), levels = c("Undergraduate student", "Graduate student", "Postdoc","Faculty"))
 )
 
 data \%>\%
   dplyr::select(role) \%>\%
   dataSumm()
 
-# Includes NA values:
+# Includes NA values and sorted by count of response:
 data \%>\%
   dplyr::select(role) \%>\%
-  dataSumm(na.rm = TRUE)
+  dataSumm(na.rm = FALSE, sort_n = TRUE)
 }
