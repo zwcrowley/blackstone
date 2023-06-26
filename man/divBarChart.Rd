@@ -44,16 +44,16 @@ A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a div
 }
 \examples{
 items <- dplyr::tibble(
-  Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-  Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
-  Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
-  Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
-  Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-  Post_Publish = Pre_Publish + 2,
-  Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
-  Post_Write = Pre_Write + 1,
-  Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
-  Post_Research = Pre_Research + 1
+  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  post_Publish = pre_Publish + 2,
+  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  post_Write = pre_Write + 1,
+  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  post_Research = pre_Research + 1
 )
 
 # Set scale_labels:

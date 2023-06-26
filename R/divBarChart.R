@@ -28,16 +28,16 @@
 #'
 #' @examples
 #' items <- dplyr::tibble(
-#'   Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-#'   Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
-#'   Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
-#'   Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
-#'   Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-#'   Post_Publish = Pre_Publish + 2,
-#'   Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
-#'   Post_Write = Pre_Write + 1,
-#'   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
-#'   Post_Research = Pre_Research + 1
+#'   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+#'   post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+#'   pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+#'   post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+#'   pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+#'   post_Publish = pre_Publish + 2,
+#'   pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+#'   post_Write = pre_Write + 1,
+#'   pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+#'   post_Research = pre_Research + 1
 #' )
 #'
 #' # Set scale_labels:
@@ -100,7 +100,7 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
         levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
         levels(.data$response)[4], levels(.data$response)[5]
       )),
-      timing = factor(.data$timing, levels = c("Pre", "Post"))
+      timing = factor(.data$timing, levels = c("pre", "post"))
     ) %>%
     dplyr::ungroup()
 
@@ -127,7 +127,7 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       dplyr::mutate(
         label_color = "black",
         pos_valence_post = dplyr::case_when(
-          .data$response == levels(.data$response)[3] & timing == "Post" ~ percent_answers,
+          .data$response == levels(.data$response)[3] & timing == "post" ~ percent_answers,
           TRUE ~ 0
         )
       ) %>%
@@ -143,8 +143,8 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       dplyr::mutate(
         label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
         pos_valence_post = dplyr::case_when(
-          .data$response == levels(.data$response)[3] & timing == "Post" ~ percent_answers,
-          .data$response == levels(.data$response)[4] & timing == "Post" ~ percent_answers,
+          .data$response == levels(.data$response)[3] & timing == "post" ~ percent_answers,
+          .data$response == levels(.data$response)[4] & timing == "post" ~ percent_answers,
           TRUE ~ 0
         )
       ) %>%
@@ -161,8 +161,8 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       dplyr::mutate(
         label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
         pos_valence_post = dplyr::case_when(
-          .data$response == levels(.data$response)[4] & timing == "Post" ~ percent_answers,
-          .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
+          .data$response == levels(.data$response)[4] & timing == "post" ~ percent_answers,
+          .data$response == levels(.data$response)[5] & timing == "post" ~ percent_answers,
           TRUE ~ 0
         )
       ) %>%
@@ -179,9 +179,9 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       dplyr::mutate(
         label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
         pos_valence_post = dplyr::case_when(
-          .data$response == levels(.data$response)[4] & timing == "Post" ~ percent_answers,
-          .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
-          .data$response == levels(.data$response)[6] & timing == "Post" ~ percent_answers,
+          .data$response == levels(.data$response)[4] & timing == "post" ~ percent_answers,
+          .data$response == levels(.data$response)[5] & timing == "post" ~ percent_answers,
+          .data$response == levels(.data$response)[6] & timing == "post" ~ percent_answers,
           TRUE ~ 0
         )
       ) %>%
@@ -198,9 +198,9 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       dplyr::mutate(
         label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
         pos_valence_post = dplyr::case_when(
-          .data$response == levels(.data$response)[5] & timing == "Post" ~ percent_answers,
-          .data$response == levels(.data$response)[6] & timing == "Post" ~ percent_answers,
-          .data$response == levels(.data$response)[7] & timing == "Post" ~ percent_answers,
+          .data$response == levels(.data$response)[5] & timing == "post" ~ percent_answers,
+          .data$response == levels(.data$response)[6] & timing == "post" ~ percent_answers,
+          .data$response == levels(.data$response)[7] & timing == "post" ~ percent_answers,
           TRUE ~ 0
         )
       ) %>%
@@ -219,7 +219,7 @@ divBarChart <- function(df, scale_labels, overall_n = FALSE, percent_label = TRU
       dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
       dplyr::arrange(dplyr::desc(.data$n_pos_valence_post)) %>%
       dplyr::ungroup() %>%
-      dplyr::filter(.data$timing == "Post") %>%
+      dplyr::filter(.data$timing == "post") %>%
       dplyr::select("question") %>%
       dplyr::mutate(question = as.character(.data$question)) %>%
       tibble::deframe()

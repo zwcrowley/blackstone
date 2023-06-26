@@ -216,6 +216,44 @@ str(merged_data)
 The new items are added to the merged_data tibble and are now factor variables ready for use.
 
 ## Frequency Table for Likert Scale Items:
+
+```{r}
+scale_labels = c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+
+tbl_likert_items <- merged_data %>%
+    dplyr::select(cat_pre_organization:cat_post_research) %>% tidyr::drop_na() %>%
+    tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+    dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
+    tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
+    dplyr::group_by(.data$question, .data$timing, .data$response) %>%
+    dplyr::summarize(n_answers = dplyr::n(), .groups = "rowwise") %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$question, .data$timing) %>%
+    dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers),
+                  timing = factor(.data$timing, levels = c("pre", "post"))) %>%
+    dplyr::arrange(question, timing) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1)) %>% 
+    as_grouped_data(x = ., groups = c("question", "timing"), columns = NULL, expand_single = TRUE) %>% 
+    select(-percent_answers) %>% 
+    flextable::as_flextable(., col_keys = c("question", "timing", "response", "n_answers", "percent_answers_label")) %>%
+    # flextable::set_header_labels(n_answers = "#",
+    #                              percent_answers_label = "%")  %>%
+    flextable::align(j = 4:5, align = "center", part = "all") %>%
+    flextable::fontsize(size = 14, part = "header") %>%
+    flextable::fontsize(size = 14, part = "body") %>%
+    flextable::hline(part = "all", border = officer::fp_border(color = "gray")) %>%
+    flextable::bg(bg = "#4B9FA6", part = "header") %>%
+    flextable::color(color = "white", part = "header") %>%
+    flextable::bold(part = "header", bold = TRUE) %>% 
+    flextable::colformat_double(big.mark = "", digits = 0) %>%
+    flextable::colformat_int(big.mark = "") %>% 
+    flextable::autofit(part = "all") 
+    
+tbl_likert_items
+```
+
+
 ```{r freq table for indiviual likert scale items}
 # Try new code for freq table of multiple items that share the same resonse/scale_labels:
 scale_labels = c("Minimal", "Slight", "Moderate", "Good", "Extensive")

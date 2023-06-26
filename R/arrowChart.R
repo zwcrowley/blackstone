@@ -31,16 +31,16 @@
 #'
 #' @examples
 #' items <- dplyr::tibble(
-#'   Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-#'   Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
-#'   Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
-#'   Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
-#'   Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-#'   Post_Publish = Pre_Publish + 2,
-#'   Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
-#'   Post_Write = Pre_Write + 1,
-#'   Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
-#'   Post_Research = Pre_Research + 1,
+#'   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+#'   post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+#'   pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+#'   post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+#'   pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+#'   post_Publish = pre_Publish + 2,
+#'   pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+#'   post_Write = pre_Write + 1,
+#'   pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+#'   post_Research = pre_Research + 1,
 #'   group = factor(c(
 #'       "grad", "undergrad", "grad", "undergrad", "grad",
 #'       "undergrad", "undergrad", "grad", "undergrad"
@@ -82,7 +82,7 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
     dplyr::mutate(group = factor(.data$group)) %>%
     tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
     dplyr::group_by(.data$group, .data$question, .data$timing) %>%
-    dplyr::mutate(timing = factor(.data$timing, levels = c("Pre", "Post"))) %>%
+    dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
     dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
     dplyr::ungroup()
 
@@ -92,7 +92,7 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
     tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
     dplyr::group_by(.data$question, .data$timing) %>%
-    dplyr::mutate(timing = factor(.data$timing, levels = c("Pre", "Post"))) %>%
+    dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
     dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
     dplyr::ungroup() %>%
     dplyr::mutate(group = "all")
@@ -138,7 +138,7 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
     tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
     tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
     dplyr::group_by(.data$question, .data$timing) %>%
-    dplyr::mutate(timing = factor(.data$timing, levels = c("Pre", "Post"))) %>%
+    dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
     dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
     dplyr::ungroup()
 
@@ -162,11 +162,11 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
         arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.1, "inches"))
       ) +
       ggplot2::geom_text(
-        data = dplyr::filter(arrow_df, .data$timing == "Pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
+        data = dplyr::filter(arrow_df, .data$timing == "pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
         family = "Gill Sans MT", size = 3.5
       ) +
       ggplot2::geom_text(
-        data = dplyr::filter(arrow_df, .data$timing == "Post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
+        data = dplyr::filter(arrow_df, .data$timing == "post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
         family = "Gill Sans MT", size = 3.5
       ) +
       ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
@@ -214,11 +214,11 @@ arrowChart <- function(df, scale_labels, group_colors, overall_n = FALSE, questi
         arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.1, "inches"))
       ) +
       ggplot2::geom_text(
-        data = dplyr::filter(arrow_df, .data$timing == "Pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
+        data = dplyr::filter(arrow_df, .data$timing == "pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
         family = "Gill Sans MT", size = 3.5
       ) +
       ggplot2::geom_text(
-        data = dplyr::filter(arrow_df, .data$timing == "Post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
+        data = dplyr::filter(arrow_df, .data$timing == "post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
         family = "Gill Sans MT", size = 3.5
       ) +
       ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
