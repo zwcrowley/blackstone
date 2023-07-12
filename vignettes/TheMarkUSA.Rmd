@@ -20,19 +20,10 @@ knitr::opts_chunk$set(
 
 
 ```{r load additional libraries, include=FALSE}
-library(tidyverse)  # tidy data manipulation
+library(tidyr)  # tidy data manipulation
+library(tidyselect)  # tidy data manipulation
+library(dplyr)  # tidy data manipulation
 library(ggplot2) # all viz
-library(ggh4x) # ggplot helpers
-library(scales) # percent and other helper functions
-library(readxl) # read in excel files
-library(janitor) # data cleanup helpers
-library(lubridate) # helpers for dealing with dates
-library(gtsummary) # one package for making summary tables, tbl_summary and other table set up
-library(kableExtra) # kable extras, produces tables mostly in html
-library(flextable) # table exports that work well in .pptx and .doc Word files
-library(ftExtra) # extras for flextable
-library(magrittr) # pipe operators
-library(extraInserts) # extra symbol helpers like %<>% 
 library(extrafont) # load fonts espcially "Gill Sans MT" font for use in visuals
 loadfonts(device = "win", quiet = TRUE)
 
@@ -62,10 +53,10 @@ First, change the title and author in the yaml header above on lines 2 and 3, (l
 # the function read_xlsx(), both are shown below:
 # For this example, the baseline data is in a folder called "extdata" which is located up four folders so ../ moves up one folder-
 # Read in the baseline.xlsx data using read_excel():
-baseline <- read_excel("../inst/extdata/baseline.xlsx")
+baseline <- readxl::read_excel("../inst/extdata/baseline.xlsx")
 
 # Read in the annual.xlsx data using read_xlsx():
-annual <- read_xlsx("../inst/extdata/annual.xlsx")
+annual <- readxl::read_xlsx("../inst/extdata/annual.xlsx")
 # Remove to resuse names:
 rm(annual, baseline)
 ```
@@ -75,10 +66,10 @@ rm(annual, baseline)
 # readr is a package included in "tidyverse" that has the most up to date function for reading in .csv data, read_csv():
 # For this example, the baseline data is in a folder called "extdata" which is located up four folders so ../ moves up one folder-
 # Read in the baseline.csv data:
-baseline <- read_csv("../inst/extdata/baseline.csv")
+baseline <- readr::read_csv("../inst/extdata/baseline.csv")
 
 # Read in the annual.csv data:
-annual <- read_csv("../inst/extdata/annual.csv")
+annual <- readr::read_csv("../inst/extdata/annual.csv")
 ```
 
 
@@ -119,11 +110,12 @@ merged_data <- baseline %>% left_join(annual, by = join_by("Unique Identifier"))
 str(merged_data)
 # merged_data contains all numeric variables with has 14 variables and 20 observations. 
 ```
+
 ## Clean up variable names:
 ```{r clean var names}
 # The janitor package has a lot of functions to help clean data below will do the following:
 # Clean up column names and take out empty/constant columns (not necessary here but showing its available):
-merged_data <- merged_data %>% clean_names() %>% remove_empty() %>% remove_constant() 
+merged_data <- merged_data %>% janitor::clean_names() %>% janitor::remove_empty() %>% janitor::remove_constant() 
 
 # Get a list of all columns names:
 colnames(merged_data)
@@ -242,15 +234,15 @@ merged_data <- merged_data %>% rowwise() %>% mutate(pre_items = mean(c_across(pr
 # Table for M and SD for pre-post composites:
 merged_data %>%
   select(pre_items, post_items) %>%
-  tbl_summary(statistic = list(all_continuous()~ "{mean}, ({sd})"),
+  gtsummary::tbl_summary(statistic = list(gtsummary::all_continuous() ~ "{mean}, ({sd})"),
               type = list(pre_items ~ 'continuous', post_items ~ 'continuous'),
-              label =  list(pre_items~ 'Pre Likert Items',
+              label =  list(pre_items ~ 'Pre Likert Items',
                             post_items ~ 'Post Likert Items'),
-              missing_text = "Missing")%>%
-  add_stat_label() %>%
-  bold_labels() %>%
-  modify_header(label ~ "**Variable**") %>%
-  modify_caption("Mean and SD of Likert Items")
+              missing_text = "Missing") %>%
+  gtsummary::add_stat_label() %>%
+  gtsummary::bold_labels() %>%
+  gtsummary::modify_header(label ~ "**Variable**") %>%
+  gtsummary::modify_caption("Mean and SD of Likert Items")
 
 ```
 
