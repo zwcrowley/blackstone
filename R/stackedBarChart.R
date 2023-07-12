@@ -1,6 +1,6 @@
-#' Stacked Bar Chart for The Mark USA, Inc.
+#' Stacked Bar Chart for The Mark USA
 #'
-#' `stackedBarChart()` creates a stacked bar chart and returns a ggplot object with The Mark USA, Inc branding.
+#' `stackedBarChart()` creates a stacked bar chart and returns a ggplot object with The Mark USA branding.
 #'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
 #'   variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with The Mark USA branding.

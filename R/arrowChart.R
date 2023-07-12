@@ -1,4 +1,4 @@
-#' Arrow Chart for The Mark USA, Inc.
+#' Arrow Chart for The Mark USA
 #'
 #' `arrowChart()` creates an pre-post arrow chart of group averages and returns
 #' a ggplot object.
