@@ -20,7 +20,10 @@ a ggplot object."><meta property="og:image" content="https://zcrowleythemark.git
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/TheMarkUSA.html">Get started</a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -64,8 +67,8 @@ a ggplot object.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>df</dt>
-<dd><p>Required, a <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> or data frame of <strong>numeric</strong> data that has a categorical group
-variable to split up the data, e.g. role, gender, education level, etc.</p></dd>
+<dd><p>Required, a <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> or data frame of <strong>numeric</strong> data that also has a categorical group
+variable to split up the data, e.g. role, gender, education level, etc. must be in 5 point scales and pre-post.</p></dd>
 
 
 <dt>scale_labels</dt>
@@ -108,16 +111,16 @@ post score average on the top of the plot descending.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  Pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">Pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">Pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">Pre_Organization</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Pre_Source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Source <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">Pre_Source</span> <span class="op">&lt;</span> <span class="fl">4</span>, <span class="va">Pre_Source</span> <span class="op">+</span> <span class="fl">2</span>, <span class="va">Pre_Source</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Pre_Publish <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Publish <span class="op">=</span> <span class="va">Pre_Publish</span> <span class="op">+</span> <span class="fl">2</span>,</span></span>
-<span class="r-in"><span>  Pre_Write <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Write <span class="op">=</span> <span class="va">Pre_Write</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>  Pre_Research <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Research <span class="op">=</span> <span class="va">Pre_Research</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">pre_Organization</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pre_Source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Source <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Source</span> <span class="op">&lt;</span> <span class="fl">4</span>, <span class="va">pre_Source</span> <span class="op">+</span> <span class="fl">2</span>, <span class="va">pre_Source</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pre_Publish <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Publish <span class="op">=</span> <span class="va">pre_Publish</span> <span class="op">+</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  pre_Write <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Write <span class="op">=</span> <span class="va">pre_Write</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  pre_Research <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Research <span class="op">=</span> <span class="va">pre_Research</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      <span class="st">"grad"</span>, <span class="st">"undergrad"</span>, <span class="st">"grad"</span>, <span class="st">"undergrad"</span>, <span class="st">"grad"</span>,</span></span>
 <span class="r-in"><span>      <span class="st">"undergrad"</span>, <span class="st">"undergrad"</span>, <span class="st">"grad"</span>, <span class="st">"undergrad"</span></span></span>
@@ -157,7 +160,7 @@ post score average on the top of the plot descending.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Zack Crowley, The Mark, USA Inc..</p>
+  <p></p><p>Developed by Zack Crowley, The Mark USA, INC..</p>
 </div>
 
 <div class="pkgdown-footer-right">

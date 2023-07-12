@@ -18,7 +18,10 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/TheMarkUSA.html">Get started</a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -84,21 +87,21 @@ vector.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  Pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">Pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">Pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">Pre_Organization</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Pre_Source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Source <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">Pre_Source</span> <span class="op">&lt;</span> <span class="fl">4</span>, <span class="va">Pre_Source</span> <span class="op">+</span> <span class="fl">2</span>, <span class="va">Pre_Source</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Pre_Publish <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Publish <span class="op">=</span> <span class="va">Pre_Publish</span> <span class="op">+</span> <span class="fl">2</span>,</span></span>
-<span class="r-in"><span>  Pre_Write <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Write <span class="op">=</span> <span class="va">Pre_Write</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>  Pre_Research <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Post_Research <span class="op">=</span> <span class="va">Pre_Research</span> <span class="op">+</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>  pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">pre_Organization</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pre_Source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Source <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Source</span> <span class="op">&lt;</span> <span class="fl">4</span>, <span class="va">pre_Source</span> <span class="op">+</span> <span class="fl">2</span>, <span class="va">pre_Source</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pre_Publish <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Publish <span class="op">=</span> <span class="va">pre_Publish</span> <span class="op">+</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  pre_Write <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Write <span class="op">=</span> <span class="va">pre_Write</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  pre_Research <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  post_Research <span class="op">=</span> <span class="va">pre_Research</span> <span class="op">+</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span>, <span class="st">"Slight"</span>, <span class="st">"Moderate"</span>, <span class="st">"Good"</span>, <span class="st">"Extensive"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">recodeCat</span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 × 20</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Pre_Organization Post_Organization Pre_Source Post_Source Pre_Publish</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pre_Organization post_Organization pre_Source post_Source pre_Publish</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>                1                 2          2           4           1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>                2                 3          2           4           1</span>
@@ -109,11 +112,11 @@ vector.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>                3                 4          2           4           3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span>                2                 3          1           3           3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">9</span>                1                 2          2           4           3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: Post_Publish &lt;dbl&gt;, Pre_Write &lt;dbl&gt;, Post_Write &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Pre_Research &lt;dbl&gt;, Post_Research &lt;dbl&gt;, cat_Pre_Organization &lt;fct&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cat_Post_Organization &lt;fct&gt;, cat_Pre_Source &lt;fct&gt;, cat_Post_Source &lt;fct&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cat_Pre_Publish &lt;fct&gt;, cat_Post_Publish &lt;fct&gt;, cat_Pre_Write &lt;fct&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cat_Post_Write &lt;fct&gt;, cat_Pre_Research &lt;fct&gt;, cat_Post_Research &lt;fct&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: post_Publish &lt;dbl&gt;, pre_Write &lt;dbl&gt;, post_Write &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pre_Research &lt;dbl&gt;, post_Research &lt;dbl&gt;, cat_pre_Organization &lt;fct&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cat_post_Organization &lt;fct&gt;, cat_pre_Source &lt;fct&gt;, cat_post_Source &lt;fct&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cat_pre_Publish &lt;fct&gt;, cat_post_Publish &lt;fct&gt;, cat_pre_Write &lt;fct&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cat_post_Write &lt;fct&gt;, cat_pre_Research &lt;fct&gt;, cat_post_Research &lt;fct&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -121,7 +124,7 @@ vector.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Zack Crowley, The Mark, USA Inc..</p>
+  <p></p><p>Developed by Zack Crowley, The Mark USA, INC..</p>
 </div>
 
 <div class="pkgdown-footer-right">

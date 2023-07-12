@@ -18,7 +18,10 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/TheMarkUSA.html">Get started</a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -48,7 +51,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dataSumm</span><span class="op">(</span><span class="va">var</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dataSumm</span><span class="op">(</span><span class="va">var</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span>, sort_n <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,7 +61,12 @@
 
 
 <dt>na.rm</dt>
-<dd><p>Drops NA values. Defaults to TRUE.</p></dd>
+<dd><p>Logical, defaults to TRUE. Drops NA values.</p></dd>
+
+
+<dt>sort_n</dt>
+<dd><p>Logical, defaults to FALSE. If TRUE, sorts the data by the count of each response (n_answers).
+If FALSE., sorts by response.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -73,31 +81,30 @@ percent_answers is the percentage of each response and percent_answers_label is 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  role <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  role <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"Faculty"</span>, <span class="st">"Postdoc"</span>, <span class="st">"Undergraduate student"</span>, <span class="st">"Graduate student"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"Graduate student"</span>, <span class="st">"Postdoc"</span>, <span class="st">"Postdoc"</span>, <span class="st">"Faculty"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"Faculty"</span>, <span class="st">"Graduate student"</span>, <span class="st">"Graduate student"</span>, <span class="st">"Postdoc"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"Faculty"</span>, <span class="st">"Faculty"</span>, <span class="st">"Faculty"</span>, <span class="st">"Faculty"</span>, <span class="st">"Faculty"</span>, <span class="st">"Graduate student"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"Undergraduate student"</span>, <span class="st">"Undergraduate student"</span>, <span class="st">"NA"</span>, <span class="st">"NA"</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Undergraduate student"</span>, <span class="st">"Graduate student"</span>, <span class="st">"Postdoc"</span>,<span class="st">"Faculty"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">role</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">dataSumm</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   question response              n_answers percent_answers percent_answers_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> role     Faculty                       8          0.364  36%                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> role     Graduate student              5          0.227  23%                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> role     Postdoc                       4          0.182  18%                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> role     Undergraduate student         3          0.136  14%                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> role     NA                            2          0.090<span style="text-decoration: underline;">9</span> 9%                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> role     Undergraduate student         3            0.15 15%                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> role     Graduate student              5            0.25 25%                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> role     Postdoc                       4            0.2  20%                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> role     Faculty                       8            0.4  40%                  </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Includes NA values:</span></span></span>
+<span class="r-in"><span><span class="co"># Includes NA values and sorted by count of response:</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">role</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">dataSumm</span><span class="op">(</span>na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">dataSumm</span><span class="op">(</span>na.rm <span class="op">=</span> <span class="cn">FALSE</span>, sort_n <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   question response              n_answers percent_answers percent_answers_label</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
@@ -105,7 +112,7 @@ percent_answers is the percentage of each response and percent_answers_label is 
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> role     Graduate student              5          0.227  23%                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> role     Postdoc                       4          0.182  18%                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> role     Undergraduate student         3          0.136  14%                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> role     NA                            2          0.090<span style="text-decoration: underline;">9</span> 9%                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> role     <span style="color: #BB0000;">NA</span>                            2          0.090<span style="text-decoration: underline;">9</span> 9%                   </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -113,7 +120,7 @@ percent_answers is the percentage of each response and percent_answers_label is 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Zack Crowley, The Mark, USA Inc..</p>
+  <p></p><p>Developed by Zack Crowley, The Mark USA, INC..</p>
 </div>
 
 <div class="pkgdown-footer-right">
