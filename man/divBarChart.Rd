@@ -2,7 +2,7 @@
 % Please edit documentation in R/divBarChart.R
 \name{divBarChart}
 \alias{divBarChart}
-\title{Diverging Bar Chart for The Mark USA, Inc.}
+\title{Diverging Bar Chart for The Mark USA}
 \usage{
 divBarChart(
   df,
@@ -40,7 +40,7 @@ positive valenced response options on the top of the plot descending.}
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a diverging bar chart and can be exported.
 }
 \description{
-\code{divBarChart()} creates a diverging bar chart and returns a ggplot object with The Mark USA, Inc branding.
+\code{divBarChart()} creates a diverging bar chart and returns a ggplot object with The Mark USA branding.
 }
 \examples{
 items <- dplyr::tibble(

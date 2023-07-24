@@ -2,7 +2,7 @@
 % Please edit documentation in R/stackedBarChart.R
 \name{stackedBarChart}
 \alias{stackedBarChart}
-\title{Stacked Bar Chart for The Mark USA, Inc.}
+\title{Stacked Bar Chart for The Mark USA}
 \usage{
 stackedBarChart(
   df,
@@ -19,8 +19,9 @@ stackedBarChart(
 \item{df}{Required, A \link[tibble:tibble-package]{tibble}/data frame of survey items that are categorical/character
 variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with The Mark USA branding.}
 
-\item{scale_labels}{Required, a character vector of levels to set the scale for the plot,
-accepts a character vector of 3 to 7 items.}
+\item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
+e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.
+This argument accepts a character vector of 3 to 7 items.}
 
 \item{pre_post}{Logical, default is FALSE. If true, returns a pre-post stacked bar chart.}
 
@@ -43,7 +44,7 @@ positive valenced response options on the top of the plot descending.}
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a stacked bar chart and can be exported.
 }
 \description{
-\code{stackedBarChart()} creates a stacked bar chart and returns a ggplot object with The Mark USA, Inc branding.
+\code{stackedBarChart()} creates a stacked bar chart and returns a ggplot object with The Mark USA branding.
 }
 \examples{
 items <- dplyr::tibble(

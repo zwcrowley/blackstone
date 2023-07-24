@@ -2,7 +2,7 @@
 % Please edit documentation in R/arrowChart.R
 \name{arrowChart}
 \alias{arrowChart}
-\title{Arrow Chart for The Mark USA, Inc.}
+\title{Arrow Chart for The Mark USA}
 \usage{
 arrowChart(
   df,
@@ -17,7 +17,9 @@ arrowChart(
 \item{df}{Required, a \link[tibble:tibble-package]{tibble} or data frame of \strong{numeric} data that also has a categorical group
 variable to split up the data, e.g. role, gender, education level, etc. must be in 5 point scales and pre-post.}
 
-\item{scale_labels}{Required, a character vector of levels to set the scale for the plot.}
+\item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
+e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.
+This argument accepts a character vector of 3 to 7 items.}
 
 \item{group_colors}{Required, a character vector of hex codes for colors to associate
 each group to, e.g. this data has two groups and this function creates an

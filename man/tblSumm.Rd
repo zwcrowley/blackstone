@@ -20,7 +20,7 @@ if false, does not have a final row of totals. Set True by default.}
 }
 \value{
 a \link[flextable:flextable-package]{flextable} object with the 3 columns, response, counts and percentages,
-Colors are set to The Mark, USA Inc. branding
+Colors are set to The Mark USA branding
 }
 \description{
 Creates a summary table of counts and percentages from a data frame pre-processed with the
