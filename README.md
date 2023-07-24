@@ -119,8 +119,11 @@ survey items that are categorical/factor variables, in 5 point scales,
 can be a single time point or pre-post, that will be inserted into a
 stacked bar chart with The Mark USA branding.
 
-**scale_labels** Required, a character vector of levels to set the scale
-for the plot, accepts a character vector of 3 to 7 items.
+**scale_labels** scale_labels Required, a character vector of labels for
+the response scale, must be in the desired order, e.g. if you have a 5
+item scale of minimal to extensive it should look like this:
+`levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
+This argument accepts a character vector of 3 to 7 items.
 
 **pre_post** Logical, default is FALSE. If true, returns a pre-post
 stacked bar chart, arranged by question, this requires data structured
@@ -237,8 +240,11 @@ survey items that are categorical/character variables, in 3 to 7 point
 scales, that will be inserted into a diverging bar chart with The Mark
 USA branding.
 
-**scale_labels** Required, a character vector of levels to set the scale
-for the plot, accepts a character vector of 3 to 7 items.
+**scale_labels**scale_labels Required, a character vector of labels for
+the response scale, must be in the desired order, e.g. if you have a 5
+item scale of minimal to extensive it should look like this:
+`levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
+This argument accepts a character vector of 3 to 7 items.
 
 **overall_n** Logical, default is FALSE. If TRUE, returns an overall *n*
 for all questions that is in the upper left tag of the plot. If False,
@@ -320,8 +326,11 @@ div_chart_labels
 the data, e.g. role, gender, education level, etc. must be in 5 point
 scales and pre-post.
 
-**scale_labels** Required, a character vector of levels to set the scale
-for the plot.
+**scale_labels** scale_labels Required, a character vector of labels for
+the response scale, must be in the desired order, e.g. if you have a 5
+item scale of minimal to extensive it should look like this:
+`levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
+This argument accepts a character vector of 3 to 7 items.
 
 **group_colors** Required, a character vector of hex codes for colors to
 associate each group to, e.g. this data has two groups and this function
@@ -382,6 +391,16 @@ threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 arrow_chart_1 <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 arrow_chart_1
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
 ```
 
 <img src="man/figures/README-arrowChart-1.png" width="100%" />
@@ -392,6 +411,16 @@ arrow_chart_1
 arrow_chart_labels_all_n <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 arrow_chart_labels_all_n
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
 ```
 
 <img src="man/figures/README-arrowChart-2.png" width="100%" />
@@ -402,6 +431,16 @@ arrow_chart_labels_all_n
 arrow_chart_labels_all_n <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 arrow_chart_labels_all_n
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
 ```
 
 <img src="man/figures/README-arrowChart-3.png" width="100%" />

@@ -5,8 +5,9 @@
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
 #'   variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.
 #'
-#' @param scale_labels Required, a character vector of levels to set the scale for the plot,
-#'    accepts a character vector of 3 to 7 items.
+#' @param scale_labels Required, a character vector of labels for the response scale, must be in the desired order,
+#'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
+#'    This argument accepts a character vector of 3 to 7 items.
 #'
 #' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.

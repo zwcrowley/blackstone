@@ -18,8 +18,9 @@ divBarChart(
 \item{df}{Required, A \link[tibble:tibble-package]{tibble}/data frame of survey items that are categorical/character
 variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.}
 
-\item{scale_labels}{Required, a character vector of levels to set the scale for the plot,
-accepts a character vector of 3 to 7 items.}
+\item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
+e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.
+This argument accepts a character vector of 3 to 7 items.}
 
 \item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
 If False, adds \emph{n} to each question/item after the respective labels.}

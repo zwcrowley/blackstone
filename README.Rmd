@@ -91,7 +91,7 @@ The user simply passes a data frame of all the items to be recoded with a charac
 
 **df** Required, A [tibble][tibble::tibble-package] or data frame of survey items that are categorical/factor variables, in 5 point scales, can be a single time point or pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.
 
-**scale_labels** Required, a character vector of levels to set the scale for the plot, accepts a character vector of 3 to 7 items.
+**scale_labels** scale_labels Required, a character vector of labels for the response scale, must be in the desired order, e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`. This argument accepts a character vector of 3 to 7 items.
 
 **pre_post** Logical, default is FALSE. If true, returns a pre-post stacked bar chart, arranged by question, this requires data structured as pre-post. If FALSE, returns a stacked bar chart of a single time point.
 
@@ -176,8 +176,7 @@ stacked_chart_pre_post_labels
 **df** Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
   variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.
 
-**scale_labels** Required, a character vector of levels to set the scale for the plot,
-  accepts a character vector of 3 to 7 items.
+**scale_labels**scale_labels Required, a character vector of labels for the response scale, must be in the desired order, e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`. This argument accepts a character vector of 3 to 7 items.
   
 **overall_n** Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot. If False, adds *n* to each question/item after the respective labels.
 
@@ -240,7 +239,7 @@ div_chart_labels
 **df** Required, a [tibble][tibble::tibble-package] or data frame of **numeric** data that also has a categorical group
  variable to split up the data, e.g. role, gender, education level, etc. must be in 5 point scales and pre-post.
 
-**scale_labels** Required, a character vector of levels to set the scale for the plot.
+**scale_labels** scale_labels Required, a character vector of labels for the response scale, must be in the desired order, e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`. This argument accepts a character vector of 3 to 7 items.
 
 **group_colors** Required, a character vector of hex codes for colors to associate
    each group to, e.g. this data has two groups and this function creates an
