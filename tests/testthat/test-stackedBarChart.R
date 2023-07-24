@@ -19,8 +19,8 @@ test_that("plots accept same data types", {
     Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
     Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   )
-
-  levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+  # Named vector of scale_labels:
+  levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
   # Question order/labels as a named vector with the new names as the names and
   # the old vars as the character strings:
   question_labels <- c("Publish and lot a get a job" =  "Publish",

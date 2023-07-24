@@ -142,9 +142,9 @@ merged_data <- merged_data %>% mutate(cat_role = factor(case_when(
                       )
 # case_when() takes in a statement on the left side of the ~ and when that is true returns the statement on the right side of the ~ to the new variable, in this case cat_role
 # so when role == 1 then cat_role will be == "Undergraduate student" and so on.
-# TheMarkUSA package also has a function that works similar to the above code called recodeCat(), This function takes in a df, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument, returns a the original variable(s) new factor variable named "cat_{variable(s)}":
+# TheMarkUSA package also has a function that works similar to the above code called recodeCat(), This function takes in a df, use the scale_labels argument to pass the new labels along with the original value, returns a the original variable(s) new factor variable named "cat_{variable(s)}":
 cat_role <- merged_data %>% select(role) %>% 
-    recodeCat(scale_labels = c("Undergraduate student", "Graduate student", "Postdoc", "Faculty"), number_levels = c(1,2,3,4)) %>% select(cat_role) 
+    recodeCat(scale_labels = c("Undergraduate student" = "1", "Graduate student" = "2", "Postdoc" = "3", "Faculty" = "4")) %>% select(cat_role) 
 # Add new cat_role variable back to merged data:
 merged_data <- merged_data %>% mutate(cat_role)
 ```
@@ -154,7 +154,7 @@ Next, in order to use the variable "gender" from the merged_data we need to chan
 ```{r recode gender}
 # recode gender with recodeCat():
 cat_gender <- merged_data %>% select(gender) %>% 
-    recodeCat(scale_labels = c("male", "female", "other")) %>% select(cat_gender) 
+    recodeCat(scale_labels = c("male"= "1", "female"= "2", "other"= "3")) %>% select(cat_gender) 
 # Add new cat_gender variable back to merged data:
 merged_data <- merged_data %>% mutate(cat_gender)
 ```
@@ -164,7 +164,7 @@ Recode institution from the merged_data and change it to a factor/categorical va
 ```{r recode institution}
 # recode institution with recodeCat():
 cat_institution <- merged_data %>% select(institution) %>% 
-    recodeCat(scale_labels = c("University of Place", "State University of Another Place", "Technical State", "University of One More Place")) %>% 
+    recodeCat(scale_labels = c("University of Place" = "1", "State University of Another Place"= "2", "Technical State"= "3", "University of One More Place"= "4")) %>% 
     select(cat_institution) 
 # Add new cat_institution variable back to merged data:
 merged_data <- merged_data %>% mutate(cat_institution)
@@ -205,7 +205,7 @@ In the current The Mark workflow, the most common data analysis is with survey i
 # use the : symbol to select all the variables that are consecutive in the tibble, i.e. select(pre_organization:post_write) selects all the likert scale items,
 # the second select call (select()) selects all the new variables created with the prefix "cat_{variable(s)}":
 cat_likert_items <- merged_data %>% select(pre_organization:post_research) %>% 
-    recodeCat(scale_labels = c("Minimal", "Slight", "Moderate", "Good", "Extensive"), number_levels = c(1,2,3,4,5)) %>% select(contains("cat")) 
+    recodeCat(scale_labels = c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")) %>% select(contains("cat")) 
 # Add the new cat_items df to merged data:
 merged_data <- merged_data %>% mutate(cat_likert_items)
 # Check the data:

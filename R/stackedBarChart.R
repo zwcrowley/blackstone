@@ -51,8 +51,13 @@
 #'   Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
 #' )
 #'
-#' # Set scale_labels:
-#' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+#' # Set scale_labels for recodeCat function:
+#' # scale_labels as a named character vector, items in correct order:
+#' levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3",
+#'                     "Good" = "4", "Extensive" = "5")
+#'
+#' # bar_scale_labels as just the names from levels_min_ext:
+#' bar_scale_labels <- names(levels_min_ext)
 #'
 #' # Question labels as a named vector with the naming structure
 #' # like this: c("new label" = "original variable name"):
@@ -72,19 +77,19 @@
 #'
 #' # Pass the factor variables and the levels to stackedBarChart:
 #' stackedBarChart(
-#'   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
+#'   df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels,
 #'   question_labels= NULL, percent_label = TRUE, width = NULL
 #' )
 #' stackedBarChart(
-#'   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+#'   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
 #'   question_labels= NULL, percent_label = TRUE, width = NULL
 #' )
 #' stackedBarChart(
-#'   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
+#'   df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels,
 #'   question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
 #' stackedBarChart(
-#'   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+#'   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
 #'   question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
 stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE, question_labels = NULL, question_order= FALSE, width = NULL) {
@@ -97,6 +102,15 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
     tibble::enframe() %>%
     dplyr::select("name") %>%
     tibble::deframe()
+
+  # Error messages if number_levels is less than 3:
+  if (length(number_levels) < 3) {
+    stop("Error: the response options in scale_labels are less than 3, they must be between 3 and 7 for this function.")
+  }
+  # Error messages if number_levels is greater than 7:
+  if (length(number_levels) > 7) {
+    stop("Error: the response options in scale_labels are greater than 7, they must be between 3 and 7 for this function.")
+  }
 
   if (isTRUE(pre_post)) {
     # Sets up new_df if pre_post is TRUE:

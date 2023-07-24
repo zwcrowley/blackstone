@@ -4,21 +4,17 @@
 \alias{recodeCat}
 \title{Recode Numeric Variables to Factor Variables}
 \usage{
-recodeCat(df, scale_labels, number_levels = NULL)
+recodeCat(df, scale_labels)
 }
 \arguments{
 \item{df}{Required, a \link[tibble:tibble-package]{tibble}/data frame of survey items that are numeric variables that need to be converted
 into factor variables, Can be anywhere from 3 to 7 point scales.}
 
-\item{scale_labels}{Required, a character vector of labels of the desired scale levels. The function will use this vector to convert
-the numeric variables into factor variables, must be arranged low to high with the exact number of levels as the data contains,
-or else NA will be returned for variables outside the range of user supplied values.}
-
-\item{number_levels}{A character vector that of all the numeric values original numeric variables that are to be recoded, in the correct order.
-Both scale_labels and number_levels should be in the same order that the user wants the variables to be recoded. For example, if
-a variable from df has 3 numeric values of 1,2,and 3, to be recoded to as "Minimal", "Slight", "Moderate",
-number_levels should equal: c(1,2,3) and scale_labels should equal: c("Minimal", "Slight", "Moderate"). See more examples below.
-Defaults to NULL.}
+\item{scale_labels}{Required, a named character vector of labels of the desired scale levels for the new factor variables.
+The function will use this vector to convert the numeric variables into factor variables, all levels must be supplied in the correct range
+otherwise else NA will be returned for variables outside the range of user supplied values. The named character vector should have the new
+labels as the "name" and the old labels as the "variable" like this: c("\if{html}{\out{<new label>}}" = "\if{html}{\out{<original variable value>}}") which would look like this:
+\code{levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")}}
 }
 \value{
 a \link[tibble:tibble-package]{tibble} with the original numeric variables along with
@@ -41,6 +37,9 @@ items <- dplyr::tibble(
   pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   post_Research = pre_Research + 1
 )
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+
+levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3",
+                     "Good" = "4", "Extensive" = "5")
+
 recodeCat(df = items, scale_labels = levels_min_ext)
 }

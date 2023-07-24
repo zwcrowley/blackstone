@@ -39,47 +39,42 @@ USA, Inc. to factor variables:
 `recodeCat()` is a helper function to recode numeric data into factor
 variables with the desired levels.
 
-`recodeCat()` takes in three arguments:
+`recodeCat()` takes in two arguments:
 
 **df** Required, a \[tibble\]\[tibble::tibble-package\]/data frame of
 survey items that are numeric variables that need to be converted into
 factor variables. Numeric variables in the data can be anywhere from 3
 to 7 point scales.
 
-**scale_labels** Required, a character vector of labels of the desired
-scale levels. The function will use this vector to convert the numeric
-variables into factor variables, must be arranged low to high with the
-exact number of levels as the data contains, or else NA will be
-returned.
-
-**number_levels** A character vector that of all the numeric values
-original numeric variables that are to be recoded, in the correct order.
-Both scale_labels and number_levels should be in the same order that the
-user wants the variables to be recoded. For example, if a variable from
-df has 3 numeric values of 1,2,and 3, to be recoded to as “Minimal”,
-“Slight”, “Moderate”, number_levels should equal: c(1,2,3) and
-scale_labels should equal: c(“Minimal”, “Slight”, “Moderate”). See more
-examples below. Defaults to NULL.
+**scale_labels** Required, a named character vector of labels of the
+desired scale levels for the new factor variables. The function will use
+this vector to convert the numeric variables into factor variables, all
+levels must be supplied in the correct range otherwise else NA will be
+returned for variables outside the range of user supplied values. The
+named character vector should have the new labels as the “name” and the
+old labels as the “variable” like this: c(“<new label>” =
+“<original variable value>”) which would look like this:
+`levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")`
 
 ``` r
 items <- dplyr::tibble(
-  Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-  Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
-  Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
-  Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
-  Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-  Post_Publish = Pre_Publish + 2,
-  Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
-  Post_Write = Pre_Write + 1,
-  Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
-  Post_Research = Pre_Research + 1
+  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  post_Publish = pre_Publish + 2,
+  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  post_Write = pre_Write + 1,
+  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  post_Research = pre_Research + 1
 )
-# scale_labels for 5 item example
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-cat_items_1 <- TheMarkUSA::recodeCat(df = items, scale_labels = levels_min_ext, number_levels = c(1,2,3,4,5))
+# Set up the named vector to pass to scale_labels, follow this pattern- c("<new label>" = "<original variable value>"):
+levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
+cat_items_1 <- TheMarkUSA::recodeCat(df = items, scale_labels = levels_min_ext)
 cat_items_1
 #> # A tibble: 9 × 20
-#>   Pre_Organization Post_Organization Pre_Source Post_Source Pre_Publish
+#>   pre_Organization post_Organization pre_Source post_Source pre_Publish
 #>              <dbl>             <dbl>      <dbl>       <dbl>       <dbl>
 #> 1                1                 2          2           4           1
 #> 2                2                 3          2           4           1
@@ -90,16 +85,16 @@ cat_items_1
 #> 7                3                 4          2           4           3
 #> 8                2                 3          1           3           3
 #> 9                1                 2          2           4           3
-#> # ℹ 15 more variables: Post_Publish <dbl>, Pre_Write <dbl>, Post_Write <dbl>,
-#> #   Pre_Research <dbl>, Post_Research <dbl>, cat_Pre_Organization <fct>,
-#> #   cat_Post_Organization <fct>, cat_Pre_Source <fct>, cat_Post_Source <fct>,
-#> #   cat_Pre_Publish <fct>, cat_Post_Publish <fct>, cat_Pre_Write <fct>,
-#> #   cat_Post_Write <fct>, cat_Pre_Research <fct>, cat_Post_Research <fct>
+#> # ℹ 15 more variables: post_Publish <dbl>, pre_Write <dbl>, post_Write <dbl>,
+#> #   pre_Research <dbl>, post_Research <dbl>, cat_pre_Organization <fct>,
+#> #   cat_post_Organization <fct>, cat_pre_Source <fct>, cat_post_Source <fct>,
+#> #   cat_pre_Publish <fct>, cat_post_Publish <fct>, cat_pre_Write <fct>,
+#> #   cat_post_Write <fct>, cat_pre_Research <fct>, cat_post_Research <fct>
 ```
 
 The user simply passes a data frame of all the items to be recoded with
-a character vector of the 5 scale likert levels in the corresponding
-order as the numeric data.
+a named character vector of the 5 scale likert levels in the
+corresponding order as the numeric data.
 
 ## Data Visualizations Examples
 
@@ -168,8 +163,12 @@ items_single <- dplyr::tibble(
   Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
   Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4)
 )
-# scale_labels as a character vector, items in correct order:
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+# scale_labels as a named character vector, items in correct order:
+levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
+
+# bar_scale_labels as just the names from levels_min_ext:
+bar_scale_labels <- names(levels_min_ext)
+
 # Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):
 question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Write a lot of research papers" = "Write",
@@ -182,7 +181,7 @@ cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
 cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 # Pass the factor variables and the levels to 'stackedBarChart()':
 stacked_chart_single <- TheMarkUSA::stackedBarChart(
-   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
    percent_label = TRUE, width = 0.6
 )
 stacked_chart_single
@@ -193,7 +192,7 @@ stacked_chart_single
 ``` r
 # With new labels and order taken from question_labels argument:
 stacked_chart_single_labels <- TheMarkUSA::stackedBarChart(
-   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = 0.6
 )
 stacked_chart_single_labels
@@ -209,7 +208,7 @@ cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
 
 # Run the function with the factor items and the character vector of the factor levels:
 stacked_chart_pre_post <- TheMarkUSA::stackedBarChart(
-   df = cat_items_plot, pre_post = TRUE, scale_labels = levels_min_ext,
+   df = cat_items_plot, pre_post = TRUE, scale_labels = bar_scale_labels,
    percent_label = TRUE, width = NULL
 )
 stacked_chart_pre_post
@@ -220,7 +219,7 @@ stacked_chart_pre_post
 ``` r
 # With new labels and order taken from question_labels argument:
 stacked_chart_pre_post_labels <- TheMarkUSA::stackedBarChart(
-   df = cat_items_plot, pre_post = TRUE, scale_labels = levels_min_ext,
+   df = cat_items_plot, pre_post = TRUE, scale_labels = bar_scale_labels,
    question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = NULL
 )
 stacked_chart_pre_post_labels
@@ -274,18 +273,23 @@ bars. Default is NULL.
 
 ``` r
 items <- dplyr::tibble(
- Pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
- Post_Organization = dplyr::if_else(Pre_Organization < 5, Pre_Organization + 1, Pre_Organization),
- Pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
- Post_Source = dplyr::if_else(Pre_Source < 4, Pre_Source + 2, Pre_Source),
- Pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
- Post_Publish = Pre_Publish + 2,
- Pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
- Post_Write = Pre_Write + 1,
- Pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
- Post_Research = Pre_Research + 1
+  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  post_Publish = pre_Publish + 2,
+  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  post_Write = pre_Write + 1,
+  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  post_Research = pre_Research + 1
 )
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+# scale_labels as a named character vector, items in correct order:
+levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
+
+# bar_scale_labels as just the names from levels_min_ext:
+bar_scale_labels <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+
 # Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):
 question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                     "Write a lot of research papers" = "Write",
@@ -299,7 +303,7 @@ cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
 # Pass the factor variables and the levels to 'divBarChart()', set so that it 
 # returns the percent labels on the bars:
 div_chart <- divBarChart(
- df = cat_items, scale_labels = levels_min_ext, percent_label = TRUE
+ df = cat_items, scale_labels = bar_scale_labels, percent_label = TRUE
 )
 div_chart
 ```
@@ -309,7 +313,7 @@ div_chart
 ``` r
 # With new labels and order taken from question_labels argument:
 div_chart_labels <- divBarChart(
- df = cat_items, scale_labels = levels_min_ext,
+ df = cat_items, scale_labels = bar_scale_labels,
  question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = NULL
 )
 div_chart_labels
@@ -391,16 +395,6 @@ threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 arrow_chart_1 <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 arrow_chart_1
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
 ```
 
 <img src="man/figures/README-arrowChart-1.png" width="100%" />
@@ -411,16 +405,6 @@ arrow_chart_1
 arrow_chart_labels_all_n <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 arrow_chart_labels_all_n
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
 ```
 
 <img src="man/figures/README-arrowChart-2.png" width="100%" />
@@ -431,16 +415,6 @@ arrow_chart_labels_all_n
 arrow_chart_labels_all_n <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 arrow_chart_labels_all_n
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
-#> `geom_line()`: Each group consists of only one observation.
-#> ℹ Do you need to adjust the group aesthetic?
 ```
 
 <img src="man/figures/README-arrowChart-3.png" width="100%" />

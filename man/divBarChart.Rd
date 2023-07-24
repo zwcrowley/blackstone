@@ -57,8 +57,13 @@ items <- dplyr::tibble(
   post_Research = pre_Research + 1
 )
 
-# Set scale_labels:
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3",
+                    "Good" = "4", "Extensive" = "5")
+
+# bar_scale_labels as just the names from levels_min_ext:
+bar_scale_labels <- names(levels_min_ext)
 
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"):
@@ -76,11 +81,11 @@ cat_items <- cat_items \%>\% dplyr::select(dplyr::where(is.factor))
 
 # Pass the factor variables and the levels to divBarChart:
 divBarChart(
-  df = cat_items, scale_labels = levels_min_ext,
+  df = cat_items, scale_labels = bar_scale_labels,
   question_labels= NULL, percent_label = TRUE, width = NULL
 )
 divBarChart(
-  df = cat_items, scale_labels = levels_min_ext,
+  df = cat_items, scale_labels = bar_scale_labels,
   question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 )
 }
