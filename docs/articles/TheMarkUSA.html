@@ -245,9 +245,9 @@ need to change it to a factor/categorical variables:</p>
 <span>                      <span class="op">)</span></span>
 <span><span class="co"># case_when() takes in a statement on the left side of the ~ and when that is true returns the statement on the right side of the ~ to the new variable, in this case cat_role</span></span>
 <span><span class="co"># so when role == 1 then cat_role will be == "Undergraduate student" and so on.</span></span>
-<span><span class="co"># TheMarkUSA package also has a function that works similar to the above code called recodeCat(), This function takes in a df, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument, returns a the original variable(s) new factor variable named "cat_{variable(s)}":</span></span>
+<span><span class="co"># TheMarkUSA package also has a function that works similar to the above code called recodeCat(), This function takes in a df, use the scale_labels argument to pass the new labels along with the original value, returns a the original variable(s) new factor variable named "cat_{variable(s)}":</span></span>
 <span><span class="va">cat_role</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">role</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="../reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>scale_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Undergraduate student"</span>, <span class="st">"Graduate student"</span>, <span class="st">"Postdoc"</span>, <span class="st">"Faculty"</span><span class="op">)</span>, number_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">cat_role</span><span class="op">)</span> </span>
+<span>    <span class="fu"><a href="../reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>scale_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Undergraduate student"</span> <span class="op">=</span> <span class="st">"1"</span>, <span class="st">"Graduate student"</span> <span class="op">=</span> <span class="st">"2"</span>, <span class="st">"Postdoc"</span> <span class="op">=</span> <span class="st">"3"</span>, <span class="st">"Faculty"</span> <span class="op">=</span> <span class="st">"4"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">cat_role</span><span class="op">)</span> </span>
 <span><span class="co"># Add new cat_role variable back to merged data:</span></span>
 <span><span class="va">merged_data</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">mutate</span><span class="op">(</span><span class="va">cat_role</span><span class="op">)</span></span></code></pre></div>
 <p>Next, in order to use the variable “gender” from the merged_data we
@@ -255,7 +255,7 @@ need to change it to a factor/categorical variables:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># recode gender with recodeCat():</span></span>
 <span><span class="va">cat_gender</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">gender</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="../reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>scale_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"other"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">cat_gender</span><span class="op">)</span> </span>
+<span>    <span class="fu"><a href="../reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>scale_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span><span class="op">=</span> <span class="st">"1"</span>, <span class="st">"female"</span><span class="op">=</span> <span class="st">"2"</span>, <span class="st">"other"</span><span class="op">=</span> <span class="st">"3"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">cat_gender</span><span class="op">)</span> </span>
 <span><span class="co"># Add new cat_gender variable back to merged data:</span></span>
 <span><span class="va">merged_data</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">mutate</span><span class="op">(</span><span class="va">cat_gender</span><span class="op">)</span></span></code></pre></div>
 <p>Recode institution from the merged_data and change it to a
@@ -263,7 +263,7 @@ factor/categorical variable:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># recode institution with recodeCat():</span></span>
 <span><span class="va">cat_institution</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">institution</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="../reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>scale_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"University of Place"</span>, <span class="st">"State University of Another Place"</span>, <span class="st">"Technical State"</span>, <span class="st">"University of One More Place"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="../reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>scale_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"University of Place"</span> <span class="op">=</span> <span class="st">"1"</span>, <span class="st">"State University of Another Place"</span><span class="op">=</span> <span class="st">"2"</span>, <span class="st">"Technical State"</span><span class="op">=</span> <span class="st">"3"</span>, <span class="st">"University of One More Place"</span><span class="op">=</span> <span class="st">"4"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu">select</span><span class="op">(</span><span class="va">cat_institution</span><span class="op">)</span> </span>
 <span><span class="co"># Add new cat_institution variable back to merged data:</span></span>
 <span><span class="va">merged_data</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">mutate</span><span class="op">(</span><span class="va">cat_institution</span><span class="op">)</span></span></code></pre></div>
@@ -289,38 +289,38 @@ tables, the next examples will show how to do with with
 <span><span class="va">tbl_role</span> <span class="op">&lt;-</span> <span class="va">role_summ</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tblSumm.html">tblSumm</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">tbl_role</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-a75cc462{}.cl-a74fb95c{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-a74fb970{font-family:'Arial';font-size:14pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a74fb97a{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a755097a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7550984{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7552950{width:1.848in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a755295a{width:0.812in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a755295b{width:0.693in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7552964{width:1.848in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7552965{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7552978{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7552979{width:1.848in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7552982{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7552983{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a755298c{width:1.848in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a755298d{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a755298e{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7552996{width:1.848in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7552997{width:0.812in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a75529a0{width:0.693in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-a75cc462">
+<style>.cl-0d0cef2e{}.cl-0d005458{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-0d00546c{font-family:'Arial';font-size:14pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0d005476{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0d05a55c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-0d05a566{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-0d05c550{width:1.848in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c55a{width:0.812in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c55b{width:0.693in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c564{width:1.848in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c565{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c56e{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c56f{width:1.848in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c578{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c582{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c583{width:1.848in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c58c{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c58d{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c58e{width:1.848in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c596{width:0.812in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d05c597{width:0.693in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-0d0cef2e">
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-a7552950"><p class="cl-a755097a"><span class="cl-a74fb95c">Response</span></p></th>
-<th class="cl-a755295a"><p class="cl-a7550984"><span class="cl-a74fb95c">Percent</span></p></th>
-<th class="cl-a755295b"><p class="cl-a7550984"><span class="cl-a74fb95c">Count</span></p></th>
+<th class="cl-0d05c550"><p class="cl-0d05a55c"><span class="cl-0d005458">Response</span></p></th>
+<th class="cl-0d05c55a"><p class="cl-0d05a566"><span class="cl-0d005458">Percent</span></p></th>
+<th class="cl-0d05c55b"><p class="cl-0d05a566"><span class="cl-0d005458">Count</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7552964"><p class="cl-a755097a"><span class="cl-a74fb970">Undergraduate student</span></p></td>
-<td class="cl-a7552965"><p class="cl-a7550984"><span class="cl-a74fb970">30%</span></p></td>
-<td class="cl-a7552978"><p class="cl-a7550984"><span class="cl-a74fb970">6</span></p></td>
+<td class="cl-0d05c564"><p class="cl-0d05a55c"><span class="cl-0d00546c">Undergraduate student</span></p></td>
+<td class="cl-0d05c565"><p class="cl-0d05a566"><span class="cl-0d00546c">30%</span></p></td>
+<td class="cl-0d05c56e"><p class="cl-0d05a566"><span class="cl-0d00546c">6</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7552979"><p class="cl-a755097a"><span class="cl-a74fb970">Graduate student</span></p></td>
-<td class="cl-a7552982"><p class="cl-a7550984"><span class="cl-a74fb970">35%</span></p></td>
-<td class="cl-a7552983"><p class="cl-a7550984"><span class="cl-a74fb970">7</span></p></td>
+<td class="cl-0d05c56f"><p class="cl-0d05a55c"><span class="cl-0d00546c">Graduate student</span></p></td>
+<td class="cl-0d05c578"><p class="cl-0d05a566"><span class="cl-0d00546c">35%</span></p></td>
+<td class="cl-0d05c582"><p class="cl-0d05a566"><span class="cl-0d00546c">7</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7552979"><p class="cl-a755097a"><span class="cl-a74fb970">Postdoc</span></p></td>
-<td class="cl-a7552982"><p class="cl-a7550984"><span class="cl-a74fb970">15%</span></p></td>
-<td class="cl-a7552983"><p class="cl-a7550984"><span class="cl-a74fb970">3</span></p></td>
+<td class="cl-0d05c56f"><p class="cl-0d05a55c"><span class="cl-0d00546c">Postdoc</span></p></td>
+<td class="cl-0d05c578"><p class="cl-0d05a566"><span class="cl-0d00546c">15%</span></p></td>
+<td class="cl-0d05c582"><p class="cl-0d05a566"><span class="cl-0d00546c">3</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a755298c"><p class="cl-a755097a"><span class="cl-a74fb970">Faculty</span></p></td>
-<td class="cl-a755298d"><p class="cl-a7550984"><span class="cl-a74fb970">20%</span></p></td>
-<td class="cl-a755298e"><p class="cl-a7550984"><span class="cl-a74fb970">4</span></p></td>
+<td class="cl-0d05c583"><p class="cl-0d05a55c"><span class="cl-0d00546c">Faculty</span></p></td>
+<td class="cl-0d05c58c"><p class="cl-0d05a566"><span class="cl-0d00546c">20%</span></p></td>
+<td class="cl-0d05c58d"><p class="cl-0d05a566"><span class="cl-0d00546c">4</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7552996"><p class="cl-a755097a"><span class="cl-a74fb97a">Total</span></p></td>
-<td class="cl-a7552997"><p class="cl-a7550984"><span class="cl-a74fb97a">-</span></p></td>
-<td class="cl-a75529a0"><p class="cl-a7550984"><span class="cl-a74fb97a">20</span></p></td>
+<td class="cl-0d05c58e"><p class="cl-0d05a55c"><span class="cl-0d005476">Total</span></p></td>
+<td class="cl-0d05c596"><p class="cl-0d05a566"><span class="cl-0d005476">-</span></p></td>
+<td class="cl-0d05c597"><p class="cl-0d05a566"><span class="cl-0d005476">20</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -332,33 +332,33 @@ tables, the next examples will show how to do with with
 <span><span class="va">tbl_gender</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">cat_gender</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/dataSumm.html">dataSumm</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tblSumm.html">tblSumm</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">tbl_gender</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-a788dd4a{}.cl-a77d522c{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-a77d5236{font-family:'Arial';font-size:14pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a77d5240{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a781631c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7816330{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7818c84{width:0.973in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818c8e{width:0.812in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818c8f{width:0.693in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818c98{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818ca2{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818ca3{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cac{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cb6{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cb7{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cb8{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cb9{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cc0{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cc1{width:0.973in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cc2{width:0.812in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7818cca{width:0.693in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-a788dd4a">
+<style>.cl-0d3649be{}.cl-0d2c079c{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-0d2c07a6{font-family:'Arial';font-size:14pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0d2c07b0{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0d3075d4{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-0d3075de{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-0d3091f4{width:0.973in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d3091fe{width:0.812in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309208{width:0.693in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309212{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309213{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309214{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309215{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d30921c{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d30921d{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d30921e{width:0.973in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309226{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309227{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309228{width:0.973in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309230{width:0.812in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d309231{width:0.693in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-0d3649be">
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-a7818c84"><p class="cl-a781631c"><span class="cl-a77d522c">Response</span></p></th>
-<th class="cl-a7818c8e"><p class="cl-a7816330"><span class="cl-a77d522c">Percent</span></p></th>
-<th class="cl-a7818c8f"><p class="cl-a7816330"><span class="cl-a77d522c">Count</span></p></th>
+<th class="cl-0d3091f4"><p class="cl-0d3075d4"><span class="cl-0d2c079c">Response</span></p></th>
+<th class="cl-0d3091fe"><p class="cl-0d3075de"><span class="cl-0d2c079c">Percent</span></p></th>
+<th class="cl-0d309208"><p class="cl-0d3075de"><span class="cl-0d2c079c">Count</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7818c98"><p class="cl-a781631c"><span class="cl-a77d5236">male</span></p></td>
-<td class="cl-a7818ca2"><p class="cl-a7816330"><span class="cl-a77d5236">50%</span></p></td>
-<td class="cl-a7818ca3"><p class="cl-a7816330"><span class="cl-a77d5236">10</span></p></td>
+<td class="cl-0d309212"><p class="cl-0d3075d4"><span class="cl-0d2c07a6">male</span></p></td>
+<td class="cl-0d309213"><p class="cl-0d3075de"><span class="cl-0d2c07a6">50%</span></p></td>
+<td class="cl-0d309214"><p class="cl-0d3075de"><span class="cl-0d2c07a6">10</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7818cac"><p class="cl-a781631c"><span class="cl-a77d5236">female</span></p></td>
-<td class="cl-a7818cb6"><p class="cl-a7816330"><span class="cl-a77d5236">45%</span></p></td>
-<td class="cl-a7818cb7"><p class="cl-a7816330"><span class="cl-a77d5236">9</span></p></td>
+<td class="cl-0d309215"><p class="cl-0d3075d4"><span class="cl-0d2c07a6">female</span></p></td>
+<td class="cl-0d30921c"><p class="cl-0d3075de"><span class="cl-0d2c07a6">45%</span></p></td>
+<td class="cl-0d30921d"><p class="cl-0d3075de"><span class="cl-0d2c07a6">9</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7818cb8"><p class="cl-a781631c"><span class="cl-a77d5236">other</span></p></td>
-<td class="cl-a7818cb9"><p class="cl-a7816330"><span class="cl-a77d5236">5%</span></p></td>
-<td class="cl-a7818cc0"><p class="cl-a7816330"><span class="cl-a77d5236">1</span></p></td>
+<td class="cl-0d30921e"><p class="cl-0d3075d4"><span class="cl-0d2c07a6">other</span></p></td>
+<td class="cl-0d309226"><p class="cl-0d3075de"><span class="cl-0d2c07a6">5%</span></p></td>
+<td class="cl-0d309227"><p class="cl-0d3075de"><span class="cl-0d2c07a6">1</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7818cc1"><p class="cl-a781631c"><span class="cl-a77d5240">Total</span></p></td>
-<td class="cl-a7818cc2"><p class="cl-a7816330"><span class="cl-a77d5240">-</span></p></td>
-<td class="cl-a7818cca"><p class="cl-a7816330"><span class="cl-a77d5240">20</span></p></td>
+<td class="cl-0d309228"><p class="cl-0d3075d4"><span class="cl-0d2c07b0">Total</span></p></td>
+<td class="cl-0d309230"><p class="cl-0d3075de"><span class="cl-0d2c07b0">-</span></p></td>
+<td class="cl-0d309231"><p class="cl-0d3075de"><span class="cl-0d2c07b0">20</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -368,38 +368,38 @@ tables, the next examples will show how to do with with
 <span><span class="va">tbl_institution</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">cat_institution</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/dataSumm.html">dataSumm</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tblSumm.html">tblSumm</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">tbl_institution</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-a7b0a4b0{}.cl-a7a47e74{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-a7a47e7e{font-family:'Arial';font-size:14pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a7a47e88{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a7aa0f2e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7aa0f42{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7aa81a2{width:2.527in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81b6{width:0.812in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81c0{width:0.693in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81d4{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81d5{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81de{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81e8{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81e9{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81f2{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa81fc{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa8206{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa8207{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa8210{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa821a{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa8224{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa8225{width:2.527in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa822e{width:0.812in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7aa822f{width:0.693in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-a7b0a4b0">
+<style>.cl-0d596822{}.cl-0d4ea36a{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-0d4ea374{font-family:'Arial';font-size:14pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0d4ea375{font-family:'Arial';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0d52576c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-0d525776{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-0d52747c{width:2.527in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d527486{width:0.812in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d527487{width:0.693in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d527490{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d527491{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d52749a{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274a4{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274a5{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274a6{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274ae{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274af{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274b0{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274b1{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274b8{width:0.812in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274b9{width:0.693in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274ba{width:2.527in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274c2{width:0.812in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0d5274c3{width:0.693in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-0d596822">
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-a7aa81a2"><p class="cl-a7aa0f2e"><span class="cl-a7a47e74">Response</span></p></th>
-<th class="cl-a7aa81b6"><p class="cl-a7aa0f42"><span class="cl-a7a47e74">Percent</span></p></th>
-<th class="cl-a7aa81c0"><p class="cl-a7aa0f42"><span class="cl-a7a47e74">Count</span></p></th>
+<th class="cl-0d52747c"><p class="cl-0d52576c"><span class="cl-0d4ea36a">Response</span></p></th>
+<th class="cl-0d527486"><p class="cl-0d525776"><span class="cl-0d4ea36a">Percent</span></p></th>
+<th class="cl-0d527487"><p class="cl-0d525776"><span class="cl-0d4ea36a">Count</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7aa81d4"><p class="cl-a7aa0f2e"><span class="cl-a7a47e7e">University of Place</span></p></td>
-<td class="cl-a7aa81d5"><p class="cl-a7aa0f42"><span class="cl-a7a47e7e">15%</span></p></td>
-<td class="cl-a7aa81de"><p class="cl-a7aa0f42"><span class="cl-a7a47e7e">3</span></p></td>
+<td class="cl-0d527490"><p class="cl-0d52576c"><span class="cl-0d4ea374">University of Place</span></p></td>
+<td class="cl-0d527491"><p class="cl-0d525776"><span class="cl-0d4ea374">15%</span></p></td>
+<td class="cl-0d52749a"><p class="cl-0d525776"><span class="cl-0d4ea374">3</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7aa81e8"><p class="cl-a7aa0f2e"><span class="cl-a7a47e7e">State University of Another Place</span></p></td>
-<td class="cl-a7aa81e9"><p class="cl-a7aa0f42"><span class="cl-a7a47e7e">45%</span></p></td>
-<td class="cl-a7aa81f2"><p class="cl-a7aa0f42"><span class="cl-a7a47e7e">9</span></p></td>
+<td class="cl-0d5274a4"><p class="cl-0d52576c"><span class="cl-0d4ea374">State University of Another Place</span></p></td>
+<td class="cl-0d5274a5"><p class="cl-0d525776"><span class="cl-0d4ea374">45%</span></p></td>
+<td class="cl-0d5274a6"><p class="cl-0d525776"><span class="cl-0d4ea374">9</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7aa81fc"><p class="cl-a7aa0f2e"><span class="cl-a7a47e7e">Technical State</span></p></td>
-<td class="cl-a7aa8206"><p class="cl-a7aa0f42"><span class="cl-a7a47e7e">25%</span></p></td>
-<td class="cl-a7aa8207"><p class="cl-a7aa0f42"><span class="cl-a7a47e7e">5</span></p></td>
+<td class="cl-0d5274ae"><p class="cl-0d52576c"><span class="cl-0d4ea374">Technical State</span></p></td>
+<td class="cl-0d5274af"><p class="cl-0d525776"><span class="cl-0d4ea374">25%</span></p></td>
+<td class="cl-0d5274b0"><p class="cl-0d525776"><span class="cl-0d4ea374">5</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7aa8210"><p class="cl-a7aa0f2e"><span class="cl-a7a47e7e">University of One More Place</span></p></td>
-<td class="cl-a7aa821a"><p class="cl-a7aa0f42"><span class="cl-a7a47e7e">15%</span></p></td>
-<td class="cl-a7aa8224"><p class="cl-a7aa0f42"><span class="cl-a7a47e7e">3</span></p></td>
+<td class="cl-0d5274b1"><p class="cl-0d52576c"><span class="cl-0d4ea374">University of One More Place</span></p></td>
+<td class="cl-0d5274b8"><p class="cl-0d525776"><span class="cl-0d4ea374">15%</span></p></td>
+<td class="cl-0d5274b9"><p class="cl-0d525776"><span class="cl-0d4ea374">3</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a7aa8225"><p class="cl-a7aa0f2e"><span class="cl-a7a47e88">Total</span></p></td>
-<td class="cl-a7aa822e"><p class="cl-a7aa0f42"><span class="cl-a7a47e88">-</span></p></td>
-<td class="cl-a7aa822f"><p class="cl-a7aa0f42"><span class="cl-a7a47e88">20</span></p></td>
+<td class="cl-0d5274ba"><p class="cl-0d52576c"><span class="cl-0d4ea375">Total</span></p></td>
+<td class="cl-0d5274c2"><p class="cl-0d525776"><span class="cl-0d4ea375">-</span></p></td>
+<td class="cl-0d5274c3"><p class="cl-0d525776"><span class="cl-0d4ea375">20</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -421,7 +421,7 @@ the numeric variables on 1-5 point scales with the correct labels of:
 <span><span class="co"># use the : symbol to select all the variables that are consecutive in the tibble, i.e. select(pre_organization:post_write) selects all the likert scale items,</span></span>
 <span><span class="co"># the second select call (select()) selects all the new variables created with the prefix "cat_{variable(s)}":</span></span>
 <span><span class="va">cat_likert_items</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">pre_organization</span><span class="op">:</span><span class="va">post_research</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="../reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>scale_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span>, <span class="st">"Slight"</span>, <span class="st">"Moderate"</span>, <span class="st">"Good"</span>, <span class="st">"Extensive"</span><span class="op">)</span>, number_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"cat"</span><span class="op">)</span><span class="op">)</span> </span>
+<span>    <span class="fu"><a href="../reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>scale_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span> <span class="op">=</span> <span class="st">"1"</span>, <span class="st">"Slight"</span> <span class="op">=</span> <span class="st">"2"</span>, <span class="st">"Moderate"</span> <span class="op">=</span> <span class="st">"3"</span>, <span class="st">"Good"</span> <span class="op">=</span> <span class="st">"4"</span>, <span class="st">"Extensive"</span> <span class="op">=</span> <span class="st">"5"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"cat"</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="co"># Add the new cat_items df to merged data:</span></span>
 <span><span class="va">merged_data</span> <span class="op">&lt;-</span> <span class="va">merged_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">mutate</span><span class="op">(</span><span class="va">cat_likert_items</span><span class="op">)</span></span>
 <span><span class="co"># Check the data:</span></span>
@@ -490,23 +490,23 @@ a table with the mean and SD using the function tbl_summary from the
 <span>  <span class="fu">gtsummary</span><span class="fu">::</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/bold_italicize_labels_levels.html" class="external-link">bold_labels</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">gtsummary</span><span class="fu">::</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html" class="external-link">modify_header</a></span><span class="op">(</span><span class="va">label</span> <span class="op">~</span> <span class="st">"**Variable**"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">gtsummary</span><span class="fu">::</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html" class="external-link">modify_caption</a></span><span class="op">(</span><span class="st">"Mean and SD of Likert Items"</span><span class="op">)</span></span></code></pre></div>
-<div id="grxwncnnin" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#grxwncnnin table {
+<div id="kpgzmjudxm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kpgzmjudxm table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#grxwncnnin thead, #grxwncnnin tbody, #grxwncnnin tfoot, #grxwncnnin tr, #grxwncnnin td, #grxwncnnin th {
+#kpgzmjudxm thead, #kpgzmjudxm tbody, #kpgzmjudxm tfoot, #kpgzmjudxm tr, #kpgzmjudxm td, #kpgzmjudxm th {
   border-style: none;
 }
 
-#grxwncnnin p {
+#kpgzmjudxm p {
   margin: 0;
   padding: 0;
 }
 
-#grxwncnnin .gt_table {
+#kpgzmjudxm .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -532,12 +532,12 @@ a table with the mean and SD using the function tbl_summary from the
   border-left-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_caption {
+#kpgzmjudxm .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#grxwncnnin .gt_title {
+#kpgzmjudxm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -549,7 +549,7 @@ a table with the mean and SD using the function tbl_summary from the
   border-bottom-width: 0;
 }
 
-#grxwncnnin .gt_subtitle {
+#kpgzmjudxm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -561,7 +561,7 @@ a table with the mean and SD using the function tbl_summary from the
   border-top-width: 0;
 }
 
-#grxwncnnin .gt_heading {
+#kpgzmjudxm .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -573,13 +573,13 @@ a table with the mean and SD using the function tbl_summary from the
   border-right-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_bottom_border {
+#kpgzmjudxm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_col_headings {
+#kpgzmjudxm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -594,7 +594,7 @@ a table with the mean and SD using the function tbl_summary from the
   border-right-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_col_heading {
+#kpgzmjudxm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -614,7 +614,7 @@ a table with the mean and SD using the function tbl_summary from the
   overflow-x: hidden;
 }
 
-#grxwncnnin .gt_column_spanner_outer {
+#kpgzmjudxm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -626,15 +626,15 @@ a table with the mean and SD using the function tbl_summary from the
   padding-right: 4px;
 }
 
-#grxwncnnin .gt_column_spanner_outer:first-child {
+#kpgzmjudxm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#grxwncnnin .gt_column_spanner_outer:last-child {
+#kpgzmjudxm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#grxwncnnin .gt_column_spanner {
+#kpgzmjudxm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -646,11 +646,11 @@ a table with the mean and SD using the function tbl_summary from the
   width: 100%;
 }
 
-#grxwncnnin .gt_spanner_row {
+#kpgzmjudxm .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#grxwncnnin .gt_group_heading {
+#kpgzmjudxm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -676,7 +676,7 @@ a table with the mean and SD using the function tbl_summary from the
   text-align: left;
 }
 
-#grxwncnnin .gt_empty_group_heading {
+#kpgzmjudxm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -691,15 +691,15 @@ a table with the mean and SD using the function tbl_summary from the
   vertical-align: middle;
 }
 
-#grxwncnnin .gt_from_md > :first-child {
+#kpgzmjudxm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#grxwncnnin .gt_from_md > :last-child {
+#kpgzmjudxm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#grxwncnnin .gt_row {
+#kpgzmjudxm .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -718,7 +718,7 @@ a table with the mean and SD using the function tbl_summary from the
   overflow-x: hidden;
 }
 
-#grxwncnnin .gt_stub {
+#kpgzmjudxm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -731,7 +731,7 @@ a table with the mean and SD using the function tbl_summary from the
   padding-right: 5px;
 }
 
-#grxwncnnin .gt_stub_row_group {
+#kpgzmjudxm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -745,15 +745,15 @@ a table with the mean and SD using the function tbl_summary from the
   vertical-align: top;
 }
 
-#grxwncnnin .gt_row_group_first td {
+#kpgzmjudxm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#grxwncnnin .gt_row_group_first th {
+#kpgzmjudxm .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#grxwncnnin .gt_summary_row {
+#kpgzmjudxm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -763,16 +763,16 @@ a table with the mean and SD using the function tbl_summary from the
   padding-right: 5px;
 }
 
-#grxwncnnin .gt_first_summary_row {
+#kpgzmjudxm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_first_summary_row.thick {
+#kpgzmjudxm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#grxwncnnin .gt_last_summary_row {
+#kpgzmjudxm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -782,7 +782,7 @@ a table with the mean and SD using the function tbl_summary from the
   border-bottom-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_grand_summary_row {
+#kpgzmjudxm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -792,7 +792,7 @@ a table with the mean and SD using the function tbl_summary from the
   padding-right: 5px;
 }
 
-#grxwncnnin .gt_first_grand_summary_row {
+#kpgzmjudxm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -802,7 +802,7 @@ a table with the mean and SD using the function tbl_summary from the
   border-top-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_last_grand_summary_row_top {
+#kpgzmjudxm .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -812,11 +812,11 @@ a table with the mean and SD using the function tbl_summary from the
   border-bottom-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_striped {
+#kpgzmjudxm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#grxwncnnin .gt_table_body {
+#kpgzmjudxm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -825,7 +825,7 @@ a table with the mean and SD using the function tbl_summary from the
   border-bottom-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_footnotes {
+#kpgzmjudxm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -839,7 +839,7 @@ a table with the mean and SD using the function tbl_summary from the
   border-right-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_footnote {
+#kpgzmjudxm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -848,7 +848,7 @@ a table with the mean and SD using the function tbl_summary from the
   padding-right: 5px;
 }
 
-#grxwncnnin .gt_sourcenotes {
+#kpgzmjudxm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -862,7 +862,7 @@ a table with the mean and SD using the function tbl_summary from the
   border-right-color: #D3D3D3;
 }
 
-#grxwncnnin .gt_sourcenote {
+#kpgzmjudxm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -870,63 +870,63 @@ a table with the mean and SD using the function tbl_summary from the
   padding-right: 5px;
 }
 
-#grxwncnnin .gt_left {
+#kpgzmjudxm .gt_left {
   text-align: left;
 }
 
-#grxwncnnin .gt_center {
+#kpgzmjudxm .gt_center {
   text-align: center;
 }
 
-#grxwncnnin .gt_right {
+#kpgzmjudxm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#grxwncnnin .gt_font_normal {
+#kpgzmjudxm .gt_font_normal {
   font-weight: normal;
 }
 
-#grxwncnnin .gt_font_bold {
+#kpgzmjudxm .gt_font_bold {
   font-weight: bold;
 }
 
-#grxwncnnin .gt_font_italic {
+#kpgzmjudxm .gt_font_italic {
   font-style: italic;
 }
 
-#grxwncnnin .gt_super {
+#kpgzmjudxm .gt_super {
   font-size: 65%;
 }
 
-#grxwncnnin .gt_footnote_marks {
+#kpgzmjudxm .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#grxwncnnin .gt_asterisk {
+#kpgzmjudxm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#grxwncnnin .gt_indent_1 {
+#kpgzmjudxm .gt_indent_1 {
   text-indent: 5px;
 }
 
-#grxwncnnin .gt_indent_2 {
+#kpgzmjudxm .gt_indent_2 {
   text-indent: 10px;
 }
 
-#grxwncnnin .gt_indent_3 {
+#kpgzmjudxm .gt_indent_3 {
   text-indent: 15px;
 }
 
-#grxwncnnin .gt_indent_4 {
+#kpgzmjudxm .gt_indent_4 {
   text-indent: 20px;
 }
 
-#grxwncnnin .gt_indent_5 {
+#kpgzmjudxm .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
