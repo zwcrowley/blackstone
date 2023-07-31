@@ -70,19 +70,23 @@ items_single <- dplyr::tibble(
 
 # Set scale_labels for recodeCat function:
 # scale_labels as a named character vector, items in correct order:
-levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3",
-                    "Good" = "4", "Extensive" = "5")
+levels_min_ext <- c(
+  "Minimal" = "1", "Slight" = "2", "Moderate" = "3",
+  "Good" = "4", "Extensive" = "5"
+)
 
 # bar_scale_labels as just the names from levels_min_ext:
 bar_scale_labels <- names(levels_min_ext)
 
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"):
-question_labels <- c("Publish a lot of high quality papers" =  "Publish",
-                     "Write a lot of research papers" = "Write",
-                     "Research in a lab with faculty" = "Research",
-                     "Organization of a large research project" = "Organization",
-                     "Source work for a research paper" = "Source")
+question_labels <- c(
+  "Publish a lot of high quality papers" = "Publish",
+  "Write a lot of research papers" = "Write",
+  "Research in a lab with faculty" = "Research",
+  "Organization of a large research project" = "Organization",
+  "Source work for a research paper" = "Source"
+)
 
 # Recode the numeric to factor variables using the levels from levels_min_ext:
 cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
@@ -95,18 +99,18 @@ cat_items_single <- cat_items_single \%>\% dplyr::select(dplyr::where(is.factor)
 # Pass the factor variables and the levels to stackedBarChart:
 stackedBarChart(
   df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels,
-  question_labels= NULL, percent_label = TRUE, width = NULL
+  question_labels = NULL, percent_label = TRUE, width = NULL
 )
 stackedBarChart(
   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
-  question_labels= NULL, percent_label = TRUE, width = NULL
+  question_labels = NULL, percent_label = TRUE, width = NULL
 )
 stackedBarChart(
   df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels,
-  question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
+  question_labels = question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 )
 stackedBarChart(
   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
-  question_labels= question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
+  question_labels = question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 )
 }
