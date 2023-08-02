@@ -97,7 +97,7 @@
 #'   question_labels = question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
 stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE,
-                            question_labels = NULL, question_order= FALSE, width = NULL) {
+                                               question_labels = NULL, question_order= FALSE, width = NULL) {
   # Load all fonts:
   extrafont::loadfonts("all", quiet = TRUE)
   # Set . to NULL to stop message when using dot notation in mutate:
@@ -190,7 +190,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
           pos_valence_post = dplyr::case_when(
             .data$response == levels(.data$response)[4] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
             .data$response == levels(.data$response)[5] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
@@ -201,7 +201,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::arrange(.data$response)
 
       # 5 colors for chart:
-      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+      fill_colors <- c("#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
 
       # If number_levels) == 6
     } else if (length(number_levels) == 6) {
@@ -220,7 +220,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::arrange(.data$response)
 
       # 6 colors for chart:
-      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F", "gray")
+      fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
 
       # If number_levels) == 7
     } else if (length(number_levels) == 7) {
@@ -239,7 +239,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::arrange(.data$response)
 
       # 7 colors for chart:
-      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
+      fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
     }
 
     # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
@@ -463,7 +463,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
           pos_valence_post = dplyr::case_when(
             .data$response == levels(.data$response)[4] ~ percent_answers,
             .data$response == levels(.data$response)[5] ~ percent_answers,
@@ -473,7 +473,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::ungroup()
 
       # 5 colors for chart:
-      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+      fill_colors <- c("#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
 
       # If number_levels) == 6
     } else if (length(number_levels) == 6) {
@@ -491,7 +491,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::ungroup()
 
       # 6 colors for chart:
-      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F", "gray")
+      fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
 
       # If number_levels) == 7
     } else if (length(number_levels) == 7) {
@@ -509,7 +509,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::ungroup()
 
       # 7 colors for chart:
-      fill_colors <- c("#767171", "#FFE699", "#79AB53", "#4B9FA6", "#37546d", "#2C2C4F", "gray")
+      fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
     }
 
     # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
@@ -557,7 +557,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
 
       # Error messages if N_df is null, not filled by last if statement above:
       if (is.null(N_df)) {
-        stop("Error: Can not use overall n for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
+        stop("Error: Can not use `overall_n` for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
       }
 
       # Set labels to percent or n_answers:
