@@ -310,7 +310,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
                            family = "Gill Sans MT",
                            fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
         ) +
-        ggplot2::scale_color_manual(values = c("black", "white")) +
+        ggplot2::scale_color_identity() +
         ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
         ggplot2::scale_fill_manual(
           values = fill_colors, drop = FALSE,
@@ -369,7 +369,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
                            family = "Gill Sans MT",
                            fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
         ) +
-        ggplot2::scale_color_manual(values = c("black", "white")) +
+        ggplot2::scale_color_identity() +
         ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
         ggplot2::scale_fill_manual(
           values = fill_colors, drop = FALSE,
@@ -579,7 +579,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
                            family = "Gill Sans MT",
                            fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
         ) +
-        ggplot2::scale_color_manual(values = c("black", "white")) +
+        ggplot2::scale_color_identity() +
         ggplot2::scale_fill_manual(values = fill_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 10)) +
         ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(direction = "horizontal",
                                                                          size = 12, family = "Gill Sans MT", face = "bold", label.hjust = 0.5, label.vjust = 1, ncol = length(scale_labels), nrow = 1,
@@ -628,7 +628,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
                            family = "Gill Sans MT",
                            fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3
         ) +
-        ggplot2::scale_color_manual(values = c("black", "white")) +
+        ggplot2::scale_color_identity() +
         ggplot2::scale_fill_manual(values = fill_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 10)) +
         ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(direction = "horizontal",
                                                                          size = 12, family = "Gill Sans MT", face = "bold", label.hjust = 0.5, label.vjust = 1, ncol = length(scale_labels), nrow = 1,
