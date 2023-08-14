@@ -118,7 +118,7 @@ divBarChart  <- function(df, scale_labels, overall_n = FALSE, percent_label = TR
   # If the user supplies a named vector for questions labels:
   if (!is.null(question_labels)) {
     names(question_labels) <- names(question_labels) %>%
-      stringr::str_wrap(., width = 40) %>%
+      stringr::str_wrap(., width = 30) %>%
       gsub("\n", "<br>", .)
     new_df <- new_df %>%
       dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels)) %>%
@@ -380,7 +380,7 @@ divBarChart  <- function(df, scale_labels, overall_n = FALSE, percent_label = TR
         ),
         plot.tag = ggtext::element_markdown(color = "black", size = 10, family = "Gill Sans MT"),
         plot.tag.position = "topleft",
-        plot.margin = ggplot2::margin(t = 45, r = 5, b = 45, l = 5, unit = "pt"),
+        plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
         legend.text = ggtext::element_markdown(size = 11, family = "Gill Sans MT", face = "bold",
                                                margin = ggplot2::margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
         ),
@@ -449,7 +449,7 @@ divBarChart  <- function(df, scale_labels, overall_n = FALSE, percent_label = TR
           angle = 0, hjust = 1, color = "black", size = 11, family = "Gill Sans MT",
           margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
         ),
-        plot.margin = ggplot2::margin(t = 45, r = 5, b = 45, l = 5, unit = "pt"),
+        plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
         legend.text = ggtext::element_markdown(size = 11, family = "Gill Sans MT", face = "bold",
                                                margin = ggplot2::margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
         ),
