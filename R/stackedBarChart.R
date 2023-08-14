@@ -97,7 +97,7 @@
 #'   question_labels = question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
 stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE,
-                                               question_labels = NULL, question_order= FALSE, width = NULL) {
+                            question_labels = NULL, question_order= FALSE, width = NULL) {
   # Load all fonts:
   extrafont::loadfonts("all", quiet = TRUE)
   # Set . to NULL to stop message when using dot notation in mutate:
@@ -312,18 +312,21 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         ) +
         ggplot2::scale_color_identity() +
         ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
-        ggplot2::scale_fill_manual(
-          values = fill_colors, drop = FALSE,
-          labels = function(response) stringr::str_wrap(response, width = 10)
+        ggplot2::scale_fill_manual(breaks = scale_labels, values = fill_colors, drop = FALSE,
+                                   labels = paste("<span style='color:", fill_colors, "'>",
+                                                  stringr::str_wrap(scale_labels, width = 10) %>% gsub("\n", "<br>", .), "</span>"),
+                                   guide = ggplot2::guide_legend(direction = "horizontal",
+                                                                 title.position = "top",
+                                                                 label.position = "bottom",
+                                                                 label.hjust = 0.5,
+                                                                 label.vjust = 1,
+                                                                 spacing.x = 20,
+                                                                 ncol = length(scale_labels),
+                                                                 override.aes = ggplot2::aes(color = NA, fill = NA)
+                                   )
         ) +
-        ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(direction = "horizontal",
-                                                                         size = 11, family = "Gill Sans MT", face = "bold", label.hjust = 0.5, label.vjust = 1, ncol = length(scale_labels), nrow = 1,
-                                                                         spacing.x = 20, spacing.y = 0
-        )) +
-        ggplot2::labs(
-          title = NULL, fill = NULL, y = NULL, x = NULL,
-          tag = paste0("(*n* = ", N_df, ")")
-        ) +
+        ggplot2::guides(color = "none") +
+        ggplot2::labs(title = NULL, y = labels, x = NULL, tag = paste0("(*n* = ", N_df, ")")) +
         ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 11) +
         ggplot2::theme(
           strip.placement = "outside",
@@ -332,14 +335,19 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
             margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
           ),
           strip.text.y.left = ggtext::element_markdown(
-            angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT",
+            angle = 0, hjust = 1, color = "black", size = 11, family = "Gill Sans MT",
             margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
           ),
           plot.tag = ggtext::element_markdown(color = "black", size = 10, family = "Gill Sans MT"),
           plot.tag.position = "topleft",
           plot.margin = ggplot2::margin(t = 45, r = 5, b = 45, l = 5, unit = "pt"),
+          legend.text = ggtext::element_markdown(size = 11, family = "Gill Sans MT", face = "bold",
+                                                 margin = ggplot2::margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+          ),
           legend.justification = c("right", "top"),
-          legend.position = "top"
+          legend.position = "top",
+          legend.key = ggplot2::element_blank(),
+          legend.title = ggplot2::element_blank()
         )
 
       # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
@@ -371,15 +379,21 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         ) +
         ggplot2::scale_color_identity() +
         ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
-        ggplot2::scale_fill_manual(
-          values = fill_colors, drop = FALSE,
-          labels = function(response) stringr::str_wrap(response, width = 10)
+        ggplot2::scale_fill_manual(breaks = scale_labels, values = fill_colors, drop = FALSE,
+                                   labels = paste("<span style='color:", fill_colors, "'>",
+                                                  stringr::str_wrap(scale_labels, width = 10) %>% gsub("\n", "<br>", .), "</span>"),
+                                   guide = ggplot2::guide_legend(direction = "horizontal",
+                                                                 title.position = "top",
+                                                                 label.position = "bottom",
+                                                                 label.hjust = 0.5,
+                                                                 label.vjust = 1,
+                                                                 spacing.x = 20,
+                                                                 ncol = length(scale_labels),
+                                                                 override.aes = ggplot2::aes(color = NA, fill = NA)
+                                   )
         ) +
-        ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(direction = "horizontal",
-                                                                         size = 11, family = "Gill Sans MT", face = "bold", label.hjust = 0.5, label.vjust = 1, ncol = length(scale_labels), nrow = 1,
-                                                                         spacing.x = 20, spacing.y = 0
-        )) +
-        ggplot2::labs(title = NULL, fill = NULL, y = NULL, x = NULL, tag = NULL) +
+        ggplot2::guides(color = "none") +
+        ggplot2::labs(title = NULL, y = labels, x = NULL, tag = NULL) +
         ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 11) +
         ggplot2::theme(
           strip.placement = "outside",
@@ -388,12 +402,17 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
             margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
           ),
           strip.text.y.left = ggtext::element_markdown(
-            angle = 0, hjust = 1, color = "black", size = 10, family = "Gill Sans MT",
+            angle = 0, hjust = 1, color = "black", size = 11, family = "Gill Sans MT",
             margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
           ),
           plot.margin = ggplot2::margin(t = 45, r = 5, b = 45, l = 5, unit = "pt"),
+          legend.text = ggtext::element_markdown(size = 11, family = "Gill Sans MT", face = "bold",
+                                                 margin = ggplot2::margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+          ),
           legend.justification = c("right", "top"),
-          legend.position = "top"
+          legend.position = "top",
+          legend.key = ggplot2::element_blank(),
+          legend.title = ggplot2::element_blank()
         )
     }
     # If pre_post == FALSE:
@@ -580,26 +599,39 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
                            fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3.5
         ) +
         ggplot2::scale_color_identity() +
-        ggplot2::scale_fill_manual(values = fill_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 10)) +
-        ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(direction = "horizontal",
-                                                                         size = 11, family = "Gill Sans MT", face = "bold", label.hjust = 0.5, label.vjust = 1, ncol = length(scale_labels), nrow = 1,
-                                                                         spacing.x = 20, spacing.y = 0
-        )) +
-        ggplot2::labs(title = NULL, fill = NULL, y = labels, x = NULL,
-                      tag = paste0("(*n* = ", N_df, ")")
+        ggplot2::scale_fill_manual(breaks = scale_labels, values = fill_colors, drop = FALSE,
+                                   labels = paste("<span style='color:", fill_colors, "'>",
+                                                  stringr::str_wrap(scale_labels, width = 10) %>% gsub("\n", "<br>", .), "</span>"),
+                                   guide = ggplot2::guide_legend(direction = "horizontal",
+                                                                 title.position = "top",
+                                                                 label.position = "bottom",
+                                                                 label.hjust = 0.5,
+                                                                 label.vjust = 1,
+                                                                 spacing.x = 20,
+                                                                 ncol = length(scale_labels),
+                                                                 override.aes = ggplot2::aes(color = NA, fill = NA)
+                                   )
         ) +
+        ggplot2::guides(color = "none") +
+        ggplot2::labs(title = NULL, y = labels, x = NULL, tag = paste0("(*n* = ", N_df, ")")) +
         ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 11) +
         ggplot2::theme(
           axis.text.y = ggtext::element_markdown(
             angle = 0, hjust = 1, color = "black", size = 11, family = "Gill Sans MT",
-            margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
+            margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
           ),
           plot.tag = ggtext::element_markdown(color = "black", size = 10, family = "Gill Sans MT"),
           plot.tag.position = "topleft",
           plot.margin = ggplot2::margin(t = 45, r = 5, b = 45, l = 5, unit = "pt"),
+          legend.text = ggtext::element_markdown(size = 11, family = "Gill Sans MT", face = "bold",
+                                                 margin = ggplot2::margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+          ),
           legend.justification = c("right", "top"),
-          legend.position = "top"
+          legend.position = "top",
+          legend.key = ggplot2::element_blank(),
+          legend.title = ggplot2::element_blank()
         )
+
       # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
     } else {
       # Change the label of the variable "question" by adding n of each to the end of the character string:
@@ -629,21 +661,35 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
                            fontface = "bold", position = ggplot2::position_stack(vjust = .5, reverse = TRUE), size = 3.5
         ) +
         ggplot2::scale_color_identity() +
-        ggplot2::scale_fill_manual(values = fill_colors, drop = FALSE, labels = function(response) stringr::str_wrap(response, width = 10)) +
-        ggplot2::guides(color = "none", fill = ggh4x::guide_stringlegend(direction = "horizontal",
-                                                                         size = 11, family = "Gill Sans MT", face = "bold", label.hjust = 0.5, label.vjust = 1, ncol = length(scale_labels), nrow = 1,
-                                                                         spacing.x = 20, spacing.y = 0
-        )) +
-        ggplot2::labs(title = NULL, fill = NULL, y = labels, x = NULL, tag = NULL) +
+        ggplot2::scale_fill_manual(breaks = scale_labels, values = fill_colors, drop = FALSE,
+                                   labels = paste("<span style='color:", fill_colors, "'>",
+                                                  stringr::str_wrap(scale_labels, width = 10) %>% gsub("\n", "<br>", .), "</span>"),
+                                   guide = ggplot2::guide_legend(direction = "horizontal",
+                                                                 title.position = "top",
+                                                                 label.position = "bottom",
+                                                                 label.hjust = 0.5,
+                                                                 label.vjust = 1,
+                                                                 spacing.x = 20,
+                                                                 ncol = length(scale_labels),
+                                                                 override.aes = ggplot2::aes(color = NA, fill = NA)
+                                   )
+        ) +
+        ggplot2::guides(color = "none") +
+        ggplot2::labs(title = NULL, y = labels, x = NULL, tag = NULL) +
         ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 11) +
         ggplot2::theme(
           axis.text.y = ggtext::element_markdown(
             angle = 0, hjust = 1, color = "black", size = 11, family = "Gill Sans MT",
-            margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
+            margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
           ),
           plot.margin = ggplot2::margin(t = 45, r = 5, b = 45, l = 5, unit = "pt"),
+          legend.text = ggtext::element_markdown(size = 11, family = "Gill Sans MT", face = "bold",
+                                                 margin = ggplot2::margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+          ),
           legend.justification = c("right", "top"),
-          legend.position = "top"
+          legend.position = "top",
+          legend.key = ggplot2::element_blank(),
+          legend.title = ggplot2::element_blank()
         )
     }
   }
