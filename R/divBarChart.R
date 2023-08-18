@@ -224,10 +224,10 @@ divBarChart  <- function(df, scale_labels, overall_n = FALSE, percent_label = TR
           TRUE ~ -percent_answers
         ),
         percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
-        # Sets response levels to: 3,2,1,4,5,6 = this is so LHS of chart is reversed to create the diverging bars:
+        # Sets response levels to: 4,3,2,1,5,6 = this is so LHS of chart is reversed to create the diverging bars:
         response = forcats::fct_relevel(.data$response, c(
-          levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
-          levels(.data$response)[4], levels(.data$response)[5], levels(.data$response)[6]
+          levels(.data$response)[4], levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
+          levels(.data$response)[5], levels(.data$response)[6]
         )),
         # yellow is now: levels(.data$response)[2]
         label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
