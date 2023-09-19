@@ -210,7 +210,6 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
           pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[4] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
             .data$response == levels(.data$response)[5] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
             .data$response == levels(.data$response)[6] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
             TRUE ~ 0
@@ -229,7 +228,6 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
           pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[5] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
             .data$response == levels(.data$response)[6] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
             .data$response == levels(.data$response)[7] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
             TRUE ~ 0
@@ -501,7 +499,6 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
           pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[4] ~ percent_answers,
             .data$response == levels(.data$response)[5] ~ percent_answers,
             .data$response == levels(.data$response)[6] ~ percent_answers,
             TRUE ~ 0
@@ -519,7 +516,6 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::mutate(
           label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
           pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[5] ~ percent_answers,
             .data$response == levels(.data$response)[6] ~ percent_answers,
             .data$response == levels(.data$response)[7] ~ percent_answers,
             TRUE ~ 0
