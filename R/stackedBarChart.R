@@ -141,6 +141,23 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       ) %>%
       dplyr::ungroup()
 
+    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
+    # (top levels depending on total response levels):
+    if (isFALSE(question_order)) {
+      question_order <- new_df %>% dplyr::filter(timing == "Post") %>%
+        tidyr::pivot_wider(id_cols = -c(timing, percent_answers, percent_answers_label), names_from = "response", values_from = "n_answers") %>%
+        dplyr::group_by(.data$question) %>% rev() %>%
+        dplyr::arrange(dplyr::across(-c(question), dplyr::desc)) %>%
+        dplyr::select(question) %>%
+        unique() %>%
+        tibble::deframe()
+      # change the factor levels of question to be ordered by the question_order:
+      new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
+    } else {
+      # If supplied by user set up the levels for question using the user supplied order = question_order (not NULL):
+      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
+    }
+
     # If the user supplies a named vector for questions labels:
     if (!is.null(question_labels)) {
       names(question_labels) <- names(question_labels) %>%
@@ -156,11 +173,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
-          label_color = "black",
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[3] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = "black"
         ) %>%
         dplyr::ungroup()
 
@@ -172,12 +185,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[3] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            .data$response == levels(.data$response)[4] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white")
         ) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(.data$response)
@@ -190,12 +198,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[4] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            .data$response == levels(.data$response)[5] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white")
         ) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(.data$response)
@@ -208,12 +211,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[5] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            .data$response == levels(.data$response)[6] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white")
         ) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(.data$response)
@@ -226,37 +224,13 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[6] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            .data$response == levels(.data$response)[7] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white")
         ) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(.data$response)
 
       # 7 colors for chart:
       fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
-    }
-
-    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
-    # (top levels depending on total response levels):
-    if (isFALSE(question_order)) {
-      question_order <- new_df %>%
-        dplyr::group_by(.data$question, .data$timing) %>%
-        dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
-        dplyr::arrange(dplyr::desc(.data$n_pos_valence_post)) %>%
-        dplyr::ungroup() %>%
-        dplyr::filter(.data$timing == levels(.data$timing)[2]) %>%
-        dplyr::select("question") %>%
-        dplyr::mutate(question = as.character(.data$question)) %>%
-        tibble::deframe()
-
-      new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
-    } else {
-      # If FALSE, use user supplied by order based on the set up the levels for question using- names(question_labels):
-      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
     }
 
     # Get total n for each question, grouped by question and timing:
@@ -431,6 +405,23 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       ) %>%
       dplyr::ungroup()
 
+    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
+    # (top levels depending on total response levels):
+    if (isFALSE(question_order)) {
+      question_order <- new_df %>%
+        tidyr::pivot_wider(id_cols = -c(percent_answers, percent_answers_label), names_from = "response", values_from = "n_answers") %>%
+        dplyr::group_by(.data$question) %>% rev() %>%
+        dplyr::arrange(dplyr::across(-c(question), dplyr::desc)) %>%
+        dplyr::select(question) %>%
+        unique() %>%
+        tibble::deframe()
+      # change the factor levels of question to be ordered by the question_order:
+      new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
+    } else {
+      # If supplied by user set up the levels for question using the user supplied order = question_order (not NULL):
+      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
+    }
+
     # If the user supplies a named vector for questions labels:
     if (!is.null(question_labels)) {
       names(question_labels) <- names(question_labels) %>%
@@ -447,11 +438,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
-          label_color = "black",
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[3] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = "black"
         ) %>%
         dplyr::ungroup()
 
@@ -463,12 +450,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[3] ~ percent_answers,
-            .data$response == levels(.data$response)[4] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white")
         ) %>%
         dplyr::ungroup()
 
@@ -480,12 +462,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"),
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[4] ~ percent_answers,
-            .data$response == levels(.data$response)[5] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white")
         ) %>%
         dplyr::ungroup()
 
@@ -497,12 +474,7 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[5] ~ percent_answers,
-            .data$response == levels(.data$response)[6] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white")
         ) %>%
         dplyr::ungroup()
 
@@ -514,35 +486,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       new_df <- new_df %>%
         dplyr::group_by(.data$question) %>%
         dplyr::mutate(
-          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"),
-          pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[6] ~ percent_answers,
-            .data$response == levels(.data$response)[7] ~ percent_answers,
-            TRUE ~ 0
-          )
+          label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white")
         ) %>%
         dplyr::ungroup()
 
       # 7 colors for chart:
       fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
-    }
-
-    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
-    # (top levels depending on total response levels):
-    if (isFALSE(question_order)) {
-      question_order <- new_df %>%
-        dplyr::group_by(.data$question) %>%
-        dplyr::summarize(n_pos_valence_post = sum(.data$pos_valence_post), .groups = "keep") %>%
-        dplyr::arrange(dplyr::desc(.data$n_pos_valence_post)) %>%
-        dplyr::ungroup() %>%
-        dplyr::select("question") %>%
-        dplyr::mutate(question = as.character(.data$question)) %>%
-        tibble::deframe()
-      # change the factor levels of question to be ordered by the vars with the most n_pos_valence_post:
-      new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
-    } else {
-      # If supplied by user set up the levels for question using the user supplied order = question_order (not NULL):
-      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
     }
 
     # Get total n for each question, grouped by question:
