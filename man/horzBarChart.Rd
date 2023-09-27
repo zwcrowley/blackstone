@@ -17,7 +17,7 @@ horzBarChart(df, scale_colors, width = NULL)
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a horizontal bar chart and can be exported.
 }
 \description{
-\code{horzBarChart()} creates a horizontal bar chart and returns a ggplot object with The Mark USA branding.
+\code{\link[=horzBarChart]{horzBarChart()}} creates a horizontal bar chart and returns a ggplot object with The Mark USA branding.
 }
 \examples{
 data <- dplyr::tibble(

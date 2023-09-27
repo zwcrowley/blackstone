@@ -43,7 +43,7 @@ post score average on the top of the plot descending.}
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arrow bar chart.
 }
 \description{
-\code{arrowChart()} creates an pre-post arrow chart of group averages and returns
+\code{\link[=arrowChart]{arrowChart()}} creates an pre-post arrow chart of group averages and returns
 a ggplot object.
 }
 \examples{

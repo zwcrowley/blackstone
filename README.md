@@ -25,6 +25,19 @@ You can install the development version of `TheMarkUSA` from
 devtools::install_github("zcrowleyTheMark/TheMarkUSA")
 ```
 
+On the initial installation you will also have to install and import
+fonts from `extrafont` package:
+
+``` r
+# install.packages("extrafont")
+library(extrafont)
+# Import fonts to get "Gill Sans MT", this only has to be done one time, then `TheMarkUSA` package will use the code below to load the fonts automatically 
+# for the functions that require that step:
+font_import()
+# Load all fonts:
+extrafont::loadfonts("all", quiet = TRUE)
+```
+
 ## Usage
 
 ``` r

@@ -91,12 +91,21 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"zcrowleyTheMark/TheMarkUSA"</span><span class="op">)</span></span></code></pre></div>
+<p>On the initial installation you will also have to install and import fonts from <code>extrafont</code> package:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("extrafont")</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wch/extrafont" class="external-link">extrafont</a></span><span class="op">)</span></span>
+<span><span class="co"># Import fonts to get "Gill Sans MT", this only has to be done one time, then `TheMarkUSA` package will use the code below to load the fonts automatically </span></span>
+<span><span class="co"># for the functions that require that step:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/extrafont/man/font_import.html" class="external-link">font_import</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># Load all fonts:</span></span>
+<span><span class="fu">extrafont</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/extrafont/man/loadfonts.html" class="external-link">loadfonts</a></span><span class="op">(</span><span class="st">"all"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zcrowleyTheMark/themark" class="external-link">TheMarkUSA</a></span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zcrowleythemark.github.io/TheMarkUSA/">TheMarkUSA</a></span><span class="op">)</span></span></code></pre></div>
 <p>To begin, it is best to convert our numeric data that we use at The Mark USA, Inc. to factor variables:</p>
 <div class="section level3">
 <h3 id="recodecat">
@@ -106,7 +115,7 @@
 <p><code><a href="reference/recodeCat.html">recodeCat()</a></code> takes in two arguments:</p>
 <p><strong>df</strong> Required, a [tibble][tibble::tibble-package]/data frame of survey items that are numeric variables that need to be converted into factor variables. Numeric variables in the data can be anywhere from 3 to 7 point scales.</p>
 <p><strong>scale_labels</strong> Required, a named character vector of labels of the desired scale levels for the new factor variables. The function will use this vector to convert the numeric variables into factor variables, all levels must be supplied in the correct range otherwise else NA will be returned for variables outside the range of user supplied values. The named character vector should have the new labels as the “name” and the old labels as the “variable” like this: c(“<new label>” = “<original variable value>”) which would look like this: <code>levels_min_ext &lt;- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")</code></original></new></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">pre_Organization</span><span class="op">)</span>,</span>
@@ -170,7 +179,7 @@
 <div class="section level4">
 <h4 id="single-time-point-data-with-percentage-labels-example-for-stackedbarchart">Single Time Point Data with Percentage labels Example for <code>stackedBarChart()</code>:<a class="anchor" aria-label="anchor" href="#single-time-point-data-with-percentage-labels-example-for-stackedbarchart"></a>
 </h4>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single time point data:</span></span>
 <span><span class="va">items_single</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -202,7 +211,7 @@
 <span><span class="op">)</span></span>
 <span><span class="va">stacked_chart_single</span></span></code></pre></div>
 <p><img src="reference/figures/README-stackedBarChart_single-1.png" width="100%"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># With new labels and order taken from question_labels argument:</span></span>
 <span><span class="va">stacked_chart_single_labels</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/stackedBarChart.html">stackedBarChart</a></span><span class="op">(</span></span>
 <span>   df <span class="op">=</span> <span class="va">cat_items_single</span>, pre_post <span class="op">=</span> <span class="cn">FALSE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
@@ -215,7 +224,7 @@
 <h4 id="pre-post-data-example-for-stackedbarchart">Pre-Post Data Example for <code>stackedBarChart()</code>
 <a class="anchor" aria-label="anchor" href="#pre-post-data-example-for-stackedbarchart"></a>
 </h4>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the categorical/factor vars from the df in the from the oriinal recodeCat() in the first chunk (cat_items_1) using select(tidyselect::where(is.factor):</span></span>
 <span><span class="va">cat_items_plot</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -226,7 +235,7 @@
 <span><span class="op">)</span></span>
 <span><span class="va">stacked_chart_pre_post</span></span></code></pre></div>
 <p><img src="reference/figures/README-stackedBarChart_pre_post-1.png" width="100%"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># With new labels and order taken from question_labels argument:</span></span>
 <span><span class="va">stacked_chart_pre_post_labels</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/stackedBarChart.html">stackedBarChart</a></span><span class="op">(</span></span>
 <span>   df <span class="op">=</span> <span class="va">cat_items_plot</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
@@ -254,7 +263,7 @@
 <strong>Examples using</strong> <code>divBarChart()</code>
 <a class="anchor" aria-label="anchor" href="#examples-using-divbarchart"></a>
 </h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">pre_Organization</span><span class="op">)</span>,</span>
@@ -290,7 +299,7 @@
 <span><span class="op">)</span></span>
 <span><span class="va">div_chart</span></span></code></pre></div>
 <p><img src="reference/figures/README-divBarChart-1.png" width="100%"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># With new labels and order taken from question_labels argument:</span></span>
 <span><span class="va">div_chart_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/divBarChart.html">divBarChart</a></span><span class="op">(</span></span>
 <span> df <span class="op">=</span> <span class="va">cat_items</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
@@ -317,7 +326,7 @@
 <strong>Examples using</strong> <code>arrowChart()</code>
 <a class="anchor" aria-label="anchor" href="#examples-using-arrowchart"></a>
 </h4>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the numeric variables from the df in the last chunk (cat_items_1) using tidy select(contains("cat")), adding a group variable that is set as a factor:</span></span>
 <span><span class="va">arrow_items</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
@@ -345,14 +354,14 @@
 <span>     overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="cn">NULL</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_1</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChart-1.png" width="100%"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># With new labels, question_order = FALSE, and overall_n set to TRUE:</span></span>
 <span><span class="va">arrow_chart_labels_all_n</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">threeScale_theMark_colors</span>,</span>
 <span>     overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_labels_all_n</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChart-2.png" width="100%"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># With new labels and order taken from question_labels argument, and overall_n set to FALSE:</span></span>
 <span><span class="va">arrow_chart_labels_all_n</span> <span class="op">&lt;-</span> <span class="fu">TheMarkUSA</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">threeScale_theMark_colors</span>,</span>

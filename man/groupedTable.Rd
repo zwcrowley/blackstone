@@ -25,7 +25,7 @@ a \link[flextable:flextable-package]{flextable} object with columns for question
 and a total column. Colors are set to The Mark USA branding
 }
 \description{
-\code{groupedTable()} creates a summary table of frequencies and percentages that can show breakdowns by groups and the totals for
+\code{\link[=groupedTable]{groupedTable()}} creates a summary table of frequencies and percentages that can show breakdowns by groups and the totals for
 the data passed to it. The table shows each item and all the responses by row.
 }
 \examples{

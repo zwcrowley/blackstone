@@ -1,6 +1,6 @@
 #' Arrow Chart for The Mark USA
 #'
-#' `arrowChart()` creates an pre-post arrow chart of group averages and returns
+#' [arrowChart()] creates an pre-post arrow chart of group averages and returns
 #' a ggplot object.
 #'
 #' @param df Required, a [tibble][tibble::tibble-package] or data frame of **numeric** data that also has a categorical group

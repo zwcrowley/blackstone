@@ -1,6 +1,6 @@
 #' Grouped Summary Table for The Mark USA
 #'
-#' `groupedTable()` creates a summary table of frequencies and percentages that can show breakdowns by groups and the totals for
+#' [groupedTable()] creates a summary table of frequencies and percentages that can show breakdowns by groups and the totals for
 #'      the data passed to it. The table shows each item and all the responses by row.
 #'
 #' @param df Required, a [tibble][tibble::tibble-package] or data frame of categorical/factor data that also can contain a categorical

@@ -44,7 +44,7 @@ positive valenced response options on the top of the plot descending.}
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a stacked bar chart and can be exported.
 }
 \description{
-\code{stackedBarChart()} creates a stacked bar chart and returns a ggplot object with The Mark USA branding.
+\code{\link[=stackedBarChart]{stackedBarChart()}} creates a stacked bar chart and returns a ggplot object with The Mark USA branding.
 }
 \examples{
 items <- dplyr::tibble(

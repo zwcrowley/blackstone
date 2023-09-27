@@ -1,6 +1,6 @@
 #' Horizontal Bar Chart for The Mark USA
 #'
-#' `horzBarChart()` creates a horizontal bar chart and returns a ggplot object with The Mark USA branding.
+#' [horzBarChart()] creates a horizontal bar chart and returns a ggplot object with The Mark USA branding.
 #'
 #' @param df Required, a [tibble][tibble::tibble-package]/data frame that has been pre-processed with dataSumm().
 #'

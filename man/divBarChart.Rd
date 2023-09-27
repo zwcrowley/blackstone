@@ -41,7 +41,7 @@ positive valenced response options on the top of the plot descending.}
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a diverging bar chart and can be exported.
 }
 \description{
-\code{divBarChart()} creates a diverging bar chart and returns a ggplot object with The Mark USA branding.
+\code{\link[=divBarChart]{divBarChart()}} creates a diverging bar chart and returns a ggplot object with The Mark USA branding.
 }
 \examples{
 items <- dplyr::tibble(

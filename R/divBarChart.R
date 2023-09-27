@@ -1,6 +1,6 @@
 #' Diverging Bar Chart for The Mark USA
 #'
-#' `divBarChart()` creates a diverging bar chart and returns a ggplot object with The Mark USA branding.
+#' [divBarChart()] creates a diverging bar chart and returns a ggplot object with The Mark USA branding.
 #'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
 #'   variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.
