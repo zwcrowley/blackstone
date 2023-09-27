@@ -33,7 +33,7 @@ fonts from `extrafont` package:
 library(extrafont)
 # Import fonts to get "Gill Sans MT", this only has to be done one time, then `TheMarkUSA` package will use the code below to load the fonts automatically 
 # for the functions that require that step:
-font_import()
+extrafont::font_import()
 # Load all fonts:
 extrafont::loadfonts("all", quiet = TRUE)
 ```
@@ -54,10 +54,11 @@ variables with the desired levels.
 
 `recodeCat()` takes in two arguments:
 
-**df** Required, a \[tibble\]\[tibble::tibble-package\]/data frame of
-survey items that are numeric variables that need to be converted into
-factor variables. Numeric variables in the data can be anywhere from 3
-to 7 point scales.
+**df** Required, a
+[tibble](https://tibble.tidyverse.org/reference/tibble-package.html)/data
+frame of survey items that are numeric variables that need to be
+converted into factor variables. Numeric variables in the data can be
+anywhere from 3 to 7 point scales.
 
 **scale_labels** Required, a named character vector of labels of the
 desired scale levels for the new factor variables. The function will use
@@ -122,10 +123,11 @@ branding/style of The Mark USA, Inc.
 
 `stackedBarChart()` takes up to 8 arguments, first 2 are *required*:
 
-**df** Required, A \[tibble\]\[tibble::tibble-package\] or data frame of
-survey items that are categorical/factor variables, in 5 point scales,
-can be a single time point or pre-post, that will be inserted into a
-stacked bar chart with The Mark USA branding.
+**df** Required, A
+[tibble](https://tibble.tidyverse.org/reference/tibble-package.html) or
+data frame of survey items that are categorical/factor variables, in 5
+point scales, can be a single time point or pre-post, that will be
+inserted into a stacked bar chart with The Mark USA branding.
 
 **scale_labels** scale_labels Required, a character vector of labels for
 the response scale, must be in the desired order, e.g. if you have a 5
@@ -247,10 +249,11 @@ the branding and style of The Mark USA, Inc.
 
 `divBarChart()` takes in up to 7 arguments, the first 2 are *required*:
 
-**df** Required, A \[tibble\]\[tibble::tibble-package\]/data frame of
-survey items that are categorical/character variables, in 3 to 7 point
-scales, that will be inserted into a diverging bar chart with The Mark
-USA branding.
+**df** Required, A
+[tibble](https://tibble.tidyverse.org/reference/tibble-package.html)/data
+frame of survey items that are categorical/character variables, in 3 to
+7 point scales, that will be inserted into a diverging bar chart with
+The Mark USA branding.
 
 **scale_labels**scale_labels Required, a character vector of labels for
 the response scale, must be in the desired order, e.g. if you have a 5
@@ -338,10 +341,11 @@ div_chart_labels
 
 `arrowChart()` takes in 6 arguments, the first 3 are *required*:
 
-**df** Required, a \[tibble\]\[tibble::tibble-package\] or data frame of
-**numeric** data that also has a categorical group variable to split up
-the data, e.g. role, gender, education level, etc. must be in 5 point
-scales and pre-post.
+**df** Required, a
+[tibble](https://tibble.tidyverse.org/reference/tibble-package.html) or
+data frame of **numeric** data that also has a categorical group
+variable to split up the data, e.g. role, gender, education level, etc.
+must be in 5 point scales and pre-post.
 
 **scale_labels** scale_labels Required, a character vector of labels for
 the response scale, must be in the desired order, e.g. if you have a 5
