@@ -144,10 +144,10 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
     # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
     # (top levels depending on total response levels):
     if (isFALSE(question_order)) {
-      question_order <- new_df %>% dplyr::filter(., .data$timing == "Post") %>%
-        tidyr::pivot_wider(id_cols = -c(.data$timing, .data$percent_answers, .data$percent_answers_label), names_from = "response", values_from = "n_answers") %>%
+      question_order <- new_df %>% dplyr::filter(., .data$timing == "Post")  %>% tidyr::complete(.data$question, .data$response) %>%
+        tidyr::pivot_wider(id_cols = -c("timing", "percent_answers", "percent_answers_label"), names_from = "response", values_from = "n_answers") %>%
         dplyr::group_by(.data$question) %>% rev() %>%
-        dplyr::arrange(dplyr::across(-c(.data$question), dplyr::desc)) %>%
+        dplyr::arrange(dplyr::across(-c("question"), dplyr::desc)) %>%
         dplyr::select("question") %>%
         unique() %>%
         tibble::deframe()
@@ -408,10 +408,10 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
     # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
     # (top levels depending on total response levels):
     if (isFALSE(question_order)) {
-      question_order <- new_df %>%
-        tidyr::pivot_wider(id_cols = -c(.data$percent_answers, .data$percent_answers_label), names_from = "response", values_from = "n_answers") %>%
+      question_order <- new_df %>% tidyr::complete(.data$question, .data$response) %>%
+        tidyr::pivot_wider(id_cols = -c("percent_answers", "percent_answers_label"), names_from = "response", values_from = "n_answers") %>%
         dplyr::group_by(.data$question) %>% rev() %>%
-        dplyr::arrange(dplyr::across(-c(.data$question), dplyr::desc)) %>%
+        dplyr::arrange(dplyr::across(-c("question"), dplyr::desc)) %>%
         dplyr::select("question") %>%
         unique() %>%
         tibble::deframe()
