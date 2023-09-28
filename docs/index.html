@@ -97,7 +97,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wch/extrafont" class="external-link">extrafont</a></span><span class="op">)</span></span>
 <span><span class="co"># Import fonts to get "Gill Sans MT", this only has to be done one time, then `TheMarkUSA` package will use the code below to load the fonts automatically </span></span>
 <span><span class="co"># for the functions that require that step:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/extrafont/man/font_import.html" class="external-link">font_import</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">extrafont</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/extrafont/man/font_import.html" class="external-link">font_import</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Load all fonts:</span></span>
 <span><span class="fu">extrafont</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/extrafont/man/loadfonts.html" class="external-link">loadfonts</a></span><span class="op">(</span><span class="st">"all"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -113,7 +113,7 @@
 </h3>
 <p><code><a href="reference/recodeCat.html">recodeCat()</a></code> is a helper function to recode numeric data into factor variables with the desired levels.</p>
 <p><code><a href="reference/recodeCat.html">recodeCat()</a></code> takes in two arguments:</p>
-<p><strong>df</strong> Required, a [tibble][tibble::tibble-package]/data frame of survey items that are numeric variables that need to be converted into factor variables. Numeric variables in the data can be anywhere from 3 to 7 point scales.</p>
+<p><strong>df</strong> Required, a <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a>/data frame of survey items that are numeric variables that need to be converted into factor variables. Numeric variables in the data can be anywhere from 3 to 7 point scales.</p>
 <p><strong>scale_labels</strong> Required, a named character vector of labels of the desired scale levels for the new factor variables. The function will use this vector to convert the numeric variables into factor variables, all levels must be supplied in the correct range otherwise else NA will be returned for variables outside the range of user supplied values. The named character vector should have the new labels as the “name” and the old labels as the “variable” like this: c(“<new label>” = “<original variable value>”) which would look like this: <code>levels_min_ext &lt;- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")</code></original></new></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -162,7 +162,7 @@
 </h3>
 <p><code><a href="reference/stackedBarChart.html">stackedBarChart()</a></code> creates a fully stacked bar chart that has the branding/style of The Mark USA, Inc.</p>
 <p><code><a href="reference/stackedBarChart.html">stackedBarChart()</a></code> takes up to 8 arguments, first 2 are <em>required</em>:</p>
-<p><strong>df</strong> Required, A [tibble][tibble::tibble-package] or data frame of survey items that are categorical/factor variables, in 5 point scales, can be a single time point or pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.</p>
+<p><strong>df</strong> Required, A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> or data frame of survey items that are categorical/factor variables, in 5 point scales, can be a single time point or pre-post, that will be inserted into a stacked bar chart with The Mark USA branding.</p>
 <p><strong>scale_labels</strong> scale_labels Required, a character vector of labels for the response scale, must be in the desired order, e.g. if you have a 5 item scale of minimal to extensive it should look like this: <code>levels_min_ext &lt;- c("Minimal", "Slight", "Moderate", "Good", "Extensive")</code>. This argument accepts a character vector of 3 to 7 items.</p>
 <p><strong>pre_post</strong> Logical, default is FALSE. If true, returns a pre-post stacked bar chart, arranged by question, this requires data structured as pre-post. If FALSE, returns a stacked bar chart of a single time point.</p>
 <p><strong>overall_n</strong> Logical, default is FALSE. If TRUE, returns an overall <em>n</em> for all questions that is in the upper left tag of the plot. If False, adds <em>n</em> to each question/item after the respective labels.</p>
@@ -251,7 +251,7 @@
 </h3>
 <p><code><a href="reference/divBarChart.html">divBarChart()</a></code> creates a diverging and fully stacked bar chart that has the branding and style of The Mark USA, Inc.</p>
 <p><code><a href="reference/divBarChart.html">divBarChart()</a></code> takes in up to 7 arguments, the first 2 are <em>required</em>:</p>
-<p><strong>df</strong> Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.</p>
+<p><strong>df</strong> Required, A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a>/data frame of survey items that are categorical/character variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.</p>
 <p><strong>scale_labels</strong>scale_labels Required, a character vector of labels for the response scale, must be in the desired order, e.g. if you have a 5 item scale of minimal to extensive it should look like this: <code>levels_min_ext &lt;- c("Minimal", "Slight", "Moderate", "Good", "Extensive")</code>. This argument accepts a character vector of 3 to 7 items.</p>
 <p><strong>overall_n</strong> Logical, default is FALSE. If TRUE, returns an overall <em>n</em> for all questions that is in the upper left tag of the plot. If False, adds <em>n</em> to each question/item after the respective labels.</p>
 <p><strong>percent_label</strong> Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.</p>
@@ -314,7 +314,7 @@
 <code>arrowChart()</code><a class="anchor" aria-label="anchor" href="#arrowchart"></a>
 </h3>
 <p><code><a href="reference/arrowChart.html">arrowChart()</a></code> takes in 6 arguments, the first 3 are <em>required</em>:</p>
-<p><strong>df</strong> Required, a [tibble][tibble::tibble-package] or data frame of <strong>numeric</strong> data that also has a categorical group variable to split up the data, e.g. role, gender, education level, etc. must be in 5 point scales and pre-post.</p>
+<p><strong>df</strong> Required, a <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> or data frame of <strong>numeric</strong> data that also has a categorical group variable to split up the data, e.g. role, gender, education level, etc. must be in 5 point scales and pre-post.</p>
 <p><strong>scale_labels</strong> scale_labels Required, a character vector of labels for the response scale, must be in the desired order, e.g. if you have a 5 item scale of minimal to extensive it should look like this: <code>levels_min_ext &lt;- c("Minimal", "Slight", "Moderate", "Good", "Extensive")</code>. This argument accepts a character vector of 3 to 7 items.</p>
 <p><strong>group_colors</strong> Required, a character vector of hex codes for colors to associate each group to, e.g. this data has two groups and this function creates an overall group so this function will need a ‘group_colors’ character vector of three colors. ‘group_colors’ need to be in the order you want them associated to the group based on the factor levels for the group variable, last color will be the overall group of “all”</p>
 <p><strong>overall_n</strong> Logical, default is FALSE. If TRUE, returns an overall <em>n</em> for all questions that is in the upper left tag of the plot. If False, adds <em>n</em> to each question/item after the respective labels.</p>

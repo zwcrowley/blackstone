@@ -154,8 +154,8 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       # change the factor levels of question to be ordered by the question_order:
       new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
     } else {
-      # If supplied by user set up the levels for question using the user supplied order = question_order (not NULL):
-      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
+      # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
+      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_labels))
     }
 
     # If the user supplies a named vector for questions labels:
@@ -418,8 +418,8 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
       # change the factor levels of question to be ordered by the question_order:
       new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
     } else {
-      # If supplied by user set up the levels for question using the user supplied order = question_order (not NULL):
-      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
+      # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
+      new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_labels))
     }
 
     # If the user supplies a named vector for questions labels:
