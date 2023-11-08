@@ -1,6 +1,4 @@
-
-# Function to prettify test output:
-#' Title
+#' Create Flextable in The Mark USA Branding
 #'
 #' @param data Required, A [tibble][tibble::tibble-package]/data frame of summary/descriptice or
 #'  test statistics.

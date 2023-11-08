@@ -79,8 +79,8 @@ likertTable <- function(df, scale_labels, question_labels = NULL, str_width = 20
 
     . <- NULL
 
-    # pivot everything to question and response:
-    table <- {{ df }}  %>%
+    # Make sure the all vars in df are factors with scale_labels as their levels and pivot everything to question and response:
+    table <- {{ df }}  %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = scale_labels))) %>%
         tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response")
 
     # if question_labels is null, set question as factor in order of appearance:

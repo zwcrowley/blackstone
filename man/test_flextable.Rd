@@ -2,7 +2,7 @@
 % Please edit documentation in R/test_flextable.R
 \name{test_flextable}
 \alias{test_flextable}
-\title{Title}
+\title{Create Flextable in The Mark USA Branding}
 \usage{
 test_flextable(data)
 }
@@ -14,7 +14,7 @@ test statistics.}
 A nicely formatted table that is a \code{\link[=flextable]{flextable()}} object.
 }
 \description{
-Title
+Create Flextable in The Mark USA Branding
 }
 \examples{
 # Example data:
