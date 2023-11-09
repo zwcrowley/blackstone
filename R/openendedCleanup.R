@@ -7,6 +7,7 @@
 #' @param remove_values Required, a character vector of additional text to remove from the text, see example.
 #'
 #' @return A [tibble][tibble::tibble-package] containg one character variable of clean text ready for use or output.
+#' @importFrom stringi stri_rand_lipsum
 #' @export
 #'
 #' @examples
@@ -23,11 +24,16 @@
 #'   Standards = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.1, 0.2, 0.3, 0.3)),
 #'   Practices = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.1, 0.2, 0.3, 0.3)),
 #'   Morals = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.05, 0.05, 0.2, 0.3, 0.4)),
-#'   Responsible_oe = ifelse(Responsible == "Not at all useful", stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
-#'   Ethics_oe = ifelse(Ethics == "Not at all useful", stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
-#'   Standards_oe = ifelse(Standards == "Not at all useful", stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
-#'   Practices_oe = ifelse(Practices == "Not at all useful", stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
-#'   Morals_oe = ifelse(Morals == "Not at all useful", stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_)
+#'   Responsible_oe = ifelse(Responsible == "Not at all useful",
+#'                           stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
+#'   Ethics_oe = ifelse(Ethics == "Not at all useful",
+#'                      stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
+#'   Standards_oe = ifelse(Standards == "Not at all useful",
+#'                         stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
+#'   Practices_oe = ifelse(Practices == "Not at all useful",
+#'                         stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
+#'   Morals_oe = ifelse(Morals == "Not at all useful",
+#'                      stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_)
 #'   ) %>% dplyr::select(dplyr::ends_with("_oe"))
 #'
 #' # Set up character vector of text or other things like punctuation to remove from the text data:
