@@ -12,29 +12,38 @@
 #'
 #' @examples
 #' # Example data:
-#' #  Training usefulness composite scale- 5 variables of that make up a scale: Responsible, Ethics, Standards, Practices, Morals
+#' #  Training usefulness composite scale- 5 variables of that make up a scale:
+#' # Responsible, Ethics, Standards, Practices, Morals
 #' #  these are all on a 5-point likert scale of 1 to 5 needs to be
-#' #  recoded to: c("Not at all useful", "Slightly useful", "Somewhat useful", "Very useful", "Extremely useful")
+#' #  recoded to: c("Not at all useful", "Slightly useful", "Somewhat useful",
+#' #                "Very useful", "Extremely useful")
 #' # levels useful:
-#' levels_useful <- c("Not at all useful", "Slightly useful", "Somewhat useful", "Very useful", "Extremely useful")
+#' levels_useful <- c("Not at all useful", "Slightly useful", "Somewhat useful",
+#'                    "Very useful", "Extremely useful")
 #' # Data:
 #' data <- dplyr::tibble(
-#'   Responsible = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.2, 0.3, 0.2, 0.1)),
-#'   Ethics = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.2, 0.3, 0.2, 0.1)),
-#'   Standards = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.1, 0.2, 0.3, 0.3)),
-#'   Practices = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.1, 0.2, 0.3, 0.3)),
-#'   Morals = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.05, 0.05, 0.2, 0.3, 0.4)),
-#'   Responsible_oe = ifelse(Responsible == "Not at all useful",
-#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
-#'   Ethics_oe = ifelse(Ethics == "Not at all useful",
-#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
-#'   Standards_oe = ifelse(Standards == "Not at all useful",
-#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
-#'   Practices_oe = ifelse(Practices == "Not at all useful",
-#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_),
-#'   Morals_oe = ifelse(Morals == "Not at all useful",
-#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE, prob = c(0.4, 0.2, 0.1))), NA_character_)
-#'   ) %>% dplyr::select(dplyr::ends_with("_oe"))
+#'  Responsible = sample(levels_useful, size = 100, replace = TRUE,
+#'                        prob = c(0.1, 0.2, 0.3, 0.2, 0.1)),
+#'  Ethics = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.2, 0.3, 0.2, 0.1)),
+#'  Standards = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.1, 0.2, 0.3, 0.3)),
+#'  Practices = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.1, 0.1, 0.2, 0.3, 0.3)),
+#'  Morals = sample(levels_useful, size = 100, replace = TRUE, prob = c(0.05, 0.05, 0.2, 0.3, 0.4)),
+#'  Responsible_oe = ifelse(Responsible == "Not at all useful",
+#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE,
+#'                  prob = c(0.4, 0.2, 0.1))), NA_character_),
+#'  Ethics_oe = ifelse(Ethics == "Not at all useful",
+#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE,
+#'                  prob = c(0.4, 0.2, 0.1))), NA_character_),
+#'  Standards_oe = ifelse(Standards == "Not at all useful",
+#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE,
+#'                  prob = c(0.4, 0.2, 0.1))), NA_character_),
+#'  Practices_oe = ifelse(Practices == "Not at all useful",
+#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE,
+#'                  prob = c(0.4, 0.2, 0.1))), NA_character_),
+#'  Morals_oe = ifelse(Morals == "Not at all useful",
+#'                  stringi::stri_rand_lipsum(sample(1:3, replace = TRUE,
+#'                  prob = c(0.4, 0.2, 0.1))), NA_character_)
+#'  ) %>% dplyr::select(dplyr::ends_with("_oe"))
 #'
 #' # Set up character vector of text or other things like punctuation to remove from the text data:
 #' remove_values <- c("N/A", ".", "A")

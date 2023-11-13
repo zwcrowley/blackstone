@@ -17,12 +17,13 @@ levelsEnv
 Levels Environment and home to all scale_labels vectors:
 }
 \examples{
-# TODO: Figure out how to store all scale_labels vectors and how to then retrieve them when building charts
-# One potential solution- use environments and retrieve the vectors when using the package inside scripts and Rmd docs, and
-# eventually when moving to automating reporting in R.
+# TODO: Figure out how to store all scale_labels vectors and how to then
+# retrieve them when building charts
+# One potential solution- use environments and retrieve the vectors when using the package
+# inside scripts and Rmd docs, and eventually when moving to automating reporting in R.
 #
-# Try with three levels that are normally used like this in vectors to pass to the scale_labels argument across TheMarkUSA package:
-#
+# Try with three levels that are normally used like this in vectors to pass to the
+# scale_labels argument across TheMarkUSA package:
 # # levels min_ext:
 # levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #
@@ -30,11 +31,11 @@ Levels Environment and home to all scale_labels vectors:
 # levels_never_always <- c("Never", "Rarely", "Sometimes", "Frequently", "Always")
 #
 # # levels useful:
-# levels_useful <- c("Not at all useful", "Slightly useful", "Somewhat useful", "Very useful", "Extremely useful")
-#
+# levels_useful <- c("Not at all useful", "Slightly useful", "Somewhat useful",
+# "Very useful", "Extremely useful")
 # # How to make them into a Named list of stacked levels:
 # stacked_levels <- list(levels_min_ext,levels_never_always,levels_useful)
-# # Names for named list of "stacked levels" using the suffixes for stacked bar charts (which are the level names):
+# # Names for named list of "stacked levels" using the suffixes for stacked bar charts:
 # names(stacked_levels) <- c("levels_min_ext","levels_never_always","levels_useful")
 #
 # TODO: Test in the file "R_Reporting_template.Rmd":
@@ -49,13 +50,14 @@ Levels Environment and home to all scale_labels vectors:
 # Creating and fill new environment with vectors and parameters for use across the whole package:
 # Name new environment- "levelsEnv":
 # levelsEnv <- new.env()
-
 # Assign each vector to the new environment using this code:
 # assign(<name of var/vector>, <content of var/vector>, envir=cacheEnv)
-# both the name and content can be already assigned alias/vars that you pass to the assign() like in the example above:
+# both the name and content can be already assigned alias/vars that you pass to the assign()
+# like in the example above:
 # # levels min_ext:
 # levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-# assign("levels_min_ext", c("Minimal", "Slight", "Moderate", "Good", "Extensive"), envir = levelsEnv)
+# assign("levels_min_ext", c("Minimal", "Slight", "Moderate", "Good", "Extensive"),
+# envir = levelsEnv)
 # how to retrieve and name back to the original vector name- Two Ways-
 # 1. using get() or 2. using the familiar list extraction: env[[<name of var/vector>]]:
 # levels_min_ext <- get("levels_min_ext", envir = levelsEnv)
@@ -64,13 +66,15 @@ Levels Environment and home to all scale_labels vectors:
 # Assign two other vectors to the new environment- "levelsEnv":
 # # levels never to always:
 # levels_never_always <- c("Never", "Rarely", "Sometimes", "Frequently", "Always")
-# assign("levels_never_always", c("Never", "Rarely", "Sometimes", "Frequently", "Always"), envir = levelsEnv)
+# assign("levels_never_always", c("Never", "Rarely", "Sometimes", "Frequently", "Always"),
+# envir = levelsEnv)
 # levels_never_always <- get("levels_never_always", envir = levelsEnv)
 # # levels useful:
-# levels_useful <- c("Not at all useful", "Slightly useful", "Somewhat useful", "Very useful", "Extremely useful")
-assign("levels_useful", c("Not at all useful", "Slightly useful", "Somewhat useful", "Very useful", "Extremely useful"), envir = levelsEnv)
+# levels_useful <- c("Not at all useful", "Slightly useful", "Somewhat useful",
+# "Very useful", "Extremely useful")
+# assign("levels_useful", c("Not at all useful", "Slightly useful", "Somewhat useful",
+# "Very useful", "Extremely useful"), envir = levelsEnv)
 # levels_useful <- get("levels_useful", envir = levelsEnv)
-
 # Continue adding variables/vectors/parameters as needed for package/reporting needs...
 }
-\keyword{datasets}
+\keyword{internal}
