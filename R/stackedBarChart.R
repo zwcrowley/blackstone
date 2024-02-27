@@ -120,18 +120,11 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
     if (isTRUE(pre_post)) {
       stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left")
     }
-    stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::scale_fill_manual(breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
-                                                                               labels = paste("<span style='color:", {{fill_colors_gg}}, "'>",
-                                                                                              stringr::str_wrap({{scale_labels_gg}}, width = 10) %>% gsub("\n", "<br>", .), "</span>"),
-                                                                               guide = ggplot2::guide_legend(direction = "horizontal",
-                                                                                                             title.position = "top",
-                                                                                                             label.position = "bottom",
-                                                                                                             label.hjust = 0.5,
-                                                                                                             label.vjust = 1,
-                                                                                                             spacing.x = 20,
-                                                                                                             ncol = length({{scale_labels_gg}}),
-                                                                                                             override.aes = ggplot2::aes(color = NA, fill = NA)
-                                                                               )
+    stacked_bar_chart_gg <-  stacked_bar_chart_gg +
+      ggplot2::scale_fill_manual(breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
+                                 labels = paste("<span style='color:", {{fill_colors_gg}}, "'>",
+                                                stringr::str_wrap({{scale_labels_gg}}, width = 10) %>% gsub("\n", "<br>", .), "</span>"),
+                                 guide = ggplot2::guide_legend(override.aes = ggplot2::aes(color = NA, fill = NA))
     ) + ggplot2::guides(color = "none")
 
     if (isTRUE(pre_post)) {
@@ -146,7 +139,8 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
                          margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
                        ),
                        plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
-                       legend.text = ggtext::element_markdown(size = 11, family = "Gill Sans MT", face = "bold",
+                       legend.text = ggtext::element_markdown(angle = 0, hjust = 0.5, vjust = 0, halig	= 0.5, valign = 0,
+                                                              size = 11, family = "Gill Sans MT", face = "bold",
                                                               margin = ggplot2::margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
                        ),
                        legend.justification = c("right", "top"),
@@ -163,7 +157,8 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
             margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
           ),
           plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
-          legend.text = ggtext::element_markdown(size = 11, family = "Gill Sans MT", face = "bold",
+          legend.text = ggtext::element_markdown(angle = 0, hjust = 0.5, vjust = 0, halig	= 0.5, valign = 0,
+                                                 size = 11, family = "Gill Sans MT", face = "bold",
                                                  margin = ggplot2::margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
           ),
           legend.justification = c("right", "top"),
