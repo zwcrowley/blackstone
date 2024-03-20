@@ -9,7 +9,7 @@ openendedCleanup(df, var, remove_values)
 \arguments{
 \item{df}{Required, A \link[tibble:tibble-package]{tibble}/data frame containing the character variable of text.}
 
-\item{var}{Required, the character variable to clean up from the \link[tibble:tibble-package]{tibble}/data frame.}
+\item{var}{Required, the character variable to clean up from the \link[tibble:tibble-package]{tibble}/data frame, needs to be in quotes.}
 
 \item{remove_values}{Required, a character vector of additional text to remove from the text, see example.}
 }
@@ -58,5 +58,5 @@ data <- dplyr::tibble(
 remove_values <- c("N/A", ".", "A")
 
 # Make a nice table with the function:
-data \%>\% openendedCleanup(., Responsible_oe, remove_values)
+data \%>\% openendedCleanup(., "Responsible_oe", remove_values)
 }

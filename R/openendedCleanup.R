@@ -2,7 +2,7 @@
 #'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame containing the character variable of text.
 #'
-#' @param var Required, the character variable to clean up from the [tibble][tibble::tibble-package]/data frame.
+#' @param var Required, the character variable to clean up from the [tibble][tibble::tibble-package]/data frame, needs to be in quotes.
 #'
 #' @param remove_values Required, a character vector of additional text to remove from the text, see example.
 #'
@@ -49,15 +49,15 @@
 #' remove_values <- c("N/A", ".", "A")
 #'
 #' # Make a nice table with the function:
-#' data %>% openendedCleanup(., Responsible_oe, remove_values)
+#' data %>% openendedCleanup(., "Responsible_oe", remove_values)
 openendedCleanup <- function(df, var, remove_values) {
     # Set . to NULL to stop message when using dot notation in functions:
     . <- NULL
 
-    clean_data <- df %>% dplyr::select({{var}}) %>%
+    clean_data <- {{ df }} %>% dplyr::select(tidyselect::all_of(var)) %>%
         dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ dplyr::if_else(. %in% remove_values, NA_character_, .)),
                       dplyr::across(dplyr::where(is.character), ~ stringr::str_wrap(stringr::str_to_sentence(.), width = 80))) %>%
-        tidyr::drop_na() %>% dplyr::arrange({{var}})
+        tidyr::drop_na() %>% dplyr::arrange({{ var }})
 
     return(clean_data)
 }
