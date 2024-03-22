@@ -57,7 +57,7 @@ openendedCleanup <- function(df, var, remove_values) {
     clean_data <- {{ df }} %>% dplyr::select(tidyselect::all_of(var)) %>%
         dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ dplyr::if_else(. %in% remove_values, NA_character_, .)),
                       dplyr::across(dplyr::where(is.character), ~ stringr::str_wrap(stringr::str_to_sentence(.), width = 80))) %>%
-        tidyr::drop_na() %>% dplyr::arrange({{ var }})
+        tidyr::drop_na() %>% dplyr::arrange(!!rlang::sym(var))
 
     return(clean_data)
 }
