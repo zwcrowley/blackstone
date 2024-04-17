@@ -1,4 +1,4 @@
-#' Grouped Summary Table for The Mark USA
+#' Grouped Summary Table for Blackstone Research and Evaluation
 #'
 #' [groupedTable()] creates a summary table of frequencies and percentages that can show breakdowns by groups and the totals for
 #'      the data passed to it. The table shows each item and all the responses by row.
@@ -17,7 +17,7 @@
 #'  keep the question column from being too large for the table.
 #'
 #' @return a [flextable][flextable::flextable-package] object with columns for question, response, and counts and percentages for each group
-#'  and a total column. Colors are set to The Mark USA branding
+#'  and a total column. Colors are set to Blackstone Research and Evaluation branding
 #'
 #' @export
 #'

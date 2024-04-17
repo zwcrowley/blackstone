@@ -30,19 +30,19 @@ test_that("plots accept same data types", {
                             "Source work for students" = "Source")
 
   # Recode the numeric to factor variables using the levels from levels_min_ext:
-  cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
-  cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
+  cat_items <- bre::recodeCat(items, levels_min_ext)
+  cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
 
   # Select the factor variables:
   cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
   cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 
   # Pass the factor variables and the levels to 'stackedBarChart()':
-  stacked_chart_1 <- TheMarkUSA::stackedBarChart(
+  stacked_chart_1 <- bre::stackedBarChart(
     df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext,
     question_order = TRUE, question_labels = question_labels, percent_label = TRUE, width = NULL
   )
-  stacked_chart_2 <- TheMarkUSA::stackedBarChart(
+  stacked_chart_2 <- bre::stackedBarChart(
     df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
     question_order = TRUE, question_labels = question_labels, percent_label = TRUE, width = NULL
   )

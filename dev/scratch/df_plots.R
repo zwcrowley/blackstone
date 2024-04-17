@@ -1,5 +1,5 @@
 library(tidyverse)
-library(TheMarkUSA)
+library(bre)
 mark_colors_six <- c("#2C2C4F", "#4B9FA6", "#767171", "#79AB53", "#FFE699","#BFBFBF")
 
 # Read in data:
@@ -9,8 +9,8 @@ data <- read.csv("inst/extdata/fake_data.csv")
 selected_horz_bars <- c("gender", "role")
 
 # Create a df of the name of variable and the bar chart to be created with it:
-horz_bars_df <- map(selected_horz_bars, \(x) data %>% dplyr::select(all_of(x)) %>% TheMarkUSA::dataSumm(.,sort_n = TRUE) %>%
-                        TheMarkUSA::horzBarChart(., scale_colors = mark_colors_six, width = 0.4)) %>% setNames(., selected_horz_bars)
+horz_bars_df <- map(selected_horz_bars, \(x) data %>% dplyr::select(all_of(x)) %>% bre::dataSumm(.,sort_n = TRUE) %>%
+                        bre::horzBarChart(., scale_colors = mark_colors_six, width = 0.4)) %>% setNames(., selected_horz_bars)
 
 
 selected_horz_bars %>% list() %>% as.character() %>%
@@ -105,7 +105,7 @@ create_sb_plot <- function(title, variables_names, levels, percent_label, overal
     variables_names <- variables_names %>% unlist() %>% as.character()
     levels_names <- levels %>% as.character() %>% str_split(., ", ") %>% unlist()
     stacked_bar <- data %>% dplyr::select(all_of(variables_names)) %>%
-        TheMarkUSA::stackedBarChart(., pre_post = FALSE, scale_labels = levels_names, percent_label = percent_label, overall_n = overall_n)
+        bre::stackedBarChart(., pre_post = FALSE, scale_labels = levels_names, percent_label = percent_label, overall_n = overall_n)
     return(stacked_bar)
 }
 
@@ -130,7 +130,7 @@ title_sb <- sb_options_df[["title"]]
 # Iterate over the list of lists that holds all the options for new sbs: sb_options_df
 # WORKS!!!!!!!!!
 stacked_bars_list <- pmap(sb_options_df, \(title, vars, levels, percent_label, overall_n ) data %>% dplyr::select(all_of(vars)) %>%
-                          TheMarkUSA::stackedBarChart(., pre_post = FALSE, scale_labels = levels, percent_label = percent_label, overall_n = overall_n)) %>%
+                          bre::stackedBarChart(., pre_post = FALSE, scale_labels = levels, percent_label = percent_label, overall_n = overall_n)) %>%
                         set_names(., title_sb)
 
 stacked_bars_list[["Research Skills"]]
@@ -146,7 +146,7 @@ unlist(sb_options_df[["levels"]][[1]])
 create_sb_plot <- function(df, id) {
     variables_names <- get(paste0("vars_", id)) %>% unlist()
     stacked_bar <- df %>% dplyr::select(all_of(variables_names)) %>%
-        TheMarkUSA::stackedBarChart(., pre_post = FALSE, scale_labels = get(paste0("levels_", id)),
+        bre::stackedBarChart(., pre_post = FALSE, scale_labels = get(paste0("levels_", id)),
                                     percent_label = get(paste0("percent_label_", id)), overall_n = get(paste0("overall_n_", id)))
     return(stacked_bar)
 }
@@ -163,7 +163,7 @@ stacked_bar_list
 #   variables_names <- input[[str_glue("vars_{id}")]] %>% unlist() %>% as.character()
 #   levels_names <- input[[str_glue("levels_{id}")]] %>% as.character() %>% str_split(., ", ") %>% unlist()
 #   stacked_bar <- df %>% dplyr::select(all_of(variables_names)) %>%
-#     TheMarkUSA::stackedBarChart(., pre_post = FALSE, scale_labels = levels_names,
+#     bre::stackedBarChart(., pre_post = FALSE, scale_labels = levels_names,
 #                                 percent_label = input[[str_glue("percent_label_{id}")]], overall_n = input[[str_glue("overall_n_{id}")]])
 #   return(stacked_bar)
 # }
@@ -218,13 +218,13 @@ sb_options_df <- tibble("title" = titles,
                         "percent_label" = percent_label,
                         "overall_n" = overall_n)
 
-# Function to create a stacked bar chart using TheMarkUSA::stackedBarChart() inside pmap() and a tibble/df of the inputs that
+# Function to create a stacked bar chart using bre::stackedBarChart() inside pmap() and a tibble/df of the inputs that
 # has the column names same as args, except `df` which will be passed separately:
 create_sb_plot <- function(df, title, variables_names, levels, percent_label, overall_n) {
     variables_names <- variables_names %>% unlist()
     levels_names <- levels %>% unlist()
     stacked_bar <- df %>% dplyr::select(all_of(variables_names)) %>%
-        TheMarkUSA::stackedBarChart(., pre_post = FALSE, scale_labels = levels_names, percent_label = percent_label, overall_n = overall_n)
+        bre::stackedBarChart(., pre_post = FALSE, scale_labels = levels_names, percent_label = percent_label, overall_n = overall_n)
     return(stacked_bar)
 }
 
@@ -281,7 +281,7 @@ openendedFlextable <- function(df, header_label) {
     return(tbl)
 } # end of function
 
-# Set up character vector of text or other things like punctuation to remove from the text data when using TheMarkUSA::openendedCleanup():
+# Set up character vector of text or other things like punctuation to remove from the text data when using bre::openendedCleanup():
 remove_values <- c("N/A", ".", "A")
 var <- "Responsible_oe"
 # Make a nice table with the function: EXAMPLE: %>% dplyr::arrange(!!rlang::sym(var))
@@ -291,17 +291,17 @@ resp_oe <- data %>% openendedCleanup(., "Responsible_oe", remove_values) %>%
 # Get all column names for fake data that have "_oe" in them:
 selected_columns_oe <- data %>% select(contains("_oe")) %>% names()
 
-oe_tbl_list <- map(selected_columns_oe, \(x) data %>% dplyr::select(all_of(x)) %>% TheMarkUSA::openendedCleanup(., x, remove_values) %>%
+oe_tbl_list <- map(selected_columns_oe, \(x) data %>% dplyr::select(all_of(x)) %>% bre::openendedCleanup(., x, remove_values) %>%
                     openendedFlextable(., header_label = str_glue("These are the responses from the question {x}"))) %>%
                         setNames(., selected_columns_oe)
 oe_tbl_list # Works in regular R env
 
 # Writing for shinymeta/shiny context:
-map(..(selected_columns_oe()), \(x) ..(data()) %>% TheMarkUSA::openendedCleanup(., all_of(x), remove_values) %>%
+map(..(selected_columns_oe()), \(x) ..(data()) %>% bre::openendedCleanup(., all_of(x), remove_values) %>%
         openendedFlextable(., header_label = str_glue("These are the responses from the question {x}"))) %>%
             setNames(., ..(selected_columns_oe()))
 
-# Fix OE cleanup function from TheMarkUSA package:
+# Fix OE cleanup function from bre package:
 openendedCleanup <- function(df, var, remove_values) {
     # Set . to NULL to stop message when using dot notation in functions:
     . <- NULL

@@ -1,4 +1,4 @@
-#' Arrow Chart for The Mark USA
+#' Arrow Chart for Blackstone Research and Evaluation
 #'
 #' [arrowChart()] creates an pre-post arrow chart of group averages and returns
 #' a ggplot object.

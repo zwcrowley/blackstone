@@ -1,4 +1,4 @@
-#' Summary Table for Likert Items for The Mark USA
+#' Summary Table for Likert Items for Blackstone Research and Evaluation
 #'
 #' [likertTable()] creates a summary table of frequencies and percentages for Likert scale items that can show breakdowns for
 #'      the data passed to it. The table that contains frequency and percent in each row and a column for each Likert scale response,
@@ -18,7 +18,7 @@
 #'   keep the question column from being too large for the table.
 #'
 #' @return a [flextable][flextable::flextable-package] object with columns for question, each likert response item, and a total column for each
-#'   items with the total n for that item. Colors are set to The Mark USA branding
+#'   items with the total n for that item. Colors are set to Blackstone Research and Evaluation branding
 #'
 #' @export
 #'
@@ -60,7 +60,7 @@
 #' named_levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3",
 #'                     "Good" = "4", "Extensive" = "5")
 #' # Recode the numeric to factor variables using the levels from levels_min_ext:
-#' cat_items <- TheMarkUSA::recodeCat(data, named_levels_min_ext)
+#' cat_items <- bre::recodeCat(data, named_levels_min_ext)
 #' # Select the factor variables, and remove the prefix that recodeCat() added to the factor variables:
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor)) %>%
 #'                            dplyr::rename_with(., ~ stringr::str_remove(.,"cat_"))

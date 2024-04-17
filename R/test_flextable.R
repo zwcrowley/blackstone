@@ -1,4 +1,4 @@
-#' Create Flextable in The Mark USA Branding
+#' Create Flextable in Blackstone Research and Evaluation Branding
 #'
 #' @param data Required, A [tibble][tibble::tibble-package]/data frame of summary/descriptice or
 #'  test statistics.

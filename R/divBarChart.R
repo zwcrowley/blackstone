@@ -1,9 +1,9 @@
-#' Diverging Bar Chart for The Mark USA
+#' Diverging Bar Chart for Blackstone Research and Evaluation
 #'
-#' [divBarChart()] creates a diverging bar chart and returns a ggplot object with The Mark USA branding.
+#' [divBarChart()] creates a diverging bar chart and returns a ggplot object with Blackstone Research and Evaluation branding.
 #'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
-#'   variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with The Mark USA branding.
+#'   variables, in 3 to 7 point scales, that will be inserted into a diverging bar chart with Blackstone Research and Evaluation branding.
 #'
 #' @param scale_labels Required, a character vector of labels for the response scale, must be in the desired order,
 #'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
@@ -58,7 +58,7 @@
 #'                      "Source work for a research paper" = "Source")
 #'
 #' # Recode the numeric to factor variables using the levels from levels_min_ext:
-#' cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
+#' cat_items <- bre::recodeCat(items, levels_min_ext)
 #'
 #' # Select the factor variables:
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))

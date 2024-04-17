@@ -12,7 +12,7 @@
 #' if false, does not have a final row of totals. Set True by default.
 #'
 #' @return a [flextable][flextable::flextable-package] object with the 3 columns, response, counts and percentages,
-#' Colors are set to The Mark USA branding
+#' Colors are set to Blackstone Research and Evaluation branding
 #' @export
 #'
 #' @examples
@@ -28,7 +28,7 @@
 #'
 #' role_summ <- data %>%
 #'   dplyr::select(role) %>%
-#'   TheMarkUSA::dataSumm()
+#'   bre::dataSumm()
 #'
 #' role_summ %>% tblSumm()
 tblSumm <- function(df, totals = TRUE) {

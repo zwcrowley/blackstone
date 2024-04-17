@@ -1,6 +1,6 @@
-#' Horizontal Bar Chart for The Mark USA
+#' Horizontal Bar Chart for Blackstone Research and Evaluation
 #'
-#' [horzBarChart()] creates a horizontal bar chart and returns a ggplot object with The Mark USA branding.
+#' [horzBarChart()] creates a horizontal bar chart and returns a ggplot object with Blackstone Research and Evaluation branding.
 #'
 #' @param df Required, a [tibble][tibble::tibble-package]/data frame that has been pre-processed with dataSumm().
 #'
@@ -24,7 +24,7 @@
 #'
 #' role_summ <- data %>%
 #'   dplyr::select(role) %>%
-#'   TheMarkUSA::dataSumm()
+#'   bre::dataSumm()
 #'
 #' role_color <- c("#2C2C4F", "#4B9FA6", "#79AB53", "#767171")
 #'

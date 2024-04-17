@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# TheMarkUSA <a href="https://zcrowleythemark.github.io/TheMarkUSA/"><img src="man/figures/logo.png" align="right" height="139" /></a>
+# bre <a href="https://zcrowleythemark.github.io/bre/"><img src="man/figures/logo.png" align="right" height="139" /></a>
 
 <!-- badges: start -->
 
@@ -9,20 +9,20 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of `TheMarkUSA` is to make data cleaning and the creation of
+The goal of `bre` is to make data cleaning and the creation of
 visualizations easier and faster for The Mark USA, Inc. The functions in
-`TheMarkUSA` create visuals with The Mark USA branding and helper
+`bre` create visuals with The Mark USA branding and helper
 functions for common data cleaning and manipulation tasks for use for
 everyone at The Mark USA, Inc.
 
 ## Installation
 
-You can install the development version of `TheMarkUSA` from
+You can install the development version of `bre` from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("zcrowleyTheMark/TheMarkUSA")
+devtools::install_github("zcrowleyTheMark/bre")
 ```
 
 On the initial installation you will also have to install and import
@@ -31,7 +31,7 @@ fonts from `extrafont` package:
 ``` r
 # install.packages("extrafont")
 library(extrafont)
-# Import fonts to get "Gill Sans MT", this only has to be done one time, then `TheMarkUSA` package will use the code below to load the fonts automatically 
+# Import fonts to get "Gill Sans MT", this only has to be done one time, then `bre` package will use the code below to load the fonts automatically 
 # for the functions that require that step:
 extrafont::font_import()
 # Load all fonts:
@@ -41,7 +41,7 @@ extrafont::loadfonts("all", quiet = TRUE)
 ## Usage
 
 ``` r
-library(TheMarkUSA)
+library(bre)
 ```
 
 To begin, it is best to convert our numeric data that we use at The Mark
@@ -85,7 +85,7 @@ items <- dplyr::tibble(
 )
 # Set up the named vector to pass to scale_labels, follow this pattern- c("<new label>" = "<original variable value>"):
 levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
-cat_items_1 <- TheMarkUSA::recodeCat(df = items, scale_labels = levels_min_ext)
+cat_items_1 <- bre::recodeCat(df = items, scale_labels = levels_min_ext)
 cat_items_1
 #> # A tibble: 9 × 20
 #>   pre_Organization post_Organization pre_Source post_Source pre_Publish
@@ -112,7 +112,7 @@ corresponding order as the numeric data.
 
 ## Data Visualizations Examples
 
-`TheMarkUSA` currently contains three helper functions for generating
+`bre` currently contains three helper functions for generating
 visualizations: `stackedBarChart()`, `divBarChart()`, and
 `arrowChart()`.
 
@@ -191,11 +191,11 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Organization of a large research project" = "Organization",
                      "Source work for a research paper" = "Source")
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
+cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
 # Select the factor variables:
 cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 # Pass the factor variables and the levels to 'stackedBarChart()':
-stacked_chart_single <- TheMarkUSA::stackedBarChart(
+stacked_chart_single <- bre::stackedBarChart(
    df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
    percent_label = TRUE, width = 0.6
 )
@@ -206,7 +206,7 @@ stacked_chart_single
 
 ``` r
 # With new labels and order taken from question_labels argument:
-stacked_chart_single_labels <- TheMarkUSA::stackedBarChart(
+stacked_chart_single_labels <- bre::stackedBarChart(
    df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = 0.6
 )
@@ -222,7 +222,7 @@ stacked_chart_single_labels
 cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
 
 # Run the function with the factor items and the character vector of the factor levels:
-stacked_chart_pre_post <- TheMarkUSA::stackedBarChart(
+stacked_chart_pre_post <- bre::stackedBarChart(
    df = cat_items_plot, pre_post = TRUE, scale_labels = bar_scale_labels,
    percent_label = TRUE, width = NULL
 )
@@ -233,7 +233,7 @@ stacked_chart_pre_post
 
 ``` r
 # With new labels and order taken from question_labels argument:
-stacked_chart_pre_post_labels <- TheMarkUSA::stackedBarChart(
+stacked_chart_pre_post_labels <- bre::stackedBarChart(
    df = cat_items_plot, pre_post = TRUE, scale_labels = bar_scale_labels,
    question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = NULL
 )
@@ -313,7 +313,7 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                     "Organization of a large research project" = "Organization",
                     "Source work for a research paper" = "Source")
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
+cat_items <- bre::recodeCat(items, levels_min_ext)
 # Select the factor variables:
 cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
 # Pass the factor variables and the levels to 'divBarChart()', set so that it 
@@ -409,7 +409,7 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
 threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
 # Example with n for each question and original labels:
-arrow_chart_1 <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrow_chart_1 <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 arrow_chart_1
 ```
@@ -419,7 +419,7 @@ arrow_chart_1
 ``` r
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrow_chart_labels_all_n <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 arrow_chart_labels_all_n
 ```
@@ -429,12 +429,12 @@ arrow_chart_labels_all_n
 ``` r
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrow_chart_labels_all_n <- TheMarkUSA::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 arrow_chart_labels_all_n
 ```
 
 <img src="man/figures/README-arrowChart-3.png" width="100%" />
 
-More functions and visuals will be added to `TheMarkUSA` package as
+More functions and visuals will be added to `bre` package as
 needed, be sure to reach out with any ideas for the package or issues!
