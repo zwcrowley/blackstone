@@ -2,7 +2,7 @@
 % Please edit documentation in R/arrowChart.R
 \name{arrowChart}
 \alias{arrowChart}
-\title{Arrow Chart for The Mark USA}
+\title{Arrow Chart for Blackstone Research and Evaluation}
 \usage{
 arrowChart(
   df,

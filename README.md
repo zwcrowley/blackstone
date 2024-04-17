@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# bre <a href="https://zcrowleythemark.github.io/bre/"><img src="man/figures/logo.png" align="right" height="139" /></a>
+# bre <a href="https://zwcrowley.github.io/bre/"><img src="man/figures/logo.png" align="right" height="139" alt="bre website" /></a>
 
 <!-- badges: start -->
 
@@ -10,10 +10,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 The goal of `bre` is to make data cleaning and the creation of
-visualizations easier and faster for The Mark USA, Inc. The functions in
-`bre` create visuals with The Mark USA branding and helper
-functions for common data cleaning and manipulation tasks for use for
-everyone at The Mark USA, Inc.
+visualizations easier and faster for Blackstone Research and Evaluation.
+`bre` contains functions to create visuals with Blackstone Research and
+Evaluation branding and helper functions for common data cleaning and
+manipulation tasks for everyone at Blackstone Research and Evaluation.
 
 ## Installation
 
@@ -22,7 +22,7 @@ You can install the development version of `bre` from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("zcrowleyTheMark/bre")
+devtools::install_github("zwcrowley/bre")
 ```
 
 On the initial installation you will also have to install and import
@@ -44,8 +44,8 @@ extrafont::loadfonts("all", quiet = TRUE)
 library(bre)
 ```
 
-To begin, it is best to convert our numeric data that we use at The Mark
-USA, Inc. to factor variables:
+To begin, it is best to convert our numeric data that we use at
+Blackstone Research and Evaluation to factor variables:
 
 ### `recodeCat()`
 
@@ -119,7 +119,7 @@ visualizations: `stackedBarChart()`, `divBarChart()`, and
 ### `stackedBarChart()`
 
 `stackedBarChart()` creates a fully stacked bar chart that has the
-branding/style of The Mark USA, Inc.
+branding/style of Blackstone Research and Evaluation.
 
 `stackedBarChart()` takes up to 8 arguments, first 2 are *required*:
 
@@ -127,7 +127,8 @@ branding/style of The Mark USA, Inc.
 [tibble](https://tibble.tidyverse.org/reference/tibble-package.html) or
 data frame of survey items that are categorical/factor variables, in 5
 point scales, can be a single time point or pre-post, that will be
-inserted into a stacked bar chart with The Mark USA branding.
+inserted into a stacked bar chart with Blackstone Research and
+Evaluation branding.
 
 **scale_labels** scale_labels Required, a character vector of labels for
 the response scale, must be in the desired order, e.g. if you have a 5
@@ -245,7 +246,7 @@ stacked_chart_pre_post_labels
 ### `divBarChart()`
 
 `divBarChart()` creates a diverging and fully stacked bar chart that has
-the branding and style of The Mark USA, Inc.
+the branding and style of Blackstone Research and Evaluation.
 
 `divBarChart()` takes in up to 7 arguments, the first 2 are *required*:
 
@@ -253,7 +254,7 @@ the branding and style of The Mark USA, Inc.
 [tibble](https://tibble.tidyverse.org/reference/tibble-package.html)/data
 frame of survey items that are categorical/character variables, in 3 to
 7 point scales, that will be inserted into a diverging bar chart with
-The Mark USA branding.
+Blackstone Research and Evaluation branding.
 
 **scale_labels**scale_labels Required, a character vector of labels for
 the response scale, must be in the desired order, e.g. if you have a 5
@@ -379,9 +380,9 @@ highest post score average on the top of the plot descending.
 
 `arrowChart()` creates an arrow chart from numeric data based on the
 pre-post averages for each group and the overall group for the whole
-data set with the branding and style of The Mark USA,
-Inc. `arrowChart()` sorts the chart with the highest post scores on the
-top and lowest on the bottom.
+data set with the branding and style of Blackstone Research and
+Evaluation. `arrowChart()` sorts the chart with the highest post scores
+on the top and lowest on the bottom.
 
 #### **Examples using** `arrowChart()`
 
@@ -406,10 +407,10 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                     "Source work for a research paper" = "Source")
 
 # Set up a character vector of scale colors to pass to the argument group_colors:
-threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+threeScale_bre_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
 # Example with n for each question and original labels:
-arrow_chart_1 <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrow_chart_1 <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_bre_colors,
      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 arrow_chart_1
 ```
@@ -419,7 +420,7 @@ arrow_chart_1
 ``` r
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_bre_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 arrow_chart_labels_all_n
 ```
@@ -429,12 +430,12 @@ arrow_chart_labels_all_n
 ``` r
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_bre_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 arrow_chart_labels_all_n
 ```
 
 <img src="man/figures/README-arrowChart-3.png" width="100%" />
 
-More functions and visuals will be added to `bre` package as
-needed, be sure to reach out with any ideas for the package or issues!
+More functions and visuals will be added to `bre` package as needed, be
+sure to reach out with any ideas for the package or issues!

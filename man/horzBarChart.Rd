@@ -2,7 +2,7 @@
 % Please edit documentation in R/horzBarChart.R
 \name{horzBarChart}
 \alias{horzBarChart}
-\title{Horizontal Bar Chart for The Mark USA}
+\title{Horizontal Bar Chart for Blackstone Research and Evaluation}
 \usage{
 horzBarChart(df, scale_colors, width = NULL)
 }
@@ -17,7 +17,7 @@ horzBarChart(df, scale_colors, width = NULL)
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a horizontal bar chart and can be exported.
 }
 \description{
-\code{\link[=horzBarChart]{horzBarChart()}} creates a horizontal bar chart and returns a ggplot object with The Mark USA branding.
+\code{\link[=horzBarChart]{horzBarChart()}} creates a horizontal bar chart and returns a ggplot object with Blackstone Research and Evaluation branding.
 }
 \examples{
 data <- dplyr::tibble(
@@ -32,7 +32,7 @@ data <- dplyr::tibble(
 
 role_summ <- data \%>\%
   dplyr::select(role) \%>\%
-  TheMarkUSA::dataSumm()
+  bre::dataSumm()
 
 role_color <- c("#2C2C4F", "#4B9FA6", "#79AB53", "#767171")
 

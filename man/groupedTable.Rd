@@ -2,7 +2,7 @@
 % Please edit documentation in R/groupedTable.R
 \name{groupedTable}
 \alias{groupedTable}
-\title{Grouped Summary Table for The Mark USA}
+\title{Grouped Summary Table for Blackstone Research and Evaluation}
 \usage{
 groupedTable(df, col_group = NULL, question_labels = NULL, str_width = 20)
 }
@@ -22,7 +22,7 @@ keep the question column from being too large for the table.}
 }
 \value{
 a \link[flextable:flextable-package]{flextable} object with columns for question, response, and counts and percentages for each group
-and a total column. Colors are set to The Mark USA branding
+and a total column. Colors are set to Blackstone Research and Evaluation branding
 }
 \description{
 \code{\link[=groupedTable]{groupedTable()}} creates a summary table of frequencies and percentages that can show breakdowns by groups and the totals for

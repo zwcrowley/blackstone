@@ -2,7 +2,7 @@
 % Please edit documentation in R/likertTable.R
 \name{likertTable}
 \alias{likertTable}
-\title{Summary Table for Likert Items for The Mark USA}
+\title{Summary Table for Likert Items for Blackstone Research and Evaluation}
 \usage{
 likertTable(df, scale_labels, question_labels = NULL, str_width = 20)
 }
@@ -22,7 +22,7 @@ keep the question column from being too large for the table.}
 }
 \value{
 a \link[flextable:flextable-package]{flextable} object with columns for question, each likert response item, and a total column for each
-items with the total n for that item. Colors are set to The Mark USA branding
+items with the total n for that item. Colors are set to Blackstone Research and Evaluation branding
 }
 \description{
 \code{\link[=likertTable]{likertTable()}} creates a summary table of frequencies and percentages for Likert scale items that can show breakdowns for
@@ -67,7 +67,7 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
 named_levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3",
                     "Good" = "4", "Extensive" = "5")
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- TheMarkUSA::recodeCat(data, named_levels_min_ext)
+cat_items <- bre::recodeCat(data, named_levels_min_ext)
 # Select the factor variables, and remove the prefix that recodeCat() added to the factor variables:
 cat_items <- cat_items \%>\% dplyr::select(dplyr::where(is.factor)) \%>\%
                            dplyr::rename_with(., ~ stringr::str_remove(.,"cat_"))

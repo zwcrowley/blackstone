@@ -23,7 +23,7 @@ Levels Environment and home to all scale_labels vectors:
 # inside scripts and Rmd docs, and eventually when moving to automating reporting in R.
 #
 # Try with three levels that are normally used like this in vectors to pass to the
-# scale_labels argument across TheMarkUSA package:
+# scale_labels argument across bre package:
 # # levels min_ext:
 # levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #

@@ -2,7 +2,7 @@
 % Please edit documentation in R/stackedBarChart.R
 \name{stackedBarChart}
 \alias{stackedBarChart}
-\title{Stacked Bar Chart for The Mark USA}
+\title{Stacked Bar Chart for Blackstone Research and Evaluation}
 \usage{
 stackedBarChart(
   df,
@@ -17,7 +17,7 @@ stackedBarChart(
 }
 \arguments{
 \item{df}{Required, A \link[tibble:tibble-package]{tibble}/data frame of survey items that are categorical/character
-variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with The Mark USA branding.}
+variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.}
 
 \item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
 e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.
@@ -44,7 +44,7 @@ positive valenced response options on the top of the plot descending.}
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a stacked bar chart and can be exported.
 }
 \description{
-\code{\link[=stackedBarChart]{stackedBarChart()}} creates a stacked bar chart and returns a ggplot object with The Mark USA branding.
+\code{\link[=stackedBarChart]{stackedBarChart()}} creates a stacked bar chart and returns a ggplot object with Blackstone Research and Evaluation branding.
 }
 \examples{
 items <- dplyr::tibble(
@@ -89,8 +89,8 @@ question_labels <- c(
 )
 
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- TheMarkUSA::recodeCat(items, levels_min_ext)
-cat_items_single <- TheMarkUSA::recodeCat(items_single, levels_min_ext)
+cat_items <- bre::recodeCat(items, levels_min_ext)
+cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
 
 # Select the factor variables:
 cat_items <- cat_items \%>\% dplyr::select(dplyr::where(is.factor))
