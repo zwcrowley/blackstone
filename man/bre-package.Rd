@@ -13,9 +13,9 @@ The goal of `bre` is to make data cleaning and the creation of visualizations ea
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://zcrowleythemark.github.io/bre/}
-  \item \url{https://github.com/zcrowleyTheMark/themark}
-  \item Report bugs at \url{https://github.com/zcrowleyTheMark/themark/issues}
+  \item \url{https://github.com/zwcrowley/bre}
+  \item \url{https://zwcrowley.github.io/bre/}
+  \item Report bugs at \url{https://github.com/zwcrowley/bre/issues}
 }
 
 }
