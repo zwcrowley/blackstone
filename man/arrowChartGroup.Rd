@@ -6,6 +6,7 @@
 \usage{
 arrowChartGroup(
   df,
+  group,
   scale_labels,
   group_colors,
   overall_n = FALSE,
@@ -16,6 +17,8 @@ arrowChartGroup(
 \arguments{
 \item{df}{Required, a \link[tibble:tibble-package]{tibble} or data frame of \strong{numeric} data that has items with the prefix of \code{pre_} and \code{post_}; and has a categorical group
 variable to split up the data (e.g. role, gender, education level, etc.).}
+
+\item{group}{Required, the name of the grouping variable in a quoted character string (e.g. "role", "gender", "edu_level", etc.).}
 
 \item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
 e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.}
@@ -57,7 +60,7 @@ items <- dplyr::tibble(
   post_Write = pre_Write + 1,
   pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   post_Research = pre_Research + 1,
-  group = factor(c(
+  edu_level = factor(c(
       "grad", "undergrad", "grad", "undergrad", "grad",
       "undergrad", "undergrad", "grad", "undergrad"
  ), levels = c("grad", "undergrad"))
@@ -75,15 +78,18 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
 # Set up a character vector of scale colors to pass to the argument group_colors:
 three_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
-# Example with n for each question and original labels:
-arrowChartGroup(df = items, scale_labels = levels_min_ext, group_colors = three_colors,
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+# Example grouped by the variable "edu_level", with n for each question and original labels:
+arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
+                group_colors = three_colors, overall_n = FALSE,
+                question_labels = NULL, question_order = FALSE)
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrowChartGroup(df = items, scale_labels = levels_min_ext, group_colors = three_colors,
-    overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
+arrowChartGroup(df = items, group = "edu_level",scale_labels = levels_min_ext,
+                group_colors = three_colors, overall_n = FALSE,
+                question_labels = question_labels, question_order = FALSE)
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrowChartGroup(df = items, scale_labels = levels_min_ext, group_colors = three_colors,
-    overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
+arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
+                group_colors = three_colors, overall_n = FALSE,
+                question_labels = question_labels, question_order = TRUE)
 }

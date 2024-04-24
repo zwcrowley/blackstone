@@ -164,7 +164,7 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
 
         return(arrow_new)
 
-        # Otherwise, if overall_n == FALSE and, return an arrow chart with n for each question appended to the question label:
+    # Otherwise, if overall_n == FALSE and, return an arrow chart with n for each question appended to the question label:
     } else if (isFALSE(overall_n)) {
         # Change the label of the variable "question" by adding n of each to the end of the character string:
         # Set up labels for question:

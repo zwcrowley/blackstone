@@ -446,6 +446,9 @@ data frame of **numeric** data that has items with the prefix of `pre_`
 and `post_`; and has a categorical group variable to split up the data
 (e.g. role, gender, education level, etc.).
 
+**group** Required, the name of the grouping variable in a quoted
+character string (e.g. “role”, “gender”, “edu_level”, etc.).
+
 **scale_labels** scale_labels Required, a character vector of labels for
 the response scale, must be in the desired order, e.g. if you have a 5
 item scale of minimal to extensive it should look like this:
@@ -484,10 +487,10 @@ scores on the top and lowest on the bottom.
 #### **Examples using** `arrowChartGroup()`
 
 ``` r
-# Add a group variable that is set as a factor to the numeric items above called `items`:
+# Add a group variable `edu_level` that is set as a factor to the numeric items above called `items`:
 arrow_items <- items %>%
   dplyr::mutate(
-    group = factor(c(
+    edu_level = factor(c(
       "grad", "undergrad", "grad", "undergrad", "grad", "undergrad", "undergrad", "grad", "undergrad"
     ), levels = c("grad", "undergrad"))
   )
@@ -506,7 +509,7 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
 three_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
 # Example with n for each question and original labels:
-arrow_chart_grouped <- bre::arrowChartGroup(df = arrow_items, scale_labels = levels_min_ext, group_colors = three_colors,
+arrow_chart_grouped <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 arrow_chart_grouped
 ```
@@ -516,7 +519,7 @@ arrow_chart_grouped
 ``` r
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrow_chart_grouped_labels <- bre::arrowChartGroup(df = arrow_items, scale_labels = levels_min_ext, group_colors = three_colors,
+arrow_chart_grouped_labels <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 arrow_chart_grouped_labels
 ```
@@ -526,7 +529,7 @@ arrow_chart_grouped_labels
 ``` r
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrow_chart_grouped_labels_ordered <- bre::arrowChartGroup(df = arrow_items, scale_labels = levels_min_ext, group_colors = three_colors,
+arrow_chart_grouped_labels_ordered <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 arrow_chart_grouped_labels_ordered
 ```
