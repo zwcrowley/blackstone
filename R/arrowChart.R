@@ -160,7 +160,7 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
     # If overall_n == TRUE:
     if (isTRUE(overall_n)) {
         arrow_new <- arrowChart_ggplot(arrow_df, fill_gg = arrow_colors, scale_labels_gg = scale_labels) +
-            labs(tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) # change tag labels to overall n
+                            ggplot2::labs(tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) # change tag labels to overall n
 
         return(arrow_new)
 
