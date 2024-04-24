@@ -74,17 +74,17 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Source work for a research paper" = "Source")
 
 # Set up a character vector of scale colors to pass to the argument group_colors:
-threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+three_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
 # Example with n for each question and original labels:
-arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrowChart(df = items, scale_labels = levels_min_ext, group_colors = three_colors,
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrowChart(df = items, scale_labels = levels_min_ext, group_colors = three_colors,
     overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrowChart(df = items, scale_labels = levels_min_ext, group_colors = threeScale_theMark_colors,
+arrowChart(df = items, scale_labels = levels_min_ext, group_colors = three_colors,
     overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 }

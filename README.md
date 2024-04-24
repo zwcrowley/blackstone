@@ -407,10 +407,10 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                     "Source work for a research paper" = "Source")
 
 # Set up a character vector of scale colors to pass to the argument group_colors:
-threeScale_bre_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+three_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
 # Example with n for each question and original labels:
-arrow_chart_1 <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_bre_colors,
+arrow_chart_1 <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = three_colors,
      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 arrow_chart_1
 ```
@@ -420,7 +420,7 @@ arrow_chart_1
 ``` r
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_bre_colors,
+arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = three_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 arrow_chart_labels_all_n
 ```
@@ -430,7 +430,7 @@ arrow_chart_labels_all_n
 ``` r
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = threeScale_bre_colors,
+arrow_chart_labels_all_n <- bre::arrowChart(df = arrow_items, scale_labels = levels_min_ext, group_colors = three_colors,
      overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 arrow_chart_labels_all_n
 ```

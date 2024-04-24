@@ -28,10 +28,10 @@ test_that("plots accept same data types", {
     group = factor(group, levels = c("grad", "undergrad"))
   )
 
-  threeScale_theMark_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+  three_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
 
-  arrow_chart_1 <- arrowChart(items_1, levels_min_ext, threeScale_theMark_colors)
-  arrow_chart_2 <- arrowChart(items_2, levels_min_ext, threeScale_theMark_colors)
+  arrow_chart_1 <- arrowChartGroup(items_1, levels_min_ext, three_colors)
+  arrow_chart_2 <- arrowChartGroup(items_2, levels_min_ext, three_colors)
 
   expect_type(arrow_chart_1, "list")
   expect_type(arrow_chart_2, "list")
