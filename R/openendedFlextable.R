@@ -1,12 +1,10 @@
-#' Clean Up and Format Open-ended Text
+#' Create a Formatted Flextable for Open-ended Text
 #'
-#' @param df Required, A [tibble][tibble::tibble-package]/data frame containing the character variable of text.
+#' @param df Required, A [tibble][tibble::tibble-package] or data frame containing the character variable of text.
 #'
-#' @param var Required, the character variable to clean up from the [tibble][tibble::tibble-package]/data frame, needs to be in quotes.
+#' @param header_label Required, label for the header of the table (can be a description of the prompt or full question text).
 #'
-#' @param remove_values Required, a character vector of additional text to remove from the text, see example.
-#'
-#' @return A [tibble][tibble::tibble-package] which contains one character variable of clean text ready for use or output.
+#' @return a [flextable][flextable::flextable-package] object that is nicely formatted in BRE branding and in alphabetically order for randomization.
 #'
 #' @importFrom stringi stri_rand_lipsum
 #'
@@ -45,16 +43,19 @@
 #' # Set up character vector of text or other things like punctuation to remove from the text data:
 #' remove_values <- c("N/A", ".", "A")
 #'
-#' # Cleanup the open-ended response in the variable "Responsible_oe" with the function:
-#' data %>% openendedCleanup(., "Responsible_oe", remove_values)
-openendedCleanup <- function(df, var, remove_values) {
-    # Set . to NULL to stop message when using dot notation in functions:
-    . <- NULL
-
-    clean_data <- {{ df }} %>% dplyr::select(tidyselect::all_of(var)) %>%
-        dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ dplyr::if_else(. %in% remove_values, NA_character_, .)),
-                      dplyr::across(dplyr::where(is.character), ~ stringr::str_wrap(stringr::str_to_sentence(.), width = 80))) %>%
-        tidyr::drop_na() %>% dplyr::arrange(!!rlang::sym(var))
-
-    return(clean_data)
+#' # Make a nice table after cleaning up the responses from the variable "Responsible_oe":
+#' data %>% bre::openendedCleanup(., "Responsible_oe", remove_values) %>%
+#'   openendedFlextable(., header_label = "Made up text example in a nicely formatted table")
+openendedFlextable <- function(df, header_label) {
+    header_label <- stringr::str_wrap(header_label, width = 80)
+    ref_table <- data.frame(key = colnames({{ df }}), label = header_label)
+    tbl <- {{ df }} %>% flextable::flextable() %>%
+        flextable::set_header_df(mapping = ref_table, key = "key") %>%
+        flextable::theme_zebra() %>%
+        flextable::fontsize(size = 11, part = "header") %>%
+        flextable::fontsize(size = 10, part = "body") %>%
+        flextable::bg(bg = "#2C2C4F", part = "header") %>%
+        flextable::color(color = "white", part = "header") %>%
+        flextable::autofit(part = "all")
+    return(tbl)
 }
