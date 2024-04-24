@@ -35,8 +35,8 @@
 #'              tidyr::pivot_wider(names_from = stat, values_from = value)
 #'
 #' # Make a nice table with the function:
-#' data %>% test_flextable()
-test_flextable <- function(data) {
+#' data %>% testFlextable()
+testFlextable <- function(data) {
     # Set . to NULL to stop message when using dot notation in functions:
     . <- NULL
     # Call to piped flextable calls,
