@@ -10,7 +10,7 @@
 #'   `levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")`
 #'
 #' @return a [tibble][tibble::tibble-package] with the original numeric variables along with
-#'   new variables that are now factors with the prefix "cat_{variable_name}", with levels taken from scale_labels character
+#'   new variables that are now factors with the prefix `cat_{variable_name}`, with levels taken from scale_labels character
 #'   vector.
 #' @export
 #'

@@ -18,7 +18,7 @@ labels as the "name" and the old labels as the "variable" like this: c("\if{html
 }
 \value{
 a \link[tibble:tibble-package]{tibble} with the original numeric variables along with
-new variables that are now factors with the prefix "cat_{variable_name}", with levels taken from scale_labels character
+new variables that are now factors with the prefix \verb{cat_\{variable_name\}}, with levels taken from scale_labels character
 vector.
 }
 \description{
