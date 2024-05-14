@@ -58,13 +58,20 @@ ggplot2::ggplot(role_summ, ggplot2::aes(x = .data$n_answers, y = forcats::fct_re
         plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
     )
 
-bar_chart <- {{ df }} %>% ggplot2::ggplot(ggplot2::aes(x = .data$n_answers, y = forcats::fct_rev(.data$response),
-                                                      label = .data$percent_answers_label, fill = .data$response)) +
+df <- role_summ
+scale_colors <- role_color
+bar_chart <- {{ df }} %>%
+    ggplot2::ggplot(ggplot2::aes(
+        x = .data$n_answers, y = forcats::fct_rev(.data$response),
+        label = .data$percent_answers_label, fill = .data$response
+    )) +
     ggplot2::geom_col(width = width, color = "black") +
     ggplot2::scale_fill_manual(values = scale_colors) +
-    ggrepel::geom_text_repel(nudge_x = .1, fontface = "bold", size = 4,
-                             min.segment.length = Inf) +
-    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, .2))) +
+    ggrepel::geom_text_repel(
+        nudge_x = .1, fontface = "bold", size = 4,
+        min.segment.length = Inf
+    ) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0.025, 0.2))) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
     ggplot2::theme(
         legend.position = "none",
@@ -78,3 +85,5 @@ bar_chart <- {{ df }} %>% ggplot2::ggplot(ggplot2::aes(x = .data$n_answers, y = 
         ),
         plot.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
     )
+
+bar_chart

@@ -43,7 +43,7 @@ horzBarChart <- function(df, scale_colors, width = NULL) {
       nudge_x = .1, fontface = "bold", size = 4,
       min.segment.length = Inf
     ) +
-    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, .2))) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0.025, 0.2))) +
     ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
     ggplot2::theme(
       legend.position = "none",
