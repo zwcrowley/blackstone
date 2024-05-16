@@ -37,6 +37,10 @@
 #' # Make a nice table with the function:
 #' data %>% testFlextable()
 testFlextable <- function(data) {
+    extrafont::loadfonts("all", quiet = TRUE)
+
+    flextable::set_flextable_defaults(font.family = "Arial")
+
     # Set . to NULL to stop message when using dot notation in functions:
     . <- NULL
     # Call to piped flextable calls,

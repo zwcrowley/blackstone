@@ -75,7 +75,7 @@ likertTable <- function(df, scale_labels, question_labels = NULL, str_width = 20
 
     extrafont::loadfonts("all", quiet = TRUE)
 
-    flextable::set_flextable_defaults(font.family = "Gill Sans MT")
+    flextable::set_flextable_defaults(font.family = "Arial")
 
     . <- NULL
 

@@ -56,7 +56,7 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
 
     extrafont::loadfonts("all", quiet = TRUE)
 
-    flextable::set_flextable_defaults(font.family = "Gill Sans MT")
+    flextable::set_flextable_defaults(font.family = "Arial")
 
     . <- NULL
 

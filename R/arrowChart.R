@@ -62,10 +62,13 @@
 arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, question_labels = NULL, question_order = FALSE) {
     # Load fonts:
     extrafont::loadfonts("all", quiet = TRUE)
+    # Create a font family character var so that it is easy to change, could also be a new arg:
+    font_family <- c("Arial")
+
     . <- NULL # to stop check() from bringing up .
 
     # Arrow chart function, pass df, fill_gg is fill colors, and scale_labels_gg is scale_labels:
-    arrowChart_ggplot <- function(arrow_df_gg, fill_gg, scale_labels_gg) {
+    arrowChart_ggplot <- function(arrow_df_gg, fill_gg, scale_labels_gg, font_family = font_family) {
 
         arrow <- {{ arrow_df_gg }} %>%
             ggplot2::ggplot(ggplot2::aes(
@@ -78,23 +81,23 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
             ) +
             ggplot2::geom_text(
                 data = dplyr::filter(arrow_df, .data$timing == "pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
-                family = "Gill Sans MT", size = 4
+                family = font_family, size = 4
             ) +
             ggplot2::geom_text(
                 data = dplyr::filter(arrow_df, .data$timing == "post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
-                family = "Gill Sans MT", size = 4
+                family = font_family, size = 4
             ) +
             ggplot2::scale_color_manual(values = fill_gg) +
             ggplot2::scale_x_continuous(limits = c(1, length(scale_labels_gg)), labels = scale_labels_gg) +
             ggplot2::labs(tag = NULL, color = NULL) +
-            ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
+            ggplot2::theme_void(base_family = font_family, base_size = 12) +
             ggplot2::theme(
                 axis.text.x = ggtext::element_markdown(
-                    color = "#767171", size = 12, family = "Gill Sans MT",
+                    color = "#767171", size = 12, family = font_family,
                     margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
                 ),
                 axis.text.y = ggtext::element_markdown(
-                    angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
+                    angle = 0, hjust = 1, color = "black", size = 12, family = font_family,
                     margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
                 ),
                 plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),

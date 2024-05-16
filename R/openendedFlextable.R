@@ -47,6 +47,9 @@
 #' data %>% bre::openendedCleanup(., "Responsible_oe", remove_values) %>%
 #'   openendedFlextable(., header_label = "Made up text example in a nicely formatted table")
 openendedFlextable <- function(df, header_label) {
+    extrafont::loadfonts("all", quiet = TRUE)
+    flextable::set_flextable_defaults(font.family = "Arial")
+
     header_label <- stringr::str_wrap(header_label, width = 80)
     ref_table <- data.frame(key = colnames({{ df }}), label = header_label)
     tbl <- {{ df }} %>% flextable::flextable() %>%
