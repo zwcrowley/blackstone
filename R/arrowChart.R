@@ -62,13 +62,13 @@
 arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, question_labels = NULL, question_order = FALSE) {
     # Load fonts:
     extrafont::loadfonts("all", quiet = TRUE)
-    # Create a font family character var so that it is easy to change, could also be a new arg:
-    font_family <- c("Arial")
 
     . <- NULL # to stop check() from bringing up .
 
     # Arrow chart function, pass df, fill_gg is fill colors, and scale_labels_gg is scale_labels:
-    arrowChart_ggplot <- function(arrow_df_gg, fill_gg, scale_labels_gg, font_family = font_family) {
+    arrowChart_ggplot <- function(arrow_df_gg, fill_gg, scale_labels_gg) {
+        # Create a font family character var so that it is easy to change, could also be a new arg:
+        font_family <- c("Arial")
 
         arrow <- {{ arrow_df_gg }} %>%
             ggplot2::ggplot(ggplot2::aes(

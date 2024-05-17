@@ -31,7 +31,7 @@ fonts from `extrafont` package:
 ``` r
 # install.packages("extrafont")
 library(extrafont)
-# Import fonts to get "Gill Sans MT", this only has to be done one time, then `bre` package will use the code below to load the fonts automatically 
+# Import fonts to get "Arial", this only has to be done one time, then `bre` package will use the code below to load the fonts automatically 
 # for the functions that require that step:
 extrafont::font_import()
 # Load all fonts:

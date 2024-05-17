@@ -32,6 +32,8 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
 
     # Arrow chart function, pass df, fill_gg is fill colors, and scale_labels_gg is scale_labels:
     arrowChart_ggplot <- function(arrow_df_gg, fill_gg, scale_labels_gg) {
+        # Create a font family character var so that it is easy to change, could also be a new arg:
+        font_family <- c("Arial")
 
         arrow <- {{ arrow_df_gg }} %>%
             ggplot2::ggplot(ggplot2::aes(
@@ -44,23 +46,23 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
             ) +
             ggplot2::geom_text(
                 data = dplyr::filter(arrow_df, .data$timing == "pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
-                family = "Gill Sans MT", size = 4
+                family = font_family, size = 4
             ) +
             ggplot2::geom_text(
                 data = dplyr::filter(arrow_df, .data$timing == "post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
-                family = "Gill Sans MT", size = 4
+                family = font_family, size = 4
             ) +
             ggplot2::scale_color_manual(values = fill_gg) +
             ggplot2::scale_x_continuous(limits = c(1, length(scale_labels_gg)), labels = scale_labels_gg) +
             ggplot2::labs(tag = NULL, color = NULL) +
-            ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
+            ggplot2::theme_void(base_family = font_family, base_size = 12) +
             ggplot2::theme(
                 axis.text.x = ggtext::element_markdown(
-                    color = "#767171", size = 12, family = "Gill Sans MT",
+                    color = "#767171", size = 12, family = font_family,
                     margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
                 ),
                 axis.text.y = ggtext::element_markdown(
-                    angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
+                    angle = 0, hjust = 1, color = "black", size = 12, family = font_family,
                     margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
                 ),
                 plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
@@ -242,24 +244,24 @@ new_arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n
         ) +
         ggplot2::geom_text(
           data = dplyr::filter(arrow_df, .data$timing == "pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
-          family = "Gill Sans MT", size = 3.5
+          family = font_family, size = 3.5
         ) +
         ggplot2::geom_text(
           data = dplyr::filter(arrow_df, .data$timing == "post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
-          family = "Gill Sans MT", size = 3.5
+          family = font_family, size = 3.5
         ) +
         ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
         ggplot2::scale_color_manual(values = fill_gg, labels = function(group) stringr::str_to_title(group)) +
         ggplot2::scale_x_continuous(limits = c(1, length(scale_labels_gg)), labels = scale_labels_gg) +
         ggplot2::labs(tag = NULL, color = NULL) +
-        ggplot2::theme_void(base_family = "Gill Sans MT", base_size = 12) +
+        ggplot2::theme_void(base_family = font_family, base_size = 12) +
         ggplot2::theme(
           axis.text.x = ggtext::element_markdown(
-            color = "#767171", size = 12, family = "Gill Sans MT",
+            color = "#767171", size = 12, family = font_family,
             margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
           ),
           strip.text.y.left = ggtext::element_markdown(
-            angle = 0, hjust = 1, color = "black", size = 12, family = "Gill Sans MT",
+            angle = 0, hjust = 1, color = "black", size = 12, family = font_family,
             margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
           ),
           plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
@@ -385,3 +387,9 @@ new_arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_e
 new_arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
                     overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 
+# Set up a character vector of scale colors to pass to the argument group_colors:
+five_colors <- c("grey","lightgreen","#79AB53", "#4B9FA6", "#2C2C4F")
+
+
+items %>% dplyr::select(-edu_level) %>% bre::arrowChart(scale_labels = levels_min_ext, arrow_colors = five_colors,
+                    overall_n = FALSE, question_labels = NULL, question_order = FALSE)

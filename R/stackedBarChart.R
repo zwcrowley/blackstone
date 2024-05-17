@@ -100,15 +100,15 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
                             question_labels = NULL, question_order= FALSE, width = NULL) {
     # Load all fonts:
     extrafont::loadfonts("all", quiet = TRUE)
-    # Create a font family character var so that it is easy to change, could also be a new arg:
-    font_family <- c("Arial")
 
     # Set . to NULL to stop message when using dot notation in mutate:
     . <- NULL
 
     # Function to build ggplot:
     stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, label_color_gg, scale_labels_gg, width_gg, fill_colors_gg,
-                                  overall_n_gg, N_df_gg, pre_post = FALSE, font_family = font_family) {
+                                  overall_n_gg, N_df_gg, pre_post = FALSE) {
+      # Create a font family character var so that it is easy to change, could also be a new arg:
+      font_family <- c("Arial")
 
       stacked_bar_chart_gg <- {{df_gg}} %>%
         ggplot2::ggplot(ggplot2::aes(
