@@ -1,9 +1,9 @@
 #' Helper function for Arrow Chart by Group for Blackstone Research and Evaluation
 #'
-#' [arrowChartGroup()] creates an pre-post arrow chart of group averages and returns a ggplot object.
+#' [arrowChartGroup_ggplot()] creates an pre-post arrow chart of group averages and returns a ggplot object.
 #'
-#' @param df_gg Required, A passed [tibble][tibble::tibble-package]/data frame from main function of survey items that are categorical/character
-#'   variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart.
+#' @param df_gg Required, a [tibble][tibble::tibble-package] or data frame of **numeric** data that has items with the prefix of `pre_` and `post_`; and has a categorical group
+#'  variable to split up the data (e.g. role, gender, education level, etc.).
 #'
 #' @param group Required, the name of the grouping variable in a quoted character string (e.g. "role", "gender", "edu_level", etc.).
 #'
@@ -12,7 +12,7 @@
 #' @param scale_labels_gg Required, a character vector of labels for the response scale, must be in the desired order,
 #'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
 #'
-#' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a arrow bar chart..
+#' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a arrow bar chart.
 #' @noRd
 arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg) {
 

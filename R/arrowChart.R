@@ -65,49 +65,53 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
 
     . <- NULL # to stop check() from bringing up .
 
-    # Arrow chart function, pass df, fill_gg is fill colors, and scale_labels_gg is scale_labels:
-    arrowChart_ggplot <- function(arrow_df_gg, fill_gg, scale_labels_gg) {
-        # Create a font family character var so that it is easy to change, could also be a new arg:
-        font_family <- c("Arial")
+    # # Arrow chart function, pass df, fill_gg is fill colors, and scale_labels_gg is scale_labels: ----
+    # arrowChart_ggplot <- function(df_gg, fill_gg, scale_labels_gg) {
+    #     # Load fonts:
+    #     extrafont::loadfonts("all", quiet = TRUE)
+    #     . <- NULL # to stop check() from bringing up .
+    #     # Create a font family character var so that it is easy to change, could also be a new arg:
+    #     font_family <- c("Arial")
+    #
+    #     arrow <- {{ df_gg }} %>%
+    #         ggplot2::ggplot(ggplot2::aes(
+    #             x = .data$score_avg, y = forcats::fct_rev(.data$question), color = .data$question,
+    #             label = scales::number(.data$score_avg, accuracy = 0.01), group = .data$question
+    #         )) +
+    #         ggplot2::geom_line(
+    #             lineend = "round", linejoin = "round", linewidth = 2.5,
+    #             arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.2, "inches"))
+    #         ) +
+    #         ggplot2::geom_text(
+    #             data = dplyr::filter(df_gg, .data$timing == "pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
+    #             family = font_family, size = 4
+    #         ) +
+    #         ggplot2::geom_text(
+    #             data = dplyr::filter(df_gg, .data$timing == "post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
+    #             family = font_family, size = 4
+    #         ) +
+    #         ggplot2::scale_color_manual(values = fill_gg) +
+    #         ggplot2::scale_x_continuous(limits = c(1, length(scale_labels_gg)), labels = scale_labels_gg) +
+    #         ggplot2::labs(tag = NULL, color = NULL) +
+    #         ggplot2::theme_void(base_family = font_family, base_size = 12) +
+    #         ggplot2::theme(
+    #             axis.text.x = ggtext::element_markdown(
+    #                 color = "#767171", size = 12, family = font_family,
+    #                 margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
+    #             ),
+    #             axis.text.y = ggtext::element_markdown(
+    #                 angle = 0, hjust = 1, color = "black", size = 12, family = font_family,
+    #                 margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
+    #             ),
+    #             plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
+    #             legend.position = "none" # no legend
+    #         )
+    #
+    #     return(arrow)
+    #
+    # }
 
-        arrow <- {{ arrow_df_gg }} %>%
-            ggplot2::ggplot(ggplot2::aes(
-                x = .data$score_avg, y = forcats::fct_rev(.data$question), color = .data$question,
-                label = scales::number(.data$score_avg, accuracy = 0.01), group = .data$question
-            )) +
-            ggplot2::geom_line(
-                lineend = "round", linejoin = "round", linewidth = 2.5,
-                arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.2, "inches"))
-            ) +
-            ggplot2::geom_text(
-                data = dplyr::filter(arrow_df, .data$timing == "pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
-                family = font_family, size = 4
-            ) +
-            ggplot2::geom_text(
-                data = dplyr::filter(arrow_df, .data$timing == "post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
-                family = font_family, size = 4
-            ) +
-            ggplot2::scale_color_manual(values = fill_gg) +
-            ggplot2::scale_x_continuous(limits = c(1, length(scale_labels_gg)), labels = scale_labels_gg) +
-            ggplot2::labs(tag = NULL, color = NULL) +
-            ggplot2::theme_void(base_family = font_family, base_size = 12) +
-            ggplot2::theme(
-                axis.text.x = ggtext::element_markdown(
-                    color = "#767171", size = 12, family = font_family,
-                    margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
-                ),
-                axis.text.y = ggtext::element_markdown(
-                    angle = 0, hjust = 1, color = "black", size = 12, family = font_family,
-                    margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
-                ),
-                plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
-                legend.position = "none" # no legend
-            )
-
-        return(arrow)
-
-    }
-
+    #  Start of data manipulation: ----
     # Data wrangling to long format, three cols: question, timing and score_avg:
     arrow_df <- {{ df }} %>%
         tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
@@ -119,7 +123,7 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
         dplyr::ungroup()
 
 
-    # If the user supplies a named vector for questions labels:
+    # If the user supplies a named vector for questions labels: ----
     if (!is.null(question_labels)) {
         names(question_labels) <- names(question_labels) %>%
             stringr::str_wrap(., width = 30) %>%
@@ -129,7 +133,7 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
             dplyr::ungroup()
     }
 
-    # Set up a new question order if not supplied by the user by using the highest post score_avg:
+    # Set up a new question order if not supplied by the user by using the highest post score_avg: ----
     if (isFALSE(question_order)) {
         # Set up question as a factor and arrange by the top score_avg:
         question_order <- arrow_df %>%
@@ -143,7 +147,7 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
         arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
     }
 
-    # Get total n for each question, grouped by question and timing:
+    # Get total n for each question, grouped by question and timing: ----
     totals_new_df <- {{ df }}  %>%
         tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
         tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
@@ -160,9 +164,10 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
             tibble::deframe()
     }
 
+    # Main calls to ggplot function arrowChartGroup_ggplot(): -----
     # If overall_n == TRUE:
     if (isTRUE(overall_n)) {
-        arrow_new <- arrowChart_ggplot(arrow_df, fill_gg = arrow_colors, scale_labels_gg = scale_labels) +
+        arrow_new <- arrowChart_ggplot(df_gg = arrow_df, fill_gg = arrow_colors, scale_labels_gg = scale_labels) +
                             ggplot2::labs(tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) # change tag labels to overall n
 
         return(arrow_new)
@@ -183,7 +188,7 @@ arrowChart <- function(df, scale_labels, arrow_colors, overall_n = FALSE, questi
         arrow_df <- arrow_df %>%
             dplyr::mutate(question = factor(.data$question, labels = labels_n_questions))
         # ggplot call for overall_n == FALSE
-        arrow_new <- arrowChart_ggplot(arrow_df, fill_gg = arrow_colors, scale_labels_gg = scale_labels)
+        arrow_new <- arrowChart_ggplot(df_gg = arrow_df, fill_gg = arrow_colors, scale_labels_gg = scale_labels)
 
         return(arrow_new)
     }

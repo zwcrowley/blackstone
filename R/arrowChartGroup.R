@@ -82,55 +82,6 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
 
     . <- NULL # to stop check() from bringing up "."
 
-    # # Arrow chart function, pass df, fill_gg is fill colors, and scale_labels_gg is scale_labels: ----
-    # arrowChartGroup_ggplot <- function(arrow_df_gg, fill_gg, scale_labels_gg) {
-    #     # Load fonts:
-    #     extrafont::loadfonts("all", quiet = TRUE)
-    #
-    #     . <- NULL # to stop check() from bringing up "."
-    #
-    #   # Create a font family character var so that it is easy to change, could also be a new arg:
-    #   font_family <- c("Arial")
-    #
-    #   arrow <- {{ arrow_df_gg }} %>%
-    #     ggplot2::ggplot(ggplot2::aes(
-    #       x = .data$score_avg, y = forcats::fct_rev(.data[[group]]), color = forcats::fct_rev(.data[[group]]),
-    #       label = scales::number(.data$score_avg, accuracy = 0.01), group = .data[[group]]
-    #     )) +
-    #     ggplot2::geom_line(
-    #       lineend = "round", linejoin = "round", linewidth = 1,
-    #       arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.1, "inches"))
-    #     ) +
-    #     ggplot2::geom_text(
-    #       data = dplyr::filter(arrow_df, .data$timing == "pre"), nudge_x = -0.075, hjust = 1, show.legend = FALSE,
-    #       family = font_family, size = 3.5
-    #     ) +
-    #     ggplot2::geom_text(
-    #       data = dplyr::filter(arrow_df, .data$timing == "post"), nudge_x = 0.075, hjust = 0, show.legend = FALSE,
-    #       family = font_family, size = 3.5
-    #     ) +
-    #     ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
-    #     ggplot2::scale_color_manual(values = fill_gg, labels = function(group) stringr::str_to_title(group)) +
-    #     ggplot2::scale_x_continuous(limits = c(1, length(scale_labels_gg)), labels = scale_labels_gg) +
-    #     ggplot2::labs(tag = NULL, color = NULL) +
-    #     ggplot2::theme_void(base_family = font_family, base_size = 12) +
-    #     ggplot2::theme(
-    #       axis.text.x = ggtext::element_markdown(
-    #         color = "#767171", size = 12, family = font_family,
-    #         margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
-    #       ),
-    #       strip.text.y.left = ggtext::element_markdown(
-    #         angle = 0, hjust = 1, color = "black", size = 12, family = font_family,
-    #         margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt")
-    #       ),
-    #       plot.margin = ggplot2::margin(t = 5, r = 25, b = 5, l = 5, unit = "pt"),
-    #       legend.position = "top"
-    #     )
-    #
-    #   return(arrow)
-    #
-    # }
-
     #  Start of data manipulation: ----
     # Set up a df for the original groups separate average:
     arrow_df_group <- {{ df }} %>%
@@ -162,7 +113,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
       ) %>%
       dplyr::ungroup()
 
-    # If the user supplies a named vector for questions labels:
+    # If the user supplies a named vector for questions labels: ----
     if (!is.null(question_labels)) {
       names(question_labels) <- names(question_labels) %>%
         stringr::str_wrap(., width = 30) %>%
@@ -172,7 +123,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
         dplyr::ungroup()
     }
 
-    # Set up a new question order if not supplied by the user by using the highest post score_avg:
+    # Set up a new question order if not supplied by the user by using the highest post score_avg: ----
     if (isFALSE(question_order)) {
       # Set up question as a factor and arrange by the top score_avg:
       question_order <- arrow_df %>%
@@ -186,7 +137,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
       arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data$question, levels = names(question_labels)))
     }
 
-    # Get total n for each question, grouped by question and timing:
+    # Get total n for each question, grouped by question and timing: ----
     totals_new_df <- {{ df }}  %>%
       dplyr::select(!{{group}}) %>%
       tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
@@ -196,7 +147,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
       dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
       dplyr::ungroup()
 
-    # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal:
+    # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal: ----
     if (length(unique(totals_new_df$total)) == 1) {
       # Get overall n if it is the same for each item:
       N_df <- totals_new_df %>%
@@ -204,6 +155,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
         tibble::deframe()
     }
 
+    # Main calls to ggplot function arrowChartGroup_ggplot(): -----
     # If overall_n == TRUE:
     if (isTRUE(overall_n)) {
       arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = group_colors, scale_labels_gg = scale_labels) +
