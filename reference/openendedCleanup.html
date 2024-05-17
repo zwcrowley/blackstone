@@ -111,27 +111,18 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Cleanup the open-ended response in the variable "Responsible_oe" with the function:</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">openendedCleanup</span><span class="op">(</span><span class="va">.</span>, <span class="st">"Responsible_oe"</span>, <span class="va">remove_values</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 18 × 1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Responsible_oe                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="color: #949494;">"</span>At habitant, ut ex sollicitudin. Erat leo pellentesque mus quis ut imperdie…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> <span style="color: #949494;">"</span>Congue blandit at id sed mollis vehicula, ut id lobortis sociosqu sed mi se…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="color: #949494;">"</span>Dictum neque varius sed orci vehicula magnis ac. Vel dui quis ligula diam\n…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="color: #949494;">"</span>Elementum gravida mus sit fringilla nostra, risus. Sapien turpis nulla vel\…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> <span style="color: #949494;">"</span>Fermentum arcu pellentesque etiam, turpis elementum, aliquam. Interdum cura…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="color: #949494;">"</span>Lacus dolor eros, sit erat lobortis magna platea dis. Mauris finibus partur…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> <span style="color: #949494;">"</span>Maximus finibus in volutpat interdum sed conubia urna. Lacus donec luctus\n…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="color: #949494;">"</span>Maximus posuere vestibulum platea suspendisse molestie tristique sed mus. C…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="color: #949494;">"</span>Neque aliquam nullam turpis dapibus morbi risus quisque. In aliquet digniss…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="color: #949494;">"</span>Non platea tellus ante habitasse, egestas sociis et mauris penatibus. Et ri…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> <span style="color: #949494;">"</span>Nullam ut placerat sapien sed molestie sit mauris mauris viverra. Fermentum…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> <span style="color: #949494;">"</span>Rutrum malesuada accumsan rhoncus maecenas vel elementum ut eros est. Eu\nl…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> <span style="color: #949494;">"</span>Sed commodo turpis. Conubia morbi laoreet nascetur massa, finibus eleifend\…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> <span style="color: #949494;">"</span>Tristique congue ad eros semper arcu nec erat senectus erat augue sed. Maur…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> <span style="color: #949494;">"</span>Ut ullamcorper varius dictum ut mi sed nibh eros tortor vitae lobortis tinc…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> <span style="color: #949494;">"</span>Vestibulum donec consectetur id et in viverra id sit. Pretium aenean nullam…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> <span style="color: #949494;">"</span>Vitae tincidunt enim ante nisi amet. Tincidunt cras nec mollis orci vitae\n…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> <span style="color: #949494;">"</span>Vitae vivamus sed quam semper. Vivamus nec neque ut vel. Est rhoncus eleife…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 × 1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Responsible_oe                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>Conubia tristique odio ultrices in a non enim vel. Bibendum sed ad turpis se…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>Cras sit taciti. Dolor leo nec nisi ligula, interdum augue tempor. Curabitur…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">"</span>Et a vitae arcu, feugiat sem odio litora mauris! Primis erat in amet. Ut eli…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">"</span>Facilisis ut taciti nascetur magnis magna, ipsum est ex eu sed mattis lobort…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">"</span>Habitasse egestas sociis et mauris penatibus et risus. Blandit, tortor aenea…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> <span style="color: #949494;">"</span>Lorem consequat neque lacus ligula laoreet sagittis commodo eros. Facilisis\…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> <span style="color: #949494;">"</span>Pretium, tristique, blandit non. Vehicula in, dictum quis leo amet facilisi\…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> <span style="color: #949494;">"</span>Rhoncus enim, ut eget eget nunc at. Mi scelerisque eu nec aenean, dui litora…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">9</span> <span style="color: #949494;">"</span>Sociis arcu duis, magna risus sit. Odio felis a vestibulum vitae. Dui in\nve…</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
