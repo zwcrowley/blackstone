@@ -6,8 +6,6 @@
 #'
 #' @return a [flextable][flextable::flextable-package] object that is nicely formatted in BRE branding and in alphabetically order for randomization.
 #'
-#' @importFrom stringi stri_rand_lipsum
-#'
 #' @export
 #'
 #' @examples

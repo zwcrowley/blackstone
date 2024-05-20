@@ -27,6 +27,7 @@
 #' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a stacked bar chart and can be exported.
+#'
 #' @export
 #'
 #' @examples
@@ -226,31 +227,38 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
 
     # Create fill_colors vectors and label_color variable -----
     # IF/ELSE statement, first if number_levels equals 3, sets up the label_color and fill color:
-    if (length(number_levels) == 3) {
-      new_df <- new_df %>% dplyr::mutate(label_color = "black")
-      # 3 colors for chart:
-      fill_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
-      # If number_levels) == 4
-    } else if (length(number_levels) == 4) {
-      new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"))
-      # 4 colors for chart:
-      fill_colors <- c("#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
-      # If number_levels) == 5
-    } else if (length(number_levels) == 5) {
-      new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"))
-      # 5 colors for chart:
-      fill_colors <- c("#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
-      # If number_levels) == 6
-    } else if (length(number_levels) == 6) {
-      new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"))
-      # 6 colors for chart:
-      fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
-      # If number_levels) == 7
-    } else if (length(number_levels) == 7) {
-      new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"))
-      # 7 colors for chart:
-      fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
-    }
+    # if (length(number_levels) == 3) {
+    #   new_df <- new_df %>% dplyr::mutate(label_color = "black")
+    #   # 3 colors for chart:
+    #   fill_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+    #   # If number_levels) == 4
+    # } else if (length(number_levels) == 4) {
+    #   new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"))
+    #   # 4 colors for chart:
+    #   fill_colors <- c("#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
+    #   # If number_levels) == 5
+    # } else if (length(number_levels) == 5) {
+    #   new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"))
+    #   # 5 colors for chart:
+    #   fill_colors <- c("#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
+    #   # If number_levels) == 6
+    # } else if (length(number_levels) == 6) {
+    #   new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"))
+    #   # 6 colors for chart:
+    #   fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
+    #   # If number_levels) == 7
+    # } else if (length(number_levels) == 7) {
+    #   new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"))
+    #   # 7 colors for chart:
+    #   fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
+    # }
+
+    # fill_colors <- pal_bre_grey_blue(length(scale_labels)) # create a seq color palette of grey to blue using the length of scale_labels
+    fill_colors <- colorspace::sequential_hcl(n = length(scale_labels) + 1, palette = "Blues 3", rev = TRUE)[1:length(scale_labels) + 1] #creates blue color scale:
+    # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
+    label_colors <- labelColorMaker(fill_colors, names = scale_labels)
+    # create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
+    new_df <- new_df %>% dplyr::mutate(., label_color = label_colors[.data$response]) # create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
 
     # Set default width for geom_col() bars if not supplied by user:
     if (is.null(width)) {
