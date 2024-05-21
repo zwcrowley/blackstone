@@ -1,0 +1,106 @@
+---
+title: "Color Tests for BRE"
+output: html_document
+date: "2024-05-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+    fig.width = 8,
+    fig.height = 6)
+
+# Load Libraries:
+library("colorspace")
+
+# color setup for new BRE colors:
+bre_blue <- "#283251"
+bre_grey <- "#c0bfbf"
+bre_light_grey <- "#eaeaeb"
+bre_med_grey <- "#cecece"
+
+bre_colors <- c("dark_blue" = "#283251",
+                "light_grey" = "#eaeaeb",
+                "med_grey" = "#cecece",
+                "main_grey" = "#c0bfbf")
+
+# Trying out a white to blue palette:
+pal_bre_blues <- colorRampPalette(colors = c("white", "#283251"))
+pal_bre_blues_twelve <- pal_bre_blues(12)
+scales::show_col(pal_bre_blues(5))
+scales::show_col(pal_bre_blues(6))
+scales::show_col(pal_bre_blues(7))
+scales::show_col(pal_bre_blues(20))
+scales::show_col(pal_bre_blues_twelve[1:12])
+scales::show_col(pal_bre_blues(7)[3:7])
+```
+
+### Possible color scheme reccomendations for new BRE R package and all visuals
+
+#### Single Sequential colors:
+
+- These would be for likert scale items that have a single order like "Minimal" to "Extensive" 
+
+- `BRE Blue` is the blue color for our branding to white, dropping the lightest shades.
+
+##### Seven point scales:
+
+```{r}
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "BRE Blue" = pal_bre_blues(9)[3:9],
+    "Darker Blues"  = darken(sequential_hcl(7, "Blues", rev = TRUE)),
+    "Blues 3"  = sequential_hcl(7, "Blues 3", rev = TRUE),
+    "Oslo"  = sequential_hcl(7, "oslo")
+)
+
+```
+
+##### Five point scales:
+
+```{r}
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "BRE Blue" = pal_bre_blues(9)[5:9],
+    "Darker Blues"  = darken(sequential_hcl(5, "Blues", rev = TRUE)),
+    "Blues 3"  = sequential_hcl(5, "Blues 3", rev = TRUE),
+    "Oslo"  = sequential_hcl(5, "oslo")
+)
+
+```
+
+#### Single Sequential (Multi-hue) colors:
+
+- These would be for likert scale items that have a single order like "Minimal" to "Extensive", but have a bit more color to break up 
+
+- The `Viridis` would also work for qualitative/categories
+
+```{r}
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "YlGnBu (Yellow Green Blue)"  = sequential_hcl(7, "YlGnBu", rev = TRUE),
+    "GnBu"  = sequential_hcl(7, "GnBu", rev = TRUE),
+    "Viridis" = sequential_hcl(7, "Viridis", rev = TRUE),
+)
+
+```
+
+#### Diverging colors:
+
+- These would mostly be for likert scale items that are folded scales like 'Strongly Disagee' to 'Strongly Agree'.
+
+- The `Cividis` palette could work for any type of likert scale items stacked bar charts.
+
+```{r}
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "Lighter Cividis" = lighten(divergingx_hcl(7, "cividis", rev = TRUE), amount = 0.2, method = "relative", space = "HCL"),
+    "Cividis" = divergingx_hcl(7, "cividis", rev = TRUE),    
+    "Geyser" = divergingx_hcl(7, "geyser", rev = TRUE),
+    "Darker Geyser" = darken(divergingx_hcl(7, "geyser", rev = TRUE), amount = 0.2, method = "relative", space = "HCL"),
+    "Blue-Red 3"  = diverging_hcl(7, "Blue-Red 3", rev = TRUE)
+)
+
+```
+
+
+

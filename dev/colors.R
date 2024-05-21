@@ -10,9 +10,9 @@ bre_colors <- c("dark_blue" = "#283251",
                 "main_grey" = "#c0bfbf")
 
 # Creating a grey to blue pallete:
-pal_bre_grey_blue <- colorRampPalette(c(bre_colors["main_grey"], bre_colors["dark_blue"]))
+palette_bre_grey_blue <- colorRampPalette(c(bre_colors["main_grey"], bre_colors["dark_blue"]))
 palette_bre_grey_blue_five <- palette_bre_grey_blue(5) # set to 5 points
-palette_bre_grey_blue(5)
+pal_bre_grey_blue(5)
 # Trying out a grey to blue palette:
 # grey_blue_five <- c("#C0BFBF", "#9A9BA3", "#747888", "#4E556C", "#283251")
 scales::show_col(palette_bre_grey_blue(5))
@@ -43,6 +43,8 @@ scales::show_col(palette_bre_blues_twelve[1:12])
 
 palette_bre_light_blue <- colorRampPalette(colors = c("#E8E9EC", "#283251"))
 scales::show_col(palette_bre_light_blue(5))
+palette_bre_gold_blue <- colorRampPalette(colors = c("#FFD700", "#283251")) #FFD700
+scales::show_col(palette_bre_gold_blue(12)[2,5,7,10,12])
 
 # Code to generate text label colors of white or black depending on the shade of color:
 scales::show_col(pal_bre_grey_blue(5))
@@ -76,3 +78,36 @@ sequential_hcl(
 dsamp <- ggplot2::diamonds[1 + 1:1000 * 50, ]
 gg <- ggplot2::ggplot(dsamp, ggplot2::aes(carat, price, color = cut)) + ggplot2::geom_point()
 gg + scale_color_discrete_sequential(palette = "Blues 3", nmax = 8, order = 4:8)
+
+
+divergingx_palettes(n = 5, palette = "cividis", plot = TRUE)
+
+divergingx_palettes(n = 7, palette = "geyser", plot = TRUE)
+
+hcl_palettes(palette = "BluYl", n = 7, plot = TRUE)
+
+hcl_palettes(palette = "ag_GrnYl", n = 7, plot = TRUE)
+
+hcl_palettes(palette = "YlGnBu", n = 7, plot = TRUE)
+
+hcl_palettes(palette = "Blue-Red 3", n = 7, plot = TRUE)
+
+hcl_palettes(palette = "Blues", n = 7, plot = TRUE)
+divergingx_hcl(5, "cividis")
+demoplot(divergingx_hcl(5, "cividis"), type = "bar")
+demoplot(lighten(divergingx_hcl(5, "cividis")), type = "bar")
+demoplot(c("#283251", "#3E4C6E", "#7C7C7C", "#BFB170", "#FFE93F"), type = "bar")
+demoplot(divergingx_hcl(5, "geyser"), type = "bar")
+demoplot(darken(divergingx_hcl(5, "geyser")), type = "bar")
+"#00214E"
+
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "Lighter Cividis" = lighten(divergingx_hcl(7, "cividis", rev = TRUE), amount = 0.2, method = "relative", space = "HCL"),
+    "Cividis" = divergingx_hcl(7, "cividis", rev = TRUE),
+    "Blues"  = darken(sequential_hcl(7, "Blues", rev = TRUE)),
+    "Darker Geyser" = darken(divergingx_hcl(7, "geyser", rev = TRUE)),
+    "YlGnBu"  = sequential_hcl(7, "YlGnBu", rev = TRUE),
+    "Viridis" = sequential_hcl(7, "Viridis", rev = TRUE),
+    "Diverging Blue-Red 3"  = diverging_hcl(7, "Blue-Red 3", rev = TRUE)
+)
