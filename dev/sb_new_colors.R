@@ -1,5 +1,73 @@
 library(magrittr)
 
+# functions:
+labelColorMaker <- function(colors, names = NULL) {
+
+    label_color <- ifelse(farver::decode_colour(colors, "rgb", "hcl")[, "l"] > 52, "black", "white") # convert to hcl: if the l in hcl (luminance) > 50, text is black, white otherwise.
+
+    if (!is.null(names)) {
+        names(label_color) <- names # Add names to the vector label_color to make it a named vector if names is not NULL.
+    }
+    return(label_color)
+}
+# labelColorMaker(fill_colors) %>%
+
+# Function to create a sequential color scale using `cividis`, reversed:
+seq_fill_colors <- function(n_colors) {
+    viridisLite::cividis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = -1)
+}
+
+# Function to create diverging a color scale using `Blue-Red 3`, reversed:
+div_fill_colors <- function(n_colors) {
+    colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.25, method = "relative", space = "HCL")
+    # colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE)
+}
+
+# Function to create qualitative colors: either `viridis` (default) or `Okabe-Ito`, both reversed:
+qual_fill_colors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
+    if (pal == "viridis") {
+        viridis::viridis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = dplyr::if_else(isTRUE(rev_colors), -1, 1), option = "viridis")
+    } else if (pal == "Okabe-Ito") {
+        if (isTRUE(rev_colors)) {
+            rev(palette.colors(n = n_colors, palette = "Okabe-Ito"))
+        } else if (isFALSE(rev_colors)) {
+            palette.colors(n = n_colors, palette = "Okabe-Ito")
+                }
+    } else {
+        stop("Error: for `pal` argument either enter 'viridis' or 'Okabe-Ito'")
+    }
+}
+
+# seq_fill_colors(length(scale_labels))
+# div_fill_colors(length(scale_labels))
+# qual_fill_colors(length(scale_labels))
+# qual_fill_colors(length(scale_labels), pal = "Okabe-Ito")
+#
+# fill_colors = "seq"
+# fill_colors = "div"
+# fill_colors = qual_fill_colors(length(scale_labels))
+#
+# if (length(fill_colors) > 1) {
+#     if (length(fill_colors) >= length(scale_labels)){
+#         new_fill_colors <- fill_colors
+#     } else {
+#         stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
+#     }
+# } else if (fill_colors == "seq") {
+#     new_fill_colors <- seq_fill_colors(length(scale_labels))
+# } else if (fill_colors == "div") {
+#     new_fill_colors <- div_fill_colors(length(scale_labels))
+# }
+
+#
+bre_colors <- c("dark_blue" = "#283251",
+                "light_grey" = "#eaeaeb",
+                "med_grey" = "#cecece",
+                "main_grey" = "#c0bfbf")
+
+
+pal_bre_grey_blue <- colorRampPalette(c(bre_colors["light_grey"], bre_colors["dark_blue"]))
+
 items <- dplyr::tibble(
   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
@@ -49,10 +117,10 @@ cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
 cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
 cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 
-stackedBarChart(
-   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
-   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = T
-)
+# stackedBarChart(
+#    df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
+#    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = T
+# )
 
 df = cat_items_single
 pre_post = FALSE
@@ -62,6 +130,7 @@ question_order = FALSE
 percent_label = TRUE
 width = NULL
 overall_n = TRUE
+fill_colors = qual_fill_colors(length(scale_labels))
 
     # Load all fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -217,10 +286,30 @@ overall_n = TRUE
     #     fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
     # }
 
+    ### Set up fill color: -------
     # fill_colors <- pal_bre_grey_blue(length(scale_labels)) # create a seq color palette of grey to blue using the length of scale_labels
-    fill_colors <- colorspace::sequential_hcl(n = length(scale_labels) + 1, palette = "Blues 3", rev = TRUE)[1:length(scale_labels) + 1] #creates blue color scale:
+    #fill_colors <- colorspace::sequential_hcl(n = length(scale_labels) + 1, palette = "Blues 3", rev = TRUE)[1:length(scale_labels) + 1] #creates blue color scale:
+    # fill_colors <- viridisLite::cividis(n = length(scale_labels), alpha = 1, begin = 0, end = 1, direction = -1)
+
+    # fill_colors = "seq"
+    fill_colors = "div"
+    # fill_colors = qual_fill_colors(length(scale_labels))
+
+    if (length(fill_colors) > 1) {
+        if (length(fill_colors) >= length(scale_labels)){
+            new_fill_colors <- fill_colors
+        } else {
+            stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
+        }
+    } else if (fill_colors == "seq") {
+        new_fill_colors <- seq_fill_colors(length(scale_labels))
+    } else if (fill_colors == "div") {
+        new_fill_colors <- div_fill_colors(length(scale_labels))
+    }
+
+    ### Set up label colors for text on bars of percentage or counts: -------
     # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
-    label_colors <- labelColorMaker(fill_colors, names = scale_labels)
+    label_colors <- labelColorMaker(new_fill_colors, names = scale_labels)
     # create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
     new_df <- new_df %>% dplyr::mutate(., label_color = label_colors[response]) # create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
 
@@ -270,7 +359,7 @@ overall_n = TRUE
     if (isTRUE(pre_post)) {
         stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data$percent_answers , y_gg = .data$timing, fill_gg = .data$response, group_gg = .data$question,
                                                label_gg = label_gg, label_color_gg = .data$label_color, scale_labels_gg = scale_labels,
-                                               width_gg = width, fill_colors_gg = fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = TRUE)
+                                               width_gg = width, new_fill_colors_gg = new_fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = TRUE)
         # Final call to stackedBar_ggplot() if pre_post == FALSE:
     } else {
         # Load all fonts:
@@ -291,7 +380,7 @@ overall_n = TRUE
         label_color_gg = new_df$label_color
         scale_labels_gg = scale_labels
         width_gg = width
-        fill_colors_gg = fill_colors
+        fill_colors_gg = new_fill_colors
         overall_n_gg = overall_n
         N_df_gg = N_df
         pre_post = FALSE
