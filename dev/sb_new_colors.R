@@ -10,7 +10,7 @@ labelColorMaker <- function(colors, names = NULL) {
     }
     return(label_color)
 }
-# labelColorMaker(fill_colors) %>%
+# labelColorMaker(fill_colors)
 
 # Function to create a sequential color scale using `cividis`, reversed:
 seq_fill_colors <- function(n_colors) {
@@ -68,6 +68,7 @@ bre_colors <- c("dark_blue" = "#283251",
 
 pal_bre_grey_blue <- colorRampPalette(c(bre_colors["light_grey"], bre_colors["dark_blue"]))
 
+#########
 items <- dplyr::tibble(
   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
@@ -117,11 +118,12 @@ cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
 cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
 cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 
-# stackedBarChart(
-#    df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
-#    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = T
-# )
+stackedBarChart(
+   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+)
 
+################
 df = cat_items_single
 pre_post = FALSE
 scale_labels = bar_scale_labels
@@ -292,11 +294,11 @@ fill_colors = qual_fill_colors(length(scale_labels))
     # fill_colors <- viridisLite::cividis(n = length(scale_labels), alpha = 1, begin = 0, end = 1, direction = -1)
 
     # fill_colors = "seq"
-    fill_colors = "div"
+    # fill_colors = "div"
     # fill_colors = qual_fill_colors(length(scale_labels))
 
     if (length(fill_colors) > 1) {
-        if (length(fill_colors) >= length(scale_labels)){
+        if (length(fill_colors) >= length(scale_labels)) {
             new_fill_colors <- fill_colors
         } else {
             stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")

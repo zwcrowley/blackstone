@@ -7,6 +7,7 @@
 stackedBarChart(
   df,
   scale_labels,
+  fill_colors = "seq",
   pre_post = FALSE,
   overall_n = FALSE,
   percent_label = TRUE,
@@ -22,6 +23,9 @@ variables, in 3 to 7 point scales, that will be inserted into a stacked bar char
 \item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
 e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.
 This argument accepts a character vector of 3 to 7 items.}
+
+\item{fill_colors}{Default is "seq", If "seq", the color scale for the fill for each bar is set to 'cividis'. If set to "div", it is 'Blue Red 3',
+otherwise the user can input a character vector of hex codes at least a long as the \code{scale_labels} arg.}
 
 \item{pre_post}{Logical, default is FALSE. If true, returns a pre-post stacked bar chart.}
 

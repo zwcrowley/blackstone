@@ -9,6 +9,9 @@
 #'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
 #'    This argument accepts a character vector of 3 to 7 items.
 #'
+#' @param fill_colors Default is "seq", If "seq", the color scale for the fill for each bar is set to 'cividis'. If set to "div", it is 'Blue Red 3',
+#'    otherwise the user can input a character vector of hex codes at least a long as the `scale_labels` arg.
+#'
 #' @param pre_post Logical, default is FALSE. If true, returns a pre-post stacked bar chart.
 #'
 #' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
@@ -97,7 +100,7 @@
 #'   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
 #'   question_labels = question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
-stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE,
+stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE, overall_n = FALSE, percent_label = TRUE,
                             question_labels = NULL, question_order= FALSE, width = NULL) {
     # Load all fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -225,38 +228,21 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
         dplyr::ungroup()
     } # End of if pre_post == FALSE
 
-    # Create fill_colors vectors and label_color variable -----
-    # IF/ELSE statement, first if number_levels equals 3, sets up the label_color and fill color:
-    # if (length(number_levels) == 3) {
-    #   new_df <- new_df %>% dplyr::mutate(label_color = "black")
-    #   # 3 colors for chart:
-    #   fill_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
-    #   # If number_levels) == 4
-    # } else if (length(number_levels) == 4) {
-    #   new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"))
-    #   # 4 colors for chart:
-    #   fill_colors <- c("#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
-    #   # If number_levels) == 5
-    # } else if (length(number_levels) == 5) {
-    #   new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"))
-    #   # 5 colors for chart:
-    #   fill_colors <- c("#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
-    #   # If number_levels) == 6
-    # } else if (length(number_levels) == 6) {
-    #   new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"))
-    #   # 6 colors for chart:
-    #   fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
-    #   # If number_levels) == 7
-    # } else if (length(number_levels) == 7) {
-    #   new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"))
-    #   # 7 colors for chart:
-    #   fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
-    # }
+    # If statement to handle the value(s) of `fill_colors`:
+    if (length(fill_colors) > 1) {
+        if (length(fill_colors) >= length(scale_labels)) {
+            new_fill_colors <- fill_colors
+        } else {
+            stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
+        }
+    } else if (fill_colors == "seq") {
+        new_fill_colors <- seq_fill_colors(length(scale_labels))
+    } else if (fill_colors == "div") {
+        new_fill_colors <- div_fill_colors(length(scale_labels))
+    }
 
-    # fill_colors <- pal_bre_grey_blue(length(scale_labels)) # create a seq color palette of grey to blue using the length of scale_labels
-    fill_colors <- colorspace::sequential_hcl(n = length(scale_labels) + 1, palette = "Blues 3", rev = TRUE)[1:length(scale_labels) + 1] #creates blue color scale:
     # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
-    label_colors <- labelColorMaker(fill_colors, names = scale_labels)
+    label_colors <- labelColorMaker(new_fill_colors, names = scale_labels)
     # create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
     new_df <- new_df %>% dplyr::mutate(., label_color = label_colors[.data$response]) # create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
 
@@ -305,12 +291,12 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
     if (isTRUE(pre_post)) {
       stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data$percent_answers , y_gg = .data$timing, fill_gg = .data$response, group_gg = .data$question,
                                              label_gg = label_gg, label_color_gg = .data$label_color, scale_labels_gg = scale_labels,
-                                             width_gg = width, fill_colors_gg = fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = TRUE)
+                                             width_gg = width, fill_colors_gg = new_fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = TRUE)
       # Final call to stackedBar_ggplot() if pre_post == FALSE:
     } else {
       stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data$percent_answers , y_gg = .data$question, fill_gg = .data$response, group_gg = .data$question,
                                              label_gg = label_gg, label_color_gg = .data$label_color, scale_labels_gg = scale_labels,
-                                             width_gg = width, fill_colors_gg = fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = FALSE)
+                                             width_gg = width, fill_colors_gg = new_fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = FALSE)
     }
 
     return(stacked_bar_chart)

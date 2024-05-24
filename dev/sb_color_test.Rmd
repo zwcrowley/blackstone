@@ -1,0 +1,120 @@
+---
+title: "Color Tests for BRE"
+output: html_document
+date: "2024-05-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+    fig.width = 8,
+    fig.height = 6)
+
+# Load Libraries:
+library(colorspace)
+library(magrittr)
+library(tidyverse)
+
+###### colors:
+bre_colors <- c("dark_blue" = "#283251",
+                "light_grey" = "#eaeaeb",
+                "med_grey" = "#cecece",
+                "main_grey" = "#c0bfbf")
+
+
+pal_bre_grey_blue <- colorRampPalette(c(bre_colors["light_grey"], bre_colors["dark_blue"]))
+# pal_bre_grey_blue(length(scale_labels))
+
+######### Data
+items <- dplyr::tibble(
+  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  post_Publish = pre_Publish + 2,
+  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  post_Write = pre_Write + 1,
+  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  post_Research = pre_Research + 1
+)
+
+items_single <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+)
+
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_min_ext <- c(
+  "Minimal" = "1", "Slight" = "2", "Moderate" = "3",
+  "Good" = "4", "Extensive" = "5"
+)
+
+# bar_scale_labels as just the names from levels_min_ext:
+bar_scale_labels <- names(levels_min_ext)
+
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"):
+question_labels <- c(
+  "Publish a lot of high quality papers" = "Publish",
+  "Write a lot of research papers" = "Write",
+  "Research in a lab with faculty" = "Research",
+  "Organization of a large research project" = "Organization",
+  "Source work for a research paper" = "Source"
+)
+
+# Recode the numeric to factor variables using the levels from levels_min_ext:
+cat_items <- bre::recodeCat(items, levels_min_ext)
+cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
+
+# Select the factor variables:
+cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
+```
+
+
+### Stacked bar chart with `cividis` color scale:
+
+```{r}
+bre::stackedBarChart(
+   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+)
+```
+
+
+### Stacked bar chart with `Blue Red 3` color scale:
+
+```{r}
+bre::stackedBarChart(
+   df = cat_items_single, fill_color = "div",pre_post = FALSE, scale_labels = bar_scale_labels,
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+)
+```
+
+### Stacked bar chart with `BRE` Blue to `BRE` light gray color scale:
+
+```{r}
+bre::stackedBarChart(
+   df = cat_items_single, fill_color = pal_bre_grey_blue(length(bar_scale_labels)), pre_post = FALSE, scale_labels = bar_scale_labels,
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+)
+```
+
+### Stacked bar chart with `Blues 3` light gray color scale:
+
+```{r}
+# `Blues 3` from `colorspace` package
+bre::stackedBarChart(
+   df = cat_items_single, fill_color = colorspace::sequential_hcl(length(bar_scale_labels), "Blues 3", rev = TRUE), pre_post = FALSE, scale_labels = bar_scale_labels,
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+)
+```
+
+
+
+
+

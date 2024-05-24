@@ -76,7 +76,6 @@ stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, l
                 # legend.justification = c("right", "top"),
                 legend.position = "top",
                 legend.justification.top = "center",
-                legend.location = "plot",
                 legend.key = ggplot2::element_blank(),
                 legend.title = ggplot2::element_blank()
             )

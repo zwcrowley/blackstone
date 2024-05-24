@@ -98,8 +98,9 @@ swatchplot(
     "Cividis" = divergingx_hcl(7, "cividis", rev = TRUE),    
     "Geyser" = divergingx_hcl(7, "geyser", rev = TRUE),
     "Darker Geyser" = darken(divergingx_hcl(7, "geyser", rev = TRUE), amount = 0.2, method = "relative", space = "HCL"),
-    "Blue-Red 3"  = diverging_hcl(7, "Blue-Red 3", rev = TRUE)
+    "Blue-Red 3"  = darken(diverging_hcl(7, "Blue-Red 3", rev = TRUE), amount = 0.35, method = "relative", space = "HCL")
 )
+darken(diverging_hcl(9, "Blue-Red 3", rev = TRUE), amount = 0.35, method = "relative", space = "HCL")
 
 ```
 
