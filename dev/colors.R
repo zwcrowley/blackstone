@@ -4,7 +4,7 @@ bre_grey <- "#c0bfbf"
 bre_light_grey <- "#eaeaeb"
 bre_med_grey <- "#cecece"
 
-bre_colors <- c("dark_blue" = "#283251",
+breColors <- c("dark_blue" = "#283251",
                 "light_grey" = "#eaeaeb",
                 "med_grey" = "#cecece",
                 "main_grey" = "#c0bfbf")
@@ -29,7 +29,7 @@ md_bre_maroon <- c("#512832", "#63353e", "#734147", "#854c53", "#92555b", "#a56f
 #########
 
 # Creating a grey to blue pallete:
-palette_bre_grey_blue <- colorRampPalette(c(bre_colors["main_grey"], bre_colors["dark_blue"]))
+palette_bre_grey_blue <- colorRampPalette(c(breColors["main_grey"], breColors["dark_blue"]))
 palette_bre_grey_blue_five <- palette_bre_grey_blue(5) # set to 5 points
 pal_bre_grey_blue(5)
 # Trying out a grey to blue palette:

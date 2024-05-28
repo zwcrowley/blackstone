@@ -60,13 +60,13 @@ qualFillColors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
 # }
 
 #
-bre_colors <- c("dark_blue" = "#283251",
+breColors <- c("dark_blue" = "#283251",
                 "light_grey" = "#eaeaeb",
                 "med_grey" = "#cecece",
                 "main_grey" = "#c0bfbf")
 
 
-pal_bre_grey_blue <- colorRampPalette(c(bre_colors["light_grey"], bre_colors["dark_blue"]))
+pal_bre_grey_blue <- colorRampPalette(c(breColors["light_grey"], breColors["dark_blue"]))
 
 #########
 items <- dplyr::tibble(

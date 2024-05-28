@@ -15,19 +15,18 @@ library(magrittr)
 library(tidyverse)
 
 ###### colors:
-bre_colors <- c("dark_blue" = "#283251",
+breColors <- c("dark_blue" = "#283251",
                 "light_grey" = "#eaeaeb",
                 "med_grey" = "#cecece",
                 "main_grey" = "#c0bfbf")
 
-c("#283251", "#405683", "#62759a", "#a1aec4", "#e9ebf0")
 
 # light grey to BRE Blue color scale:
-pal_bre_grey_blue <- colorRampPalette(c(bre_colors["light_grey"], bre_colors["dark_blue"]))
+pal_bre_grey_blue <- colorRampPalette(c(breColors["light_grey"], breColors["dark_blue"]))
 # pal_bre_grey_blue(length(scale_labels))
 # 
 # white to BRE Blue color scale:
-pal_bre_blue <- colorRampPalette(c("white", bre_colors["dark_blue"]))
+pal_bre_blue <- colorRampPalette(c("white", breColors["dark_blue"]))
 # pal_bre_grey_blue(length(scale_labels))
 
 ######### Data
@@ -85,6 +84,7 @@ cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 
 ```{r, include=FALSE}
 material_BRE_blue <- rev(c("#283251", "#384c77", "#62759a", "#a1aec4", "#e9ebf0"))
+# c("#283251", "#405683", "#62759a", "#a1aec4", "#e9ebf0")
 
 # Used material design app to generate colors, based off of BRE Blue (#283251) as primary: https://m2.material.io/inline-tools/color/ 
 # Generates PRIMARY, COMPLEMENTARY, 2 ANALOGOUS, and 2 TRIADIC Colors for the palette:
@@ -103,7 +103,7 @@ md_bre_tri_purp <- c("#472851", "#603166", "#6e3670", "#7d3d79", "#88427f", "#9a
 md_bre_maroon <- c("#512832", "#63353e", "#734147", "#854c53", "#92555b", "#a56f73", "#b9898b", "#d2a9ac", "#ebcacb", "#ffe7e5") %>% purrr::set_names(names_nums_pals)
 
 
-# pal_bre_blue_md_gray <- colorRampPalette(c("#e9ebf0", bre_colors["dark_blue"]))
+# pal_bre_blue_md_gray <- colorRampPalette(c("#e9ebf0", breColors["dark_blue"]))
 
 swatchplot(
          "pal_bre_blue"  = pal_bre_blue(5),

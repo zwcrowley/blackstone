@@ -3,12 +3,12 @@
 #'
 #' BRE Colors
 #'
-#' @description A utils function for loading Blackstone Res and Eval colors for charts.
+#' @description A utils function for loading Blackstone Research and Evaluation colors for charts.
 #'
-#' @return named vector of hex colors.
+#' @return A named vector of hex colors for Blackstone Research and Evaluation.
 #'
-#' @noRd
-bre_colors <- c("dark_blue" = "#283251",
+#' @export
+breColors <- c("dark_blue" = "#283251",
                 "light_grey" = "#eaeaeb",
                 "med_grey" = "#cecece",
                 "main_grey" = "#c0bfbf")
@@ -21,15 +21,19 @@ bre_colors <- c("dark_blue" = "#283251",
 #' @return a colorRampPalette function.
 #'
 #' @noRd
-pal_bre_grey_blue <- colorRampPalette(c(bre_colors["main_grey"], bre_colors["dark_blue"]))
+pal_bre_grey_blue <- colorRampPalette(c(breColors["main_grey"], breColors["dark_blue"]))
 
 #' Helper function that creates text label colors.
 #'
-#' @description A function to label the text color in charts inside the fill of bar charts, returns a
+#' @description A function to label the text color in charts inside the fill of bar charts, returns either "black" or "white" depending on the luminance of the color scale passed to it.
 #'
-#' @return a character vector of colors either black or white.
+#' @param colors Required, a character vector of hex color codes, usually for the color palette of a chart.
 #'
-#' @noRd
+#' @param names Optional, a character vector the same length of `colors` argument to add names to the returned vector.
+#'
+#' @return a character vector of colors either "black" or "white" for labeling text in fill colors.
+#'
+#' @export
 labelColorMaker <- function(colors, names = NULL) {
 
     label_color <- ifelse(farver::decode_colour(colors, "rgb", "hcl")[, "l"] > 52, "black", "white") # convert to hcl: if the l in hcl (luminance) > 50, text is black, white otherwise.
@@ -42,11 +46,13 @@ labelColorMaker <- function(colors, names = NULL) {
 
 #' Helper to create a sequential color scale using `cividis` that is reversed.
 #'
-#' @description A function to create a sequential color scale using `cividis` that is reversed.
+#' @description A function to create a sequential color scale using `cividis`, that is reversed.
 #'
-#' @return a character vector hex color codes the length of `n_colors`.
+#' @param n_colors Required, the number of color hex codes to return.
 #'
-#' @noRd
+#' @return a character vector hex color codes the length of `n_colors` from the `cividis` palette.
+#'
+#' @export
 seqFillColors <- function(n_colors) {
     viridisLite::cividis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = -1)
 }
@@ -56,9 +62,11 @@ seqFillColors <- function(n_colors) {
 #'
 #' @description A function to create a sequential color scale using `Blue-Red 3` that is reversed.
 #'
-#' @return a character vector hex color codes the length of `n_colors`.
+#' @param n_colors Required, the number of color hex codes to return.
 #'
-#' @noRd
+#' @return a character vector hex color codes the length of `n_colors`from the `Blue-Red 3` palette from the package `colorspace`.
+#'
+#' @export
 divFillColors <- function(n_colors) {
     colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.25, method = "relative", space = "HCL")
     # colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE)
@@ -69,10 +77,16 @@ divFillColors <- function(n_colors) {
 #'
 #' @description A function to create qualitative colors: pal argument either default to `viridis` or `Okabe-Ito`, reversed if rev_colors is set to TRUE.
 #'
-#' @return a character vector hex color codes the length of `n_colors`.
+#' @param n_colors Required, the number of color hex codes to return.
+#'
+#' @param pal Required, the name of the palette to use, defaults to `viridis` or can use `Okabe-Ito`.
+#'
+#' @param rev_colors Logical, defaults to FALSE, if true returns a reverse color codes where the darkest color comes first.
+#'
+#' @return a character vector of hex color codes the length of `n_colors`.
 #' @importFrom grDevices palette.colors
 #'
-#' @noRd
+#' @export
 qualFillColors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
     if (pal == "viridis") {
         viridisLite::viridis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = dplyr::if_else(isTRUE(rev_colors), -1, 1), option = "viridis")
