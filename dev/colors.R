@@ -9,6 +9,25 @@ bre_colors <- c("dark_blue" = "#283251",
                 "med_grey" = "#cecece",
                 "main_grey" = "#c0bfbf")
 
+### MATERIAL DESIGN ########
+# Used material design app to generate colors, based off of BRE Blue (#283251) as primary: https://m2.material.io/inline-tools/color/
+# Generates PRIMARY, COMPLEMENTARY, 2 ANALOGOUS, and 2 TRIADIC Colors for the palette:
+# Set names like in md app:
+names_nums_pals <- c("900", "800", "700", "600", "500", "400", "300", "200", "100", "50")
+# Primary: 900 is main (BRE Blue, "#283251")
+md_bre_blue <- c("#283251", "#32436a", "#384c77", "#405683", "#475e8c", "#62759a", "#7e8eab", "#a1aec4", "#c5cedc", "#e9ebf0") %>% purrr::set_names(names_nums_pals)
+# COMPLEMENTARY: 800 is main ("#514728")
+md_bre_comp <- c("#2e2505", "#514728", "#726646", "#877a59", "#b2a481", "#d1c29e", "#f4e4bf", "#fff0cb", "#fff5cf", "#fffad4") %>% purrr::set_names(names_nums_pals)
+# ANALOGOUS: 800 is main for teal ("#284751"), 900 is main for teal ("#322851")
+md_bre_teal <- c("#18323a", "#284751", "#355a66", "#436e7b", "#4f7d8c", "#68909e", "#82a4b1", "#a3bfc9", "#c3dae0", "#e2f1f8") %>% purrr::set_names(names_nums_pals)
+md_bre_purple <- c("#322851", "#403869", "#484175", "#514b81", "#57528a", "#6d6b9a", "#8586ab", "#a6a8c4", "#c9cadc", "#e9eaf0") %>% purrr::set_names(names_nums_pals)
+
+# Triadic: 900 is main for both ("#514728") and ("#512832")
+md_bre_tri_purp <- c("#472851", "#603166", "#6e3670", "#7d3d79", "#88427f", "#9a5791", "#ac72a4", "#c498be", "#dbc0d7", "#f0e6ee") %>% purrr::set_names(names_nums_pals)
+md_bre_maroon <- c("#512832", "#63353e", "#734147", "#854c53", "#92555b", "#a56f73", "#b9898b", "#d2a9ac", "#ebcacb", "#ffe7e5") %>% purrr::set_names(names_nums_pals)
+
+#########
+
 # Creating a grey to blue pallete:
 palette_bre_grey_blue <- colorRampPalette(c(bre_colors["main_grey"], bre_colors["dark_blue"]))
 palette_bre_grey_blue_five <- palette_bre_grey_blue(5) # set to 5 points

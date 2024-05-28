@@ -47,7 +47,7 @@ labelColorMaker <- function(colors, names = NULL) {
 #' @return a character vector hex color codes the length of `n_colors`.
 #'
 #' @noRd
-seq_fill_colors <- function(n_colors) {
+seqFillColors <- function(n_colors) {
     viridisLite::cividis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = -1)
 }
 
@@ -59,7 +59,7 @@ seq_fill_colors <- function(n_colors) {
 #' @return a character vector hex color codes the length of `n_colors`.
 #'
 #' @noRd
-div_fill_colors <- function(n_colors) {
+divFillColors <- function(n_colors) {
     colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.25, method = "relative", space = "HCL")
     # colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE)
 }
@@ -73,12 +73,12 @@ div_fill_colors <- function(n_colors) {
 #' @importFrom grDevices palette.colors
 #'
 #' @noRd
-qual_fill_colors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
+qualFillColors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
     if (pal == "viridis") {
         viridisLite::viridis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = dplyr::if_else(isTRUE(rev_colors), -1, 1), option = "viridis")
     } else if (pal == "Okabe-Ito") {
         if (isTRUE(rev_colors)) {
-            rev(palette.colors(n = n_colors, palette = "Okabe-Ito"))
+            rev(grDevices::palette.colors(n = n_colors, palette = "Okabe-Ito"))
         } else if (isFALSE(rev_colors)) {
             grDevices::palette.colors(n = n_colors, palette = "Okabe-Ito")
         }

@@ -13,18 +13,18 @@ labelColorMaker <- function(colors, names = NULL) {
 # labelColorMaker(fill_colors)
 
 # Function to create a sequential color scale using `cividis`, reversed:
-seq_fill_colors <- function(n_colors) {
+seqFillColors <- function(n_colors) {
     viridisLite::cividis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = -1)
 }
 
 # Function to create diverging a color scale using `Blue-Red 3`, reversed:
-div_fill_colors <- function(n_colors) {
+divFillColors <- function(n_colors) {
     colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.25, method = "relative", space = "HCL")
     # colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE)
 }
 
 # Function to create qualitative colors: either `viridis` (default) or `Okabe-Ito`, both reversed:
-qual_fill_colors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
+qualFillColors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
     if (pal == "viridis") {
         viridis::viridis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = dplyr::if_else(isTRUE(rev_colors), -1, 1), option = "viridis")
     } else if (pal == "Okabe-Ito") {
@@ -38,14 +38,14 @@ qual_fill_colors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
     }
 }
 
-# seq_fill_colors(length(scale_labels))
-# div_fill_colors(length(scale_labels))
-# qual_fill_colors(length(scale_labels))
-# qual_fill_colors(length(scale_labels), pal = "Okabe-Ito")
+# seqFillColors(length(scale_labels))
+# divFillColors(length(scale_labels))
+# qualFillColors(length(scale_labels))
+# qualFillColors(length(scale_labels), pal = "Okabe-Ito")
 #
 # fill_colors = "seq"
 # fill_colors = "div"
-# fill_colors = qual_fill_colors(length(scale_labels))
+# fill_colors = qualFillColors(length(scale_labels))
 #
 # if (length(fill_colors) > 1) {
 #     if (length(fill_colors) >= length(scale_labels)){
@@ -54,9 +54,9 @@ qual_fill_colors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
 #         stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
 #     }
 # } else if (fill_colors == "seq") {
-#     new_fill_colors <- seq_fill_colors(length(scale_labels))
+#     new_fill_colors <- seqFillColors(length(scale_labels))
 # } else if (fill_colors == "div") {
-#     new_fill_colors <- div_fill_colors(length(scale_labels))
+#     new_fill_colors <- divFillColors(length(scale_labels))
 # }
 
 #
@@ -132,7 +132,7 @@ question_order = FALSE
 percent_label = TRUE
 width = NULL
 overall_n = TRUE
-fill_colors = qual_fill_colors(length(scale_labels))
+fill_colors = qualFillColors(length(scale_labels))
 
     # Load all fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -295,7 +295,7 @@ fill_colors = qual_fill_colors(length(scale_labels))
 
     # fill_colors = "seq"
     # fill_colors = "div"
-    # fill_colors = qual_fill_colors(length(scale_labels))
+    # fill_colors = qualFillColors(length(scale_labels))
 
     if (length(fill_colors) > 1) {
         if (length(fill_colors) >= length(scale_labels)) {
@@ -304,9 +304,9 @@ fill_colors = qual_fill_colors(length(scale_labels))
             stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
         }
     } else if (fill_colors == "seq") {
-        new_fill_colors <- seq_fill_colors(length(scale_labels))
+        new_fill_colors <- seqFillColors(length(scale_labels))
     } else if (fill_colors == "div") {
-        new_fill_colors <- div_fill_colors(length(scale_labels))
+        new_fill_colors <- divFillColors(length(scale_labels))
     }
 
     ### Set up label colors for text on bars of percentage or counts: -------

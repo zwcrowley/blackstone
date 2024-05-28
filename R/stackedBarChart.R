@@ -231,14 +231,14 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
     # If statement to handle the value(s) of `fill_colors`:
     if (length(fill_colors) > 1) {
         if (length(fill_colors) >= length(scale_labels)) {
-            new_fill_colors <- fill_colors
+            new_fill_colors <- fill_colors # sets the fill colors to the hex codes passed in by the user.
         } else {
             stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
         }
     } else if (fill_colors == "seq") {
-        new_fill_colors <- seq_fill_colors(length(scale_labels))
+        new_fill_colors <- seqFillColors(length(scale_labels)) # sets the fill colors to the default sequential palette of `cividis`.
     } else if (fill_colors == "div") {
-        new_fill_colors <- div_fill_colors(length(scale_labels))
+        new_fill_colors <- div_fill_colors(length(scale_labels)) # sets the fill colors to the default diverging palette of `Blue Red 3` from namespace `colorspace`.
     }
 
     # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
