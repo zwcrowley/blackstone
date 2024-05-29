@@ -166,7 +166,7 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
       # If the user supplies a named vector for questions labels:
       if (!is.null(question_labels)) {
         names(question_labels) <- names(question_labels) %>%
-          stringr::str_wrap(., width = 30) %>%
+          stringr::str_wrap(., width = 15) %>%
           gsub("\n", "<br>", .)
         new_df <- new_df %>%
           dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels))
@@ -216,7 +216,7 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
       # If the user supplies a named vector for questions labels:
       if (!is.null(question_labels)) {
         names(question_labels) <- names(question_labels) %>%
-          stringr::str_wrap(., width = 30) %>%
+          stringr::str_wrap(., width = 15) %>%
           gsub("\n", "<br>", .)
         new_df <- new_df %>%
           dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels))
