@@ -46,12 +46,10 @@ stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, l
 
     stacked_bar_chart_gg <- {{df_gg}} %>%
         ggplot2::ggplot(ggplot2::aes(
-            x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), fill = {{fill_gg}},
-            label = {{label_gg}}, group = {{group_gg}})) +
-        ggplot2::geom_col(width = {{width_gg}}, position = ggplot2::position_stack(reverse = TRUE), color = "black") +
-        ggplot2::geom_text(ggplot2::aes(color = {{label_color_gg}}),
-                           family = font_family,
-                           fontface = "bold", position = ggplot2::position_stack(vjust = 0.5, reverse = TRUE), size = 3.5
+            x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), group = {{group_gg}})) +
+        ggplot2::geom_col(ggplot2::aes(fill = {{fill_gg}}), position = "fill", color = "black", width = {{width_gg}}) +
+        ggplot2::geom_text(ggplot2::aes(label = {{label_gg}}, color = {{label_color_gg}}), position = ggplot2::position_fill(vjust = 0.5),
+                           stat = "identity", size = 10, size.unit = "pt"
         ) +
         ggplot2::scale_color_identity()
     if (isTRUE(pre_post)) {
@@ -59,39 +57,39 @@ stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, l
     }
         stacked_bar_chart_gg <-  stacked_bar_chart_gg +
             ggplot2::scale_fill_manual(breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
-                                       labels = stringr::str_wrap({{scale_labels_gg}}, width = 10) %>% gsub("\n", "<br>", .)
-                                       # guide = ggplot2::guide_legend(override.aes = ggplot2::aes(color = NA, fill = NA))
-            ) +  ggplot2::guides(color = "none") +
-            ggplot2::theme_void(base_family = font_family, base_size = 11) +
-            ggplot2::theme(
-                axis.text.y = ggtext::element_markdown(
-                    angle = 0, hjust = 1, color = "black", size = 11, family = font_family,
-                    margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
-                ),
-                plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
-                legend.text = ggtext::element_markdown(angle = 0, hjust = 0.5, vjust = 0.5, halign = 0.5, valign = 0.5,
-                                                       size = 11, family = font_family, face = "bold",
-                                                       margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
-                ),
-                # legend.justification = c("right", "top"),
-                legend.position = "top",
-                legend.justification.top = "center",
-                legend.key = ggplot2::element_blank(),
-                legend.title = ggplot2::element_blank()
+                                       labels = stringr::str_wrap({{scale_labels_gg}}, width = 8)
+            ) +
+            ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1)) +
+            ggplot2::theme_void(base_family = font_family, base_size = 10) +
+            ggplot2::theme(legend.position = "top",
+                           legend.key.size = grid::unit(0.8, "cm"),
+                           legend.key.width = grid::unit(0.9, "cm"),
+                           legend.key.height = grid::unit(0.9, "cm"),
+                           legend.direction = "horizontal",
+                           legend.text.position = "right",
+                           legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.5,
+                                                               size = 8, family = font_family
+                           ),
+                           legend.title = ggplot2::element_blank(),
+                           axis.text.y = ggplot2::element_text(
+                               angle = 0, hjust = 1, color = "black",
+                               margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
+                           ),
+                           plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
             )
 
     if (isTRUE(pre_post)) {
         stacked_bar_chart_gg <- stacked_bar_chart_gg +
             ggplot2::theme(strip.placement = "outside",
-                           strip.text.y.left = ggtext::element_markdown(
-                               angle = 0, hjust = 1, color = "black", size = 11, family = font_family,
+                           strip.text.y.left = ggplot2::element_text(
+                               angle = 0, hjust = 1, color = "black",family = font_family,
                                margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 0, unit = "pt"))
             )
     }
 
     # Set tag to N_df if overall_n_gg == TRUE
     if (isTRUE(overall_n_gg)) {
-        stacked_bar_chart_gg <-  stacked_bar_chart_gg +  ggplot2::labs(title = NULL, y = labels, x = NULL, tag = paste0("(*n* = ",  N_df_gg , ")")) +
+        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::labs(title = NULL, y = labels, x = NULL, tag = paste0("(*n* = ",  N_df_gg , ")")) +
             ggplot2::theme(plot.tag = ggtext::element_markdown(color = "black", size = 10, family = font_family),
                            plot.tag.position = "topleft")
     } else {

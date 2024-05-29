@@ -51,7 +51,7 @@ A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a sta
 \code{\link[=stackedBarChart]{stackedBarChart()}} creates a stacked bar chart and returns a ggplot object with Blackstone Research and Evaluation branding.
 }
 \examples{
-items <- dplyr::tibble(
+items <- tibble::tibble(
   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
   pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
@@ -64,7 +64,7 @@ items <- dplyr::tibble(
   post_Research = pre_Research + 1
 )
 
-items_single <- dplyr::tibble(
+items_single <- tibble::tibble(
   Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
   Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),

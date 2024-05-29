@@ -43,8 +43,10 @@
 #'     post_Research = c("Slight", "Slight", "Moderate", "Moderate", "Good", "Good", "Extensive", "Extensive", "Extensive")
 #' )
 #' # Add a row of NA values to each fake data set:
-#' items_pre_post_na <- rows_append(items_pre_post, as_tibble_row(setNames(rep(NA, NCOL(items_pre_post)), names(items_pre_post))))
-#' items_single_na <- rows_append(items_single, as_tibble_row(setNames(rep(NA, NCOL(items_single)), names(items_single))))
+#' items_pre_post_na <- dplyr::rows_append(items_pre_post,
+#'                                         tibble::as_tibble_row(purrr::set_names(rep(NA, NCOL(items_pre_post)), names(items_pre_post))))
+#' items_single_na <- dplyr::rows_append(items_single,
+#'                                       tibble::as_tibble_row(purrr::set_names(rep(NA, NCOL(items_single)), names(items_single))))
 #'
 #' # Likert scale to pass to `scale_labels` that is the order to arrange each variable:
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
@@ -54,6 +56,7 @@
 #' dataVizCleaning(df = items_pre_post, pre_post = TRUE, scale_labels = levels_min_ext, na_remove = TRUE)
 #' dataVizCleaning(df = items_pre_post_na, pre_post = TRUE, scale_labels = levels_min_ext, na_remove = FALSE)
 dataVizCleaning <- function(df, scale_labels, pre_post = TRUE, na_remove = TRUE) {
+    . <- NULL # Set . to NULL to stop message when using dot notation in mutate:
 
     if (isTRUE(na_remove)) { # NA's are dropped in this first section:
         # Start of data manipulation: ----
@@ -63,14 +66,14 @@ dataVizCleaning <- function(df, scale_labels, pre_post = TRUE, na_remove = TRUE)
         if (isTRUE(pre_post)) { # Processes the data with "pre_" and "post_" prefixes, adds a `timing` var:
             # For pre-post data:
             # Test if all vars contain c("pre_", "post_"), if not then stop and return an error message:
-            test_names <- {{ df }} %>% names() %>% str_detect(., paste(c("pre_", "post_"), collapse = "|"))
+            test_names <- {{ df }} %>% names() %>% stringr::str_detect(., paste(c("pre_", "post_"), collapse = "|"))
             if (any(test_names == FALSE)) {
                 stop("the variables do not have `pre_` and/or `post_` prefixes, makes sure all variables have the correct prefixes.")
             }
 
             # Sets up new_df:
             new_df <- new_df %>%
-                tidyr::pivot_longer(contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+                tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
                 dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
                 tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>%
                 dplyr::mutate(response = factor(.data$response, levels = scale_labels)) %>%
@@ -113,19 +116,19 @@ dataVizCleaning <- function(df, scale_labels, pre_post = TRUE, na_remove = TRUE)
         scale_labels <- append(scale_labels, "Missing", after = 0)
         # # Start of data manipulation: ----
         # changes NA to "Missing" and then all vars in df are factors with scale_labels as their levels:
-        new_df <- {{ df }} %>% dplyr::mutate(dplyr::across(tidyr::everything(), ~ case_when(is.na(.) ~ "Missing", TRUE ~ .)),
+        new_df <- {{ df }} %>% dplyr::mutate(dplyr::across(tidyr::everything(), ~ dplyr::case_when(is.na(.) ~ "Missing", TRUE ~ .)),
                                              dplyr::across(tidyselect::everything(), ~ factor(., levels = scale_labels)))
 
         if (isTRUE(pre_post)) { # Processes the data with "pre_" and "post_" prefixes, adds a `timing` var:
             # For pre-post data:
             # Test if all vars contain c("pre_", "post_"), if not then stop and return an error message:
-            test_names <- {{ df }} %>% names() %>% str_detect(., paste(c("pre_", "post_"), collapse = "|"))
+            test_names <- {{ df }} %>% names() %>% stringr::str_detect(., paste(c("pre_", "post_"), collapse = "|"))
             if (any(test_names == FALSE)) {
                 stop("the variables do not have `pre_` and/or `post_` prefixes, makes sure all variables have the correct prefixes.")
             }
             # Process `new_df` for pre_post == TRUE
             new_df <- new_df %>%
-                tidyr::pivot_longer(contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+                tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
                 dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
                 tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>%
                 dplyr::mutate(response = factor(.data$response, levels = scale_labels)) %>%

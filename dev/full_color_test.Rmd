@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = FALSE,
 library(colorspace)
 library(magrittr)
 library(tidyverse)
+library(bre)
 
 ###### colors:
 breColors <- c("dark_blue" = "#283251",
@@ -58,9 +59,7 @@ levels_min_ext_named <- c(
   "Good" = "4", "Extensive" = "5"
 )
 
-# bar_scale_labels as just the names from levels_min_ext:
-bar_scale_labels <- names(levels_min_ext_named)
-
+# levels_min_ext as just the names from levels_min_ext_named:
 levels_min_ext <- names(levels_min_ext_named) 
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"):
@@ -72,13 +71,47 @@ question_labels <- c(
   "Source work for a research paper" = "Source"
 )
 
-# Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- bre::recodeCat(items, levels_min_ext_named)
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named)
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items <- bre::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
 
-# Select the factor variables:
-cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
-cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
+
+######### Data: Strongly disagree to Strongly Agree
+items_single_div <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2, 6, 6, 6, 7, 7,7),
+  Publish = c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4 , 5, 6, 7, 6),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4, 5,6,7,1,2,3),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4, 5,6,7,1,2,3),
+)
+
+items_div <- dplyr::tibble(
+  pre_Organization = items_single_div[["Organization"]],
+  post_Organization = dplyr::if_else(pre_Organization < 7, pre_Organization + 1, pre_Organization),
+  pre_Source = items_single_div[["Source"]],
+  post_Source = dplyr::if_else(pre_Source < 5, pre_Source + 2, pre_Source),
+  pre_Publish = items_single_div[["Publish"]],
+  post_Publish = dplyr::if_else(pre_Publish < 6, pre_Publish + 2, pre_Publish),
+  pre_Write = items_single_div[["Write"]],
+  post_Write = dplyr::if_else(pre_Write < 7, pre_Write + 1, pre_Write),
+  pre_Research = items_single_div[["Research"]],
+  post_Research = dplyr::if_else(pre_Research < 7, pre_Research + 1, pre_Research) 
+)
+
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_dis_agree_named <- c(
+  "Strongly Disagree" = "1", "Somewhat Disagree" = "2", "Disagree" = "3",
+  "Neither Agree or Disagree" = "4", "Agree" = "5", "Somewhat Agree" = "6", "Strongly Agree" = "7"
+)
+
+# levels_min_ext as just the names from levels_min_ext_named:
+levels_dis_agree <- names(levels_dis_agree_named) 
+
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items_div <- bre::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+
 ```
 
 
@@ -105,12 +138,6 @@ md_bre_maroon <- c("#512832", "#63353e", "#734147", "#854c53", "#92555b", "#a56f
 
 # pal_bre_blue_md_gray <- colorRampPalette(c("#e9ebf0", breColors["dark_blue"]))
 
-swatchplot(
-         "pal_bre_blue"  = pal_bre_blue(5),
-         "material_BRE_blue" = material_BRE_blue
-)
-
-scales::show_col(md_bre_blue)
 ```
 
 ## Diverging Color Scale
@@ -121,9 +148,73 @@ scales::show_col(md_bre_blue)
 
 ```{r}
 bre::stackedBarChart(
-   df = cat_items_single, fill_color = "div",pre_post = FALSE, scale_labels = bar_scale_labels,
+   df = cat_items_single_div, fill_color = "div", pre_post = FALSE, scale_labels = levels_dis_agree,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
+```
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+font_family <- "Arial"
+
+dataFrame <- diamonds %>%
+              group_by(color, cut) %>%
+              summarise(count = n()) %>%
+              group_by(color) %>%
+              mutate(percent = count/sum(count),
+                    pretty_label = paste0(round(percent*100, 1), "%")) %>%
+              ungroup()
+
+dataFrame %>% filter(color %in% c("D","E","F")) %>% ggplot(data = ., mapping = aes(y = color, x = percent, group = cut)) +
+      geom_bar(aes(fill = cut), stat = "identity", position = "fill", width = 0.8) +
+      geom_text(aes(label = pretty_label), position = position_fill(vjust = 0.5), colour = "white", stat = "identity") +
+      ggplot2::theme_void(base_family = font_family, base_size = 11) +
+      theme(legend.position = "top",
+            legend.key.width = unit(1, "cm")) 
+
+
+   
+# clean_items_single <-  bre::dataVizCleaning(df = cat_items_single, scale_labels = levels_min_ext, pre_post = F, na_remove = TRUE)
+clean_items_single_div <-  bre::dataVizCleaning(df = cat_items_single_div, scale_labels = levels_dis_agree, pre_post = F, na_remove = TRUE)
+fill_colors <- sequential_hcl(length(levels_dis_agree), "Blues 3", rev = TRUE)
+# "#F9F9F9" "#C3DBFD" "#79ABE2" "#0072B4" "#00366C"
+# Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
+label_colors <- labelColorMaker(fill_colors, names = levels_dis_agree)
+# create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
+clean_items_single_div <- clean_items_single_div %>% dplyr::mutate(., label_color = label_colors[.data$response])
+    
+# clean_items_single_div %>% filter(question %in% c("Organization","Publish","Research")) %>% 
+    ggplot2::ggplot(data = clean_items_single_div, mapping = ggplot2::aes(y = rev(question), x = percent_answers, group = question)) +
+      ggplot2::geom_col(ggplot2::aes(fill = response), position = "fill", color = "black") +
+      ggplot2::geom_text(ggplot2::aes(label = percent_answers_label, color = label_color), position = ggplot2::position_fill(vjust = 0.5), 
+                stat = "identity", size = 10, size.unit = "pt") +
+      ggplot2::scale_color_identity() +
+      ggplot2::scale_fill_manual(breaks = levels_dis_agree, values = fill_colors, drop = FALSE,
+                                         labels = stringr::str_wrap(levels_dis_agree, width = 8)
+              ) +
+      ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1)) + 
+      ggplot2::theme_void(base_family = font_family, base_size = 10) +
+      ggplot2::theme(legend.position = "top",
+            legend.key.size = unit(0.8, "cm"),
+            legend.key.width = unit(0.9, "cm"),
+            legend.key.height = unit(0.9, "cm"),
+            legend.direction = "horizontal",
+            legend.text.position = "right",
+            legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.5,
+                                                   size = 8, family = font_family
+            ),
+            legend.title = ggplot2::element_blank(),
+            axis.text.y = ggplot2::element_text(
+                angle = 0, hjust = 1, color = "black",
+                margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
+            ),
+            plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
+            ) 
+
+
 ```
 
 ## Sequential Color Scales

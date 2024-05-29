@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{seqFillColors}
 \alias{seqFillColors}
-\title{Helper to create a sequential color scale using \code{cividis} that is reversed.}
+\title{Helper to create a sequential color scale using \verb{Blues 3} that is reversed.}
 \usage{
 seqFillColors(n_colors)
 }
@@ -10,8 +10,8 @@ seqFillColors(n_colors)
 \item{n_colors}{Required, the number of color hex codes to return.}
 }
 \value{
-a character vector hex color codes the length of \code{n_colors} from the \code{cividis} palette.
+a character vector hex color codes the length of \code{n_colors} from the \verb{Blues 3} palette.
 }
 \description{
-A function to create a sequential color scale using \code{cividis}, that is reversed.
+A function to create a sequential color scale using \verb{Blues 3}, that is reversed.
 }
