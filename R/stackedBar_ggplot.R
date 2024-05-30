@@ -55,7 +55,8 @@ stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, l
         ) +
         ggplot2::scale_color_identity()
     if (isTRUE(pre_post)) {
-        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars({{ group_gg }}), ncol = 1, strip.position = "left")
+        # stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars({{ group_gg }}), ncol = 1, strip.position = "left")
+        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_grid(question ~ ., switch = "y")
     }
         stacked_bar_chart_gg <-  stacked_bar_chart_gg +
             ggplot2::scale_fill_manual(breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,

@@ -147,7 +147,16 @@ md_bre_maroon <- c("#512832", "#63353e", "#734147", "#854c53", "#92555b", "#a56f
 - Note: This palette was darkened a bit to get the middle color to be a light shade of gray.
 
 ```{r}
-# cat_items_div %>% select(contains(c("Organization"))) %>%  # "Source", "Publish", "Write"
+cat_items_div %>% select(contains(c("Organization","Source", "Publish" ))) %>%  # , "Source", "Publish", "Write"
+# cat_items_div %>%
+bre::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
+   question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = T
+)
+```
+
+```{r}
+# cat_items_div %>% select(contains(c("Organization","Source", "Publish", "Write"))) %>%  # , "Source", "Publish", "Write"
 cat_items_div %>%
 bre::stackedBarChart( 
    df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
@@ -156,7 +165,8 @@ bre::stackedBarChart(
 ```
 
 ```{r}
-cat_items_single_div %>% select(contains(c("Organization"))) %>%  # "Source", "Publish", "Write"
+cat_items_single_div %>% 
+    # select(contains(c("Organization", "Source", "Publish", "Write"))) %>%  # "Source", "Publish", "Write"
 bre::stackedBarChart( 
    df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree,
     percent_label = TRUE, width = NULL, overall_n = F, question_labels = question_labels
@@ -171,6 +181,37 @@ bre::stackedBarChart(
    df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree,
     percent_label = TRUE, overall_n = F
 ) 
+
+```
+
+```{r}
+# Load the necessary library
+library(ggplot2)
+
+# Create a sample dataset
+data <- tibble::tibble(
+  Category = factor(rep(c("A", "B", "C", "D"), each = 3)),
+  Subcategory = factor(rep(c("Sub1", "Sub2", "Sub3"), 4)),
+  Percentage = c(40, 30, 30, 20, 50, 30, 25, 25, 50, 35, 40, 25),
+  Group = factor(rep(c("Group1", "Group2"), each = 6))
+)
+
+
+# Create the horizontal stacked bar chart
+ggplot(data, aes(x = Percentage, y = Category, fill = Subcategory)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_x_continuous(labels = scales::percent) +
+  ggplot2::facet_wrap(dplyr::vars(Group)) +
+  # labs(title = "Horizontal Stacked Bar Chart of Percentages",
+  #      x = "Percentage",
+  #      y = NULL,
+  #      fill = "Subcategory") +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(),  # Remove major grid lines
+        panel.grid.minor = element_blank(),  # Remove minor grid lines
+        # axis.text.y = element_text(margin = margin(r = -5)),  # Reduce margin between y-axis text and bars
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10)  # Adjust the overall plot margin if needed
+  ) 
 
 ```
 
@@ -234,7 +275,41 @@ clean_items_single_div %>% filter(question %in% c("Organization","Publish","Rese
             ),
             plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
             ) 
+clean_items_div <-  bre::dataVizCleaning(df = cat_items_div, scale_labels = levels_dis_agree, pre_post = T, na_remove = TRUE)
+# write.csv(clean_items_div, "clean_items_div.csv")
+```
 
+```{r}
+clean_items_div
+# Ensure the data is in the correct format
+clean_items_div$question <- as.factor(clean_items_div$question)
+clean_items_div$response <- as.factor(clean_items_div$response)
+clean_items_div$timing <- factor(clean_items_div$timing, levels = c("Pre", "Post"))
+
+clean_items_div %>% filter(question %in% c("Organization")) %>%
+# Create the facetted horizontal stacked bar chart
+ggplot(., aes(x = percent_answers, y = timing, fill = response)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_x_continuous(labels = scales::percent) +
+  ggplot2::facet_grid(question ~ ., switch = "y") +
+  labs(x = "Percentage",
+       y = "Question",
+       fill = "Response") +
+  guides(fill = guide_legend(nrow = 1)) +  # Set the number of rows in the legend to 1
+  theme_minimal() +
+  theme(
+    strip.placement = "outside",
+    panel.grid.major = element_blank(),  # Remove major grid lines
+    panel.grid.minor = element_blank(),  # Remove minor grid lines
+    axis.text.y = element_text(margin = margin(r = -15)),  # Reduce margin between y-axis text and bars
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # Adjust the overall plot margin if needed
+    legend.position = "top",  # Place legend on top
+    legend.direction = "horizontal",  # Arrange legend items horizontally
+    legend.title = element_text(size = 10),  # Adjust legend title size
+    legend.text = element_text(size = 8),  # Adjust legend text size
+    legend.box = "horizontal",  # Arrange the legend in a single row
+    plot.title = element_blank()  # Remove plot title
+  ) 
 
 ```
 
