@@ -215,9 +215,13 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
       }
       # If the user supplies a named vector for questions labels:
       if (!is.null(question_labels)) {
-        names(question_labels) <- names(question_labels) %>%
-          stringr::str_wrap(., width = 15) %>%
-          gsub("\n", "<br>", .)
+          if (isFALSE(overall_n)) {
+                names(question_labels) <- names(question_labels)
+           } else if (isTRUE(overall_n)) {
+               names(question_labels) <- names(question_labels) %>%
+                   stringr::str_wrap(., width = 15) %>%
+                   gsub("\n", "<br>", .)
+           }
         new_df <- new_df %>%
           dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels))
       }
@@ -248,9 +252,10 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
 
     # Set default width for geom_col() bars if not supplied by user:
     if (is.null(width)) {
-      width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                              dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
-      )
+        width <- 0.9
+      # width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
+      #                         dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+      # )
     }
 
     if (isTRUE(overall_n)) {
@@ -272,7 +277,9 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
     # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
     if (isFALSE(overall_n)) {
       # Change the label of the variable "question" by adding n of each to the end of the character string:
-      labels_n_questions <- paste0(totals_new_df$question, " ", "(*n* = ", totals_new_df$total, ")")
+      labels_n_questions <- paste0(totals_new_df$question, " ", "(*n* = ", totals_new_df$total, ")") %>%
+                            stringr::str_wrap(., width = 15) %>%
+                            gsub("\n", "<br>", .)
 
       # Set factor labels for question to labels:
       new_df <- new_df %>%

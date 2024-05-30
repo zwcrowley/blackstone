@@ -147,10 +147,31 @@ md_bre_maroon <- c("#512832", "#63353e", "#734147", "#854c53", "#92555b", "#a56f
 - Note: This palette was darkened a bit to get the middle color to be a light shade of gray.
 
 ```{r}
-bre::stackedBarChart(
-   df = cat_items_div, fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
-   question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = F
+# cat_items_div %>% select(contains(c("Organization"))) %>%  # "Source", "Publish", "Write"
+cat_items_div %>%
+bre::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
+   question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = T
 )
+```
+
+```{r}
+cat_items_single_div %>% select(contains(c("Organization"))) %>%  # "Source", "Publish", "Write"
+bre::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree,
+    percent_label = TRUE, width = NULL, overall_n = F, question_labels = question_labels
+) 
+
+```
+
+
+```{r}
+cat_items_single_div %>% select(contains(c("Organization", "Source"))) %>%  # "Source", "Publish", "Write"
+bre::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree,
+    percent_label = TRUE, overall_n = F
+) 
+
 ```
 
 
@@ -186,8 +207,8 @@ label_colors <- labelColorMaker(fill_colors, names = levels_dis_agree)
 # create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
 clean_items_single_div <- clean_items_single_div %>% dplyr::mutate(., label_color = label_colors[.data$response])
     
-# clean_items_single_div %>% filter(question %in% c("Organization","Publish","Research")) %>% 
-    ggplot2::ggplot(data = clean_items_single_div, mapping = ggplot2::aes(y = rev(question), x = percent_answers, group = question)) +
+clean_items_single_div %>% filter(question %in% c("Organization","Publish","Research")) %>% 
+    ggplot2::ggplot(data = ., mapping = ggplot2::aes(y = rev(question), x = percent_answers, group = question)) +
       ggplot2::geom_col(ggplot2::aes(fill = response), position = "fill", color = "black") +
       ggplot2::geom_text(ggplot2::aes(label = percent_answers_label, color = label_color), position = ggplot2::position_fill(vjust = 0.5), 
                 stat = "identity", size = 10, size.unit = "pt") +
@@ -223,7 +244,7 @@ clean_items_single_div <- clean_items_single_div %>% dplyr::mutate(., label_colo
 
 ```{r}
 bre::stackedBarChart(
-   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
+   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
 ```
@@ -233,7 +254,7 @@ bre::stackedBarChart(
 
 ```{r}
 bre::stackedBarChart(
-   df = cat_items_single, fill_color = material_BRE_blue, pre_post = FALSE, scale_labels = bar_scale_labels,
+   df = cat_items_single, fill_color = material_BRE_blue, pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
 ```
@@ -242,7 +263,7 @@ bre::stackedBarChart(
 
 ```{r}
 bre::stackedBarChart(
-   df = cat_items_single, fill_color = pal_bre_grey_blue(length(bar_scale_labels)), pre_post = FALSE, scale_labels = bar_scale_labels,
+   df = cat_items_single, fill_color = pal_bre_grey_blue(length(levels_min_ext)), pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
 ```
@@ -252,7 +273,7 @@ bre::stackedBarChart(
 
 ```{r}
 bre::stackedBarChart(
-   df = cat_items_single, fill_color = pal_bre_blue(length(bar_scale_labels)), pre_post = FALSE, scale_labels = bar_scale_labels,
+   df = cat_items_single, fill_color = pal_bre_blue(length(levels_min_ext)), pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
 ```
@@ -263,7 +284,7 @@ bre::stackedBarChart(
 ```{r}
 # `Blues 3` from `colorspace` package
 bre::stackedBarChart(
-   df = cat_items_single, fill_color = colorspace::sequential_hcl(length(bar_scale_labels), "Blues 3", rev = TRUE), pre_post = FALSE, scale_labels = bar_scale_labels,
+   df = cat_items_single, fill_color = colorspace::sequential_hcl(length(levels_min_ext), "Blues 3", rev = TRUE), pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
 ```
@@ -273,7 +294,7 @@ bre::stackedBarChart(
 ```{r}
 # `Blues 3` from `colorspace` package
 bre::stackedBarChart(
-   df = cat_items_single, fill_color = viridis::viridis(n = length(bar_scale_labels), direction = -1, option = "mako"), pre_post = FALSE, scale_labels = bar_scale_labels,
+   df = cat_items_single, fill_color = viridis::viridis(n = length(levels_min_ext), direction = -1, option = "mako"), pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
 ```
