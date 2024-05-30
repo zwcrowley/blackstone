@@ -55,7 +55,7 @@ labelColorMaker <- function(colors, names = NULL) {
 #' @export
 seqFillColors <- function(n_colors) {
     # viridisLite::cividis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = -1)
-    colorspace::sequential_hcl(7, "Blues 3", rev = TRUE)
+    colorspace::sequential_hcl(n_colors, "Blues 3", rev = TRUE)
 }
 
 

@@ -15,7 +15,9 @@ library(magrittr)
 library(tidyverse)
 library(bre)
 
-###### colors:
+set.seed(424429) # for reproducibility
+
+##### colors:
 breColors <- c("dark_blue" = "#283251",
                 "light_grey" = "#eaeaeb",
                 "med_grey" = "#cecece",
@@ -30,7 +32,7 @@ pal_bre_grey_blue <- colorRampPalette(c(breColors["light_grey"], breColors["dark
 pal_bre_blue <- colorRampPalette(c("white", breColors["dark_blue"]))
 # pal_bre_grey_blue(length(scale_labels))
 
-######### Data
+######## Data
 items <- dplyr::tibble(
   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
@@ -76,7 +78,7 @@ cat_items <- bre::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr
 cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
 
 
-######### Data: Strongly disagree to Strongly Agree
+######## Data: Strongly disagree to Strongly Agree
 items_single_div <- dplyr::tibble(
   Organization = c(1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 1),
   Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2, 6, 6, 6, 7, 7,7),
@@ -135,28 +137,148 @@ md_bre_purple <- c("#322851", "#403869", "#484175", "#514b81", "#57528a", "#6d6b
 md_bre_tri_purp <- c("#472851", "#603166", "#6e3670", "#7d3d79", "#88427f", "#9a5791", "#ac72a4", "#c498be", "#dbc0d7", "#f0e6ee") %>% purrr::set_names(names_nums_pals)
 md_bre_maroon <- c("#512832", "#63353e", "#734147", "#854c53", "#92555b", "#a56f73", "#b9898b", "#d2a9ac", "#ebcacb", "#ffe7e5") %>% purrr::set_names(names_nums_pals)
 
+```
 
-# pal_bre_blue_md_gray <- colorRampPalette(c("#e9ebf0", breColors["dark_blue"]))
+
+## Qualitative/Categorical Color Scales
+
+### Arrow charts section with 3 grouping variables and an arrow for the whole sample labelled "All":
+
+```{r, include=FALSE}
+# add a grouping var to the data set `items`:
+items_group <- dplyr::tibble(
+   items,
+   edu_level = factor(c(
+       "grad", "undergrad", "grad", "undergrad", "grad",
+       "undergrad", "undergrad", "grad", "undergrad"
+  ), levels = c("grad", "undergrad"))
+ )
+```
+
+### Arrow chart with `viridis` color scale:
+
+#### With yellow
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
+    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+#### With green
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(c("#440154FF", "#31688EFF", "#35B779FF")),
+    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+### Arrow chart with `cividis` color scale:
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::cividis(n = (length(unique(items_group[["edu_level"]])) + 1))),
+    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+### Arrow chart with `Okabe-Ito` color scale:
+
+#### Including black as a color:
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
+                     group_colors = grDevices::palette.colors(n = (length(unique(items_group[["edu_level"]])) + 1), palette = "Okabe-Ito"),
+                     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+#### Skipping the color black in palette:
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
+                     group_colors = c("#E69F00", "#56B4E9", "#009E73"),
+                     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+## Horizontal Bar Chart with 7 racial categories
+
+```{r, include=FALSE}
+# New fake data for testing horzBarChart() colors with racial categories:
+# Generate fake data
+n <- 100  # number of observations
+
+# Define racial categories
+racial_categories <- c("Asian", "Hispanic or Latino", "Caucasian or White (non-Hispanic)", "African American or Black", "Native American or American Indian", 
+                       "Native Hawaiian or other Pacific Islander", "Mixed Race")
+
+# Set up the fake racial data as a tibble:
+data <- dplyr::tibble(
+  race = sample(racial_categories, n, replace = TRUE) # Generate random racial categories for each observation
+)
+
+# set up data for chart:
+race_summ <- data %>%
+  dplyr::select(race) %>%
+  bre::dataSumm(sort_n = T)
+
+# Filtered to only three categories:
+three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or Latino", "African American or Black")) 
+```
+
+### Horizontal Bar Chart with `viridis` color scale:
+
+```{r}
+# horzBarChart() with viridis colors
+bre::horzBarChart(df = race_summ, scale_colors = viridisLite::viridis(n = length(unique(data[["race"]]))), width = 0.6)
 
 ```
+
+
+#### Only 3 categories, skipping yellow color in palette:
+
+```{r}
+# horzBarChart() with colors
+bre::horzBarChart(df = three_race_summ, scale_colors = c("#440154FF", "#31688EFF", "#35B779FF"), width = 0.6)
+
+```
+
+
+### Horizontal Bar Chart with `Okabe-Ito` color scale:
+
+```{r}
+# horzBarChart() with Okabe-Ito colors
+bre::horzBarChart(df = race_summ, scale_colors = grDevices::palette.colors(n = length(unique(data[["race"]])), palette = "Okabe-Ito"), width = 0.6)
+
+```
+
+
+#### Only 3 categories, skipping black color in palette:
+
+```{r}
+# horzBarChart() with colors
+bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73"), width = 0.6)
+
+```
+
+
+### Horizontal Bar Chart with `cividis` color scale:
+
+```{r}
+# horzBarChart() with cividis colors
+bre::horzBarChart(df = race_summ, scale_colors = viridisLite::cividis(n = length(unique(data[["race"]]))), width = 0.6)
+
+```
+
+#### Only 3 categories:
+
+```{r}
+# horzBarChart() with cividis colors
+bre::horzBarChart(df = three_race_summ, scale_colors = viridisLite::cividis(n = 3), width = 0.6)
+
+```
+
 
 ## Diverging Color Scale
 
-### Stacked bar chart with `Blue Red 3` color scale:
-
-- Note: This palette was darkened a bit to get the middle color to be a light shade of gray.
+### Stacked Pre-Post bar chart with `Blue Red 3` color palette on a 7 point scale:
 
 ```{r}
-cat_items_div %>% select(contains(c("Organization","Source", "Publish" ))) %>%  # , "Source", "Publish", "Write"
-# cat_items_div %>%
-bre::stackedBarChart( 
-   df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
-   question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = T
-)
-```
-
-```{r}
-# cat_items_div %>% select(contains(c("Organization","Source", "Publish", "Write"))) %>%  # , "Source", "Publish", "Write"
 cat_items_div %>%
 bre::stackedBarChart( 
    df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
@@ -164,9 +286,10 @@ bre::stackedBarChart(
 )
 ```
 
+### Stacked bar chart (single items) with `Blue Red 3` color palette on a 7 point scale:
+
 ```{r}
 cat_items_single_div %>% 
-    # select(contains(c("Organization", "Source", "Publish", "Write"))) %>%  # "Source", "Publish", "Write"
 bre::stackedBarChart( 
    df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree,
     percent_label = TRUE, width = NULL, overall_n = F, question_labels = question_labels
@@ -175,147 +298,9 @@ bre::stackedBarChart(
 ```
 
 
-```{r}
-cat_items_single_div %>% select(contains(c("Organization", "Source"))) %>%  # "Source", "Publish", "Write"
-bre::stackedBarChart( 
-   df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree,
-    percent_label = TRUE, overall_n = F
-) 
-
-```
-
-```{r}
-# Load the necessary library
-library(ggplot2)
-
-# Create a sample dataset
-data <- tibble::tibble(
-  Category = factor(rep(c("A", "B", "C", "D"), each = 3)),
-  Subcategory = factor(rep(c("Sub1", "Sub2", "Sub3"), 4)),
-  Percentage = c(40, 30, 30, 20, 50, 30, 25, 25, 50, 35, 40, 25),
-  Group = factor(rep(c("Group1", "Group2"), each = 6))
-)
-
-
-# Create the horizontal stacked bar chart
-ggplot(data, aes(x = Percentage, y = Category, fill = Subcategory)) +
-  geom_bar(stat = "identity", position = "fill") +
-  scale_x_continuous(labels = scales::percent) +
-  ggplot2::facet_wrap(dplyr::vars(Group)) +
-  # labs(title = "Horizontal Stacked Bar Chart of Percentages",
-  #      x = "Percentage",
-  #      y = NULL,
-  #      fill = "Subcategory") +
-  theme_minimal() +
-  theme(panel.grid.major = element_blank(),  # Remove major grid lines
-        panel.grid.minor = element_blank(),  # Remove minor grid lines
-        # axis.text.y = element_text(margin = margin(r = -5)),  # Reduce margin between y-axis text and bars
-        plot.margin = margin(t = 10, r = 10, b = 10, l = 10)  # Adjust the overall plot margin if needed
-  ) 
-
-```
-
-
-```{r}
-library(dplyr)
-library(ggplot2)
-
-font_family <- "Arial"
-
-dataFrame <- diamonds %>%
-              group_by(color, cut) %>%
-              summarise(count = n()) %>%
-              group_by(color) %>%
-              mutate(percent = count/sum(count),
-                    pretty_label = paste0(round(percent*100, 1), "%")) %>%
-              ungroup()
-
-dataFrame %>% filter(color %in% c("D","E","F")) %>% ggplot(data = ., mapping = aes(y = color, x = percent, group = cut)) +
-      geom_bar(aes(fill = cut), stat = "identity", position = "fill", width = 0.8) +
-      geom_text(aes(label = pretty_label), position = position_fill(vjust = 0.5), colour = "white", stat = "identity") +
-      ggplot2::theme_void(base_family = font_family, base_size = 11) +
-      theme(legend.position = "top",
-            legend.key.width = unit(1, "cm")) 
-
-
-   
-# clean_items_single <-  bre::dataVizCleaning(df = cat_items_single, scale_labels = levels_min_ext, pre_post = F, na_remove = TRUE)
-clean_items_single_div <-  bre::dataVizCleaning(df = cat_items_single_div, scale_labels = levels_dis_agree, pre_post = F, na_remove = TRUE)
-fill_colors <- sequential_hcl(length(levels_dis_agree), "Blues 3", rev = TRUE)
-# "#F9F9F9" "#C3DBFD" "#79ABE2" "#0072B4" "#00366C"
-# Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
-label_colors <- labelColorMaker(fill_colors, names = levels_dis_agree)
-# create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
-clean_items_single_div <- clean_items_single_div %>% dplyr::mutate(., label_color = label_colors[.data$response])
-    
-clean_items_single_div %>% filter(question %in% c("Organization","Publish","Research")) %>% 
-    ggplot2::ggplot(data = ., mapping = ggplot2::aes(y = rev(question), x = percent_answers, group = question)) +
-      ggplot2::geom_col(ggplot2::aes(fill = response), position = "fill", color = "black") +
-      ggplot2::geom_text(ggplot2::aes(label = percent_answers_label, color = label_color), position = ggplot2::position_fill(vjust = 0.5), 
-                stat = "identity", size = 10, size.unit = "pt") +
-      ggplot2::scale_color_identity() +
-      ggplot2::scale_fill_manual(breaks = levels_dis_agree, values = fill_colors, drop = FALSE,
-                                         labels = stringr::str_wrap(levels_dis_agree, width = 8)
-              ) +
-      ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1)) + 
-      ggplot2::theme_void(base_family = font_family, base_size = 10) +
-      ggplot2::theme(legend.position = "top",
-            legend.key.size = unit(0.8, "cm"),
-            legend.key.width = unit(0.9, "cm"),
-            legend.key.height = unit(0.9, "cm"),
-            legend.direction = "horizontal",
-            legend.text.position = "right",
-            legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.5,
-                                                   size = 8, family = font_family
-            ),
-            legend.title = ggplot2::element_blank(),
-            axis.text.y = ggplot2::element_text(
-                angle = 0, hjust = 1, color = "black",
-                margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
-            ),
-            plot.margin = ggplot2::margin(t = 35, r = 5, b = 35, l = 5, unit = "pt"),
-            ) 
-clean_items_div <-  bre::dataVizCleaning(df = cat_items_div, scale_labels = levels_dis_agree, pre_post = T, na_remove = TRUE)
-# write.csv(clean_items_div, "clean_items_div.csv")
-```
-
-```{r}
-clean_items_div
-# Ensure the data is in the correct format
-clean_items_div$question <- as.factor(clean_items_div$question)
-clean_items_div$response <- as.factor(clean_items_div$response)
-clean_items_div$timing <- factor(clean_items_div$timing, levels = c("Pre", "Post"))
-
-clean_items_div %>% filter(question %in% c("Organization")) %>%
-# Create the facetted horizontal stacked bar chart
-ggplot(., aes(x = percent_answers, y = timing, fill = response)) +
-  geom_bar(stat = "identity", position = "fill") +
-  scale_x_continuous(labels = scales::percent) +
-  ggplot2::facet_grid(question ~ ., switch = "y") +
-  labs(x = "Percentage",
-       y = "Question",
-       fill = "Response") +
-  guides(fill = guide_legend(nrow = 1)) +  # Set the number of rows in the legend to 1
-  theme_minimal() +
-  theme(
-    strip.placement = "outside",
-    panel.grid.major = element_blank(),  # Remove major grid lines
-    panel.grid.minor = element_blank(),  # Remove minor grid lines
-    axis.text.y = element_text(margin = margin(r = -15)),  # Reduce margin between y-axis text and bars
-    plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # Adjust the overall plot margin if needed
-    legend.position = "top",  # Place legend on top
-    legend.direction = "horizontal",  # Arrange legend items horizontally
-    legend.title = element_text(size = 10),  # Adjust legend title size
-    legend.text = element_text(size = 8),  # Adjust legend text size
-    legend.box = "horizontal",  # Arrange the legend in a single row
-    plot.title = element_blank()  # Remove plot title
-  ) 
-
-```
-
 ## Sequential Color Scales
 
-### Stacked bar chart with `cividis` color scale:
+### Stacked bar chart with `Blues 3` color scale:
 
 ```{r}
 bre::stackedBarChart(
@@ -325,121 +310,26 @@ bre::stackedBarChart(
 ```
 
 
-### Stacked bar chart with white to `BRE` Blue color scale with Colors from Material Design App:
 
-```{r}
-bre::stackedBarChart(
-   df = cat_items_single, fill_color = material_BRE_blue, pre_post = FALSE, scale_labels = levels_min_ext,
-   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
-)
-```
-
-### Stacked bar chart with `BRE` Blue to `BRE` light gray color scale:
-
-```{r}
-bre::stackedBarChart(
-   df = cat_items_single, fill_color = pal_bre_grey_blue(length(levels_min_ext)), pre_post = FALSE, scale_labels = levels_min_ext,
-   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
-)
-```
-
-
-### Stacked bar chart with white to `BRE` Blue color scale:
-
-```{r}
-bre::stackedBarChart(
-   df = cat_items_single, fill_color = pal_bre_blue(length(levels_min_ext)), pre_post = FALSE, scale_labels = levels_min_ext,
-   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
-)
-```
-
-
-### Stacked bar chart with `Blues 3` color scale:
+### Stacked bar chart with `cividis` color scale:
 
 ```{r}
 # `Blues 3` from `colorspace` package
 bre::stackedBarChart(
-   df = cat_items_single, fill_color = colorspace::sequential_hcl(length(levels_min_ext), "Blues 3", rev = TRUE), pre_post = FALSE, scale_labels = levels_min_ext,
-   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+   df = cat_items_single, scale_labels = levels_min_ext,
+   fill_color = viridisLite::cividis(n = length(levels_min_ext), alpha = 1, begin = 0, end = 1, direction = -1),
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = T
 )
 ```
 
-### Stacked bar chart with `Mako` color scale:
+#### Pre-post data:
 
 ```{r}
-# `Blues 3` from `colorspace` package
-bre::stackedBarChart(
-   df = cat_items_single, fill_color = viridis::viridis(n = length(levels_min_ext), direction = -1, option = "mako"), pre_post = FALSE, scale_labels = levels_min_ext,
-   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
-)
-```
-
-
-## Qualitative/Categorical Color Scales
-
-### Arrow chart with `viridis` color scale:
-
-```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = viridisLite::viridis(n = length(levels_min_ext)),
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
-```
-
-### Arrow chart with `Okabe-Ito` color scale:
-
-```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = grDevices::palette.colors(n = length(levels_min_ext), palette = "Okabe-Ito"),
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
-```
-
-### Arrow chart with `turbo` color scale:
-
-```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = viridisLite::turbo(n = length(levels_min_ext)),
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
-```
-
-
-### Horizontal Bar Chart with `viridis` color scale:
-
-```{r}
-# New fake data for testing horzBarChart() colors:
-data <- dplyr::tibble(
-  role = c(
-    "Faculty", "Postdoc", "Undergraduate student", "Graduate student",
-    "Graduate student", "Postdoc", "Postdoc", "Faculty",
-    "Faculty", "Graduate student", "Graduate student", "Postdoc",
-    "Faculty", "Faculty", "Faculty", "Faculty", "Faculty", "Graduate student",
-    "Undergraduate student", "Undergraduate student"
-  )
-)
-# set up data for chart:
-role_summ <- data %>%
-  dplyr::select(role) %>%
-  bre::dataSumm()
-
-# horzBarChart() with viridis colors
-bre::horzBarChart(df = role_summ, scale_colors = viridisLite::viridis(n = length(unique(data[["role"]]))), width = 0.6)
-
-```
-
-### Horizontal Bar Chart with `Okabe-Ito` color scale:
-
-```{r}
-# horzBarChart() with Okabe-Ito colors
-bre::horzBarChart(df = role_summ, scale_colors = grDevices::palette.colors(n = length(unique(data[["role"]])), palette = "Okabe-Ito"), width = 0.6)
-
-
-# horzBarChart() with Okabe-Ito colors
-bre::horzBarChart(df = role_summ, scale_colors = sequential_hcl(length(unique(data[["role"]])), "Blues 3"), width = 0.6)
-```
-
-
-```{r}
-swatchplot(
-    "Blues 3"  = sequential_hcl(9, "Blues 3", rev = TRUE),
-    "Okabe-Ito"  =  grDevices::palette.colors(n = 9, palette = "Okabe-Ito"),
-     "viridis"  =  viridisLite::viridis(n = 9),
-    "Default"  =  grDevices::palette.colors(n = 9),
+cat_items %>%
+bre::stackedBarChart( 
+   df = ., pre_post = T, scale_labels = levels_min_ext,
+   fill_color = viridisLite::cividis(n = length(levels_min_ext), alpha = 1, begin = 0, end = 1, direction = -1),
+   question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = F
 )
 ```
 
