@@ -248,7 +248,7 @@ pre_post = T
     stacked_bar_chart_gg <- {{df_gg}} %>%
         ggplot2::ggplot(ggplot2::aes(
             x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), group = {{group_gg}})) +
-        ggplot2::geom_col(ggplot2::aes(fill = {{fill_gg}}), position = "fill", color = "black", width = {{width_gg}}, key_glyph = draw_key_label) +
+        ggplot2::geom_col(ggplot2::aes(fill = {{fill_gg}}), position = "fill", color = "black", width = {{width_gg}}, key_glyph = ggplot2::draw_key_label) +
         ggplot2::geom_text(ggplot2::aes(label = {{label_gg}}, color = {{label_color_gg}}), position = ggplot2::position_fill(vjust = 0.5),
                            stat = "identity", size = (font_size - 2), size.unit = "pt"
         ) +

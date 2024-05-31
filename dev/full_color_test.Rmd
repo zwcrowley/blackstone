@@ -331,7 +331,7 @@ bre::horzBarChart(df = three_race_summ, scale_colors = viridisLite::cividis(n = 
 cat_items_div %>%
 bre::stackedBarChart( 
    df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
-   question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = T
+   question_labels = question_labels, question_order = F, percent_label = TRUE, width = NULL, overall_n = T
 )
 ```
 
@@ -341,7 +341,7 @@ bre::stackedBarChart(
 cat_items_single_div %>% 
 bre::stackedBarChart( 
    df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree,
-    percent_label = TRUE, width = NULL, overall_n = F, question_labels = question_labels
+    percent_label = TRUE, width = NULL, question_order = T, overall_n = F, question_labels = question_labels
 ) 
 
 ```

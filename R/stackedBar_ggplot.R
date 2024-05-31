@@ -33,7 +33,7 @@
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a stacked bar chart.
 #' @noRd
 stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, label_color_gg, scale_labels_gg, width_gg, fill_colors_gg,
-                                  overall_n_gg, N_df_gg, pre_post = FALSE) {
+                              overall_n_gg, N_df_gg, pre_post = FALSE, font_family = "Arial", font_size = 10) {
 
     # Load all fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -42,71 +42,71 @@ stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, l
     . <- NULL
 
     # Create a font family character var so that it is easy to change, could also be a new arg:
-    font_family <- c("Arial")
-
-    font_size <- 10
+    # font_family <- "Arial"
+    # font_size <- 10
 
     stacked_bar_chart_gg <- {{df_gg}} %>%
         ggplot2::ggplot(ggplot2::aes(
             x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), group = {{group_gg}})) +
-        ggplot2::geom_col(ggplot2::aes(fill = {{fill_gg}}), position = "fill", color = "black", width = {{width_gg}}) +
+        ggplot2::geom_col(ggplot2::aes(fill = {{fill_gg}}), position = "fill", color = "black", width = {{width_gg}}, key_glyph = ggplot2::draw_key_label) +
         ggplot2::geom_text(ggplot2::aes(label = {{label_gg}}, color = {{label_color_gg}}), position = ggplot2::position_fill(vjust = 0.5),
                            stat = "identity", size = font_size, size.unit = "pt"
         ) +
         ggplot2::scale_color_identity()
     if (isTRUE(pre_post)) {
-        # stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars({{ group_gg }}), ncol = 1, strip.position = "left")
-        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_grid(question ~ ., switch = "y")
+        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars({{ group_gg }}), ncol = 1, strip.position = "left")
     }
         stacked_bar_chart_gg <-  stacked_bar_chart_gg +
             ggplot2::scale_fill_manual(breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
                                        labels = stringr::str_wrap({{scale_labels_gg}}, width = 8)
             ) +
-            ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1)) +
-            ggplot2::theme_void(base_family = font_family, base_size = font_size) +
-            ggplot2::theme(legend.position = "top",
-                           # legend.key.size = grid::unit(0.5, "cm"),
-                           # legend.key.width = grid::unit(0.5, "cm"),
-                           # legend.key.height = grid::unit(0.1, "cm"),
-                           legend.direction = "horizontal",
-                           legend.text.position = "right",
-                           legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.5,family = font_family
-                                                              ),
-                           legend.title = ggplot2::element_blank(),
-                           axis.text = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5,
-                                                             family = font_family
-                           ),
-                           axis.text.x = ggplot2::element_blank(),
-                           axis.text.y = ggtext::element_markdown( # Controls the 'timing' Pre post labels
-                               angle = 0, hjust = 1, halign = 1, color = "black",
-                               margin = ggplot2::margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
-                           ),
-                           plot.margin = ggplot2::margin(t = 30, r = 5, b = 30, l = 5, unit = "pt"),
-                           panel.spacing = grid::unit(0, "cm")
-            )
+            addBarChartLegendTheme(font_size = font_size, font_family = font_family) # function from `gg_helpers.R`
+            # ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1)) +
+            # ggplot2::theme_void(base_family = font_family, base_size = font_size) +
+            # ggplot2::theme(legend.position = "top",
+            #                # legend.key.size = grid::unit(0.5, "cm"),
+            #                # legend.key.width = grid::unit(0.5, "cm"),
+            #                # legend.key.height = grid::unit(0.1, "cm"),
+            #                legend.direction = "horizontal",
+            #                legend.text.position = "right",
+            #                legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.5,family = font_family
+            #                                                   ),
+            #                legend.title = ggplot2::element_blank(),
+            #                axis.text = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5,
+            #                                                  family = font_family
+            #                ),
+            #                axis.text.x = ggplot2::element_blank(),
+            #                axis.text.y = ggtext::element_markdown( # Controls the 'timing' Pre post labels
+            #                    angle = 0, hjust = 1, halign = 1, color = "black",
+            #                    margin = ggplot2::margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
+            #                ),
+            #                plot.margin = ggplot2::margin(t = 30, r = 5, b = 30, l = 5, unit = "pt"),
+            #                panel.spacing = grid::unit(0, "cm")
+            # )
 
     if (isTRUE(pre_post)) {
-        stacked_bar_chart_gg <- stacked_bar_chart_gg +
-            ggplot2::theme(strip.placement = "outside",
-                           # strip.clip = "on",
-                           # strip.switch.pad.wrap = grid::unit(0, "cm"),
-                           strip.text.y.left = ggtext::element_markdown( # Controls the question text on left- facet
-                               angle = 0, hjust = 1, color = "black", family = font_family, size = font_size,
-                               margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
-                               )
-            )
+        stacked_bar_chart_gg <- stacked_bar_chart_gg + addBarChartPrePostTheme(font_size = font_size, font_family = font_family)
+            # ggplot2::theme(strip.placement = "outside",
+            #                # strip.clip = "on",
+            #                # strip.switch.pad.wrap = grid::unit(0, "cm"),
+            #                strip.text.y.left = ggtext::element_markdown( # Controls the question text on left- facet
+            #                    angle = 0, hjust = 1, color = "black", family = font_family, size = font_size,
+            #                    margin = ggplot2::margin(t = 5, r = 0, b = 5, l = 5, unit = "pt")
+            #                    )
+            # )
     }
 
     # Set tag to N_df if overall_n_gg == TRUE
     if (isTRUE(overall_n_gg)) {
-        stacked_bar_chart_gg <- stacked_bar_chart_gg + ggplot2::labs(title = NULL, y = labels, x = NULL, tag = paste0("(*n* = ",  N_df_gg , ")")) +
-                                                       ggplot2::theme(plot.tag = ggtext::element_markdown(color = "black", size = font_size, family = font_family),
-                                                                      plot.tag.location = "panel", # places tag within panel
-                                                                      # plot.tag.position = "topleft"
-                                                                      plot.tag.position = c(-0.035, 1.04) # manually positions the tag using coordinates
-                                                                      )
-    } else {
-        stacked_bar_chart_gg <- stacked_bar_chart_gg + ggplot2::labs(title = NULL, y = labels, x = NULL, tag = NULL)
+        stacked_bar_chart_gg <- stacked_bar_chart_gg + addPlotTag(n = N_df_gg, font_size = font_size, font_family = font_family)
+        # + ggplot2::labs(title = NULL, y = labels, x = NULL, tag = paste0("(*n* = ",  N_df_gg , ")")) +
+        #                                                ggplot2::theme(plot.tag = ggtext::element_markdown(color = "black", size = font_size, family = font_family),
+        #                                                               plot.tag.location = "panel", # places tag within panel
+        #                                                               # plot.tag.position = "topleft"
+        #                                                               plot.tag.position = c(-0.035, 1.04) # manually positions the tag using coordinates
+        #                                                               )
+    # } else {
+    #     stacked_bar_chart_gg <- stacked_bar_chart_gg + ggplot2::labs(tag = NULL)
     }
 
     return(stacked_bar_chart_gg)

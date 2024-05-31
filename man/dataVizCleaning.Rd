@@ -4,7 +4,7 @@
 \alias{dataVizCleaning}
 \title{Creates a data frame that is a summary table of counts and percentages}
 \usage{
-dataVizCleaning(df, scale_labels, pre_post = TRUE, na_remove = TRUE)
+dataVizCleaning(df, scale_labels, pre_post = FALSE, na_remove = TRUE)
 }
 \arguments{
 \item{df}{Required, A \link[tibble:tibble-package]{tibble}/data frame of survey items that are categorical/character
@@ -30,38 +30,60 @@ text label. If \code{pre_post} arg is TRUE, an column of \code{timing} is added 
 Creates a data frame that is a summary table of counts and percentages
 }
 \examples{
-# Fake data for examples, first are single items and the second has pre-post data with correct prefixes in variable names:
+# Fake data for examples, first are single items and the second has pre-post data with
+# correct prefixes in variable names:
 items_single <- tibble::tibble(
-    Organization = c("Minimal", "Slight", "Moderate", "Good", "Extensive", "Good", "Moderate", "Slight", "Minimal"),
-    Source = c("Slight", "Slight", "Moderate", "Extensive", "Good", "Moderate", "Slight", "Minimal", "Slight"),
-    Publish = c("Minimal", "Minimal", "Minimal", "Slight", "Slight", "Slight", "Moderate", "Moderate", "Moderate"),
-    Write = c("Slight", "Slight", "Slight", "Moderate", "Moderate", "Moderate", "Good", "Good", "Good"),
-    Research = c("Minimal", "Minimal", "Slight", "Slight", "Moderate", "Moderate", "Good", "Good", "Good")
+    Organization = c("Minimal", "Slight", "Moderate", "Good", "Extensive",
+                     "Good", "Moderate", "Slight", "Minimal"),
+    Source = c("Slight", "Slight", "Moderate", "Extensive", "Good", "Moderate",
+                "Slight", "Minimal", "Slight"),
+    Publish = c("Minimal", "Minimal", "Minimal", "Slight", "Slight", "Slight",
+                "Moderate", "Moderate", "Moderate"),
+    Write = c("Slight", "Slight", "Slight", "Moderate", "Moderate", "Moderate",
+                "Good", "Good", "Good"),
+    Research = c("Minimal", "Minimal", "Slight", "Slight", "Moderate",
+                "Moderate", "Good", "Good", "Good")
 )
 
 items_pre_post <- tibble::tibble(
-    pre_Organization = c("Minimal", "Slight", "Moderate", "Good", "Extensive", "Good", "Moderate", "Slight", "Minimal"),
-    post_Organization = c("Slight", "Moderate", "Good", "Extensive", "Extensive", "Extensive", "Good", "Moderate", "Slight"),
-    pre_Source = c("Slight", "Slight", "Moderate", "Extensive", "Good", "Moderate", "Slight", "Minimal", "Slight"),
-    post_Source = c("Good", "Good", "Extensive", "Extensive", "Good", "Extensive", "Good", "Moderate", "Good"),
-    pre_Publish = c("Minimal", "Minimal", "Minimal", "Slight", "Slight", "Slight", "Moderate", "Moderate", "Moderate"),
-    post_Publish = c("Moderate", "Moderate", "Moderate", "Good", "Good", "Good", "Extensive", "Extensive", "Extensive"),
-    pre_Write = c("Slight", "Slight", "Slight", "Moderate", "Moderate", "Moderate", "Good", "Good", "Good"),
-    post_Write = c("Moderate", "Moderate", "Moderate", "Good", "Good", "Good", "Extensive", "Extensive", "Extensive"),
-    pre_Research = c("Minimal", "Minimal", "Slight", "Slight", "Moderate", "Moderate", "Good", "Good", "Good"),
-    post_Research = c("Slight", "Slight", "Moderate", "Moderate", "Good", "Good", "Extensive", "Extensive", "Extensive")
+    pre_Organization = c("Minimal", "Slight", "Moderate", "Good",
+                    "Extensive", "Good", "Moderate", "Slight", "Minimal"),
+    post_Organization = c("Slight", "Moderate", "Good", "Extensive",
+                    "Extensive", "Extensive", "Good", "Moderate", "Slight"),
+    pre_Source = c("Slight", "Slight", "Moderate", "Extensive", "Good",
+                    "Moderate", "Slight", "Minimal", "Slight"),
+    post_Source = c("Good", "Good", "Extensive", "Extensive", "Good",
+                    "Extensive", "Good", "Moderate", "Good"),
+    pre_Publish = c("Minimal", "Minimal", "Minimal", "Slight", "Slight",
+                    "Slight", "Moderate", "Moderate", "Moderate"),
+    post_Publish = c("Moderate", "Moderate", "Moderate", "Good", "Good",
+                    "Good", "Extensive", "Extensive", "Extensive"),
+    pre_Write = c("Slight", "Slight", "Slight", "Moderate", "Moderate",
+                    "Moderate", "Good", "Good", "Good"),
+    post_Write = c("Moderate", "Moderate", "Moderate", "Good", "Good",
+                    "Good", "Extensive", "Extensive", "Extensive"),
+    pre_Research = c("Minimal", "Minimal", "Slight", "Slight", "Moderate",
+                    "Moderate", "Good", "Good", "Good"),
+    post_Research = c("Slight", "Slight", "Moderate", "Moderate", "Good",
+                    "Good", "Extensive", "Extensive", "Extensive")
 )
 # Add a row of NA values to each fake data set:
 items_pre_post_na <- dplyr::rows_append(items_pre_post,
-                                        tibble::as_tibble_row(purrr::set_names(rep(NA, NCOL(items_pre_post)), names(items_pre_post))))
+         tibble::as_tibble_row(purrr::set_names(rep(NA, NCOL(items_pre_post)),
+         names(items_pre_post))))
 items_single_na <- dplyr::rows_append(items_single,
-                                      tibble::as_tibble_row(purrr::set_names(rep(NA, NCOL(items_single)), names(items_single))))
+         tibble::as_tibble_row(purrr::set_names(rep(NA, NCOL(items_single)),
+         names(items_single))))
 
 # Likert scale to pass to `scale_labels` that is the order to arrange each variable:
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 
-dataVizCleaning(df = items_single, pre_post = FALSE, scale_labels = levels_min_ext, na_remove = TRUE)
-dataVizCleaning(df = items_single_na, pre_post = FALSE, scale_labels = levels_min_ext, na_remove = FALSE)
-dataVizCleaning(df = items_pre_post, pre_post = TRUE, scale_labels = levels_min_ext, na_remove = TRUE)
-dataVizCleaning(df = items_pre_post_na, pre_post = TRUE, scale_labels = levels_min_ext, na_remove = FALSE)
+dataVizCleaning(df = items_single, pre_post = FALSE,
+                scale_labels = levels_min_ext, na_remove = TRUE)
+dataVizCleaning(df = items_single_na, pre_post = FALSE,
+                scale_labels = levels_min_ext, na_remove = FALSE)
+dataVizCleaning(df = items_pre_post, pre_post = TRUE,
+                scale_labels = levels_min_ext, na_remove = TRUE)
+dataVizCleaning(df = items_pre_post_na, pre_post = TRUE,
+                scale_labels = levels_min_ext, na_remove = FALSE)
 }
