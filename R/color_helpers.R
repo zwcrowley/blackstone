@@ -1,7 +1,7 @@
-#' Helper Functions for `bre` package
+#' Helper Functions for colors of visuals for the `bre` package
 #'
 #'
-#' BRE Colors
+#' BRE Colors as a Named Vector
 #'
 #' @description A utils function for loading Blackstone Research and Evaluation colors for charts.
 #'

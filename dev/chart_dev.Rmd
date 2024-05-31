@@ -1,0 +1,370 @@
+---
+title: "Chart Dev Work"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk[["set"]](echo = FALSE, 
+    fig.width = 8,
+    fig.height = 5)
+
+# Load Libraries:
+library(colorspace)
+library(magrittr)
+library(tidyverse)
+library(bre) # blackstone R package
+
+set.seed(424429) # for reproducibility
+
+##### colors:
+breColors <- c("dark_blue" = "#283251",
+                "light_grey" = "#eaeaeb",
+                "med_grey" = "#cecece",
+                "main_grey" = "#c0bfbf")
+
+
+# light grey to BRE Blue color scale:
+pal_bre_grey_blue <- colorRampPalette(c(breColors["light_grey"], breColors["dark_blue"]))
+# pal_bre_grey_blue(length(scale_labels))
+# 
+# white to BRE Blue color scale:
+pal_bre_blue <- colorRampPalette(c("white", breColors["dark_blue"]))
+# pal_bre_grey_blue(length(scale_labels))
+
+######## Data
+items <- dplyr::tibble(
+  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  post_Publish = pre_Publish + 2,
+  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  post_Write = pre_Write + 1,
+  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  post_Research = pre_Research + 1
+)
+
+items_single <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+)
+
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_min_ext_named <- c(
+  "Minimal" = "1", "Slight" = "2", "Moderate" = "3",
+  "Good" = "4", "Extensive" = "5"
+)
+
+# levels_min_ext as just the names from levels_min_ext_named:
+levels_min_ext <- names(levels_min_ext_named) 
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"):
+question_labels <- c(
+  "Publish a lot of high quality papers" = "Publish",
+  "Write a lot of research papers" = "Write",
+  "Research in a lab with faculty" = "Research",
+  "Organization of a large research project" = "Organization",
+  "Source work for a research paper" = "Source"
+)
+
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items <- bre::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+
+
+######## Data: Strongly disagree to Strongly Agree
+items_single_div <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2, 6, 6, 6, 7, 7,7),
+  Publish = c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4 , 5, 6, 7, 6),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4, 5,6,7,1,2,3),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4, 5,6,7,1,2,3),
+)
+
+items_div <- dplyr::tibble(
+  pre_Organization = items_single_div[["Organization"]],
+  post_Organization = dplyr::if_else(pre_Organization < 7, pre_Organization + 1, pre_Organization),
+  pre_Source = items_single_div[["Source"]],
+  post_Source = dplyr::if_else(pre_Source < 5, pre_Source + 2, pre_Source),
+  pre_Publish = items_single_div[["Publish"]],
+  post_Publish = dplyr::if_else(pre_Publish < 6, pre_Publish + 2, pre_Publish),
+  pre_Write = items_single_div[["Write"]],
+  post_Write = dplyr::if_else(pre_Write < 7, pre_Write + 1, pre_Write),
+  pre_Research = items_single_div[["Research"]],
+  post_Research = dplyr::if_else(pre_Research < 7, pre_Research + 1, pre_Research) 
+)
+
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_dis_agree_named <- c(
+  "Strongly Disagree" = "1", "Somewhat Disagree" = "2", "Disagree" = "3",
+  "Neither Agree or Disagree" = "4", "Agree" = "5", "Somewhat Agree" = "6", "Strongly Agree" = "7"
+)
+
+# levels_min_ext as just the names from levels_min_ext_named:
+levels_dis_agree <- names(levels_dis_agree_named) 
+
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items_div <- bre::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+
+```
+
+```{r}
+# Function dev for gg_helpers.R file:
+
+# Helper function to Add a Plot Tag, pass the total n, font size and family:
+addPlotTag <- function(n, font_size, font_family) {
+    list(
+        ggplot2::labs(tag = paste0("(*n* = ", n , ")")),
+        ggplot2::theme(plot.tag = ggtext::element_markdown(color = "black", size = font_size, family = font_family),
+                       plot.tag.location = "panel", # places tag within panel
+                       # plot.tag.position = "topleft"
+                       plot.tag.position = c(-0.035, 1.04) # manually positions the tag using coordinates
+                       )
+    )
+}
+
+# addBarChartLegendTheme: sets the fill legend, and all theming for sb chart and div chart: args = font_size, font_family:
+addBarChartLegendTheme <- function(font_size, font_family) {
+    list(
+        ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1, 
+                                                         override.aes = list(label = "  ", # sets the width of `key_glyph = draw_key_label` in geom_col for the legend.
+                                                                             size = 5 # sets the size of legend key along with the two spaces in the previous line 
+                                                                             )
+                                                         )
+            ),
+            ggplot2::theme_void(base_size = font_size, base_family = font_family),
+            ggplot2::theme(legend.position = "top",
+                           legend.direction = "horizontal",
+                           legend.text.position = "right",
+                           legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.5,
+                                                               family = font_family, size = rel(0.8)
+                                                              ),
+                           legend.title = ggplot2::element_blank(),
+                           axis.text = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5,
+                                                             family = font_family
+                           ),
+                           axis.text.x = ggplot2::element_blank(),
+                           axis.text.y = ggtext::element_markdown( # Controls the 'question' if pre_post is F, or 'timing' if Pre post labels
+                               angle = 0, hjust = 1, halign = 1, color = "black",
+                               margin = ggplot2::margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
+                           ),
+                           plot.margin = ggplot2::margin(t = 30, r = 5, b = 30, l = 5, unit = "pt"),
+                           panel.spacing = grid::unit(0, "cm")
+            )
+    )
+    
+}
+
+# addBarChartPrePostTheme: sets the fill legend, and all theming for sb chart and div chart: args = font_size, font_family:
+addBarChartPrePostTheme <- function(font_size, font_family) {
+        ggplot2::theme(strip.placement = "outside",
+                       strip.switch.pad.wrap = grid::unit(0, "cm"),
+                       strip.text.y.left = ggtext::element_markdown( # Controls the question text on left- facet
+                           angle = 0, hjust = 1, color = "black", family = font_family, size = font_size,
+                           margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
+                       ),
+                       axis.text.y = ggtext::element_markdown( size = rel(0.8) # Controls the 'timing' Pre post labels
+                       )
+                    )
+    
+}
+
+```
+
+
+### Update `bre::stackedBarChart()`
+
+```{r}
+# Start by processing the data using `bre::stackedBarChart()`:
+clean_items_div <- dataVizCleaning(df = cat_items_div, scale_labels = levels_dis_agree, pre_post = T, na_remove = TRUE)
+
+# Pull in all code from `stackBar_ggplot.R`:
+# stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, label_color_gg, scale_labels_gg, width_gg, fill_colors_gg,
+#                                   overall_n_gg, N_df_gg, pre_post = FALSE) {
+# Set up arg inputs:                                 
+df_gg = clean_items_div
+x_gg = clean_items_div[["percent_answers"]]
+# y_gg = clean_items_div[["question"]] # single
+y_gg = clean_items_div[["timing"]] # pre_post
+fill_gg = clean_items_div[["response"]]
+group_gg = clean_items_div[["question"]]
+scale_labels = levels_dis_agree
+scale_labels_gg = scale_labels
+fill_colors = "div"
+# If statement to handle the value(s) of `fill_colors`:
+    if (length(fill_colors) > 1) {
+        if (length(fill_colors) >= length(scale_labels)) {
+            new_fill_colors <- fill_colors # sets the fill colors to the hex codes passed in by the user.
+        } else {
+            stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
+        }
+    } else if (fill_colors == "seq") {
+        new_fill_colors <- seqFillColors(length(scale_labels)) # sets the fill colors to the default sequential palette of `cividis`.
+    } else if (fill_colors == "div") {
+        new_fill_colors <- divFillColors(length(scale_labels)) # sets the fill colors to the default diverging palette of `Blue Red 3` from namespace `colorspace`.
+    }
+
+# Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
+label_colors <- labelColorMaker(new_fill_colors, names = scale_labels)
+# create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
+clean_items_div <- clean_items_div %>% dplyr::mutate(., label_color = label_colors[clean_items_div[["response"]]])
+
+label_gg = clean_items_div[["percent_answers_label"]]
+label_color_gg = clean_items_div[["label_color"]]
+width_gg = NULL
+fill_colors_gg = new_fill_colors
+overall_n_gg = T
+# Get overall n if it is the same for each item:
+totals_new_df <- clean_items_div %>%
+        dplyr::group_by(.data$question) %>%
+        dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
+        dplyr::ungroup()
+# Get overall n if it is the same for each item:
+        N_df <- totals_new_df %>%
+          dplyr::summarize(N = mean(.data$total)) %>%
+          tibble::deframe()
+N_df_gg = N_df
+pre_post = T
+
+    # Load all fonts:
+    extrafont::loadfonts("all", quiet = TRUE)
+
+    # # Set . to NULL to stop message when using dot notation in mutate:
+    # . <- NULL
+
+    # Create a font family character var so that it is easy to change, could also be a new arg:
+    font_family <- c("Arial")
+
+    font_size <- 10
+
+    stacked_bar_chart_gg <- {{df_gg}} %>%
+        ggplot2::ggplot(ggplot2::aes(
+            x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), group = {{group_gg}})) +
+        ggplot2::geom_col(ggplot2::aes(fill = {{fill_gg}}), position = "fill", color = "black", width = {{width_gg}}, key_glyph = draw_key_label) +
+        ggplot2::geom_text(ggplot2::aes(label = {{label_gg}}, color = {{label_color_gg}}), position = ggplot2::position_fill(vjust = 0.5),
+                           stat = "identity", size = (font_size - 2), size.unit = "pt"
+        ) +
+        ggplot2::scale_color_identity()
+    if (isTRUE(pre_post)) {
+        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars({{ group_gg }}), ncol = 1, strip.position = "left")
+    }
+        stacked_bar_chart_gg <-  stacked_bar_chart_gg +
+            ggplot2::scale_fill_manual(breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
+                                       labels = stringr::str_wrap({{scale_labels_gg}}, width = 8)
+            ) +
+        addBarChartLegendTheme(font_size = font_size, font_family = font_family) # function from `gg_helpers.R`
+
+    if (isTRUE(pre_post)) {
+        stacked_bar_chart_gg <- stacked_bar_chart_gg + addBarChartPrePostTheme(font_size = font_size, font_family = font_family) 
+            # ggplot2::theme(strip.placement = "outside",
+            #                strip.switch.pad.wrap = grid::unit(0, "cm"),
+            #                strip.text.y.left = ggtext::element_markdown( # Controls the question text on left- facet
+            #                    angle = 0, hjust = 1, color = "black", family = font_family, size = font_size,
+            #                    margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
+            #                ),
+            #                axis.text.y = ggtext::element_markdown( size = rel(0.8) # Controls the 'timing' Pre post labels
+            #                )
+            # )
+    }
+
+    # Set tag to N_df if overall_n_gg == TRUE
+    if (isTRUE(overall_n_gg)) {
+        stacked_bar_chart_gg <- stacked_bar_chart_gg + addPlotTag(n = N_df_gg, font_size = font_size, font_family = font_family)
+        # addPlotTag() Replaces code below: 
+        # stacked_bar_chart_gg <- stacked_bar_chart_gg + ggplot2::labs(tag = paste0("(*n* = ",  N_df_gg , ")")) +
+        #                                                ggplot2::theme(plot.tag = ggtext::element_markdown(color = "black", size = font_size, family = font_family),
+        #                                                               plot.tag.location = "panel", # places tag within panel
+        #                                                               # plot.tag.position = "topleft"
+        #                                                               plot.tag.position = c(-0.035, 1.04) # manually positions the tag using coordinates
+        #                                                               )
+    } else {
+        # stacked_bar_chart_gg <- stacked_bar_chart_gg + ggplot2::labs(title = NULL, x = NULL, tag = NULL)
+    }
+stacked_bar_chart_gg
+
+```
+
+
+
+```{r}
+library(ggplot2)
+library(gtable)
+library(grid)
+library(dplyr)
+library(forcats)
+
+# Your starting data and plot code
+stacked_bar_chart_gg <- {{df_gg}} %>%
+  ggplot(ggplot2::aes(
+    x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), group = {{group_gg}}, fill = {{fill_gg}}
+  )) +
+  geom_col(position = "fill", color = "black", width = {{width_gg}}, key_glyph = draw_key_label) + # , key_glyph = draw_key_rect
+   ggplot2::geom_text(ggplot2::aes(label = {{label_gg}}, color = {{label_color_gg}}), position = ggplot2::position_fill(vjust = 0.5),
+                           stat = "identity", size = font_size, size.unit = "pt"
+        ) +
+  scale_color_identity() +
+  scale_fill_manual(
+    breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
+    labels = str_wrap({{scale_labels_gg}}, width = 8)
+  ) +
+  guides(
+    fill = guide_legend(
+      nrow = 1,
+      override.aes = list(label = "  ", # sets the width of `key_glyph = draw_key_label` in geom_col for the legend.
+                          size = 5 # sets the size of legend key along with the two spaces in the previous line 
+                          )
+    )
+  ) +
+  theme_void(base_family = font_family, base_size = font_size) +
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.text.position = "right",
+    legend.text = element_text(
+      angle = 0, hjust = 0, vjust = 0.5,
+      family = font_family, size = rel(0.8)
+    ),
+    legend.title = element_blank(),
+    axis.text = element_text(
+      angle = 0, hjust = 1, vjust = 0.5,
+      family = font_family
+    ),
+    axis.text.x = element_blank(),
+    axis.text.y = ggtext::element_markdown(
+      angle = 0, hjust = 1, halign = 1, color = "black",
+      margin = margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
+    ),
+    plot.margin = margin(t = 30, r = 5, b = 30, l = 5, unit = "pt"),
+    panel.spacing = unit(0, "cm")
+  )
+
+stacked_bar_chart_gg
+
+# Extract the ggplot grob
+# g <- ggplotGrob(stacked_bar_chart_gg)
+# grid::grid.draw(g) 
+# # Adjust legend key sizes
+# g$grobs <- lapply(g$grobs, function(x) {
+#   if(x$name == "gtable[guide-box]") {
+#     x$grobs[[1]]$grobs[[1]]$heights <- unit(rep(0.01, length(x$grobs[[1]]$grobs[[1]]$heights)), "cm")
+#     x$grobs[[1]]$grobs[[1]]$widths <- unit(rep(2, length(x$grobs[[1]]$grobs[[1]]$widths)), "cm")
+#   }
+#   return(x)
+# })
+# 
+# 
+# ggpubr::as_ggplot(g)
+
+```
+
+
+
+

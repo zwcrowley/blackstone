@@ -55,7 +55,7 @@
 #' dataVizCleaning(df = items_single_na, pre_post = FALSE, scale_labels = levels_min_ext, na_remove = FALSE)
 #' dataVizCleaning(df = items_pre_post, pre_post = TRUE, scale_labels = levels_min_ext, na_remove = TRUE)
 #' dataVizCleaning(df = items_pre_post_na, pre_post = TRUE, scale_labels = levels_min_ext, na_remove = FALSE)
-dataVizCleaning <- function(df, scale_labels, pre_post = TRUE, na_remove = TRUE) {
+dataVizCleaning <- function(df, scale_labels, pre_post = FALSE, na_remove = TRUE) {
     . <- NULL # Set . to NULL to stop message when using dot notation in mutate:
 
     if (isTRUE(na_remove)) { # NA's are dropped in this first section:

@@ -285,20 +285,20 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
     # Call stackedBar_ggplot ----
     # Set labels to percent or n_answers:
     if (isTRUE(percent_label)) {
-      label_gg <- new_df$percent_answers_label
+      label_gg <- .data[["percent_answers_label"]]
     } else {
-      label_gg <- new_df$n_answers
+      label_gg <- .data[["n_answers"]]
     }
 
     # Final call to stackedBar_ggplot() for pre_post == TRUE:
     if (isTRUE(pre_post)) {
-      stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data$percent_answers , y_gg = .data$timing, fill_gg = .data$response, group_gg = .data$question,
-                                             label_gg = label_gg, label_color_gg = .data$label_color, scale_labels_gg = scale_labels,
+      stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data[["percent_answers"]] , y_gg = .data[["timing"]], fill_gg = .data[["response"]], group_gg = .data[["question"]],
+                                             label_gg = label_gg, label_color_gg = .data[["label_color"]], scale_labels_gg = scale_labels,
                                              width_gg = width, fill_colors_gg = new_fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = TRUE)
       # Final call to stackedBar_ggplot() if pre_post == FALSE:
-    } else {
-      stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data$percent_answers , y_gg = .data$question, fill_gg = .data$response, group_gg = .data$question,
-                                             label_gg = label_gg, label_color_gg = .data$label_color, scale_labels_gg = scale_labels,
+    } else if (isFALSE(pre_post)) {
+      stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data[["percent_answers"]] , y_gg = .data[["question"]], fill_gg = .data[["response"]], group_gg = .data[["question"]],
+                                             label_gg = label_gg, label_color_gg = .data[["label_color"]], scale_labels_gg = scale_labels,
                                              width_gg = width, fill_colors_gg = new_fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = FALSE)
     }
 

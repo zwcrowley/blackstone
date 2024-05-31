@@ -44,7 +44,7 @@ stackedBar_ggplot <- function(df_gg, x_gg , y_gg, fill_gg, group_gg, label_gg, l
     # Create a font family character var so that it is easy to change, could also be a new arg:
     font_family <- c("Arial")
 
-    font_size <- 7
+    font_size <- 10
 
     stacked_bar_chart_gg <- {{df_gg}} %>%
         ggplot2::ggplot(ggplot2::aes(
