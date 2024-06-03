@@ -134,19 +134,24 @@ addPlotTag <- function(n, font_size, font_family) {
 # addBarChartLegendTheme: sets the fill legend, and all theming for sb chart and div chart: args = font_size, font_family:
 addBarChartLegendTheme <- function(font_size, font_family) {
     list(
-        ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1, 
-                                                         override.aes = list(label = "  ", # sets the width of `key_glyph = draw_key_label` in geom_col for the legend.
-                                                                             size = 5 # sets the size of legend key along with the two spaces in the previous line 
-                                                                             )
-                                                         )
-            ),
+        # ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1
+        #                                                  # override.aes = list(label = "  ", # sets the width of `key_glyph = draw_key_label` in geom_col for the legend.
+        #                                                  #                     size = 4.5 # sets the size of legend key along with the two spaces in the previous line 
+        #                                                  #                     )
+        #                                                  )
+            # ),
             ggplot2::theme_void(base_size = font_size, base_family = font_family),
             ggplot2::theme(legend.position = "top",
                            legend.direction = "horizontal",
+                           # legend.key = element_rect(color = NA, fill = NA),
+                           # legend.key.size = unit(0, "cm"),
                            legend.text.position = "right",
-                           legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.5,
-                                                               family = font_family, size = rel(0.8)
+                           legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.55,
+                                                               family = font_family
+                                                               # size = rel(0.8)
                                                               ),
+                           legend.box.spacing = unit(0, "cm"),
+                           legend.ticks.length = rel(0),
                            legend.title = ggplot2::element_blank(),
                            axis.text = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5,
                                                              family = font_family
@@ -248,7 +253,8 @@ pre_post = T
     stacked_bar_chart_gg <- {{df_gg}} %>%
         ggplot2::ggplot(ggplot2::aes(
             x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), group = {{group_gg}})) +
-        ggplot2::geom_col(ggplot2::aes(fill = {{fill_gg}}), position = "fill", color = "black", width = {{width_gg}}, key_glyph = ggplot2::draw_key_label) +
+        ggplot2::geom_col(ggplot2::aes(fill = {{fill_gg}}), position = "fill", color = "black", width = {{width_gg}},
+                          ) + # key_glyph = ggplot2::draw_key_label
         ggplot2::geom_text(ggplot2::aes(label = {{label_gg}}, color = {{label_color_gg}}), position = ggplot2::position_fill(vjust = 0.5),
                            stat = "identity", size = (font_size - 2), size.unit = "pt"
         ) +
@@ -257,10 +263,29 @@ pre_post = T
         stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars({{ group_gg }}), ncol = 1, strip.position = "left")
     }
         stacked_bar_chart_gg <-  stacked_bar_chart_gg +
-            ggplot2::scale_fill_manual(breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
-                                       labels = stringr::str_wrap({{scale_labels_gg}}, width = 8)
+            ggplot2::scale_fill_manual(values = {{fill_colors_gg}}, drop = FALSE
+                                       # labels = NULL,
+                                       # guide = guide_legend(nrow = 1, override.aes = list(size = 2, shape = 21)
+                                                            # )
+
             ) +
-        addBarChartLegendTheme(font_size = font_size, font_family = font_family) # function from `gg_helpers.R`
+        addBarChartLegendTheme(font_size = font_size, font_family = font_family) + # function from `gg_helpers.R`
+        ggplot2::guides(fill = NULL,
+                        # fill = ggplot2::guide_legend(nrow = 1,
+                        #           override.aes = list(label = stringr::str_wrap({{scale_labels_gg}}, width = 8), # sets the width of `key_glyph = draw_key_label` in geom_col for the legend.
+                        #           size = 2 # sets the size of legend key along with the two spaces in the previous line
+                        #                                                      )
+                        #                                  )
+                        shape = ggplot2::guide_legend(nrow = 1,
+                                  override.aes = list(label = stringr::str_wrap({{scale_labels_gg}}, width = 8), # sets the width of `key_glyph = draw_key_label` in geom_col for the legend.
+                                  size = 2 # sets the size of legend key along with the two spaces in the previous line
+                                                                             )
+                                                         )
+                        ) +
+      ggplot2::theme(legend.key.size = unit(1, "cm"),
+                     legend.key.width = unit(1, "cm"), 
+                     legend.key.height = unit(1, "cm")
+        )
 
     if (isTRUE(pre_post)) {
         stacked_bar_chart_gg <- stacked_bar_chart_gg + addBarChartPrePostTheme(font_size = font_size, font_family = font_family) 
@@ -289,6 +314,110 @@ pre_post = T
         # stacked_bar_chart_gg <- stacked_bar_chart_gg + ggplot2::labs(title = NULL, x = NULL, tag = NULL)
     }
 stacked_bar_chart_gg
+
+```
+
+
+
+```{r}
+# Start by processing the data using `bre::stackedBarChart()`:
+clean_items_single_div <- dataVizCleaning(df = cat_items_single_div, scale_labels = levels_dis_agree, pre_post = F, na_remove = TRUE)
+fill_colors = "div"
+# If statement to handle the value(s) of `fill_colors`:
+    if (length(fill_colors) > 1) {
+        if (length(fill_colors) >= length(scale_labels)) {
+            new_fill_colors <- fill_colors # sets the fill colors to the hex codes passed in by the user.
+        } else {
+            stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
+        }
+    } else if (fill_colors == "seq") {
+        new_fill_colors <- seqFillColors(length(scale_labels)) # sets the fill colors to the default sequential palette of `cividis`.
+    } else if (fill_colors == "div") {
+        new_fill_colors <- divFillColors(length(scale_labels)) # sets the fill colors to the default diverging palette of `Blue Red 3` from namespace `colorspace`.
+    }
+# Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
+label_colors <- labelColorMaker(new_fill_colors, names = scale_labels)
+# create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
+clean_items_single_div <- clean_items_single_div %>% dplyr::mutate(., label_color = label_colors[clean_items_single_div[["response"]]])
+
+```
+
+```{r}
+#  `new_fill_colors` as a named vector combined with `scale_labels`, where the names are the labels and values are the colors from `new_fill_colors`:
+names(new_fill_colors) <- scale_labels
+
+grid.newpage()
+## These *do* nothing but produce a "gpar" object:
+gp <- gpar(col = "black", fontsize = 10, fontfamily = "Arial")
+vp <- viewport(width = .8, height = .4)
+g <- gTree(children = gList(rectGrob(gp = gpar(col = "black", lwd = 1.2, fill = new_fill_colors[1]),x = 0, y = 1, width = unit(0.6, "cm"), height = unit(0.6, "cm")),
+                            textGrob(paste("The rect is its own colour (red)",
+                                    "but this text is the colour",
+                                    "set by the gTree (green)",
+                                    sep = "\n"))),
+                            rectGrob(gp = gpar(col = new_fill_colors[2]),x = 0.1, y = 1, width = unit(0.6, "cm"), height = unit(0.6, "cm")),
+      gp = gp, vp = vp)
+grid.draw(g)
+## example with multiple values for a parameter
+pushViewport(viewport())
+popViewport()
+
+```
+
+```{r}
+font_family <- "Arial"
+font_size <- 10
+
+# Define a graphical object
+circle <- grid::circleGrob()
+
+
+
+new <- clean_items_single_div %>%
+        ggplot2::ggplot(ggplot2::aes(
+            x = percent_answers, y = forcats::fct_rev(question), group = question)) +
+        ggplot2::geom_col(ggplot2::aes(fill = response), position = "fill", color = "black"
+                          ) + # key_glyph = ggplot2::draw_key_label
+        ggplot2::geom_text(ggplot2::aes(label = percent_answers_label, color = label_color), position = ggplot2::position_fill(vjust = 0.5),
+                           stat = "identity", size = font_size, size.unit = "pt", 
+        ) +
+    ggplot2::scale_color_identity() +
+    ggplot2::scale_fill_manual(values = new_fill_colors, labels = ~ stringr::str_wrap(., width = 8)) +
+    ggplot2::guides( #fill = NULL 
+                    fill = ggplot2::guide_legend(nrow = 1),
+                    custom = guide_custom(circle, title = "My circle",
+                                          width = unit(2, "cm"), height = unit(2, "cm")
+                                          )
+                    ) +
+    # ggplot2::theme_void(base_size = font_size, base_family = font_family) +
+    ggplot2::theme(legend.title = ggplot2::element_blank(),
+                   legend.key = ggplot2::element_blank(), 
+                   legend.position = "top",
+                   legend.direction = "horizontal",
+                   legend.text.position = "right",
+                   legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.55,
+                                                               family = font_family, size = 10
+                                                              ),
+                   legend.box.spacing = grid::unit(0, "cm"),
+                   legend.ticks.length = rel(0),
+                   axis.ticks = ggplot2::element_blank(),
+                   axis.title = ggplot2::element_blank(),
+                   axis.text = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5,
+                                                             family = font_family
+                           ),
+                   axis.text.x.bottom = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.text.y = ggtext::element_markdown( # Controls the 'question' if pre_post is F, or 'timing' if Pre post labels
+                       angle = 0, hjust = 1, halign = 1, color = "black",
+                       margin = ggplot2::margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
+                   ),
+                   plot.background = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   legend.background = ggplot2::element_blank()
+                   ) 
+
+new  
+
 
 ```
 
