@@ -556,17 +556,12 @@ new
 
 
 ```{r}
-library(ggplot2)
-library(viridis)
-
 dat <- data.frame(x = seq(1,100,by=2), y = seq(1,300,by=3))
 
 df <- data.frame(class = c("very high", "high", "medium", "low", "very low"),
             lwr = c(90, 75, 35, 15, 0),
             upr = c(100, 90, 75, 35, 15))
 
-library(ggplot2)
-library(dplyr)
 
 # Color palette
 pal <- scales::viridis_pal(option = "viridis")(5)
@@ -603,9 +598,122 @@ draw_key_cust <- function(data, params, size) {
 ggplot(dat) +
   geom_rect(data = df, aes(xmin = lwr, xmax = upr, ymin = -Inf, ymax = Inf, fill = class), alpha = 0.4, key_glyph = draw_key_cust) +
   geom_point(aes(x, y)) +
-  theme_bw() +
   scale_fill_manual("Classes", values = pal, limits = c("very high", "high", "medium", "low", "very low")) +
-  guides(fill = guide_legend(keywidth = width, keyheight = unit(.1, "in"))) # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
+  guides(fill = guide_legend(keywidth = width, keyheight = unit(.3, "in"))) + # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
+  theme_bw() + 
+  ggplot2::theme(legend.position = "top")
+```
+
+
+```{r}
+
+# Start by processing the data using `bre::stackedBarChart()`:
+clean_items_single_div <- dataVizCleaning(df = cat_items_single_div, scale_labels = levels_dis_agree, pre_post = F, na_remove = TRUE)
+fill_colors = "div"
+# If statement to handle the value(s) of `fill_colors`:
+    if (length(fill_colors) > 1) {
+        if (length(fill_colors) >= length(scale_labels)) {
+            new_fill_colors <- fill_colors # sets the fill colors to the hex codes passed in by the user.
+        } else {
+            stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels.`")
+        }
+    } else if (fill_colors == "seq") {
+        new_fill_colors <- seqFillColors(length(scale_labels)) # sets the fill colors to the default sequential palette of `cividis`.
+    } else if (fill_colors == "div") {
+        new_fill_colors <- divFillColors(length(scale_labels)) # sets the fill colors to the default diverging palette of `Blue Red 3` from namespace `colorspace`.
+    }
+# Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
+label_colors <- labelColorMaker(new_fill_colors, names = scale_labels)
+# create a new col `label_color` using the named vector `label_colors` to map the text color to the variable response
+clean_items_single_div <- clean_items_single_div %>% dplyr::mutate(., label_color = label_colors[clean_items_single_div[["response"]]])
+
+# Color palette named by the scale_labels:
+new_fill_colors_named <- new_fill_colors # palette as values
+names(new_fill_colors_named) <- str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
+
+# Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
+key_width <- unit(max(sapply(names(new_fill_colors_named), strwidth, units = "inches")) * 0.8, "in")
+# Legend key height = maximum label strheight: PASS TO guide_legend keyheight
+key_height <- unit(max(sapply(names(new_fill_colors_named), strheight, units = "inches")) * 0.8, "in")
+
+# Custom draw_key_rect, adds black outline box
+draw_key_rect_cust <- function(data, params, size) {
+  grid::rectGrob(gp = grid::gpar(
+    col = "black", # adds black outline box to each key
+    fill = scales::alpha(data$fill %||% data$colour %||% "grey20", data$alpha),
+    lty = data$linetype %||% 1
+  ))
+}
+# Custom draw_key_text, adds just and lineheight:
+draw_key_text_cust <- function(data, params, size) {
+  if (is.null(data$label)) data$label <- "a"
+  grid::textGrob(data$label, 0.5, 0.5,
+            hjust = 0.5, # left justified text
+            vjust = 0.5,
+            rot = data$angle %||% 0,
+            gp = grid::gpar(
+              col = scales::alpha(data$colour %||% data$fill %||% "black", data$alpha),
+              fontfamily = data$family %||% "",
+              fontface = data$fontface %||% 1,
+              fontsize = (data$size %||% 3.88) * .pt,
+              lineheight = 0.9
+            )
+        )
+}
+
+# Custom key glyph
+draw_key_cust <- function(data, params, size) {
+  data_text <- data
+  data_text$label <- names(new_fill_colors_named)[match(data$fill, new_fill_colors_named)] # match the scale_labels to the new pal in new_fill_colors_named
+  data_text[c("fill")] <- NULL
+  data_text$alpha <- 1
+  data_text$size <- 8/.pt
+
+  grid::grobTree(
+    draw_key_rect_cust(data, list()),
+    draw_key_text_cust(data_text, list())
+  )
+}
+
+font_family <- "Arial"
+font_size <- 10
+
+
+new <- clean_items_single_div %>%
+        ggplot2::ggplot(ggplot2::aes(
+            x = percent_answers, y = forcats::fct_rev(question), group = question)) +
+        ggplot2::geom_col(ggplot2::aes(fill = response), position = "fill", color = "black", # , show.legend = FALSE # turn off legend
+                          key_glyph = draw_key_cust) + # key_glyph = ggplot2::draw_key_label
+        ggplot2::geom_text(ggplot2::aes(label = percent_answers_label, color = label_color), position = ggplot2::position_fill(vjust = 0.5),
+                           stat = "identity", size = font_size, size.unit = "pt"
+        ) +
+    ggplot2::scale_color_identity() +
+    ggplot2::scale_fill_manual(values = new_fill_colors, labels = NULL) +
+    ggplot2::guides(fill = guide_legend(nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
+                                        override.aes = list(color = labelColorMaker(new_fill_colors, names = scale_labels)), # sets the color of the legend text to white or black
+                                        theme = ggplot2::theme(legend.spacing.x = unit(2, 'cm'))
+                                        )
+                                    ) + 
+    ggplot2::theme(legend.position = "top",
+                   legend.title = element_blank(),
+                   legend.box.spacing = grid::unit(0, "cm"), # no space btw legend and plot
+                   axis.ticks = ggplot2::element_blank(),
+                   axis.title = ggplot2::element_blank(),
+                   axis.text = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5,
+                                                             family = font_family
+                           ),
+                   axis.text.x.bottom = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.text.y = ggtext::element_markdown( # Controls the 'question' if pre_post is F, or 'timing' if Pre post labels
+                       angle = 0, hjust = 1, halign = 1, color = "black",
+                       margin = ggplot2::margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
+                   ),
+                   plot.background = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   legend.background = ggplot2::element_blank()
+                   )
+
+new  
 
 
 ```
