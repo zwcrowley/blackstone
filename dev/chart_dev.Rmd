@@ -422,7 +422,7 @@ legendGrobCustom <-
 	     hgap=unit(1, "lines"), vgap=unit(1, "lines"),
 	     default.units="lines",
 	     pch, sym_size = unit(1, "char"), 
-	     gp = gpar(), vp=NULL)
+	     gp =gpar(), vp=NULL)
 {
     ## Type checking on arguments; labels: character, symbol or expression:
     labels <- as.graphicsAnnot(labels)
@@ -468,7 +468,7 @@ legendGrobCustom <-
 	    if(has.lty)	 gpi$lty <- gp$lty[i]
 	    if(has.lwd)	 gpi$lwd <- gp$lwd[i]
 	    if(has.col)	 gpi$col <- gp$col[i]
-	    if(has.fill) gpi$fill<- gp$fill[i]
+	    if(has.fill) gpi$fill <- gp$fill[i]
 	}
 	if(byrow) {
 	    ci <- 1+ (i-1) %%  ncol
@@ -484,10 +484,10 @@ legendGrobCustom <-
 
 	## points/lines grob:
 	plGrob <- if(has.pch && do.lines)
-	    gTree(children = gList(linesGrob (0:1, 0.5, gp=gpi),
+	    gTree(children = gList(linesGrob(c(sym_size:1, sym_size:1 + 0.5), 0.5, gp=gpi),
 		  pointsGrob(0.5, 0.5, default.units="npc", pch=pch[i], gp=gpi, size = sym_size))[ord])
 	else if(has.pch) pointsGrob(0.5, 0.5, default.units="npc", pch=pch[i], gp=gpi, size = sym_size)
-	else if(do.lines) linesGrob(0:1, 0.5, gp=gpi)
+	else if(do.lines) linesGrob(c(sym_size:1, sym_size:1 + 0.5), 0.5, gp=gpi)
 	else nullGrob() # should not happen...
 	fg <- packGrob(fg, plGrob,
 		       col = 2*ci-1, row = ri, border = symbol.border,
@@ -519,17 +519,20 @@ new <- clean_items_single_div %>%
         ) +
     ggplot2::scale_color_identity() +
     ggplot2::scale_fill_manual(values = new_fill_colors, labels = ~ stringr::str_wrap(., width = 8)) +
-    ggplot2::guides(custom = ggplot2::guide_custom(grob = legendGrobCustom(names(new_fill_colors_named), nrow = 1, # using scale_labels and one row
+    ggplot2::guides(custom = ggplot2::guide_custom(grob = legendGrobCustom(names(new_fill_colors_named), # using scale_labels and one row or ncol= 1,
+                                                                           nrow = 1, # using scale_labels and one row
+                                                                           # do.lines = TRUE,
                                                                            pch = 22, # pch 22 is a filled square
-                                                                           sym_size = grid::unit(0.75, "cm"), # new size par for sizing pch symbol 
+                                                                           sym_size = grid::unit(0.65, "cm"), # new size par for sizing pch symbol 
                                                                            hgap = grid::unit(0.3, "cm"), # horz spacing btw legends
                                                                            gp = grid::gpar(col = "black", fontsize = (font_size - 1), fontfamily = font_family,
                                                                                            lineheight = 0.9,
-                                                                                           fill = new_fill_colors_named),# gp fill is the color to fill
+                                                                                           fill = new_fill_colors),# gp fill is the color to fill
                                                                            )
                                                    )
                     ) +
     ggplot2::theme(legend.position = "top",
+                   legend.box.spacing = grid::unit(0, "cm"),
                    axis.ticks = ggplot2::element_blank(),
                    axis.title = ggplot2::element_blank(),
                    axis.text = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5,
@@ -551,14 +554,62 @@ new
 
 ```
 
+
 ```{r}
-ggplot(mtcars, aes(x = mpg, y = wt, shape = factor(gear), fill = factor(gear))) +
-      geom_point(size = 5, color = "blue") + 
-      scale_shape_manual(values = rep(22, length(unique(mtcars$gear)))) + 
-      scale_fill_manual(values = c( "red", "magenta", "yellow")) 
+library(ggplot2)
+library(viridis)
+
+dat <- data.frame(x = seq(1,100,by=2), y = seq(1,300,by=3))
+
+df <- data.frame(class = c("very high", "high", "medium", "low", "very low"),
+            lwr = c(90, 75, 35, 15, 0),
+            upr = c(100, 90, 75, 35, 15))
+
+library(ggplot2)
+library(dplyr)
+
+# Color palette
+pal <- scales::viridis_pal(option = "viridis")(5)
+names(pal) <- c("very high", "high", "medium", "low", "very low")
+
+# Legend key labels
+key_label <- df |>
+  mutate(key_label = case_when(
+    upr == 100 ~ paste(">", lwr),
+    lwr == 0 ~ paste("<", upr),
+    TRUE ~ paste(lwr, upr, sep = "-")
+  )) |>
+  select(class, key_label) |>
+  tibble::deframe()
+
+# Legend key width = maximum label * 1.10 to add some padding
+width <- unit(max(sapply(key_label, strwidth, units = "inches")) * 1.10, "in")
+
+# Custom key glyph
+draw_key_cust <- function(data, params, size) {
+  data_text <- data
+  data_text$label <- key_label[names(pal)[match(data$fill, pal)]]
+  data_text[c("fill")] <- NULL
+  data_text$colour <- "black"
+  data_text$alpha <- 1
+  data_text$size <- 11 / .pt
+
+  grid::grobTree(
+    draw_key_rect(data, list()),
+    draw_key_text(data_text, list())
+  )
+}
+
+ggplot(dat) +
+  geom_rect(data = df, aes(xmin = lwr, xmax = upr, ymin = -Inf, ymax = Inf, fill = class), alpha = 0.4, key_glyph = draw_key_cust) +
+  geom_point(aes(x, y)) +
+  theme_bw() +
+  scale_fill_manual("Classes", values = pal, limits = c("very high", "high", "medium", "low", "very low")) +
+  guides(fill = guide_legend(keywidth = width, keyheight = unit(.1, "in"))) # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
 
 
 ```
+
 
 
 ```{r}

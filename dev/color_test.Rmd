@@ -180,4 +180,14 @@ colorblind_swatches <- purrr::map(.x = values,  ~ swatchplot(
   )
 ```
 
+```{r}
+x = 10
+swatchplot(
+    "Blue-Red 3"  = colorspace::diverging_hcl(n = x, "Blue-Red 3", rev = TRUE),
+    "Mako" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "mako"),
+    "Cividis" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "cividis"),
+    "Viridis" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "viridis"),
+    "Okabe-Ito" = rev(palette.colors(n = x, palette = "Okabe-Ito", recycle = FALSE, names = TRUE)),
+)
+```
 
