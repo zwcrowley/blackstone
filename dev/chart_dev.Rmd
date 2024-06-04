@@ -12,6 +12,8 @@ knitr::opts_chunk[["set"]](echo = FALSE,
 # Load Libraries:
 library(colorspace)
 library(magrittr)
+library(grid)
+library(gridExtra)
 library(tidyverse)
 library(bre) # blackstone R package
 
@@ -344,19 +346,22 @@ clean_items_single_div <- clean_items_single_div %>% dplyr::mutate(., label_colo
 
 ```{r}
 #  `new_fill_colors` as a named vector combined with `scale_labels`, where the names are the labels and values are the colors from `new_fill_colors`:
-names(new_fill_colors) <- scale_labels
-
-grid.newpage()
+new_fill_colors_named <- new_fill_colors
+names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 8)
+# function to build all grobs:
+# map(.x = seq_along(new_fill_colors_named), \(.x)
+# list(rectGrob(gp = gpar(col = "black", lwd = 1.2, fill = new_fill_colors_named[.x]), x = (0 + (.x/10)), y = 1, width = unit(0.6, "cm"), height = unit(0.6, "cm")),
+#      textGrob(label = names(new_fill_colors_named)[.x], x = (0 + (.x/10)), y = 1, hjust = 0, gp = gp)
+#      )
+# )
+grid::grid.newpage()
 ## These *do* nothing but produce a "gpar" object:
 gp <- gpar(col = "black", fontsize = 10, fontfamily = "Arial")
 vp <- viewport(width = .8, height = .4)
-g <- gTree(children = gList(rectGrob(gp = gpar(col = "black", lwd = 1.2, fill = new_fill_colors[1]),x = 0, y = 1, width = unit(0.6, "cm"), height = unit(0.6, "cm")),
-                            textGrob(paste("The rect is its own colour (red)",
-                                    "but this text is the colour",
-                                    "set by the gTree (green)",
-                                    sep = "\n"))),
-                            rectGrob(gp = gpar(col = new_fill_colors[2]),x = 0.1, y = 1, width = unit(0.6, "cm"), height = unit(0.6, "cm")),
-      gp = gp, vp = vp)
+g <- gTree(children = gList(rectGrob(gp = gpar(col = "black", lwd = 1.2, fill = new_fill_colors_named[1]),x = 0, y = 1, width = unit(0.6, "cm"), height = unit(0.6, "cm")),
+                            textGrob(label = names(new_fill_colors_named)[1], x = 0.03, y = 1, hjust = 0, gp = gp),
+                            rectGrob(gp = gpar(col = new_fill_colors_named[2]),x = 0.3, y = 1, width = unit(0.6, "cm"), height = unit(0.6, "cm"))
+                            ), gp = gp, vp = vp)
 grid.draw(g)
 ## example with multiple values for a parameter
 pushViewport(viewport())
@@ -365,41 +370,166 @@ popViewport()
 ```
 
 ```{r}
+grid.newpage()
+gp <- gpar(col = "black", fontsize = 10, fontfamily = "Arial")
+vp <- viewport(width = .8, height = .4)
+grob_list <- map(.x = seq_along(new_fill_colors_named), \(.x)
+                    gList(rectGrob(gp = gpar(col = "black", lwd = 1.2, fill = new_fill_colors_named[.x]), x = (0 + (.x/7.5)), y = 1, width = unit(0.6, "cm"), height = unit(0.6, "cm")),
+                          textGrob(label = names(new_fill_colors_named)[.x], x = (0.03 + (.x/7.5)), y = 1, hjust = 0, check.overlap = TRUE, gp = gp)
+                          )
+                    )
+g <- grobTree(children = do.call(grid::gList, grob_list), gp = gp, vp = vp)
+
+# gridExtra::grid.arrange(grobs = grob_list)
+# g <- gTree(children = grob_list[[7]], gp = gp, vp = vp)
+grid.draw(g)
+## example with multiple values for a parameter
+pushViewport(viewport())
+popViewport()
+
+# is.grob(g)
+```
+
+
+
+```{r}
+## Data:
+  n <- 10
+  x <- stats::runif(n) ; y1 <- stats::runif(n) ; y2 <- stats::runif(n)
+  ## Construct the grobs :
+  plot <- gTree(children=gList(rectGrob(),
+                  pointsGrob(x, y1, pch=21, gp=gpar(col=2, fill=2)),
+                  pointsGrob(x, y2, pch=22, gp=gpar(col=3, fill=3)),
+                  xaxisGrob(),
+                  yaxisGrob()))
+  legd <- grid::legendGrob(names(new_fill_colors_named), nrow = 1, pch = 22, # pch 22 is a filled square
+                     hgap = grid::unit(0.2, "cm"), # horz spacing btw legends
+                     gp = grid::gpar(col = "black", fontsize = 10, fontfamily = "Arial",
+                                     fill = new_fill_colors_named)) # gp fill is the color to fill 
+  gg <- packGrob(packGrob(frameGrob(), plot),
+                 legd, height=unit(1,"null"), side="top")
+
+  ## Now draw it on a new device page:
+  grid.newpage()
+  pushViewport(viewport(width=0.8, height=0.8))
+  grid.draw(gg)
+```
+
+```{r}
+legendGrobCustom <-
+    function(labels, nrow, ncol, byrow=FALSE,
+	     do.lines = has.lty || has.lwd, lines.first=TRUE,
+	     hgap=unit(1, "lines"), vgap=unit(1, "lines"),
+	     default.units="lines",
+	     pch, sym_size = unit(1, "char"), 
+	     gp = gpar(), vp=NULL)
+{
+    ## Type checking on arguments; labels: character, symbol or expression:
+    labels <- as.graphicsAnnot(labels)
+    labels <- if(is.character(labels)) as.list(labels) else as.expression(labels)
+    nkeys <- if(is.call(labels)) 1 else length(labels)
+    if(nkeys == 0) return(nullGrob(vp=vp))
+    if (!is.unit(hgap))
+	hgap <- unit(hgap, default.units)
+    if (length(hgap) != 1) stop("'hgap' must be single unit")
+    if (!is.unit(vgap))
+	vgap <- unit(vgap, default.units)
+    if (length(vgap) != 1) stop("'vgap' must be single unit")
+    ## nrow, ncol
+    miss.nrow <- missing(nrow)
+    miss.ncol <- missing(ncol)
+    if(miss.nrow && miss.ncol) {ncol <- 1; nrow <- nkeys} # defaults to 1-column legend
+    else if( miss.nrow && !miss.ncol) nrow <- ceiling(nkeys / ncol)
+    else if(!miss.nrow &&  miss.ncol) ncol <- ceiling(nkeys / nrow)
+    if(nrow < 1) stop("'nrow' must be >= 1")
+    if(ncol < 1) stop("'ncol' must be >= 1")
+    if(nrow * ncol < nkeys)
+        stop("nrow * ncol < #{legend labels}")
+    ## pch, gp
+    if(has.pch <- !missing(pch) && length(pch) > 0) pch <- rep_len(pch, nkeys)
+    if(doGP <- length(nmgp <- names(gp)) > 0) {
+	if(has.lty  <-  "lty" %in% nmgp) gp$lty  <- rep_len(gp$lty, nkeys)
+	if(has.lwd  <-  "lwd" %in% nmgp) gp$lwd  <- rep_len(gp$lwd, nkeys)
+	if(has.col  <-  "col" %in% nmgp) gp$col  <- rep_len(gp$col,  nkeys)
+	if(has.fill <- "fill" %in% nmgp) gp$fill <- rep_len(gp$fill, nkeys)
+    } else {
+	gpi <- gp
+	if(missing(do.lines)) do.lines <- FALSE
+    }
+
+    ## main
+    u0 <- unit(0, "npc")
+    u1 <- unit(1, "char")
+    ord <- if(lines.first) 1:2 else 2:1
+    fg <- frameGrob(vp = vp)	  # set up basic frame grob (for packing)
+    for (i in seq_len(nkeys)) {
+	if(doGP) {
+	    gpi <- gp
+	    if(has.lty)	 gpi$lty <- gp$lty[i]
+	    if(has.lwd)	 gpi$lwd <- gp$lwd[i]
+	    if(has.col)	 gpi$col <- gp$col[i]
+	    if(has.fill) gpi$fill<- gp$fill[i]
+	}
+	if(byrow) {
+	    ci <- 1+ (i-1) %%  ncol
+	    ri <- 1+ (i-1) %/% ncol
+	} else {
+	    ci <- 1+ (i-1) %/% nrow
+	    ri <- 1+ (i-1) %%  nrow
+	}
+	## borders; unit.c creates a 4-vector of borders (bottom, left, top, right)
+	vg <- if(ri != nrow) vgap else u0
+	symbol.border <- unit.c(vg, u0, u0, 0.5 * hgap)
+	text.border   <- unit.c(vg, u0, u0, if(ci != ncol) hgap else u0)
+
+	## points/lines grob:
+	plGrob <- if(has.pch && do.lines)
+	    gTree(children = gList(linesGrob (0:1, 0.5, gp=gpi),
+		  pointsGrob(0.5, 0.5, default.units="npc", pch=pch[i], gp=gpi, size = sym_size))[ord])
+	else if(has.pch) pointsGrob(0.5, 0.5, default.units="npc", pch=pch[i], gp=gpi, size = sym_size)
+	else if(do.lines) linesGrob(0:1, 0.5, gp=gpi)
+	else nullGrob() # should not happen...
+	fg <- packGrob(fg, plGrob,
+		       col = 2*ci-1, row = ri, border = symbol.border,
+		       width = u1, height = u1, force.width = TRUE)
+	## text grob: add the labels
+	gpi. <- gpi
+	gpi.$col <- "black" # maybe needs its own 'gp' in the long run (?)
+	fg <- packGrob(fg, textGrob(labels[[i]], x = 0, y = 0.5,
+				    just = c("left", "centre"), gp=gpi.),
+		       col = 2*ci, row = ri, border = text.border)
+    }
+    fg
+}
+
+```
+
+```{r}
 font_family <- "Arial"
 font_size <- 10
-
-# Define a graphical object
-circle <- grid::circleGrob()
-
 
 
 new <- clean_items_single_div %>%
         ggplot2::ggplot(ggplot2::aes(
             x = percent_answers, y = forcats::fct_rev(question), group = question)) +
-        ggplot2::geom_col(ggplot2::aes(fill = response), position = "fill", color = "black"
+        ggplot2::geom_col(ggplot2::aes(fill = response), position = "fill", color = "black", show.legend = FALSE # turn off legend
                           ) + # key_glyph = ggplot2::draw_key_label
         ggplot2::geom_text(ggplot2::aes(label = percent_answers_label, color = label_color), position = ggplot2::position_fill(vjust = 0.5),
                            stat = "identity", size = font_size, size.unit = "pt", 
         ) +
     ggplot2::scale_color_identity() +
     ggplot2::scale_fill_manual(values = new_fill_colors, labels = ~ stringr::str_wrap(., width = 8)) +
-    ggplot2::guides( #fill = NULL 
-                    fill = ggplot2::guide_legend(nrow = 1),
-                    custom = guide_custom(circle, title = "My circle",
-                                          width = unit(2, "cm"), height = unit(2, "cm")
-                                          )
+    ggplot2::guides(custom = ggplot2::guide_custom(grob = legendGrobCustom(names(new_fill_colors_named), nrow = 1, # using scale_labels and one row
+                                                                           pch = 22, # pch 22 is a filled square
+                                                                           sym_size = grid::unit(0.75, "cm"), # new size par for sizing pch symbol 
+                                                                           hgap = grid::unit(0.3, "cm"), # horz spacing btw legends
+                                                                           gp = grid::gpar(col = "black", fontsize = (font_size - 1), fontfamily = font_family,
+                                                                                           lineheight = 0.9,
+                                                                                           fill = new_fill_colors_named),# gp fill is the color to fill
+                                                                           )
+                                                   )
                     ) +
-    # ggplot2::theme_void(base_size = font_size, base_family = font_family) +
-    ggplot2::theme(legend.title = ggplot2::element_blank(),
-                   legend.key = ggplot2::element_blank(), 
-                   legend.position = "top",
-                   legend.direction = "horizontal",
-                   legend.text.position = "right",
-                   legend.text = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0.55,
-                                                               family = font_family, size = 10
-                                                              ),
-                   legend.box.spacing = grid::unit(0, "cm"),
-                   legend.ticks.length = rel(0),
+    ggplot2::theme(legend.position = "top",
                    axis.ticks = ggplot2::element_blank(),
                    axis.title = ggplot2::element_blank(),
                    axis.text = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5,
@@ -414,13 +544,21 @@ new <- clean_items_single_div %>%
                    plot.background = ggplot2::element_blank(),
                    panel.background = ggplot2::element_blank(),
                    legend.background = ggplot2::element_blank()
-                   ) 
+                   )
 
 new  
 
 
 ```
 
+```{r}
+ggplot(mtcars, aes(x = mpg, y = wt, shape = factor(gear), fill = factor(gear))) +
+      geom_point(size = 5, color = "blue") + 
+      scale_shape_manual(values = rep(22, length(unique(mtcars$gear)))) + 
+      scale_fill_manual(values = c( "red", "magenta", "yellow")) 
+
+
+```
 
 
 ```{r}
