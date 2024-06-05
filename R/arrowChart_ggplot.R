@@ -16,7 +16,7 @@
 #'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a arrow bar chart.
 #' @noRd
-arrowChart_ggplot <- function(df_gg, fill_gg, scale_labels_gg, font_family = "Arial", font_size = 10 ) {
+arrowChart_ggplot <- function(df_gg, fill_gg, scale_labels_gg, font_family = "Arial", font_size = 10) {
         # Load fonts:
         extrafont::loadfonts("all", quiet = TRUE)
         . <- NULL # to stop check() from bringing up .
@@ -40,7 +40,6 @@ arrowChart_ggplot <- function(df_gg, fill_gg, scale_labels_gg, font_family = "Ar
             ) +
             ggplot2::scale_color_manual(values = fill_gg) +
             ggplot2::scale_x_continuous(limits = c(1, length(scale_labels_gg)), labels = scale_labels_gg) +
-            ggplot2::labs(tag = NULL, color = NULL) +
             ggplot2::theme_void(base_family = font_family, base_size = font_size) +
             ggplot2::theme(
                 axis.text.x = ggtext::element_markdown(

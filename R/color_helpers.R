@@ -74,30 +74,47 @@ divFillColors <- function(n_colors) {
 }
 
 
-#' Helper function to create qualitative colors: either default to `viridis` or `Okabe-Ito`.
+#' BRE Qualitative Colors as a Named Vector
 #'
-#' @description A function to create qualitative colors: pal argument either default to `viridis` or `Okabe-Ito`, reversed if rev_colors is set to TRUE.
+#' @description A utils function for loading Qualitative color scale Blackstone Research and Evaluation colors for charts.
+#'
+#' @return A named vector of hex colors for Qualitative color scale for Blackstone Research and Evaluation.
+#'
+#' @export
+qualColors <- c(
+    `orange`  = "#E69F00",
+    `sky blue`  = "#56B4E9",
+    `bluish green`  = "#009E73",
+    `magenta`  = "#CC79A7",
+    `blue`  = "#0072B2",
+    `vermillion` = "#D55E00",
+    `viridis purple`  = "#440154FF",
+    `dark grey` = "#999999",
+    `bre blue` = "#283251")
+
+#' Helper function to create qualitative colors from the `Okabe-Ito` palette.
+#'
+#' @description A function to create qualitative colors from the `Okabe-Ito` palette, reversed if rev_colors is set to TRUE.
+#'      Drops black and yellow for use with all BRE charts.
 #'
 #' @param n_colors Required, the number of color hex codes to return.
-#'
-#' @param pal Required, the name of the palette to use, defaults to `viridis` or can use `Okabe-Ito`.
-#'
+#'#'
 #' @param rev_colors Logical, defaults to FALSE, if true returns a reverse color codes where the darkest color comes first.
 #'
 #' @return a character vector of hex color codes the length of `n_colors`.
 #' @importFrom grDevices palette.colors
 #'
 #' @export
-qualFillColors <- function(n_colors, pal = "viridis", rev_colors = FALSE) {
-    if (pal == "viridis") {
-        viridisLite::viridis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = dplyr::if_else(isTRUE(rev_colors), -1, 1), option = "viridis")
-    } else if (pal == "Okabe-Ito") {
+qualFillColors <- function(n_colors, rev_colors = FALSE) {
+    if (n_colors > 9) {
+        stop("Error: n_colors exceeds the total colors in the qual palette. Construct a custom scale using these colors with n_colors = 9,
+             adding as many as you need by recyling these colors or adding new color codes")
+    } else {
         if (isTRUE(rev_colors)) {
+            # c("#E69F00", "#56B4E9", "#009E73","#CC79A7", "#0072B2", "#D55E00","#440154FF", "#999999", "#283251")
             rev(grDevices::palette.colors(n = n_colors, palette = "Okabe-Ito"))
         } else if (isFALSE(rev_colors)) {
             grDevices::palette.colors(n = n_colors, palette = "Okabe-Ito")
         }
-    } else {
-        stop("Error: for `pal` argument either enter 'viridis' or 'Okabe-Ito'")
     }
 }

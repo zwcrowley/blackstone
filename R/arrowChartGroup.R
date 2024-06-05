@@ -103,7 +103,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
       dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
       dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
       dplyr::ungroup() %>%
-      dplyr::mutate({{group}} := "all")
+      dplyr::mutate({{group}} := "Overall")
 
     # Full join the data by groups and overall, and then Rev the factor order of "group":
     arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by( {{group}}, "question", "timing", "score_avg")) %>%
@@ -155,11 +155,14 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
         tibble::deframe()
     }
 
+    # Set up scale_labels so that they include the number as well as the likert scale item for each response:
+    new_scale_labels <- sapply(seq_along(scale_labels), \(x) paste0(scale_labels[x], "\n(",x,")"))
+
     # Main calls to ggplot function arrowChartGroup_ggplot(): -----
     # If overall_n == TRUE:
     if (isTRUE(overall_n)) {
-      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = group_colors, scale_labels_gg = scale_labels) +
-        ggplot2::labs(tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) # change tag labels to overall n
+      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = group_colors, scale_labels_gg = new_scale_labels) +
+                        addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(-0.01, 0.98)) # see 'gg_helpers.R', re-position with plot_tag_position arg
 
       return(arrow_new)
 
@@ -179,7 +182,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
       arrow_df <- arrow_df %>%
         dplyr::mutate(question = factor(.data$question, labels = labels_n_questions))
       # ggplot call for overall_n == FALSE
-      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = group_colors, scale_labels_gg = scale_labels)
+      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = group_colors, scale_labels_gg = new_scale_labels)
 
       return(arrow_new)
     }
