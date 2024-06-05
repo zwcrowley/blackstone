@@ -118,6 +118,42 @@ cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named)
 
 ```
 
+
+```{r}
+# Test new sb chart function on sequential color pal:
+stackedBarChart(
+   df = cat_items_single, pre_post = F, scale_labels = levels_min_ext, overall_n = T,
+   question_labels = NULL, percent_label = TRUE, width = NULL, fill_colors = "seq"
+ )
+
+# new_fill_colors <- seqFillColors(length(levels_min_ext))
+# # Named vector created by new color palette named by the scale_labels:
+# new_fill_colors_named <- new_fill_colors # new color palette as values
+# names(new_fill_colors_named) <- stringr::str_wrap(levels_min_ext, width = 10) # names as str_wrap scale_labels
+# 
+# # Calculate the width and height of legend keys using `names(new_fill_colors_named)` (i.e. str_wrap scale_labels)
+# # Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
+# key_width <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strwidth, units = "inches")) * 0.9, "in")
+# # Create a minimum default of key_width being at least 0.7 inches:
+# key_width <- if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
+# # Legend key height = maximum label strheight: PASS TO guide_legend keyheight
+# key_height <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strheight, units = "inches")) * 0.95, "in")
+# # Create a minimum default of key_height being at least 0.35 inches:
+# key_height <- if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
+
+```
+
+```{r}
+# Test new sb chart function on diverging color pal:
+stackedBarChart(
+   df = cat_items_div, pre_post = T, scale_labels = levels_dis_agree, overall_n = T,
+   question_labels = question_labels, percent_label = TRUE, width = NULL, fill_colors = "div"
+ )
+
+
+```
+
+
 ```{r}
 # Function dev for gg_helpers.R file:
 

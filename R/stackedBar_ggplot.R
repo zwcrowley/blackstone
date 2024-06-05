@@ -1,11 +1,11 @@
-#' Helper function for creating stacked bar chart
+#' Helper function for creating a stacked bar chart
 #'
 #' [stackedBar_ggplot()] creates a stacked bar chart and returns a ggplot object.
 #'
 #' @param df_gg Required, A passed [tibble][tibble::tibble-package]/data frame from main function of survey items that are categorical/character
 #'   variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart.
 #'
-#' @param y_gg Required, the variable to plot on the y-axis; either timing if pre-post, question if not.
+#' @param y_gg Required, the variable to plot on the y-axis; either 'timing' if pre-post, 'question' if not.
 #'
 #' @param pre_post Logical, default is FALSE. -passed from main function- If true, returns a pre-post stacked bar chart.
 #'
@@ -15,26 +15,26 @@
 #'
 #' @param legend_labels Required, passed character vector of labels from main function for the legend, should be str_wrap text and must be in the desired order
 #'
-#' @param width_gg Input a value between 0.3 and 0.8 to set the thickness of the bars. -passed from main function- Default is NULL.
+#' @param width_gg Numeric, any value between 0 and 1 to set the thickness of the bars, smaller values mean smaller bars.
 #'
 #' @param fill_colors_gg Passed character vector of color codes from main function, that corresponds to the colors for each scale label and bar in the chart.
 #'
-#' @param key_width
+#' @param key_width Numeric, sets the width of the legend keys, calculated in [stackedBarChart()].
 #'
-#' @param key_height
+#' @param key_height Numeric, sets the height of the legend keys, calculated in [stackedBarChart()].
 #'
 #' @param overall_n_gg Logical, default is FALSE. -passed from main function- If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.
 #'
-#' @param N_df_gg The value or values to use for the *n*, either the overall total *n* if overall_n_gg is TRUE or individual *n* for each question.
+#' @param N_df_gg The value to use as the the overall total *n* if overall_n_gg is TRUE to set a plot tag.
 #'
-#' @param font_family
+#' @param font_family Character value to set the font family for all text in the chart.
 #'
-#' @param font_size
+#' @param font_size Numeric value to set the font size in points for all text in the chart.
 #'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a stacked bar chart.
 #' @noRd
-stackedBar_ggplot <- function(df_gg, y_gg, pre_post = FALSE, label_gg, label_colors_named, width_gg, fill_colors_gg, key_width, key_height,
+stackedBar_ggplot <- function(df_gg, y_gg, pre_post = FALSE, label_gg, label_colors_named, legend_labels, width_gg, fill_colors_gg, key_width, key_height,
                               overall_n_gg, N_df_gg, font_family = "Arial", font_size = 10) {
 
     # Load all fonts:
@@ -56,9 +56,9 @@ stackedBar_ggplot <- function(df_gg, y_gg, pre_post = FALSE, label_gg, label_col
                            position = ggplot2::position_fill(vjust = 0.5),
                            stat = "identity", size = font_size, size.unit = "pt", family = font_family
         ) +
-        ggplot2::scale_color_identity() +
+        ggplot2::scale_color_identity()
     if (isTRUE(pre_post)) {
-        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars( .data[["question"]] ), ncol = 1, strip.position = "left")
+        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars( question ), ncol = 1, strip.position = "left")
     }
         stacked_bar_chart_gg <-  stacked_bar_chart_gg +
             ggplot2::scale_fill_manual(values = {{ fill_colors_gg }}, labels = NULL) + # turn off labels in legend

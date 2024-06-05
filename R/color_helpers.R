@@ -46,7 +46,7 @@ labelColorMaker <- function(colors, names = NULL) {
 
 #' Helper to create a sequential color scale using `Blues 3` that is reversed.
 #'
-#' @description A function to create a sequential color scale using `Blues 3`, that is reversed.
+#' @description A function to create a sequential color scale using `Blues 3`, that is reversed and slightly darkened.
 #'
 #' @param n_colors Required, the number of color hex codes to return.
 #'
@@ -54,14 +54,14 @@ labelColorMaker <- function(colors, names = NULL) {
 #'
 #' @export
 seqFillColors <- function(n_colors) {
-    # viridisLite::cividis(n = n_colors, alpha = 1, begin = 0, end = 1, direction = -1)
-    colorspace::sequential_hcl(n_colors, "Blues 3", rev = TRUE)
+    colorspace::darken(colorspace::sequential_hcl(n_colors, "Blues 3", rev = TRUE), amount = 0.1)
+    # colorspace::sequential_hcl(n_colors, "Blues 3", rev = TRUE) # not darkened
 }
 
 
 #' Helper to create a sequential color scale using `Blue-Red 3` that is reversed.
 #'
-#' @description A function to create a sequential color scale using `Blue-Red 3` that is reversed.
+#' @description A function to create a sequential color scale using `Blue-Red 3` that is reversed and slightly darkened..
 #'
 #' @param n_colors Required, the number of color hex codes to return.
 #'
@@ -69,8 +69,8 @@ seqFillColors <- function(n_colors) {
 #'
 #' @export
 divFillColors <- function(n_colors) {
-    # colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.25, method = "relative", space = "HCL")
-    colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE)
+    colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.05)
+    # colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE) # not darkened
 }
 
 

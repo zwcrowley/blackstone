@@ -90,7 +90,7 @@ addPlotTag <- function(n, font_size, font_family) {
         ggplot2::theme(plot.tag = ggtext::element_markdown(color = "black", size = font_size, family = font_family),
                        plot.tag.location = "panel", # places tag within panel
                        # plot.tag.position = "topleft"
-                       plot.tag.position = c(-0.035, 1.04) # manually positions the tag using coordinates
+                       plot.tag.position = c(-0.01, 1.05)  # c(-0.035, 1.04) # manually positions the tag using coordinates
         )
     )
 }

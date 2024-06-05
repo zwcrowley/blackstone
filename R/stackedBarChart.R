@@ -131,24 +131,6 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
         # If pre_post is TRUE, set up new_df with dataVizCleaning():
         new_df <- dataVizCleaning(df = new_df, pre_post = TRUE, scale_labels = scale_labels, na_remove = TRUE)
 
-        # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
-        # (top levels depending on total response levels):
-        if (isFALSE(question_order)) {
-            new_question_order <- questionOrder(df = new_df, pre_post = TRUE)
-            # change the factor levels of question to be ordered by the question_order:
-            new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
-        } else {
-            # If question_order == TRUE, set up the levels for question using the user supplied order = question_labels:
-            new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = question_labels))
-        }
-        # If the user supplies a named vector for questions labels:
-        if (!is.null(question_labels)) {
-            names(question_labels) <- names(question_labels) %>%
-              stringr::str_wrap(., width = 15) %>%
-              gsub("\n", "<br>", .)
-            new_df <- new_df %>%
-              dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
-        }
         # Get total n for each question, grouped by question and timing:
         totals_new_df <- new_df %>%
           dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
@@ -162,31 +144,36 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
           # If pre_post is FALSE, set up new_df with dataVizCleaning():
           new_df <- dataVizCleaning(df = new_df, pre_post = FALSE, scale_labels = scale_labels, na_remove = TRUE)
 
-        # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
-        # (top levels depending on total response levels):
-        if (isFALSE(question_order)) {
-            new_question_order <- questionOrder(df = new_df, pre_post = FALSE)
-            # change the factor levels of question to be ordered by the question_order:
-            new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
-        } else {
-          # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
-          new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = question_labels))
-        }
-        # If the user supplies a named vector for questions labels:
-        if (!is.null(question_labels)) {
-          names(question_labels) <- names(question_labels) %>%
-              stringr::str_wrap(., width = 15) %>%
-              gsub("\n", "<br>", .)
-
-          new_df <- new_df %>%
-            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
-        }
         # Get total n for each question, grouped by question:
         totals_new_df <- new_df %>%
           dplyr::group_by(.data[["question"]]) %>%
           dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
           dplyr::ungroup()
     } # End of if pre_post == FALSE
+
+    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
+    # if pre_post is TRUE, otherwise use questions if pre_post is FALSE (top levels depending on total response levels):
+    if (isFALSE(question_order)) {
+        if (isTRUE(pre_post)) {
+            new_question_order <- questionOrder(df = new_df, pre_post = TRUE)
+        } else if (isFALSE(pre_post)) {
+            new_question_order <- questionOrder(df = new_df, pre_post = FALSE)
+        }
+        # change the factor levels of question to be ordered by the question_order:
+        new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
+    } else {
+        # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
+        new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = question_labels))
+    }
+
+    # If the user supplies a named vector for questions labels:
+    if (!is.null(question_labels)) {
+        names(question_labels) <- names(question_labels) %>%
+            stringr::str_wrap(., width = 15) %>%
+            gsub("\n", "<br>", .)
+        new_df <- new_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
+    }
 
     # If statement to handle the value(s) of `fill_colors`:
     if (length(fill_colors) > 1) {
@@ -210,11 +197,15 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
     new_fill_colors_named <- new_fill_colors # new color palette as values
     names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
 
-    # Caluculate the width and height of legend keys using `names(new_fill_colors_named)` (i.e. str_wrap scale_labels)
+    # Calculate the width and height of legend keys using `names(new_fill_colors_named)` (i.e. str_wrap scale_labels)
     # Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
     key_width <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strwidth, units = "inches")) * 0.9, "in")
+    # Create a minimum default of key_width being at least 0.7 inches:
+    key_width <- if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
     # Legend key height = maximum label strheight: PASS TO guide_legend keyheight
     key_height <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strheight, units = "inches")) * 0.95, "in")
+    # Create a minimum default of key_height being at least 0.35 inches:
+    key_height <- if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
 
     # Set default width for geom_col() bars if not supplied by user:
     if (is.null(width)) {
