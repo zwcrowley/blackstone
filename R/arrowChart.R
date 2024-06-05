@@ -144,8 +144,7 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = F
     # If overall_n == TRUE:
     if (isTRUE(overall_n)) {
         arrow_new <- arrowChart_ggplot(df_gg = arrow_df, fill_gg = new_arrow_colors, scale_labels_gg = new_scale_labels) +
-                            # ggplot2::labs(tag = parse(text = paste0("(", expression(italic(n)), "==", N_df, ")"))) + # change tag labels to overall n
-                            addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(-0.01, 0.98)) # repositon with plot_tag_position arg
+                        addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(-0.01, 0.98)) # see 'gg_helpers.R', re-position with plot_tag_position arg
 
         return(arrow_new)
 

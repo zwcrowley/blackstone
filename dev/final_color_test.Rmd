@@ -188,7 +188,52 @@ items_group <- dplyr::tibble(
 ```{r}
 bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+
+grDevices::palette.colors(n = 9, palette = "Okabe-Ito")
+"#000000"
+"#E69F00" "#56B4E9" "#009E73" "#CC79A7" "#0072B2" "#D55E00" "#999999" "#440154FF" "#4AC16DFF"
+c("#E69F00", "#56B4E9", "#009E73", "#277F8EFF", "#CC79A7", "#0072B2", "#D55E00","#440154FF", "#999999")
+
+viridisLite::viridis(n = 12)
+"#440154FF" "#46337EFF" "#365C8DFF" "#277F8EFF" "#1FA187FF" "#4AC16DFF" "#9FDA3AFF" "#FDE725FF"
+"#440154FF" "#482173FF" "#433E85FF" "#38598CFF" "#2D708EFF" "#25858EFF" "#1E9B8AFF" "#2BB07FFF" "#51C56AFF" "#35B779FF" "#009E73" "#85D54AFF" "#C2DF23FF" "#FDE725FF"
 ```
+
+```{r}
+# create a labeled list of colors
+qualColors <- c(
+  `orange`  = "#E69F00",
+  `sky blue`  = "#56B4E9",
+  `bluish green`  = "#009E73",
+  `magenta`  = "#CC79A7",
+  `blue`  = "#0072B2",
+  `vermillion` = "#D55E00",
+  `viridis purple`  = "#440154FF",
+  `dark grey` = "#999999",
+  `bre blue` = "#283251")
+
+# wrap that list in a callable function
+customCols <- function(...) {
+  cols <- c(...)
+  if (is.null(cols))
+    return (qualColors)
+  qualColors[cols]
+}
+
+
+# There are 10 colors, so our max number of colors will be 10.
+check_pal_n <- function(n, max_n) {
+  if (n > max_n) {
+    warning("This palette can handle a maximum of ", max_n, " values.",
+            "You have supplied ", n, ".")
+  } else if (n < 0) {
+    stop("`n` must be a non-negative integer.")
+  }
+}
+
+custom_cols()
+```
+
 
 #### - With green
 
@@ -197,16 +242,11 @@ bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = level
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
 
-### Arrow chart with `cividis` color scale:
 
-```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::cividis(n = (length(unique(items_group[["edu_level"]])) + 1))),
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
-```
 
 ### Arrow chart with `Okabe-Ito` color scale:
 
-#### - Including black as a color:
+#### - Including black as a color for "Overall" group:
 
 ```{r}
 bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
@@ -250,8 +290,8 @@ three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or La
 ### Horizontal Bar Chart with `viridis` color scale:
 
 ```{r}
-# horzBarChart() with viridis colors
-bre::horzBarChart(df = race_summ, scale_colors = viridisLite::viridis(n = length(unique(data[["race"]]))), width = 0.6)
+# horzBarChart() with viridis colors "#E69F00", "#56B4E9", "#009E73", 
+bre::horzBarChart(df = race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73","#CC79A7", "#0072B2", "#D55E00","#440154FF", "#999999", "#283251"), width = 0.6)
 
 ```
 

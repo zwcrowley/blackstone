@@ -16,7 +16,8 @@
 #'   overall group so this function will need a 'group_colors' character vector of
 #'   three colors. 'group_colors' need to be in the order you want them associated to
 #'   the group based on the factor levels for the group variable, last color
-#'   will be the overall group of "all".
+#'   will be the overall group of "Overall". Defaults to "Okabe-Ito" palette where
+#'   black is alwasy the "Overall" group.
 #'
 #' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.
