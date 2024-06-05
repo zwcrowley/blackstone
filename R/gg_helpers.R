@@ -81,16 +81,19 @@ addBarChartPrePostTheme <- function(font_size, font_family) {
 #'
 #' @param font_family Required, character, the name of the font family to use for chart.
 #'
+#' @param plot_tag_position Required, character vector of length two that specifies the x and y coordinates that
+#'      places the plot tag, defaults to c(-0.01, 1.05).
+#'
 #' @return A list of ggplot2 labs and theme objects to add to a ggplot2 object.
 #'
 #' @export
-addPlotTag <- function(n, font_size, font_family) {
+addPlotTag <- function(n, font_size, font_family, plot_tag_position = c(-0.01, 1.05)) {
     list(
         ggplot2::labs(tag = paste0("(*n* = ", n , ")")),
         ggplot2::theme(plot.tag = ggtext::element_markdown(color = "black", size = font_size, family = font_family),
                        plot.tag.location = "panel", # places tag within panel
                        # plot.tag.position = "topleft"
-                       plot.tag.position = c(-0.01, 1.05)  # c(-0.035, 1.04) # manually positions the tag using coordinates
+                       plot.tag.position = plot_tag_position  # c(-0.035, 1.04) # manually positions the tag using coordinates
         )
     )
 }

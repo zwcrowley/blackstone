@@ -28,9 +28,9 @@
 #'
 #' @param N_df_gg The value to use as the the overall total *n* if overall_n_gg is TRUE to set a plot tag.
 #'
-#' @param font_family Character value to set the font family for all text in the chart.
+#' @param font_family Character value to set the font family for all text in the chart, defaults to "Arial".
 #'
-#' @param font_size Numeric value to set the font size in points for all text in the chart.
+#' @param font_size Numeric value to set the font size in points for all text in the chart, defaults to size 10.
 #'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a stacked bar chart.
 #' @noRd
