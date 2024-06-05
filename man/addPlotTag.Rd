@@ -2,7 +2,7 @@
 % Please edit documentation in R/gg_helpers.R
 \name{addPlotTag}
 \alias{addPlotTag}
-\title{Helper Functions for ggplot2 visuals for the \code{bre} package}
+\title{Helper function to Add a Plot Tag}
 \usage{
 addPlotTag(n, font_size, font_family)
 }
@@ -19,7 +19,4 @@ A list of ggplot2 labs and theme objects to add to a ggplot2 object.
 \description{
 A function for add a plot tag to the upper left corner of a ggplot with the total n of the sample.
 Pass as args the total n, font size and family.
-}
-\details{
-Helper function to Add a Plot Tag
 }
