@@ -225,11 +225,12 @@ group_levels <- c("overall", group_levels)
       ) %>%
       dplyr::ungroup() %>% 
       tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
+        id_cols = tidyselect::everything(),
         names_from = timing, 
         values_from = score_avg,
         names_glue = "{timing}_score_avg"
       ) %>% 
-      dplyr::mutate(diff_score_avg = post_score_avg - pre_score_avg) %>% 
+      dplyr::mutate(diff_score_avg = .data$post_score_avg - .data$pre_score_avg) %>% 
       tidyr::pivot_longer(pre_score_avg:post_score_avg,
                           names_to = c("timing", ".value"), 
                           names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
@@ -245,7 +246,15 @@ bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("gr
 
 ```
 
+### Arrow charts without a grouping variable:
 
+#### - With arrows in Blackstone dark blue "#283251"
+
+```{r}
+bre::arrowChart(df = items, scale_labels = levels_min_ext,
+           overall_n = T, question_labels = question_labels, question_order = TRUE)
+
+```
 
 ### Testing SB Chart:
 

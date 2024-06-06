@@ -2,14 +2,13 @@
 % Please edit documentation in R/color_helpers.R
 \name{qualFillColors}
 \alias{qualFillColors}
-\title{Helper function to create qualitative colors: either default to \code{viridis} or \code{Okabe-Ito}.}
+\title{Helper function to create qualitative colors from the \code{Okabe-Ito} palette.}
 \usage{
-qualFillColors(n_colors, pal = "viridis", rev_colors = FALSE)
+qualFillColors(n_colors, rev_colors = FALSE)
 }
 \arguments{
-\item{n_colors}{Required, the number of color hex codes to return.}
-
-\item{pal}{Required, the name of the palette to use, defaults to \code{viridis} or can use \code{Okabe-Ito}.}
+\item{n_colors}{Required, supply a non-negative integer that is the desired the number of color hex codes to return.
+#'}
 
 \item{rev_colors}{Logical, defaults to FALSE, if true returns a reverse color codes where the darkest color comes first.}
 }
@@ -17,5 +16,6 @@ qualFillColors(n_colors, pal = "viridis", rev_colors = FALSE)
 a character vector of hex color codes the length of \code{n_colors}.
 }
 \description{
-A function to create qualitative colors: pal argument either default to \code{viridis} or \code{Okabe-Ito}, reversed if rev_colors is set to TRUE.
+A function to create a custom qualitative colors palette from the \code{Okabe-Ito} palette, reversed if rev_colors is set to TRUE.
+Drops black and yellow for use with all BRE charts and adds three other colors: "#440154FF", "#283251", and "#999933".
 }

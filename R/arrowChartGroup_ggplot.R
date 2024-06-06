@@ -25,11 +25,11 @@ arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg, font_
     . <- NULL # to stop check() from bringing up "."
     # Calculate the nudge_x and hjust for the geom_text()
     # Pre
-    pre_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(timing == "pre") %>% select(diff_score_avg) %>% deframe()
+    pre_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(.data[["timing"]] == "pre") %>% dplyr::select(.data[["diff_score_avg"]]) %>% tibble::deframe()
     nudge_x_pre <- dplyr::if_else(pre_diff_score_avg > 0, -0.25, 0.25)
     hjust_pre <- dplyr::if_else(pre_diff_score_avg > 0, 0, 1)
     # Post
-    post_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(timing == "post") %>% select(diff_score_avg) %>% deframe()
+    post_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(.data[["timing"]] == "post") %>% dplyr::select(.data[["diff_score_avg"]]) %>% tibble::deframe()
     nudge_x_post <- dplyr::if_else(pre_diff_score_avg > 0, 0.25, -0.25)
     hjust_post <- dplyr::if_else(pre_diff_score_avg > 0, 1, 0)
 
@@ -55,7 +55,7 @@ arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg, font_
         ) +
         ggplot2::facet_wrap(~ question, ncol = 1, strip.position = "left") +
         ggplot2::scale_color_manual(values = fill_gg, labels = ~ stringr::str_to_title(.)) + # capitalize legend labels
-        ggplot2::scale_x_continuous(limits = c(0.5, length(scale_labels_gg)),
+        ggplot2::scale_x_continuous(limits = c(0.75, length(scale_labels_gg)),
                                     breaks = c(1:length(scale_labels_gg)),
                                     labels = scale_labels_gg) +
         ggplot2::guides(color = ggplot2::guide_legend(reverse = TRUE)) + # Reverse the legend order
@@ -65,21 +65,17 @@ arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg, font_
             legend.title = ggplot2::element_blank(),
             legend.background = ggplot2::element_blank(),
             legend.box.spacing = grid::unit(0, "cm"), # no space btw legend and plot
-            legend.key.spacing.x = grid::unit(0.1, "cm"),
+            legend.key.spacing.x = grid::unit(0.5, "cm"),
             axis.text.x = ggplot2::element_text( # x axis response labels on bottom scale
                 color = "black", size = font_size, family = font_family,
                 margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt")
             ),
             axis.text.y = ggplot2::element_blank(), # Controls the group labels, turn off
             strip.background = ggplot2::element_blank(),
-            # strip.clip = "on",
-            # strip.placement = "outside",
-            # strip.switch.pad.wrap = grid::unit(0, "cm"),
             strip.text.y.left = ggtext::element_markdown( # Controls the question labels
                 angle = 0, hjust = 1, color = "black", family = font_family, size = font_size,
                 margin = ggplot2::margin(t = 5, r = 15, b = 5, l = 5, unit = "pt")
-            ), ggplot2::element_blank(),
-            # axis.text.y = ggplot2::element_blank(),
+            ),
             plot.margin = ggplot2::margin(t = 5, r = 20, b = 5, l = 5, unit = "pt")
         )
 

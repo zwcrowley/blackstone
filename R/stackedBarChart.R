@@ -201,11 +201,11 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
     # Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
     key_width <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strwidth, units = "inches")) * 0.9, "in")
     # Create a minimum default of key_width being at least 0.7 inches:
-    key_width <- if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
+    key_width <- dplyr::if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
     # Legend key height = maximum label strheight: PASS TO guide_legend keyheight
     key_height <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strheight, units = "inches")) * 0.95, "in")
     # Create a minimum default of key_height being at least 0.35 inches:
-    key_height <- if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
+    key_height <- dplyr::if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
 
     # Set default width for geom_col() bars if not supplied by user:
     if (is.null(width)) {

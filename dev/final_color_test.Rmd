@@ -168,6 +168,13 @@ bre::arrowChart(df = items, scale_labels = levels_min_ext,
 
 ## Qualitative/Categorical Color Scales
 
+### Example of total Qualitative/Categorical Color Scale
+
+#### - Most colors taken from `Okabe-Ito` scale:
+
+
+
+
 ### Arrow charts section with 3 grouping variables and an arrow for the whole sample labelled "Overall":
 
 ```{r, include=FALSE}
@@ -178,6 +185,8 @@ items_group <- dplyr::tibble(
        "grad", "undergrad", "grad", "undergrad", "grad",
        "undergrad", "undergrad", "grad", "undergrad"
   ), levels = c("grad", "undergrad"))
+ ) %>% mutate(
+            post_Research = dplyr::if_else(post_Research > 2, pre_Research - 2, pre_Research)
  )
 ```
 
@@ -185,20 +194,14 @@ items_group <- dplyr::tibble(
 
 #### - The "Overall" group will always be the color black:
 
-
 ```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+new_cols <- c("#000000", qualFillColors(2, rev_colors = T)) %>% set_names(c("overall","grad", "undergrad"))
+bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, group_colors = new_cols,
+    overall_n = T, question_labels = NULL, question_order = FALSE)
 
-grDevices::palette.colors(n = 9, palette = "Okabe-Ito")
-"#000000"
-"#E69F00" "#56B4E9" "#009E73" "#CC79A7" "#0072B2" "#D55E00" "#999999" "#440154FF" "#4AC16DFF"
-c("#E69F00", "#56B4E9", "#009E73", "#277F8EFF", "#CC79A7", "#0072B2", "#D55E00","#440154FF", "#999999")
-
-viridisLite::viridis(n = 12)
-"#440154FF" "#46337EFF" "#365C8DFF" "#277F8EFF" "#1FA187FF" "#4AC16DFF" "#9FDA3AFF" "#FDE725FF"
-"#440154FF" "#482173FF" "#433E85FF" "#38598CFF" "#2D708EFF" "#25858EFF" "#1E9B8AFF" "#2BB07FFF" "#51C56AFF" "#35B779FF" "#009E73" "#85D54AFF" "#C2DF23FF" "#FDE725FF"
 ```
+
+
 
 ```{r}
 # create a labeled list of colors

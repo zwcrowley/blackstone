@@ -7,10 +7,12 @@
 arrowChart(
   df,
   scale_labels,
-  arrow_colors,
+  arrow_colors = "#283251",
   overall_n = FALSE,
   question_labels = NULL,
-  question_order = FALSE
+  question_order = FALSE,
+  font_family = "Arial",
+  font_size = 10
 )
 }
 \arguments{
@@ -19,7 +21,7 @@ arrowChart(
 \item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
 e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.}
 
-\item{arrow_colors}{Required, a character vector of hex codes for colors to associate
+\item{arrow_colors}{Required, defaults to dark blue BRE color code "#283251" for all values, a character vector of hex codes for colors to associate
 each item, needs to be the same length or longer than the items to place in the same chart.}
 
 \item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
@@ -32,6 +34,10 @@ desired order of appearing in the plot, first item will appear at the top of the
 \item{question_order}{Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
 question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
 post score average on the top of the plot descending.}
+
+\item{font_family}{Character value to set the font family for all text in the chart, defaults to "Arial".}
+
+\item{font_size}{Numeric value to set the font size in points for all text in the chart, defaults to size 10.}
 }
 \value{
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arrow bar chart.

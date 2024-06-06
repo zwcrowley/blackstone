@@ -4,7 +4,7 @@
 \alias{addPlotTag}
 \title{Helper function to Add a Plot Tag}
 \usage{
-addPlotTag(n, font_size, font_family)
+addPlotTag(n, font_size, font_family, plot_tag_position = c(-0.01, 1.05))
 }
 \arguments{
 \item{n}{Required, numeric, total n for the sample in the chart}
@@ -12,6 +12,9 @@ addPlotTag(n, font_size, font_family)
 \item{font_size}{Required, numeric, the font size for the chart.}
 
 \item{font_family}{Required, character, the name of the font family to use for chart.}
+
+\item{plot_tag_position}{Required, character vector of length two that specifies the x and y coordinates that
+places the plot tag, defaults to c(-0.01, 1.05).}
 }
 \value{
 A list of ggplot2 labs and theme objects to add to a ggplot2 object.

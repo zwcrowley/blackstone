@@ -13,5 +13,5 @@ divFillColors(n_colors)
 a character vector hex color codes the length of \code{n_colors}from the \verb{Blue-Red 3} palette from the package \code{colorspace}.
 }
 \description{
-A function to create a sequential color scale using \verb{Blue-Red 3} that is reversed.
+A function to create a sequential color scale using \verb{Blue-Red 3} that is reversed and slightly darkened..
 }

@@ -9,9 +9,12 @@ arrowChartGroup(
   group,
   scale_labels,
   group_colors,
+  group_levels,
   overall_n = FALSE,
   question_labels = NULL,
-  question_order = FALSE
+  question_order = FALSE,
+  font_family = "Arial",
+  font_size = 10
 )
 }
 \arguments{
@@ -28,7 +31,11 @@ each group to, e.g. this data has two groups and this function creates an
 overall group so this function will need a 'group_colors' character vector of
 three colors. 'group_colors' need to be in the order you want them associated to
 the group based on the factor levels for the group variable, last color
-will be the overall group of "all".}
+will be the overall group of "Overall". Defaults to "Okabe-Ito" palette where
+black is alwasy the "Overall" group.}
+
+\item{group_levels}{Required, a character vector of factor levels for the grouping variable (e.g. if the
+grouping variable is gender this could be: c("male", "female", "non-binary").}
 
 \item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
 If False, adds \emph{n} to each question/item after the respective labels.}
@@ -40,6 +47,10 @@ desired order of appearing in the plot, first item will appear at the top of the
 \item{question_order}{Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
 question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
 post score average on the top of the plot descending.}
+
+\item{font_family}{Character value to set the font family for all text in the chart, defaults to "Arial".}
+
+\item{font_size}{Numeric value to set the font size in points for all text in the chart, defaults to size 10.}
 }
 \value{
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arrow bar chart.
@@ -76,20 +87,21 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Source work for a research paper" = "Source")
 
 # Set up a character vector of scale colors to pass to the argument group_colors:
-three_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
+three_colors <- c("#000000", "#56B4E9", "#E69F00") \%>\%
+                    purrr::set_names(c("overall","grad", "undergrad"))
 
 # Example grouped by the variable "edu_level", with n for each question and original labels:
 arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
-                group_colors = three_colors, overall_n = FALSE,
-                question_labels = NULL, question_order = FALSE)
+                group_colors = three_colors, group_levels = c("grad", "undergrad"),
+                overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
 arrowChartGroup(df = items, group = "edu_level",scale_labels = levels_min_ext,
-                group_colors = three_colors, overall_n = FALSE,
-                question_labels = question_labels, question_order = FALSE)
+                group_colors = three_colors, group_levels = c("grad", "undergrad"),
+                overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
 arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
-                group_colors = three_colors, overall_n = FALSE,
-                question_labels = question_labels, question_order = TRUE)
+                group_colors = three_colors, group_levels = c("grad", "undergrad"),
+                overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 }

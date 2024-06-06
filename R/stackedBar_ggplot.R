@@ -58,11 +58,11 @@ stackedBar_ggplot <- function(df_gg, y_gg, pre_post = FALSE, label_gg, label_col
         ) +
         ggplot2::scale_color_identity()
     if (isTRUE(pre_post)) {
-        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(dplyr::vars( question ), ncol = 1, strip.position = "left")
+        stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(~ .data[["question"]], ncol = 1, strip.position = "left")
     }
         stacked_bar_chart_gg <-  stacked_bar_chart_gg +
             ggplot2::scale_fill_manual(values = {{ fill_colors_gg }}, labels = NULL) + # turn off labels in legend
-            ggplot2::guides(fill = guide_legend(
+            ggplot2::guides(fill = ggplot2::guide_legend(
                 nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
                 override.aes = list(color = label_colors_named, # manually sets the color of the legend text to white or black
                                     label = legend_labels) # manually sets the legend labels to wrapped scale_labels

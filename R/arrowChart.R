@@ -80,16 +80,16 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = F
         dplyr::summarize(score_avg = mean(.data[["response"]], na.rm = TRUE), .groups = "keep") %>% # drops NA's
         dplyr::ungroup() %>%
         tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
-            names_from = timing,
-            values_from = score_avg,
+            id_cols = tidyselect::everything(),
+            names_from = tidyselect::all_of(c("timing")),
+            values_from = tidyselect::all_of(c("score_avg")),
             names_glue = "{timing}_score_avg"
         ) %>%
-        dplyr::mutate(diff_score_avg = post_score_avg - pre_score_avg) %>%
-        tidyr::pivot_longer(pre_score_avg:post_score_avg,
+        dplyr::mutate(diff_score_avg = .data[["post_score_avg"]] - .data[["pre_score_avg"]]) %>%
+        tidyr::pivot_longer(tidyselect::all_of(c("pre_score_avg","post_score_avg")),
                             names_to = c("timing", ".value"),
                             names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
         )
-
 
     # If the user supplies a named vector for questions labels: ----
     if (!is.null(question_labels)) {
@@ -133,7 +133,7 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = F
     }
 
     # Set up value of total_question_items
-    total_question_items <- nrow(dplyr::distinct(arrow_df, question))
+    total_question_items <- nrow(dplyr::distinct(arrow_df, .data[["question"]]))
     # Set up the right length of arrow color fill vector if set to defualt single BRE dark blue color:
     if (length(arrow_colors) > 1) {
         if (length(arrow_colors) >= total_question_items) {
@@ -154,7 +154,7 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = F
     # If overall_n == TRUE:
     if (isTRUE(overall_n)) {
         arrow_new <- arrowChart_ggplot(df_gg = arrow_df, fill_gg = new_arrow_colors, scale_labels_gg = new_scale_labels) +
-                        addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(-0.01, 0.98)) # see 'gg_helpers.R', re-position with plot_tag_position arg
+                        addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(0, 0.98)) # see 'gg_helpers.R', re-position with plot_tag_position arg
 
         return(arrow_new)
 

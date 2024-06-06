@@ -22,11 +22,11 @@ arrowChart_ggplot <- function(df_gg, fill_gg, scale_labels_gg, font_family = "Ar
         . <- NULL # to stop check() from bringing up .
         # Calculate the nudge_x and hjust for the geom_text()
         # Pre
-        pre_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(timing == "pre") %>% select(diff_score_avg) %>% deframe()
+        pre_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(.data[["timing"]] == "pre") %>% dplyr::select(.data[["diff_score_avg"]]) %>% tibble::deframe()
         nudge_x_pre <- dplyr::if_else(pre_diff_score_avg > 0, -0.25, 0.25)
         hjust_pre <- dplyr::if_else(pre_diff_score_avg > 0, 0, 1)
         # Post
-        post_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(timing == "post") %>% select(diff_score_avg) %>% deframe()
+        post_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(.data[["timing"]] == "post") %>% dplyr::select(.data[["diff_score_avg"]]) %>% tibble::deframe()
         nudge_x_post <- dplyr::if_else(pre_diff_score_avg > 0, 0.25, -0.25)
         hjust_post <- dplyr::if_else(pre_diff_score_avg > 0, 1, 0)
 
@@ -36,8 +36,8 @@ arrowChart_ggplot <- function(df_gg, fill_gg, scale_labels_gg, font_family = "Ar
                 label = scales::number(.data[["score_avg"]], accuracy = 0.01), group = .data[["question"]]
             )) +
             ggplot2::geom_path(
-                lineend = "round", linejoin = "round", linewidth = 2.5,
-                arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.2, "inches"))
+                lineend = "round", linejoin = "round", linewidth = 1.5,
+                arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.15, "inches"))
             ) +
             ggplot2::geom_text(
                 data = dplyr::filter(df_gg, .data[["timing"]] == "pre"), show.legend = FALSE,
@@ -50,7 +50,9 @@ arrowChart_ggplot <- function(df_gg, fill_gg, scale_labels_gg, font_family = "Ar
                 family = font_family, size = font_size, size.unit = "pt"
             ) +
             ggplot2::scale_color_manual(values = fill_gg) +
-            ggplot2::scale_x_continuous(limits = c(1, length(scale_labels_gg)), labels = scale_labels_gg) +
+            ggplot2::scale_x_continuous(limits = c(0.75, length(scale_labels_gg)),
+                                        breaks = c(1:length(scale_labels_gg)),
+                                        labels = scale_labels_gg) +
             ggplot2::theme_void(base_family = font_family, base_size = font_size) +
             ggplot2::theme(
                 legend.position = "none", # no legend
