@@ -181,9 +181,10 @@ items_group <- dplyr::tibble(
  )
 ```
 
-### Arrow chart with new custom qualitative color scale:
+### Arrow chart with new custom qualitative color scale based on `Okabe-Ito` colors:
 
-#### - With yellow
+#### - The "Overall" group will always be the color black:
+
 
 ```{r}
 bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
@@ -235,18 +236,7 @@ custom_cols()
 ```
 
 
-#### - With green
 
-```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(c("#440154FF", "#31688EFF", "#35B779FF")),
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
-```
-
-
-
-### Arrow chart with `Okabe-Ito` color scale:
-
-#### - Including black as a color for "Overall" group:
 
 ```{r}
 bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
@@ -254,13 +244,7 @@ bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = level
                      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
 
-#### - Skipping the color black in palette:
 
-```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
-                     group_colors = c("#E69F00", "#56B4E9", "#009E73"),
-                     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
-```
 
 ## Horizontal Bar Chart with 7 racial categories
 

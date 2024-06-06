@@ -78,7 +78,17 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = F
         dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post")),
                       question = stringr::str_to_title(.data[["question"]])) %>%
         dplyr::summarize(score_avg = mean(.data[["response"]], na.rm = TRUE), .groups = "keep") %>% # drops NA's
-        dplyr::ungroup()
+        dplyr::ungroup() %>%
+        tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
+            names_from = timing,
+            values_from = score_avg,
+            names_glue = "{timing}_score_avg"
+        ) %>%
+        dplyr::mutate(diff_score_avg = post_score_avg - pre_score_avg) %>%
+        tidyr::pivot_longer(pre_score_avg:post_score_avg,
+                            names_to = c("timing", ".value"),
+                            names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
+        )
 
 
     # If the user supplies a named vector for questions labels: ----

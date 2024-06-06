@@ -8,6 +8,9 @@
 #'
 #' @param group Required, the name of the grouping variable in a quoted character string (e.g. "role", "gender", "edu_level", etc.).
 #'
+#' @param group_levels Required, a character vector of factor levels for the grouping variable (e.g. if the
+#'      grouping variable is gender this could be: c("male", "female", "non-binary").
+#'
 #' @param scale_labels Required, a character vector of labels for the response scale, must be in the desired order,
 #'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
 #'
@@ -29,6 +32,10 @@
 #' @param question_order Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
 #'    question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
 #'    post score average on the top of the plot descending.
+#'
+#' @param font_family Character value to set the font family for all text in the chart, defaults to "Arial".
+#'
+#' @param font_size Numeric value to set the font size in points for all text in the chart, defaults to size 10.
 #'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a arrow bar chart.
 #' @export
@@ -77,11 +84,16 @@
 #' arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
 #'                 group_colors = three_colors, overall_n = FALSE,
 #'                 question_labels = question_labels, question_order = TRUE)
-arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = FALSE, question_labels = NULL, question_order = FALSE) {
+arrowChartGroup <- function(df, group, scale_labels, group_colors, group_levels,
+                            overall_n = FALSE, question_labels = NULL,
+                            question_order = FALSE, font_family = "Arial", font_size = 10) {
     # Load fonts:
     extrafont::loadfonts("all", quiet = TRUE)
 
     . <- NULL # to stop check() from bringing up "."
+
+    # append `overall` to group_levels
+    group_levels <- c("overall", group_levels)
 
     #  Start of data manipulation: ----
     # Set up a df for the original groups separate average:
@@ -104,15 +116,25 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, overall_n = F
       dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
       dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
       dplyr::ungroup() %>%
-      dplyr::mutate({{group}} := "Overall")
+      dplyr::mutate({{group}} := "overall")
 
     # Full join the data by groups and overall, and then Rev the factor order of "group":
     arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by( {{group}}, "question", "timing", "score_avg")) %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data$question, .data$timing) %>%
-      dplyr::mutate(
-        {{group}} := forcats::fct_rev(factor( .data[[group]] ))
-      ) %>%
-      dplyr::ungroup()
+        dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data$question, .data$timing) %>%
+        dplyr::mutate(
+            {{group}} := factor(.data[[group]], levels = group_levels) # recode factor levels to group by using `group_levels`
+        ) %>%
+        dplyr::ungroup() %>%
+        tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
+            names_from = timing,
+            values_from = score_avg,
+            names_glue = "{timing}_score_avg"
+        ) %>%
+        dplyr::mutate(diff_score_avg = post_score_avg - pre_score_avg) %>%
+        tidyr::pivot_longer(pre_score_avg:post_score_avg,
+                            names_to = c("timing", ".value"),
+                            names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
+        )
 
     # If the user supplies a named vector for questions labels: ----
     if (!is.null(question_labels)) {

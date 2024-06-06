@@ -7,7 +7,7 @@ date: "`r Sys.Date()`"
 ```{r setup, include=FALSE}
 knitr::opts_chunk[["set"]](echo = FALSE, 
     fig.width = 8,
-    fig.height = 5)
+    fig.height = 6)
 
 # Load Libraries:
 library(colorspace)
@@ -116,63 +116,133 @@ levels_dis_agree <- names(levels_dis_agree_named)
 cat_items_div <- bre::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
 cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
 
+# for grouped arrow chart:
+# add a grouping var to the data set `items`:
+items_group <- dplyr::tibble(
+   items,
+   edu_level = factor(c(
+       "grad", "undergrad", "grad", "undergrad", "grad",
+       "undergrad", "undergrad", "grad", "undergrad"
+  ), levels = c("grad", "undergrad"))
+ ) %>% mutate(
+            post_Research = dplyr::if_else(post_Research > 2, pre_Research - 2, pre_Research)
+ )
 ```
 
 ### Setting up custom colors for grouped arrow chart:
 
 ```{r}
 # create a labeled list of colors
-qualColors <- c(
-  `orange`  = "#E69F00",
-  `sky blue`  = "#56B4E9",
-  `bluish green`  = "#009E73",
-  `magenta`  = "#CC79A7",
-  `vermillion` = "#D55E00",
-  `blue`  = "#0072B2",
-  `dark green` = "#117733",
-  `viridis purple`  = "#440154FF",
-  `dark grey` = "#999999",
-  `bre blue` = "#283251",
-  `yellow green` = "#999933")
-swatchplot(qualColors)
-# rcartocolor::carto_pal(12, "Safe")
-# "#88CCEE" "#CC6677" "#DDCC77" "#117733" "#332288" "#AA4499" "#44AA99" "#999933" "#882255" "#661100" "#6699CC" "#888888"
-# grDevices::palette.colors(palette = "Okabe-Ito")
-# "#000000" "#E69F00" "#56B4E9" "#009E73" "#F0E442" "#0072B2" "#D55E00" "#CC79A7" "#999999"
-# wrap that list in a callable function
-customCols <- function(...) {
-  cols <- c(...)
-  if (is.null(cols))
-    return (qualColors)
-  qualColors[cols]
-}
-
-
-# There are 10 colors, so our max number of colors will be 10.
-check_pal_n <- function(n, max_n) {
-  if (n > max_n) {
-    warning("This palette can handle a maximum of ", max_n, " values.",
-            "You have supplied ", n, ".")
-  } else if (n < 0) {
-    stop("`n` must be a non-negative integer.")
-  }
-}
-
-custom_cols()
+# qualColors <- c(
+#   `orange`         = "#E69F00",   # 1
+#   `sky blue`       = "#56B4E9",   # 2
+#   `bluish green`   = "#009E73",   # 3 
+#   `magenta`        = "#CC79A7",   # 4
+#   `vermillion`     = "#D55E00",   # 5
+#   `blue`           = "#0072B2",   # 6
+#   `dark green`     = "#117733",   # 7
+#   `viridis purple` = "#440154FF", # 8
+#   `dark grey`      = "#999999",   # 9
+#   `bre blue`       = "#283251",   # 11
+#   `yellow green`   = "#999933"    # 12
+#   )
+# 
+# swatchplot(qualColors)
+# # rcartocolor::carto_pal(12, "Safe")
+# # "#88CCEE" "#CC6677" "#DDCC77" "#117733" "#332288" "#AA4499" "#44AA99" "#999933" "#882255" "#661100" "#6699CC" "#888888"
+# # grDevices::palette.colors(palette = "Okabe-Ito")
+# # "#000000" "#E69F00" "#56B4E9" "#009E73" "#F0E442" "#0072B2" "#D55E00" "#CC79A7" "#999999"
+# # wrap that list in a callable function
+# customCols <- function(pal = qualColors, cols = NULL) {
+#     # Gather all color names or vector positions into a new character vector:
+#     if (is.null(cols)) { # if nothing passed, return full palette:
+#         return(pal) 
+#     } else {# Otherwise, return a new palette by selection:
+#         return(pal[cols])
+#     }
+# }
+# customCols(cols = c("sky blue", "bluish green", "magenta", "vermillion"))
+# customCols(cols = c(1:14))
+# 
+# qualFillColors <- function(n_colors, rev_colors = FALSE) {
+#     if (n_colors > length(qualColors)) {
+#         warning("This palette can handle a maximum of ", length(qualColors), " values.",
+#                 "You have supplied ", n_colors, ", colors will be recycled to reach this number of values.")
+#     } else if (n_colors < 0) {
+#         stop("`n_colors` must be a non-negative integer.")
+#     }
+#     # Uses rep() to recycle the color values so the returned color code vector is length of n_colors 
+#     # and has no NA's.
+#     new_pal <- rep(qualColors, len = n_colors)
+#     if (isTRUE(rev_colors)) {
+#         # new_pal <- rev(customCols(cols = c(1:n_colors))) # reversed qualColors palette
+#         new_pal <- rev(new_pal) # reversed qualColors palette
+#     }
+#     
+#     return(new_pal)
+#     
+# }
+# 
+# # rep(qualColors, len = 30)
+# qualFillColors(3, rev_colors = T) 
 ```
 
 ```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+df = items_group
+group = "edu_level"
+group_levels = c("grad", "undergrad")
 
-grDevices::palette.colors(n = 9, palette = "Okabe-Ito")
-"#000000"
-"#E69F00" "#56B4E9" "#009E73" "#CC79A7" "#0072B2" "#D55E00" "#999999" "#440154FF" "#4AC16DFF"
-c("#E69F00", "#56B4E9", "#009E73", "#277F8EFF", "#CC79A7", "#0072B2", "#D55E00","#440154FF", "#999999")
+# append `overall` to group_levels
+group_levels <- c("overall", group_levels)
+#  Start of data manipulation: ----
+    # Set up a df for the original groups separate average:
+    arrow_df_group <- {{ df }} %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} ))) %>%
+      tidyr::pivot_longer(-{{group}}, names_to = "question", values_to = "response") %>%
+      dplyr::mutate( {{group}} := factor( .data[[group]] )) %>%
+      tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data$question, .data$timing) %>%
+      dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
+      dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
+      dplyr::ungroup()
+    arrow_df_group
+    # Set up a df for an overall average
+    arrow_df_all <- {{ df }} %>%
+      dplyr::select(!dplyr::all_of({{group}})) %>% # drop the group var
+      tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+      tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
+      dplyr::group_by(.data$question, .data$timing) %>%
+      dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
+      dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate({{group}} := "overall")
+    arrow_df_all
+    # Full join the data by groups and overall, and then Rev the factor order of "group":
+    arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by( {{group}}, "question", "timing", "score_avg")) %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data$question, .data$timing) %>%
+      dplyr::mutate(
+        {{group}} := factor(.data[[group]], levels = group_levels) # recode factor levels to group by using `group_levels`
+      ) %>%
+      dplyr::ungroup() %>% 
+      tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
+        names_from = timing, 
+        values_from = score_avg,
+        names_glue = "{timing}_score_avg"
+      ) %>% 
+      dplyr::mutate(diff_score_avg = post_score_avg - pre_score_avg) %>% 
+      tidyr::pivot_longer(pre_score_avg:post_score_avg,
+                          names_to = c("timing", ".value"), 
+                          names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
+                          )
+   pre_diff_score_avg <- arrow_df %>% dplyr::filter(timing == "post") %>% select(diff_score_avg) %>% deframe() 
+   nudge_x_pre <- dplyr::if_else(pre_diff_score_avg > 0, 0.2, -0.2)
+```
 
-viridisLite::viridis(n = 12)
-"#440154FF" "#46337EFF" "#365C8DFF" "#277F8EFF" "#1FA187FF" "#4AC16DFF" "#9FDA3AFF" "#FDE725FF"
-"#440154FF" "#482173FF" "#433E85FF" "#38598CFF" "#2D708EFF" "#25858EFF" "#1E9B8AFF" "#2BB07FFF" "#51C56AFF" "#35B779FF" "#009E73" "#85D54AFF" "#C2DF23FF" "#FDE725FF"
+```{r}
+new_cols <- c("#000000", qualFillColors(2, rev_colors = T)) %>% set_names(c("overall","grad", "undergrad"))
+bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, group_colors = new_cols,
+    overall_n = T, question_labels = NULL, question_order = FALSE)
+
 ```
 
 

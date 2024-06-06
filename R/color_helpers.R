@@ -81,42 +81,68 @@ divFillColors <- function(n_colors) {
 #' @return A named vector of hex colors for Qualitative color scale for Blackstone Research and Evaluation.
 #'
 #' @export
-qualColors <- c(`orange`  = "#E69F00",
-                `sky blue`  = "#56B4E9",
-                `bluish green`  = "#009E73",
-                `magenta`  = "#CC79A7",
-                `vermillion` = "#D55E00",
-                `blue`  = "#0072B2",
-                `dark green` = "#117733",
-                `viridis purple`  = "#440154FF",
-                `dark grey` = "#999999",
-                `bre blue` = "#283251",
-                `yellow green` = "#999933"
-                )
+qualColors <- c(
+    `orange`         = "#E69F00",   # 1
+    `sky blue`       = "#56B4E9",   # 2
+    `bluish green`   = "#009E73",   # 3
+    `magenta`        = "#CC79A7",   # 4
+    `vermillion`     = "#D55E00",   # 5
+    `blue`           = "#0072B2",   # 6
+    `dark green`     = "#117733",   # 7
+    `viridis purple` = "#440154FF", # 8
+    `dark grey`      = "#999999",   # 9
+    `bre blue`       = "#283251",   # 11
+    `yellow green`   = "#999933"    # 12
+)
+
+#' Helper function that makes selections from a color palette.
+#'
+#' @description A function return hex color codes from a color palette by name or numbered position.
+#'
+#' @param pal Required, the named color palette as a named vector of color hex codes, defaults to `qualColors`.
+#'
+#' @param cols Required, a character vector of names or numbered position to use to select
+#'      from the named vector of color hex codes , defaults to `NULL` and returns the full palette.
+#'
+#' @return a named character vector of color hex codes.
+#'
+#' @export
+customCols <- function(pal = qualColors, cols = NULL) {
+    # Gather all color names or vector positions into a new character vector:
+    if (is.null(cols)) { # if nothing passed, return full palette:
+        return(pal)
+    } else {# Otherwise, return a new palette by selection:
+        return(pal[cols])
+    }
+}
 
 #' Helper function to create qualitative colors from the `Okabe-Ito` palette.
 #'
-#' @description A function to create qualitative colors from the `Okabe-Ito` palette, reversed if rev_colors is set to TRUE.
-#'      Drops black and yellow for use with all BRE charts.
+#' @description A function to create a custom qualitative colors palette from the `Okabe-Ito` palette, reversed if rev_colors is set to TRUE.
+#'      Drops black and yellow for use with all BRE charts and adds three other colors: "#440154FF", "#283251", and "#999933".
 #'
-#' @param n_colors Required, the number of color hex codes to return.
+#' @param n_colors Required, supply a non-negative integer that is the desired the number of color hex codes to return.
 #'#'
 #' @param rev_colors Logical, defaults to FALSE, if true returns a reverse color codes where the darkest color comes first.
 #'
 #' @return a character vector of hex color codes the length of `n_colors`.
-#' @importFrom grDevices palette.colors
 #'
 #' @export
 qualFillColors <- function(n_colors, rev_colors = FALSE) {
-    if (n_colors > 9) {
-        stop("Error: n_colors exceeds the total colors in the qual palette. Construct a custom scale using these colors with n_colors = 9,
-             adding as many as you need by recyling these colors or adding new color codes")
-    } else {
-        if (isTRUE(rev_colors)) {
-            # c("#E69F00", "#56B4E9", "#009E73","#CC79A7", "#0072B2", "#D55E00","#440154FF", "#999999", "#283251")
-            rev(grDevices::palette.colors(n = n_colors, palette = "Okabe-Ito"))
-        } else if (isFALSE(rev_colors)) {
-            grDevices::palette.colors(n = n_colors, palette = "Okabe-Ito")
-        }
+    if (n_colors > length(qualColors)) {
+        warning("This palette can handle a maximum of ", length(qualColors), " values.",
+                "You have supplied ", n_colors, ", colors will be recycled to reach this number of values.")
+    } else if (n_colors < 0) {
+        stop("`n_colors` must be a non-negative integer.")
     }
+    # Uses rep() to recycle the color values so the returned color code vector is length of n_colors
+    # and has no NA's.
+    new_pal <- rep(qualColors, len = n_colors)
+    if (isTRUE(rev_colors)) {
+        # new_pal <- rev(customCols(cols = c(1:n_colors))) # reversed qualColors palette
+        new_pal <- rev(new_pal) # reversed qualColors palette
+    }
+
+    return(new_pal)
+
 }
