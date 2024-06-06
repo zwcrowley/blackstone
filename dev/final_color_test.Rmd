@@ -1,7 +1,7 @@
 ---
 title: "Final Color for BRE"
 output: html_document
-date: "`r Sys.Date()`"
+date: "`r format(Sys.Date(), format = '%D-%B-%Y')`"
 ---
 
 ```{r setup, include=FALSE}
@@ -166,12 +166,24 @@ bre::arrowChart(df = items, scale_labels = levels_min_ext,
 ```
 
 
-## Qualitative/Categorical Color Scales
+## Qualitative/Categorical Color Palette
 
-### Example of total Qualitative/Categorical Color Scale
+### Example Swatch of the new Qualitative/Categorical Color Palette with 11 colors
 
-#### - Most colors taken from `Okabe-Ito` scale:
+#### - Most colors taken from `Okabe-Ito` palette, took out black and yellow and replaced with other colorblind friendly colors and the BRE dark blue.
 
+```{r}
+swatchplot(
+    customCols()
+)
+```
+
+
+#### Hex codes for the full Qualitative Color Palette
+
+```{r}
+customCols() 
+```
 
 
 
@@ -190,9 +202,10 @@ items_group <- dplyr::tibble(
  )
 ```
 
-### Arrow chart with new custom qualitative color scale based on `Okabe-Ito` colors:
+### Arrow chart with new custom qualitative color Palette based on `Okabe-Ito` colors:
 
-#### - The "Overall" group will always be the color black:
+#### - The "Overall" group will always be the color black
+#### - This also shows what left/negative direction arrows would look like with the `Research` items.
 
 ```{r}
 new_cols <- c("#000000", qualFillColors(2, rev_colors = T)) %>% set_names(c("overall","grad", "undergrad"))
@@ -201,53 +214,7 @@ bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("gr
 
 ```
 
-
-
-```{r}
-# create a labeled list of colors
-qualColors <- c(
-  `orange`  = "#E69F00",
-  `sky blue`  = "#56B4E9",
-  `bluish green`  = "#009E73",
-  `magenta`  = "#CC79A7",
-  `blue`  = "#0072B2",
-  `vermillion` = "#D55E00",
-  `viridis purple`  = "#440154FF",
-  `dark grey` = "#999999",
-  `bre blue` = "#283251")
-
-# wrap that list in a callable function
-customCols <- function(...) {
-  cols <- c(...)
-  if (is.null(cols))
-    return (qualColors)
-  qualColors[cols]
-}
-
-
-# There are 10 colors, so our max number of colors will be 10.
-check_pal_n <- function(n, max_n) {
-  if (n > max_n) {
-    warning("This palette can handle a maximum of ", max_n, " values.",
-            "You have supplied ", n, ".")
-  } else if (n < 0) {
-    stop("`n` must be a non-negative integer.")
-  }
-}
-
-custom_cols()
-```
-
-
-
-
-```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
-                     group_colors = grDevices::palette.colors(n = (length(unique(items_group[["edu_level"]])) + 1), palette = "Okabe-Ito"),
-                     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
-```
-
-
+<hr>
 
 ## Horizontal Bar Chart with 7 racial categories
 
@@ -274,34 +241,17 @@ race_summ <- data %>%
 three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or Latino", "African American or Black")) 
 ```
 
-### Horizontal Bar Chart with `viridis` color scale:
+### Horizontal Bar Chart with custom qualitative color Palette:
 
 ```{r}
-# horzBarChart() with viridis colors "#E69F00", "#56B4E9", "#009E73", 
-bre::horzBarChart(df = race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73","#CC79A7", "#0072B2", "#D55E00","#440154FF", "#999999", "#283251"), width = 0.6)
+r_colors <- bre::qualFillColors(n_colors = length(unique(race_summ[["response"]]))) %>% purrr::set_names(race_summ[["response"]])
+# horzBarChart() with custom qual colors c("#E69F00"", "#56B4E9", "#009E73", "#CC79A7", "#D55E00", "#0072B2", "#440154FF")
+bre::horzBarChart(df = race_summ, scale_colors = r_colors, width = 0.6)
 
 ```
 
 
-#### - Same palette, Only 3 categories, skipping yellow color in palette:
-
-```{r}
-# horzBarChart() with colors
-bre::horzBarChart(df = three_race_summ, scale_colors = c("#440154FF", "#31688EFF", "#35B779FF"), width = 0.6)
-
-```
-
-
-### Horizontal Bar Chart with `Okabe-Ito` color scale:
-
-```{r}
-# horzBarChart() with Okabe-Ito colors
-bre::horzBarChart(df = race_summ, scale_colors = grDevices::palette.colors(n = length(unique(data[["race"]])), palette = "Okabe-Ito"), width = 0.6)
-
-```
-
-
-#### - Same palette, Only 3 categories, skipping black color in palette:
+#### - Same palette, Only 3 categories:
 
 ```{r}
 # horzBarChart() with colors
@@ -310,25 +260,18 @@ bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "
 ```
 
 
-### Horizontal Bar Chart with `cividis` color scale:
+### Reversed color palette with 7 categories in horizontal bar chart to show bottome colors:
 
 ```{r}
-# horzBarChart() with cividis colors
-bre::horzBarChart(df = race_summ, scale_colors = viridisLite::cividis(n = length(unique(data[["race"]]))), width = 0.6)
-
-```
-
-#### - Same palette, Only 3 categories:
-
-```{r}
-# horzBarChart() with cividis colors
-bre::horzBarChart(df = three_race_summ, scale_colors = viridisLite::cividis(n = 3), width = 0.6)
+rev_colors <- bre::qualFillColors(n_colors = 11, rev_colors = T)[1:7] %>% purrr::set_names(race_summ[["response"]])
+# horzBarChart() with custom qual colors c("#E69F00"", "#56B4E9", "#009E73", "#CC79A7", "#D55E00", "#0072B2", "#440154FF")
+bre::horzBarChart(df = race_summ, scale_colors = rev_colors, width = 0.6)
 
 ```
 
 <hr>
 
-## Diverging Color Scale
+## Diverging Color Palette: slightly darkened `Blue Red 3`
 
 ### Stacked Pre-Post bar chart with `Blue Red 3` color palette on a 7 point scale:
 
@@ -351,8 +294,22 @@ bre::stackedBarChart(
 
 ```
 
+### Hex Codes for the Diverging Color Palette: Darkened `Blue Red 3`
 
-## Sequential Color Scales
+#### - 5 point scale:
+
+```{r}
+divFillColors(n_colors = 5) 
+```
+
+#### - 7 point scale:
+
+```{r}
+divFillColors(n_colors = 7) 
+```
+
+
+## Sequential Color Scales: slightly darkened `Blues 3`
 
 ### Stacked bar chart with `Blues 3` color scale:
 
@@ -364,26 +321,16 @@ bre::stackedBarChart(
 ```
 
 
+### Hex Codes for the Sequential Color Scale Darkened `Blues 3`
 
-### Stacked bar chart with `cividis` color scale:
-
-```{r}
-# `Blues 3` from `colorspace` package
-bre::stackedBarChart(
-   df = cat_items_single, scale_labels = levels_min_ext,
-   fill_color = viridisLite::cividis(n = length(levels_min_ext), alpha = 1, begin = 0, end = 1, direction = -1),
-   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = T
-)
-```
-
-#### - Same palette, Pre-post data:
+#### - 5 point scale:
 
 ```{r}
-cat_items %>%
-bre::stackedBarChart( 
-   df = ., pre_post = T, scale_labels = levels_min_ext,
-   fill_color = viridisLite::cividis(n = length(levels_min_ext), alpha = 1, begin = 0, end = 1, direction = -1),
-   question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = F
-)
+seqFillColors(n_colors = 5) 
 ```
 
+#### - 7 point scale:
+
+```{r}
+seqFillColors(n_colors = 7) 
+```

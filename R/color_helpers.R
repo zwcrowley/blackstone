@@ -88,11 +88,11 @@ qualColors <- c(
     `magenta`        = "#CC79A7",   # 4
     `vermillion`     = "#D55E00",   # 5
     `blue`           = "#0072B2",   # 6
-    `dark green`     = "#117733",   # 7
-    `viridis purple` = "#440154FF", # 8
-    `dark grey`      = "#999999",   # 9
-    `bre blue`       = "#283251",   # 11
-    `yellow green`   = "#999933"    # 12
+    `viridis purple` = "#440154FF", # 7
+    `dark grey`      = "#999999",   # 8
+    `dark green`     = "#117733",   # 9
+    `bre blue`       = "#283251",   # 10
+    `yellow green`   = "#999933"    # 11
 )
 
 #' Helper function that makes selections from a color palette.
