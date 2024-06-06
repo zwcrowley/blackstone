@@ -81,16 +81,18 @@ divFillColors <- function(n_colors) {
 #' @return A named vector of hex colors for Qualitative color scale for Blackstone Research and Evaluation.
 #'
 #' @export
-qualColors <- c(
-    `orange`  = "#E69F00",
-    `sky blue`  = "#56B4E9",
-    `bluish green`  = "#009E73",
-    `magenta`  = "#CC79A7",
-    `blue`  = "#0072B2",
-    `vermillion` = "#D55E00",
-    `viridis purple`  = "#440154FF",
-    `dark grey` = "#999999",
-    `bre blue` = "#283251")
+qualColors <- c(`orange`  = "#E69F00",
+                `sky blue`  = "#56B4E9",
+                `bluish green`  = "#009E73",
+                `magenta`  = "#CC79A7",
+                `vermillion` = "#D55E00",
+                `blue`  = "#0072B2",
+                `dark green` = "#117733",
+                `viridis purple`  = "#440154FF",
+                `dark grey` = "#999999",
+                `bre blue` = "#283251",
+                `yellow green` = "#999933"
+                )
 
 #' Helper function to create qualitative colors from the `Okabe-Ito` palette.
 #'

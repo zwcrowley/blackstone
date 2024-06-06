@@ -118,6 +118,66 @@ cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named)
 
 ```
 
+### Setting up custom colors for grouped arrow chart:
+
+```{r}
+# create a labeled list of colors
+qualColors <- c(
+  `orange`  = "#E69F00",
+  `sky blue`  = "#56B4E9",
+  `bluish green`  = "#009E73",
+  `magenta`  = "#CC79A7",
+  `vermillion` = "#D55E00",
+  `blue`  = "#0072B2",
+  `dark green` = "#117733",
+  `viridis purple`  = "#440154FF",
+  `dark grey` = "#999999",
+  `bre blue` = "#283251",
+  `yellow green` = "#999933")
+swatchplot(qualColors)
+# rcartocolor::carto_pal(12, "Safe")
+# "#88CCEE" "#CC6677" "#DDCC77" "#117733" "#332288" "#AA4499" "#44AA99" "#999933" "#882255" "#661100" "#6699CC" "#888888"
+# grDevices::palette.colors(palette = "Okabe-Ito")
+# "#000000" "#E69F00" "#56B4E9" "#009E73" "#F0E442" "#0072B2" "#D55E00" "#CC79A7" "#999999"
+# wrap that list in a callable function
+customCols <- function(...) {
+  cols <- c(...)
+  if (is.null(cols))
+    return (qualColors)
+  qualColors[cols]
+}
+
+
+# There are 10 colors, so our max number of colors will be 10.
+check_pal_n <- function(n, max_n) {
+  if (n > max_n) {
+    warning("This palette can handle a maximum of ", max_n, " values.",
+            "You have supplied ", n, ".")
+  } else if (n < 0) {
+    stop("`n` must be a non-negative integer.")
+  }
+}
+
+custom_cols()
+```
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
+    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+
+grDevices::palette.colors(n = 9, palette = "Okabe-Ito")
+"#000000"
+"#E69F00" "#56B4E9" "#009E73" "#CC79A7" "#0072B2" "#D55E00" "#999999" "#440154FF" "#4AC16DFF"
+c("#E69F00", "#56B4E9", "#009E73", "#277F8EFF", "#CC79A7", "#0072B2", "#D55E00","#440154FF", "#999999")
+
+viridisLite::viridis(n = 12)
+"#440154FF" "#46337EFF" "#365C8DFF" "#277F8EFF" "#1FA187FF" "#4AC16DFF" "#9FDA3AFF" "#FDE725FF"
+"#440154FF" "#482173FF" "#433E85FF" "#38598CFF" "#2D708EFF" "#25858EFF" "#1E9B8AFF" "#2BB07FFF" "#51C56AFF" "#35B779FF" "#009E73" "#85D54AFF" "#C2DF23FF" "#FDE725FF"
+```
+
+
+
+### Testing SB Chart:
 
 ```{r}
 # Test new sb chart function on sequential color pal:
@@ -451,6 +511,81 @@ popViewport()
   grid.draw(gg)
 ```
 
+### Rounded edges Rectangle legend 
+
+```{r}
+library(ggplot2)
+library(gtable)
+library(grid)
+library(dplyr)
+library(forcats)
+
+# Your starting data and plot code
+stacked_bar_chart_gg <- {{df_gg}} %>%
+  ggplot(ggplot2::aes(
+    x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), group = {{group_gg}}, fill = {{fill_gg}}
+  )) +
+  geom_col(position = "fill", color = "black", width = {{width_gg}}, key_glyph = draw_key_label) + # , key_glyph = draw_key_rect
+   ggplot2::geom_text(ggplot2::aes(label = {{label_gg}}, color = {{label_color_gg}}), position = ggplot2::position_fill(vjust = 0.5),
+                           stat = "identity", size = font_size, size.unit = "pt"
+        ) +
+  scale_color_identity() +
+  scale_fill_manual(
+    breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
+    labels = str_wrap({{scale_labels_gg}}, width = 8)
+  ) +
+  guides(
+    fill = guide_legend(
+      nrow = 1,
+      override.aes = list(label = "  ", # sets the width of `key_glyph = draw_key_label` in geom_col for the legend.
+                          size = 5 # sets the size of legend key along with the two spaces in the previous line 
+                          )
+    )
+  ) +
+  theme_void(base_family = font_family, base_size = font_size) +
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.text.position = "right",
+    legend.text = element_text(
+      angle = 0, hjust = 0, vjust = 0.5,
+      family = font_family, size = rel(0.8)
+    ),
+    legend.title = element_blank(),
+    axis.text = element_text(
+      angle = 0, hjust = 1, vjust = 0.5,
+      family = font_family
+    ),
+    axis.text.x = element_blank(),
+    axis.text.y = ggtext::element_markdown(
+      angle = 0, hjust = 1, halign = 1, color = "black",
+      margin = margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
+    ),
+    plot.margin = margin(t = 30, r = 5, b = 30, l = 5, unit = "pt"),
+    panel.spacing = unit(0, "cm")
+  )
+
+stacked_bar_chart_gg
+
+# Extract the ggplot grob
+# g <- ggplotGrob(stacked_bar_chart_gg)
+# grid::grid.draw(g) 
+# # Adjust legend key sizes
+# g$grobs <- lapply(g$grobs, function(x) {
+#   if(x$name == "gtable[guide-box]") {
+#     x$grobs[[1]]$grobs[[1]]$heights <- unit(rep(0.01, length(x$grobs[[1]]$grobs[[1]]$heights)), "cm")
+#     x$grobs[[1]]$grobs[[1]]$widths <- unit(rep(2, length(x$grobs[[1]]$grobs[[1]]$widths)), "cm")
+#   }
+#   return(x)
+# })
+# 
+# 
+# ggpubr::as_ggplot(g)
+
+```
+
+### SB Chart with custom legend that are sizable rectangles:
+
 ```{r}
 legendGrobCustom <-
     function(labels, nrow, ncol, byrow=FALSE,
@@ -590,6 +725,7 @@ new
 
 ```
 
+### Example custom draw_key_* function:
 
 ```{r}
 dat <- data.frame(x = seq(1,100,by=2), y = seq(1,300,by=3))
@@ -827,77 +963,6 @@ new
 ```
 
 
-
-```{r}
-library(ggplot2)
-library(gtable)
-library(grid)
-library(dplyr)
-library(forcats)
-
-# Your starting data and plot code
-stacked_bar_chart_gg <- {{df_gg}} %>%
-  ggplot(ggplot2::aes(
-    x = {{x_gg}}, y = forcats::fct_rev({{y_gg}}), group = {{group_gg}}, fill = {{fill_gg}}
-  )) +
-  geom_col(position = "fill", color = "black", width = {{width_gg}}, key_glyph = draw_key_label) + # , key_glyph = draw_key_rect
-   ggplot2::geom_text(ggplot2::aes(label = {{label_gg}}, color = {{label_color_gg}}), position = ggplot2::position_fill(vjust = 0.5),
-                           stat = "identity", size = font_size, size.unit = "pt"
-        ) +
-  scale_color_identity() +
-  scale_fill_manual(
-    breaks = {{scale_labels_gg}}, values = {{fill_colors_gg}}, drop = FALSE,
-    labels = str_wrap({{scale_labels_gg}}, width = 8)
-  ) +
-  guides(
-    fill = guide_legend(
-      nrow = 1,
-      override.aes = list(label = "  ", # sets the width of `key_glyph = draw_key_label` in geom_col for the legend.
-                          size = 5 # sets the size of legend key along with the two spaces in the previous line 
-                          )
-    )
-  ) +
-  theme_void(base_family = font_family, base_size = font_size) +
-  theme(
-    legend.position = "top",
-    legend.direction = "horizontal",
-    legend.text.position = "right",
-    legend.text = element_text(
-      angle = 0, hjust = 0, vjust = 0.5,
-      family = font_family, size = rel(0.8)
-    ),
-    legend.title = element_blank(),
-    axis.text = element_text(
-      angle = 0, hjust = 1, vjust = 0.5,
-      family = font_family
-    ),
-    axis.text.x = element_blank(),
-    axis.text.y = ggtext::element_markdown(
-      angle = 0, hjust = 1, halign = 1, color = "black",
-      margin = margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
-    ),
-    plot.margin = margin(t = 30, r = 5, b = 30, l = 5, unit = "pt"),
-    panel.spacing = unit(0, "cm")
-  )
-
-stacked_bar_chart_gg
-
-# Extract the ggplot grob
-# g <- ggplotGrob(stacked_bar_chart_gg)
-# grid::grid.draw(g) 
-# # Adjust legend key sizes
-# g$grobs <- lapply(g$grobs, function(x) {
-#   if(x$name == "gtable[guide-box]") {
-#     x$grobs[[1]]$grobs[[1]]$heights <- unit(rep(0.01, length(x$grobs[[1]]$grobs[[1]]$heights)), "cm")
-#     x$grobs[[1]]$grobs[[1]]$widths <- unit(rep(2, length(x$grobs[[1]]$grobs[[1]]$widths)), "cm")
-#   }
-#   return(x)
-# })
-# 
-# 
-# ggpubr::as_ggplot(g)
-
-```
 
 
 
