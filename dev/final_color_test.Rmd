@@ -185,8 +185,8 @@ swatchplot(
 
 # function to show color, names and hex codes as visual:
 show_colors2 <- function(colors) { 
-  labels_color <- purrr::map_chr(seq_along(colors), \(x) paste0("'",names(colors)[x], "':  ", colors[x]))
-  ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
+  labels_color <- purrr::map_chr(seq_along(colors), \(x) paste0("'",names(colors)[x], "': ", colors[x]))
+  ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors), width = rep(2, length(colors)))) + 
     geom_tile(aes(1, id, fill = rev(color))) + 
     geom_text(aes(1, id, label = labels_color)) + 
     scale_fill_identity() +

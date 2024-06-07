@@ -129,6 +129,200 @@ items_group <- dplyr::tibble(
  )
 ```
 
+### Div bar chart dev:
+
+```{r}
+
+df <- cat_items
+scale_labels <- levels_min_ext
+question_order <- FALSE
+width <- NULL
+overall_n <- TRUE
+percent_label <- TRUE
+fill_colors  <- "div"
+
+    # Create a font family character var so that it is easy to change, could also be a new arg:
+    font_family <- c("Arial")
+    font_size <- 10
+    # Set . to NULL to stop message when using dot notation in mutate:
+    . <- NULL
+
+    # Make sure the all vars in df are factors with scale_labels as their levels:
+    new_df <- {{ df }} %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = scale_labels)))
+
+    # Changes scale_labels to tibble pulls out index and saves that as a vector, gets number of levels from scale_labels:
+    number_levels <- scale_labels %>%
+      tibble::enframe() %>%
+      dplyr::select("name") %>%
+      tibble::deframe()
+    
+    # If pre_post is TRUE, set up new_df with dataVizCleaning():
+    new_df <- dataVizCleaning(df = new_df, pre_post = TRUE, scale_labels = scale_labels, na_remove = TRUE)
+    
+    # Get total n for each question, grouped by question and timing:
+    totals_new_df <- new_df %>%
+      dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+      dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by(.data[["question"]]) %>%
+      dplyr::distinct(.data[["question"]], .data[["total"]]) %>%
+      dplyr::ungroup()
+    
+    # # 5 colors for chart:
+      # fill_colors <- seqFillColors(n_colors = length(number_levels))
+      # If statement to handle the value(s) of `fill_colors`:
+    if (length(fill_colors) > 1) {
+        if (length(fill_colors) >= length(scale_labels)) {
+            new_fill_colors <- fill_colors # sets the fill colors to the hex codes passed in by the user.
+        } else {
+            stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels`")
+        }
+    } else if (fill_colors == "seq") {
+        new_fill_colors <- seqFillColors(length(scale_labels)) # sets the fill colors to the default sequential palette.
+    } else if (fill_colors == "div") {
+        new_fill_colors <- divFillColors(length(scale_labels)) # sets the fill colors to the default diverging palette of `Blue Red 3` from namespace `colorspace`.
+    }
+
+    # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
+    label_colors_named <- labelColorMaker(new_fill_colors, names = scale_labels)
+    # create a new col `label_color` using the named vector `label_colors_named` to map the text color to the variable response
+    new_df <- new_df %>% dplyr::mutate(., label_color = label_colors_named[new_df[["response"]]]) 
+    # new_df %>% dplyr::mutate(., label_color = map_chr(.data[["response"]], \(x) label_colors_named[x])) %>% 
+    #     dplyr::arrange(.data$response)
+    
+    # Named vector created by new color palette named by the scale_labels:
+    new_fill_colors_named <- new_fill_colors # new color palette as values
+    names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
+
+    # Calculate the width and height of legend keys using `names(new_fill_colors_named)` (i.e. str_wrap scale_labels)
+    # Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
+    key_width <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strwidth, units = "inches")) * 0.9, "in")
+    # Create a minimum default of key_width being at least 0.7 inches:
+    key_width <- dplyr::if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
+    # Legend key height = maximum label strheight: PASS TO guide_legend keyheight
+    key_height <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strheight, units = "inches")) * 0.95, "in")
+    # Create a minimum default of key_height being at least 0.35 inches:
+    key_height <- dplyr::if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
+    
+
+    if (length(number_levels) == 5) {
+      new_df <- new_df %>%
+        dplyr::group_by(.data$question, .data$timing) %>%
+        dplyr::mutate(
+          percent_answers = dplyr::case_when(
+            .data$response == levels(.data$response)[5] ~ percent_answers,
+            .data$response == levels(.data$response)[4] ~ percent_answers,
+            TRUE ~ -percent_answers
+          ),
+          percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
+          # Sets response levels to: 3,2,1,4,5 = this is so LHS of chart is reversed to create the diverging bars:
+          response = forcats::fct_relevel(.data$response, c(
+            levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
+            levels(.data$response)[4], levels(.data$response)[5]
+          )),
+          pos_valence_post = dplyr::case_when(
+            .data$response == levels(.data$response)[4] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
+            .data$response == levels(.data$response)[5] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
+            TRUE ~ 0
+          )
+        ) %>%
+        dplyr::ungroup() %>% 
+        dplyr::arrange(.data$response)
+    
+    }
+
+     
+    
+    if (isFALSE(question_order)) {
+        new_question_order <- questionOrder(df = new_df, pre_post = TRUE)
+        # change the factor levels of question to be ordered by the question_order:
+        new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
+    } else {
+        # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
+        new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = question_labels))
+    }
+
+    if (is.null(width)) {
+      width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
+                              dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
+      )
+    }
+    
+    if (isTRUE(overall_n)) {
+        # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal to each other: ----
+        N_df <- NULL
+        if (length(unique(totals_new_df[["total"]])) == 1) {
+          # Get overall n if it is the same for each item:
+          N_df <- totals_new_df %>%
+            dplyr::summarize(N = mean(.data[["total"]])) %>%
+            tibble::deframe()
+        }
+        # Error messages if N_df is null, not filled by last if statement above:
+        if (is.null(N_df)) {
+          stop("Error: Can not use `overall_n` for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
+        }
+    } else if (isFALSE(overall_n)) { # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
+        # Change the label of the variable "question" by adding n of each to the end of the character string:
+        labels_n_questions <- paste0(totals_new_df[["question"]], " ", "(*n* = ", totals_new_df[["total"]], ")")
+
+        # Set factor labels for question to labels:
+        new_df <- new_df %>%
+          dplyr::mutate(question = factor(.data[["question"]], levels = levels(.data[["question"]]), labels = labels_n_questions))
+    }
+
+    # Set labels to percent or n_answers:
+    if (isTRUE(percent_label)) {
+        label_gg <- new_df[["percent_answers_label"]]
+    } else {
+        label_gg <- new_df[["n_answers"]]
+    }
+
+    diverging_bar_chart <- new_df %>%
+        ggplot2::ggplot(ggplot2::aes(
+          x = .data[["percent_answers"]], y = forcats::fct_rev(.data[["timing"]]), fill = .data[["response"]],
+          label = {{ label_gg }}, group = .data[["question"]]
+        )) +
+        ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), 
+                          color = "black", key_glyph = draw_key_cust) + # sets up custom legend as text boxes with fill colors
+        ggplot2::geom_text(ggplot2::aes(color = .data[["label_color"]]),
+                           position = ggplot2::position_stack(vjust = .5, reverse = TRUE),
+                           family = font_family, size = font_size, size.unit = "pt"
+        ) +
+        ggplot2::scale_color_identity() +
+        ggplot2::facet_wrap(~question, ncol = 1, strip.position = "left") +
+        ggplot2::scale_fill_manual(values = new_fill_colors_named, labels = NULL) + # turn off labels in legend
+        ggplot2::guides(fill = ggplot2::guide_legend(
+            nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
+            override.aes = list(color = label_colors_named, # manually sets the color of the legend text to white or black
+                                label = names(new_fill_colors_named),
+                                fill = new_fill_colors_named) # manually sets the legend labels to wrapped scale_labels
+        )) +
+        addBarChartTheme(font_size = font_size, font_family = font_family) + 
+        addBarChartPrePostTheme(font_size = font_size, font_family = font_family) + 
+        addPlotTag(n = N_df, font_size = font_size, font_family = font_family)
+    
+    # Call stackedBar_ggplot ----
+    # # Set labels to percent or n_answers:
+    # if (isTRUE(percent_label)) {
+    #     label_gg <- new_df[["percent_answers_label"]]
+    # } else {
+    #     label_gg <- new_df[["n_answers"]]
+    # }
+    # 
+    # # Final call to stackedBar_ggplot() for chart creation:
+    #     diverging_bar_chart <- stackedBar_ggplot(df_gg = new_df, y_gg = "timing", pre_post = TRUE,
+    #                                            label_gg = label_gg, label_colors_named = label_colors_named,
+    #                                            legend_labels = names(new_fill_colors_named),
+    #                                            width_gg = width, fill_colors_gg = new_fill_colors,
+    #                                            overall_n_gg = overall_n, N_df_gg = N_df,
+    #                                            key_width = key_width, key_height = key_height)
+    # }
+
+    
+diverging_bar_chart
+```
+
+
 ### Setting up custom colors for grouped arrow chart:
 
 ```{r}

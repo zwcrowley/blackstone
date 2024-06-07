@@ -63,6 +63,7 @@ addBarChartPrePostTheme <- function(font_size, font_family) {
                            angle = 0, hjust = 1, color = "black", family = font_family, size = font_size,
                            margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5, unit = "pt"),
                        ),
+                       panel.spacing = grid::unit(0.5, "cm"),
                        axis.text.y = ggtext::element_markdown(size = ggplot2::rel(0.8) # Controls the 'timing' Pre post labels
                        )
         )

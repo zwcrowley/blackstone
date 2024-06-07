@@ -225,10 +225,7 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
         if (is.null(N_df)) {
           stop("Error: Can not use `overall_n` for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
         }
-    }
-
-    # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
-    if (isFALSE(overall_n)) {
+    } else if (isFALSE(overall_n)) { # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
         # Change the label of the variable "question" by adding n of each to the end of the character string:
         labels_n_questions <- paste0(totals_new_df[["question"]], " ", "(*n* = ", totals_new_df[["total"]], ")")
 
