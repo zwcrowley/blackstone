@@ -188,70 +188,72 @@ items_group <- dplyr::tibble(
 ```
 
 ```{r}
-df = items_group
-group = "edu_level"
-group_levels = c("grad", "undergrad")
+# df = items_group
+# group = "edu_level"
+# group_levels = c("grad", "undergrad")
+# 
+# # append `overall` to group_levels
+# group_levels <- c("overall", group_levels)
+# #  Start of data manipulation: ----
+#     # Set up a df for the original groups separate average:
+#     arrow_df_group <- {{ df }} %>%
+#       dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} ))) %>%
+#       tidyr::pivot_longer(-{{group}}, names_to = "question", values_to = "response") %>%
+#       dplyr::mutate( {{group}} := factor( .data[[group]] )) %>%
+#       tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
+#       dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data$question, .data$timing) %>%
+#       dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
+#       dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
+#       dplyr::ungroup()
+#     arrow_df_group
+#     # Set up a df for an overall average
+#     arrow_df_all <- {{ df }} %>%
+#       dplyr::select(!dplyr::all_of({{group}})) %>% # drop the group var
+#       tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+#       tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
+#       dplyr::group_by(.data$question, .data$timing) %>%
+#       dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
+#       dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
+#       dplyr::ungroup() %>%
+#       dplyr::mutate({{group}} := "overall")
+#     arrow_df_all
+#     # Full join the data by groups and overall, and then Rev the factor order of "group":
+#     arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by( {{group}}, "question", "timing", "score_avg")) %>%
+#       dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data$question, .data$timing) %>%
+#       dplyr::mutate(
+#         {{group}} := factor(.data[[group]], levels = group_levels) # recode factor levels to group by using `group_levels`
+#       ) %>%
+#       dplyr::ungroup() %>% 
+#       tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
+#         id_cols = tidyselect::everything(),
+#         names_from = timing, 
+#         values_from = score_avg,
+#         names_glue = "{timing}_score_avg"
+#       ) %>% 
+#       dplyr::mutate(diff_score_avg = .data$post_score_avg - .data$pre_score_avg) %>% 
+#       tidyr::pivot_longer(pre_score_avg:post_score_avg,
+#                           names_to = c("timing", ".value"), 
+#                           names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
+#                           )
+#    pre_diff_score_avg <- arrow_df %>% dplyr::filter(timing == "post") %>% select(diff_score_avg) %>% deframe() 
+#    nudge_x_pre <- dplyr::if_else(pre_diff_score_avg > 0, 0.2, -0.2)
 
-# append `overall` to group_levels
-group_levels <- c("overall", group_levels)
-#  Start of data manipulation: ----
-    # Set up a df for the original groups separate average:
-    arrow_df_group <- {{ df }} %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} ))) %>%
-      tidyr::pivot_longer(-{{group}}, names_to = "question", values_to = "response") %>%
-      dplyr::mutate( {{group}} := factor( .data[[group]] )) %>%
-      tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data$question, .data$timing) %>%
-      dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
-      dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
-      dplyr::ungroup()
-    arrow_df_group
-    # Set up a df for an overall average
-    arrow_df_all <- {{ df }} %>%
-      dplyr::select(!dplyr::all_of({{group}})) %>% # drop the group var
-      tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
-      tidyr::separate(.data$question, into = c("timing", "question"), sep = "_") %>%
-      dplyr::group_by(.data$question, .data$timing) %>%
-      dplyr::mutate(timing = factor(.data$timing, levels = c("pre", "post"))) %>%
-      dplyr::summarize(score_avg = mean(.data$response, na.rm = TRUE), .groups = "keep") %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate({{group}} := "overall")
-    arrow_df_all
-    # Full join the data by groups and overall, and then Rev the factor order of "group":
-    arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by( {{group}}, "question", "timing", "score_avg")) %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data$question, .data$timing) %>%
-      dplyr::mutate(
-        {{group}} := factor(.data[[group]], levels = group_levels) # recode factor levels to group by using `group_levels`
-      ) %>%
-      dplyr::ungroup() %>% 
-      tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
-        id_cols = tidyselect::everything(),
-        names_from = timing, 
-        values_from = score_avg,
-        names_glue = "{timing}_score_avg"
-      ) %>% 
-      dplyr::mutate(diff_score_avg = .data$post_score_avg - .data$pre_score_avg) %>% 
-      tidyr::pivot_longer(pre_score_avg:post_score_avg,
-                          names_to = c("timing", ".value"), 
-                          names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
-                          )
-   pre_diff_score_avg <- arrow_df %>% dplyr::filter(timing == "post") %>% select(diff_score_avg) %>% deframe() 
-   nudge_x_pre <- dplyr::if_else(pre_diff_score_avg > 0, 0.2, -0.2)
 ```
 
+
 ```{r}
-new_cols <- c("#000000", qualFillColors(2, rev_colors = T)) %>% set_names(c("overall","grad", "undergrad"))
-bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, group_colors = new_cols,
-    overall_n = T, question_labels = NULL, question_order = FALSE)
+new_cols <- c(qualFillColors(2))
+bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, 
+                     group_colors = new_cols, overall_n = T, question_labels = NULL, question_order = FALSE)
 
 ```
 
 ### Arrow charts without a grouping variable:
 
-#### - With arrows in Blackstone dark blue "#283251"
+#### - With arrows in Blackstone dark blue "#283251" as the default, users can also specify qualatative colors.
 
 ```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext,
+bre::arrowChart(df = items, scale_labels = levels_min_ext, 
            overall_n = T, question_labels = question_labels, question_order = TRUE)
 
 ```

@@ -4,7 +4,7 @@
 \alias{customCols}
 \title{Helper function that makes selections from a color palette.}
 \usage{
-customCols(pal = qualColors, cols = NULL)
+customCols(pal = qualColors(), cols = NULL)
 }
 \arguments{
 \item{pal}{Required, the named color palette as a named vector of color hex codes, defaults to \code{qualColors}.}

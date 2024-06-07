@@ -8,7 +8,7 @@ arrowChartGroup(
   df,
   group,
   scale_labels,
-  group_colors,
+  group_colors = NULL,
   group_levels,
   overall_n = FALSE,
   question_labels = NULL,
@@ -21,21 +21,20 @@ arrowChartGroup(
 \item{df}{Required, a \link[tibble:tibble-package]{tibble} or data frame of \strong{numeric} data that has items with the prefix of \code{pre_} and \code{post_}; and has a categorical group
 variable to split up the data (e.g. role, gender, education level, etc.).}
 
-\item{group}{Required, the name of the grouping variable in a quoted character string (e.g. "role", "gender", "edu_level", etc.).}
+\item{group}{Required, the name of the grouping variable in a quoted character string, e.g. "role", "gender", "edu_level", etc..}
 
 \item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
 e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.}
 
-\item{group_colors}{Required, a character vector of hex codes for colors to associate
-each group to, e.g. this data has two groups and this function creates an
+\item{group_colors}{Required, A character vector of hex codes for colors to associate
+each group supplied in the \code{group_levels} argument. to, e.g. if the data has two groups and this function creates an
 overall group so this function will need a 'group_colors' character vector of
-three colors. 'group_colors' need to be in the order you want them associated to
-the group based on the factor levels for the group variable, last color
-will be the overall group of "Overall". Defaults to "Okabe-Ito" palette where
-black is alwasy the "Overall" group.}
+three colors. \code{group_colors} need to be in the order you want them associated to
+the group based on the factor levels for the group variable. Defaults to BRE custom qualitative palette and
+black is always the color for the "Overall" group.}
 
-\item{group_levels}{Required, a character vector of factor levels for the grouping variable (e.g. if the
-grouping variable is gender this could be: c("male", "female", "non-binary").}
+\item{group_levels}{Required, a character vector of factor levels for the grouping variable, e.g. if the
+grouping variable is gender this could be: "male", "female", "non-binary".}
 
 \item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
 If False, adds \emph{n} to each question/item after the respective labels.}
@@ -58,50 +57,4 @@ A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arr
 \description{
 \code{\link[=arrowChartGroup]{arrowChartGroup()}} creates an pre-post arrow chart of group averages and returns
 a ggplot object.
-}
-\examples{
-items <- dplyr::tibble(
-  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
-  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
-  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
-  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-  post_Publish = pre_Publish + 2,
-  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
-  post_Write = pre_Write + 1,
-  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
-  post_Research = pre_Research + 1,
-  edu_level = factor(c(
-      "grad", "undergrad", "grad", "undergrad", "grad",
-      "undergrad", "undergrad", "grad", "undergrad"
- ), levels = c("grad", "undergrad"))
-)
-# Labels for response scales to recode the numeric variables to on the plot:
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-# Question labels as a named vector with the naming structure
-# like this: c("{new label}" = "{original variable name}"):
-question_labels <- c("Publish a lot of high quality papers" =  "Publish",
-                     "Write a lot of research papers" = "Write",
-                     "Research in a lab with faculty" = "Research",
-                     "Organization of a large research project" = "Organization",
-                     "Source work for a research paper" = "Source")
-
-# Set up a character vector of scale colors to pass to the argument group_colors:
-three_colors <- c("#000000", "#56B4E9", "#E69F00") \%>\%
-                    purrr::set_names(c("overall","grad", "undergrad"))
-
-# Example grouped by the variable "edu_level", with n for each question and original labels:
-arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
-                group_colors = three_colors, group_levels = c("grad", "undergrad"),
-                overall_n = FALSE, question_labels = NULL, question_order = FALSE)
-
-# With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrowChartGroup(df = items, group = "edu_level",scale_labels = levels_min_ext,
-                group_colors = three_colors, group_levels = c("grad", "undergrad"),
-                overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
-
-# With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
-                group_colors = three_colors, group_levels = c("grad", "undergrad"),
-                overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 }

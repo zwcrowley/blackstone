@@ -1,7 +1,7 @@
 ---
 title: "Final Color for BRE"
 output: html_document
-date: "`r format(Sys.Date(), format = '%D-%B-%Y')`"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 ---
 
 ```{r setup, include=FALSE}
@@ -178,19 +178,36 @@ swatchplot(
 )
 ```
 
-
-#### Hex codes for the full Qualitative Color Palette
+#### - Color palette with names and hex codes:
 
 ```{r}
-customCols() 
+# purrr::map_chr(seq_along(qualColors(add_names = T)), \(x) paste0("'",names(qualColors(add_names = T))[x], "':  ", qualColors(add_names = T)[x]))
+
+# function to show color, names and hex codes as visual:
+show_colors2 <- function(colors) { 
+  labels_color <- purrr::map_chr(seq_along(colors), \(x) paste0("'",names(colors)[x], "':  ", colors[x]))
+  ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
+    geom_tile(aes(1, id, fill = rev(color))) + 
+    geom_text(aes(1, id, label = labels_color)) + 
+    scale_fill_identity() +
+    theme_void()
+}
+show_colors2(colors = qualColors(add_names = T))
+
 ```
 
 
+#### Hex codes for the full Qualitative Color Palette
+
+```{r, results='asis'}
+# knitr::combine_words(customCols(), before = '"', after = '"', and = "", sep = ", ")
+cat(paste0(paste0("`", customCols(), "`"), collapse = ", "))
+```
 
 ### Arrow charts section with 3 grouping variables and an arrow for the whole sample labelled "Overall":
 
 ```{r, include=FALSE}
-# add a grouping var to the data set `items`:
+# add a grouping var to the data set `items`: 
 items_group <- dplyr::tibble(
    items,
    edu_level = factor(c(
@@ -199,7 +216,7 @@ items_group <- dplyr::tibble(
   ), levels = c("grad", "undergrad"))
  ) %>% mutate(
             post_Research = dplyr::if_else(post_Research > 2, pre_Research - 2, pre_Research)
- )
+ ) 
 ```
 
 ### Arrow chart with new custom qualitative color Palette based on `Okabe-Ito` colors:
@@ -208,7 +225,7 @@ items_group <- dplyr::tibble(
 #### - This also shows what left/negative direction arrows would look like with the `Research` items.
 
 ```{r}
-new_cols <- c("#000000", qualFillColors(2, rev_colors = T)) %>% set_names(c("overall","grad", "undergrad"))
+new_cols <- c("#000000", qualFillColors(2)) %>% set_names(c("overall","grad", "undergrad"))
 bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, group_colors = new_cols,
     overall_n = T, question_labels = NULL, question_order = FALSE)
 
@@ -260,7 +277,7 @@ bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "
 ```
 
 
-### Reversed color palette with 7 categories in horizontal bar chart to show bottome colors:
+### Reversed color palette with 7 categories in horizontal bar chart to show bottom colors:
 
 ```{r}
 rev_colors <- bre::qualFillColors(n_colors = 11, rev_colors = T)[1:7] %>% purrr::set_names(race_summ[["response"]])
@@ -296,17 +313,16 @@ bre::stackedBarChart(
 
 ### Hex Codes for the Diverging Color Palette: Darkened `Blue Red 3`
 
-#### - 5 point scale:
-
-```{r}
-divFillColors(n_colors = 5) 
+```{r, results='asis'}
+cat("<h4><b>5 point scale:</b></h4>")
+cat(paste0(paste0("`", divFillColors(n_colors = 5), "`"), collapse = ", "))
+cat("<br>")
+cat("<h4><b>7 point scale:</b></h4> ")
+cat(paste0(paste0("`", divFillColors(n_colors = 7), "`"), collapse = ", "))
+cat("<br>")
 ```
 
-#### - 7 point scale:
 
-```{r}
-divFillColors(n_colors = 7) 
-```
 
 
 ## Sequential Color Scales: slightly darkened `Blues 3`
@@ -318,19 +334,20 @@ bre::stackedBarChart(
    df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
+
 ```
 
 
 ### Hex Codes for the Sequential Color Scale Darkened `Blues 3`
 
-#### - 5 point scale:
-
-```{r}
-seqFillColors(n_colors = 5) 
+```{r, results='asis'}
+cat("<h4><b>5 point scale:</b></h4>")
+cat(paste0(paste0("`", seqFillColors(n_colors = 5), "`"), collapse = ", "))
+cat("<br>")
+cat("<h4><b>7 point scale:</b></h4> ")
+cat(paste0(paste0("`", seqFillColors(n_colors = 7), "`"), collapse = ", "))
+cat("<br>") 
 ```
 
-#### - 7 point scale:
 
-```{r}
-seqFillColors(n_colors = 7) 
-```
+

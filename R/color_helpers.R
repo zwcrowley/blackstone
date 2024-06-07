@@ -74,27 +74,37 @@ divFillColors <- function(n_colors) {
 }
 
 
-#' BRE Qualitative Colors as a Named Vector
+#' BRE Qualitative Colors as a Vector
 #'
 #' @description A utils function for loading Qualitative color scale Blackstone Research and Evaluation colors for charts.
 #'
-#' @return A named vector of hex colors for Qualitative color scale for Blackstone Research and Evaluation.
+#' @param add_names Required, logical, if FALSE returns a vector of hex color codes, if TRUE returns a named vector with color names
+#'      that can be used to select from.
+#'
+#' @return A vector or named vector of hex colors for Qualitative color scale for Blackstone Research and Evaluation.
 #'
 #' @export
-qualColors <- c(
-    `orange`         = "#E69F00",   # 1
-    `sky blue`       = "#56B4E9",   # 2
-    `bluish green`   = "#009E73",   # 3
-    `magenta`        = "#CC79A7",   # 4
-    `vermillion`     = "#D55E00",   # 5
-    `blue`           = "#0072B2",   # 6
-    `viridis purple` = "#440154FF", # 7
-    `dark grey`      = "#999999",   # 8
-    `dark green`     = "#117733",   # 9
-    `bre blue`       = "#283251",   # 10
-    `yellow green`   = "#999933"    # 11
-)
+qualColors <- function(add_names = FALSE) {
+    qual_colors <- c(
+        `orange`         = "#E69F00",   # 1
+        `sky blue`       = "#56B4E9",   # 2
+        `bluish green`   = "#009E73",   # 3
+        `magenta`        = "#CC79A7",   # 4
+        `vermillion`     = "#D55E00",   # 5
+        `blue`           = "#0072B2",   # 6
+        `viridis purple` = "#440154FF", # 7
+        `dark grey`      = "#999999",   # 8
+        `dark green`     = "#117733",   # 9
+        `bre blue`       = "#283251",   # 10
+        `yellow green`   = "#999933"    # 11
+        )
+    if (isFALSE(add_names)) {
+        return(unname(qual_colors))
+    } else if (isTRUE(add_names)) {
+        return(qual_colors)
+    }
 
+}
 #' Helper function that makes selections from a color palette.
 #'
 #' @description A function return hex color codes from a color palette by name or numbered position.
@@ -107,7 +117,7 @@ qualColors <- c(
 #' @return a named character vector of color hex codes.
 #'
 #' @export
-customCols <- function(pal = qualColors, cols = NULL) {
+customCols <- function(pal = qualColors(), cols = NULL) {
     # Gather all color names or vector positions into a new character vector:
     if (is.null(cols)) { # if nothing passed, return full palette:
         return(pal)
@@ -129,15 +139,15 @@ customCols <- function(pal = qualColors, cols = NULL) {
 #'
 #' @export
 qualFillColors <- function(n_colors, rev_colors = FALSE) {
-    if (n_colors > length(qualColors)) {
-        warning("This palette can handle a maximum of ", length(qualColors), " values.",
+    if (n_colors > length(qualColors())) {
+        warning("This palette can handle a maximum of ", length(qualColors()), " values.",
                 "You have supplied ", n_colors, ", colors will be recycled to reach this number of values.")
     } else if (n_colors < 0) {
         stop("`n_colors` must be a non-negative integer.")
     }
     # Uses rep() to recycle the color values so the returned color code vector is length of n_colors
     # and has no NA's.
-    new_pal <- rep(qualColors, len = n_colors)
+    new_pal <- rep(qualColors(), len = n_colors)
     if (isTRUE(rev_colors)) {
         # new_pal <- rev(customCols(cols = c(1:n_colors))) # reversed qualColors palette
         new_pal <- rev(new_pal) # reversed qualColors palette

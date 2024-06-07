@@ -6,21 +6,20 @@
 #' @param df Required, a [tibble][tibble::tibble-package] or data frame of **numeric** data that has items with the prefix of `pre_` and `post_`; and has a categorical group
 #'  variable to split up the data (e.g. role, gender, education level, etc.).
 #'
-#' @param group Required, the name of the grouping variable in a quoted character string (e.g. "role", "gender", "edu_level", etc.).
+#' @param group Required, the name of the grouping variable in a quoted character string, e.g. "role", "gender", "edu_level", etc..
 #'
-#' @param group_levels Required, a character vector of factor levels for the grouping variable (e.g. if the
-#'      grouping variable is gender this could be: c("male", "female", "non-binary").
+#' @param group_levels Required, a character vector of factor levels for the grouping variable, e.g. if the
+#'      grouping variable is gender this could be: "male", "female", "non-binary".
 #'
 #' @param scale_labels Required, a character vector of labels for the response scale, must be in the desired order,
 #'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
 #'
-#' @param group_colors Required, a character vector of hex codes for colors to associate
-#'   each group to, e.g. this data has two groups and this function creates an
+#' @param group_colors Required, A character vector of hex codes for colors to associate
+#'   each group supplied in the `group_levels` argument. to, e.g. if the data has two groups and this function creates an
 #'   overall group so this function will need a 'group_colors' character vector of
-#'   three colors. 'group_colors' need to be in the order you want them associated to
-#'   the group based on the factor levels for the group variable, last color
-#'   will be the overall group of "Overall". Defaults to "Okabe-Ito" palette where
-#'   black is alwasy the "Overall" group.
+#'   three colors. `group_colors` need to be in the order you want them associated to
+#'   the group based on the factor levels for the group variable. Defaults to BRE custom qualitative palette and
+#'   black is always the color for the "Overall" group.
 #'
 #' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.
@@ -67,25 +66,21 @@
 #'                      "Organization of a large research project" = "Organization",
 #'                      "Source work for a research paper" = "Source")
 #'
-#' # Set up a character vector of scale colors to pass to the argument group_colors:
-#' three_colors <- c("#000000", "#56B4E9", "#E69F00") %>%
-#'                     purrr::set_names(c("overall","grad", "undergrad"))
-#'
 #' # Example grouped by the variable "edu_level", with n for each question and original labels:
 #' arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
-#'                 group_colors = three_colors, group_levels = c("grad", "undergrad"),
-#'                 overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+#'                 group_levels = c("grad", "undergrad"), overall_n = FALSE,
+#'                 question_labels = NULL, question_order = FALSE)
 #'
 #' # With new labels, question_order = FALSE, and overall_n set to TRUE:
-#' arrowChartGroup(df = items, group = "edu_level",scale_labels = levels_min_ext,
-#'                 group_colors = three_colors, group_levels = c("grad", "undergrad"),
-#'                 overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
+#' arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
+#'                 group_levels = c("grad", "undergrad"),overall_n = FALSE,
+#'                 question_labels = question_labels, question_order = FALSE)
 #'
 #' # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
 #' arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
-#'                 group_colors = three_colors, group_levels = c("grad", "undergrad"),
-#'                 overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
-arrowChartGroup <- function(df, group, scale_labels, group_colors, group_levels,
+#'                 group_levels = c("grad", "undergrad"), overall_n = FALSE,
+#'                 question_labels = question_labels, question_order = TRUE)
+arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_levels,
                             overall_n = FALSE, question_labels = NULL,
                             question_order = FALSE, font_family = "Arial", font_size = 10) {
     # Load fonts:
@@ -93,8 +88,21 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, group_levels,
 
     . <- NULL # to stop check() from bringing up "."
 
+    # Set up group_colors:
+    if (length(group_colors) > 1 && !is.null(group_colors)) { # if group_colors is not NULL
+        if (length(group_levels) >= length(group_colors)) {
+            new_group_colors <- c("#000000", group_colors) # sets the fill colors to the hex codes passed in by the user plus "black" in first position.
+        } else {
+            stop("Error: the length of `group_colors` needs to be greater than or equal to the length of `group_levels`")
+        }
+    } else if (is.null(group_colors)) {
+        new_group_colors <- c("#000000", qualFillColors(n_colors = length(group_levels)))
+    }
+
     # append `overall` to group_levels
     group_levels <- c("overall", group_levels)
+    # Set the names of new_group_colors to group_levels
+    names(new_group_colors) <- group_levels
 
     #  Start of data manipulation: ----
     # Set up a df for the original groups separate average:
@@ -186,7 +194,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, group_levels,
     # Main calls to ggplot function arrowChartGroup_ggplot(): -----
     # If overall_n == TRUE:
     if (isTRUE(overall_n)) {
-      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = group_colors, scale_labels_gg = new_scale_labels) +
+      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors, scale_labels_gg = new_scale_labels) +
                         addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(-0.06, 1.02)) # see 'gg_helpers.R', re-position with plot_tag_position arg
 
       return(arrow_new)
@@ -207,7 +215,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors, group_levels,
       arrow_df <- arrow_df %>%
         dplyr::mutate(question = factor(.data[["question"]], labels = labels_n_questions))
       # ggplot call for overall_n == FALSE
-      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = group_colors, scale_labels_gg = new_scale_labels)
+      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors, scale_labels_gg = new_scale_labels)
 
       return(arrow_new)
     }
