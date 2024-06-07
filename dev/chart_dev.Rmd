@@ -139,7 +139,7 @@ question_order <- FALSE
 width <- NULL
 overall_n <- TRUE
 percent_label <- TRUE
-fill_colors  <- "div"
+fill_colors  <- "seq"
 
     # Create a font family character var so that it is easy to change, could also be a new arg:
     font_family <- c("Arial")
@@ -187,8 +187,6 @@ fill_colors  <- "div"
     label_colors_named <- labelColorMaker(new_fill_colors, names = scale_labels)
     # create a new col `label_color` using the named vector `label_colors_named` to map the text color to the variable response
     new_df <- new_df %>% dplyr::mutate(., label_color = label_colors_named[new_df[["response"]]]) 
-    # new_df %>% dplyr::mutate(., label_color = map_chr(.data[["response"]], \(x) label_colors_named[x])) %>% 
-    #     dplyr::arrange(.data$response)
     
     # Named vector created by new color palette named by the scale_labels:
     new_fill_colors_named <- new_fill_colors # new color palette as values
@@ -204,34 +202,57 @@ fill_colors  <- "div"
     # Create a minimum default of key_height being at least 0.35 inches:
     key_height <- dplyr::if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
     
-
-    if (length(number_levels) == 5) {
-      new_df <- new_df %>%
+    # response_levels <- levels(pull(new_df, .data[["response"]])) # gets the levels of response from data
+    split_level <-  ceiling(length(scale_labels)/2)
+    top_num_level <- length(scale_labels) - split_level
+    top_levels <- tail(scale_labels, top_num_level)
+    bottom_levels <- rev(head(scale_labels, mid_level)) # reversed bottom levels
+    new_div_levels <- c(bottom_levels, top_levels)
+    # mid_rating <- ifelse(length(scale_labels) %% 2 == 1, scale_labels[mid_level], NA_character_)  
+    # .data[["percent_answers"]], y = forcats::fct_rev(.data[["timing"]]), fill = .data[["response"]],
+    #       label = {{ label_gg }}, group = .data[["question"]]
+    new_df %>%
         dplyr::group_by(.data$question, .data$timing) %>%
         dplyr::mutate(
           percent_answers = dplyr::case_when(
-            .data$response == levels(.data$response)[5] ~ percent_answers,
-            .data$response == levels(.data$response)[4] ~ percent_answers,
+            .data$response %in% top_levels ~ percent_answers, # when in the top levels of scale_labels pos otherwise neg
             TRUE ~ -percent_answers
           ),
-          percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
           # Sets response levels to: 3,2,1,4,5 = this is so LHS of chart is reversed to create the diverging bars:
-          response = forcats::fct_relevel(.data$response, c(
-            levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
-            levels(.data$response)[4], levels(.data$response)[5]
-          )),
+          response = forcats::fct_relevel(.data$response, new_div_levels), # sets new order based on reversing the bottom levels
           pos_valence_post = dplyr::case_when(
-            .data$response == levels(.data$response)[4] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
-            .data$response == levels(.data$response)[5] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
+            .data$response %in% top_levels & .data$timing == "Post" ~ percent_answers,
             TRUE ~ 0
           )
         ) %>%
         dplyr::ungroup() %>% 
         dplyr::arrange(.data$response)
-    
-    }
+    # if (length(number_levels) == 5) {
+    #   new_df <- new_df %>%
+    #     dplyr::group_by(.data$question, .data$timing) %>%
+    #     dplyr::mutate(
+    #       percent_answers = dplyr::case_when(
+    #         .data$response == levels(.data$response)[5] ~ percent_answers,
+    #         .data$response == levels(.data$response)[4] ~ percent_answers,
+    #         TRUE ~ -percent_answers
+    #       ),
+    #       percent_answers_label = scales::percent(abs(.data$percent_answers), accuracy = 1),
+    #       # Sets response levels to: 3,2,1,4,5 = this is so LHS of chart is reversed to create the diverging bars:
+    #       response = forcats::fct_relevel(.data$response, c(
+    #         levels(.data$response)[3], levels(.data$response)[2], levels(.data$response)[1],
+    #         levels(.data$response)[4], levels(.data$response)[5]
+    #       )),
+    #       pos_valence_post = dplyr::case_when(
+    #         .data$response == levels(.data$response)[4] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
+    #         .data$response == levels(.data$response)[5] & .data$timing == levels(.data$timing)[2] ~ percent_answers,
+    #         TRUE ~ 0
+    #       )
+    #     ) %>%
+    #     dplyr::ungroup() %>% 
+    #     dplyr::arrange(.data$response)
+    # 
+    # }
 
-     
     
     if (isFALSE(question_order)) {
         new_question_order <- questionOrder(df = new_df, pre_post = TRUE)
@@ -242,10 +263,18 @@ fill_colors  <- "div"
         new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = question_labels))
     }
 
+    # If the user supplies a named vector for questions labels:
+    if (!is.null(question_labels)) {
+        names(question_labels) <- names(question_labels) %>%
+            stringr::str_wrap(., width = 15) %>%
+            gsub("\n", "<br>", .)
+        new_df <- new_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
+    }
+    
+    # Set default width for geom_col() bars if not supplied by user:
     if (is.null(width)) {
-      width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                              dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
-      )
+        width <- dplyr::if_else(dplyr::n_distinct(new_df[["question"]]) < 4, 0.7, 0.9)
     }
     
     if (isTRUE(overall_n)) {
@@ -294,34 +323,138 @@ fill_colors  <- "div"
         ggplot2::guides(fill = ggplot2::guide_legend(
             nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
             override.aes = list(color = label_colors_named, # manually sets the color of the legend text to white or black
-                                label = names(new_fill_colors_named),
-                                fill = new_fill_colors_named) # manually sets the legend labels to wrapped scale_labels
+                                label = names(new_fill_colors_named), # manually sets the legend labels to wrapped scale_labels
+                                fill = new_fill_colors_named) # manually resets the fill order of response to the original inside 'new_fill_colors_named'
         )) +
         addBarChartTheme(font_size = font_size, font_family = font_family) + 
         addBarChartPrePostTheme(font_size = font_size, font_family = font_family) + 
         addPlotTag(n = N_df, font_size = font_size, font_family = font_family)
-    
-    # Call stackedBar_ggplot ----
-    # # Set labels to percent or n_answers:
-    # if (isTRUE(percent_label)) {
-    #     label_gg <- new_df[["percent_answers_label"]]
-    # } else {
-    #     label_gg <- new_df[["n_answers"]]
-    # }
-    # 
-    # # Final call to stackedBar_ggplot() for chart creation:
-    #     diverging_bar_chart <- stackedBar_ggplot(df_gg = new_df, y_gg = "timing", pre_post = TRUE,
-    #                                            label_gg = label_gg, label_colors_named = label_colors_named,
-    #                                            legend_labels = names(new_fill_colors_named),
-    #                                            width_gg = width, fill_colors_gg = new_fill_colors,
-    #                                            overall_n_gg = overall_n, N_df_gg = N_df,
-    #                                            key_width = key_width, key_height = key_height)
-    # }
 
     
 diverging_bar_chart
 ```
 
+```{r}
+library(tidyverse)
+#
+# summarize groups and save counts in variable quality_cnt
+#
+  diamonds_cnt <- diamonds %>%
+    mutate(quality = fct_recode(cut, "Very_Poor" = "Fair", "Poor" = "Good",
+                                "Neutral" = "Very Good", "Good" = "Premium", "Excellent" = "Ideal")) %>%
+    select(color, clarity, quality) %>%
+    group_by(color, clarity, quality) %>% summarize(quality_cnt = n())
+
+# make function to plot counts    
+
+  plot_ratings <- function(survey, rated_item, rating_cnt, rating, rating_cat, facet = "wrap") {
+#
+#  Input:   
+#         rated_item  =  unquoted variable name of rated items
+#         rating = unquoted variable name of ratings for each rated_items; 
+#                  variable should be a factor ordered from lowest to highest 
+#         rating_cnt = unquoted variable name of counts or frequencies for each rated_item 
+#         rated_cat = unquoted variable name of categories of rated items
+#         facet  = "grid" for all panels on one row or 
+#                   "wrap" to spread panels across multiple rows
+#
+#  make arguments quosures
+#
+    rated_item <- enquo(rated_item)
+    rating_cnt <- enquo(rating_cnt)  
+    rating <- enquo(rating)
+    rating_cat <- enquo(rating_cat)
+#
+# If number of rating levels is odd, find middle rating
+#
+  rating_levels <- levels(pull(survey, !!rating))
+  mid_level <-  ceiling(length(rating_levels)/2)
+  mid_rating <- ifelse(length(rating_levels)%%2 == 1, rating_levels[mid_level], NA_character_)  
+#
+# make local variabels for use with aes
+# plot positive and negative columns separately
+#
+  survey <- survey %>% mutate( rating_plt = !!rating, rating_cnt_plt = !!rating_cnt)
+
+  sp <- ggplot(survey, aes_(x = rated_item,  fill = rating)) + 
+        geom_col(data = filter(survey, !!rating %in% tail(rating_levels, mid_level)),
+                 aes( y = ifelse(rating_plt == mid_rating, .5*rating_cnt_plt, rating_cnt_plt)),
+                 position = position_stack(reverse = TRUE )) +
+        geom_col(data = filter(survey, !!rating %in% head(rating_levels, mid_level)),
+                 aes( y = ifelse(rating_plt == mid_rating, -.5*rating_cnt_plt, -rating_cnt_plt)),
+                 position = "stack") +
+        labs(y = rating_cnt) +
+        scale_fill_brewer(palette = "RdYlGn", direction = -1) +
+        coord_flip() +
+        switch(facet,
+               grid = facet_grid( facets=rating_cat, scales = "free_x"),
+               wrap = facet_wrap( facets=rating_cat, scales = "free_x"))
+  plot(sp)
+  } 
+#
+#  Use function to make charts
+#
+  plot_ratings(diamonds_cnt,  rated_item = color, rating_cnt = quality_cnt, 
+               rating = quality, rating_cat = clarity, facet = "wrap")
+```
+
+
+```{r}
+
+df <- cat_items
+scale_labels <- levels_min_ext
+question_order <- FALSE
+width <- NULL
+overall_n <- TRUE
+percent_label <- TRUE
+fill_colors  <- "seq"
+
+    # Create a font family character var so that it is easy to change, could also be a new arg:
+    font_family <- c("Arial")
+    font_size <- 10
+    # Set . to NULL to stop message when using dot notation in mutate:
+    . <- NULL
+
+    # Make sure the all vars in df are factors with scale_labels as their levels:
+    new_df <- {{ df }} %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = scale_labels)))
+
+    # Changes scale_labels to tibble pulls out index and saves that as a vector, gets number of levels from scale_labels:
+    number_levels <- scale_labels %>%
+      tibble::enframe() %>%
+      dplyr::select("name") %>%
+      tibble::deframe()
+    
+    # If pre_post is TRUE, set up new_df with dataVizCleaning():
+    new_df <- dataVizCleaning(df = new_df, pre_post = T, scale_labels = scale_labels, na_remove = TRUE)
+    
+  response_levels <- levels(pull(new_df, .data[["response"]])) # gets the levels of response from data
+  split_level <-  ceiling(length(response_levels)/2)
+  top_num_level <- length(scale_labels) - split_level
+  top_levels <- tail(scale_labels, top_num_level)
+  bottom_levels <- rev(head(scale_labels, mid_level)) # reversed bottom levels
+  new_div_levels <- c(bottom_levels, top_levels)
+  # mid_rating <- ifelse(length(scale_labels) %% 2 == 1, scale_labels[mid_level], NA_character_)  
+    # .data[["percent_answers"]], y = forcats::fct_rev(.data[["timing"]]), fill = .data[["response"]],
+    #       label = {{ label_gg }}, group = .data[["question"]]
+    new_df %>%
+        dplyr::group_by(.data$question, .data$timing) %>%
+        dplyr::mutate(
+          percent_answers = dplyr::case_when(
+            .data$response %in% top_levels ~ percent_answers, # when in the top levels of scale_labels pos otherwise neg
+            TRUE ~ -percent_answers
+          ),
+          # Sets response levels to: 3,2,1,4,5 = this is so LHS of chart is reversed to create the diverging bars:
+          response = forcats::fct_relevel(.data$response, new_div_levels), # sets new order based on reversing the bottom levels
+          pos_valence_post = dplyr::case_when(
+            .data$response %in% top_levels & .data$timing == "Post" ~ percent_answers,
+            TRUE ~ 0
+          )
+        ) %>%
+        dplyr::ungroup() %>% 
+        dplyr::arrange(.data$response)
+    
+
+```
 
 ### Setting up custom colors for grouped arrow chart:
 
