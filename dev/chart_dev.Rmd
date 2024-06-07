@@ -125,7 +125,7 @@ items_group <- dplyr::tibble(
        "undergrad", "undergrad", "grad", "undergrad"
   ), levels = c("grad", "undergrad"))
  ) %>% mutate(
-            post_Research = dplyr::if_else(post_Research > 2, pre_Research - 2, pre_Research)
+            post_Research = dplyr::if_else(pre_Research > 2, pre_Research - 2, pre_Research)
  )
 ```
 

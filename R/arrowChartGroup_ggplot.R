@@ -25,13 +25,13 @@ arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg, font_
     . <- NULL # to stop check() from bringing up "."
     # Calculate the nudge_x and hjust for the geom_text()
     # Pre
-    pre_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(.data[["timing"]] == "pre") %>% dplyr::select(.data[["diff_score_avg"]]) %>% tibble::deframe()
-    nudge_x_pre <- dplyr::if_else(pre_diff_score_avg > 0, -0.25, 0.25)
-    hjust_pre <- dplyr::if_else(pre_diff_score_avg > 0, 0, 1)
+    pre_diff_score_avg <- arrow_df %>% dplyr::filter(.data[["timing"]] == "pre") %>% dplyr::select(.data[["diff_score_avg"]]) %>% tibble::deframe()
+    nudge_x_pre <- dplyr::if_else(pre_diff_score_avg > 0, -0.075, 0.075)
+    hjust_pre <- dplyr::if_else(pre_diff_score_avg > 0, 1, 0)
     # Post
-    post_diff_score_avg <- {{ df_gg }} %>% dplyr::filter(.data[["timing"]] == "post") %>% dplyr::select(.data[["diff_score_avg"]]) %>% tibble::deframe()
-    nudge_x_post <- dplyr::if_else(pre_diff_score_avg > 0, 0.25, -0.25)
-    hjust_post <- dplyr::if_else(pre_diff_score_avg > 0, 1, 0)
+    post_diff_score_avg <- arrow_df %>% dplyr::filter(.data[["timing"]] == "post") %>% dplyr::select(.data[["diff_score_avg"]]) %>% tibble::deframe()
+    nudge_x_post <- dplyr::if_else(pre_diff_score_avg > 0, 0.075, -0.075)
+    hjust_post <- dplyr::if_else(pre_diff_score_avg > 0, 0, 1)
 
     # ggplot call:
     arrow <- {{ df_gg }} %>%
