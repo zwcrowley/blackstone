@@ -61,7 +61,7 @@ seqFillColors <- function(n_colors) {
 
 #' Helper to create a sequential color scale using `Blue-Red 3` that is reversed.
 #'
-#' @description A function to create a sequential color scale using `Blue-Red 3` that is reversed and slightly darkened..
+#' @description A function to create a sequential color scale using `Blue-Red 3` that is reversed and slightly darkened.
 #'
 #' @param n_colors Required, the number of color hex codes to return.
 #'
@@ -69,7 +69,7 @@ seqFillColors <- function(n_colors) {
 #'
 #' @export
 divFillColors <- function(n_colors) {
-    colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.05)
+    colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.1)
     # colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE) # not darkened
 }
 
