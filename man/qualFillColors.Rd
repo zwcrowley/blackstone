@@ -7,8 +7,7 @@
 qualFillColors(n_colors, rev_colors = FALSE)
 }
 \arguments{
-\item{n_colors}{Required, supply a non-negative integer that is the desired the number of color hex codes to return.
-#'}
+\item{n_colors}{Required, supply a non-negative integer that is the desired the number of color hex codes to return.}
 
 \item{rev_colors}{Logical, defaults to FALSE, if true returns a reverse color codes where the darkest color comes first.}
 }

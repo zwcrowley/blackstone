@@ -51,15 +51,19 @@
 #'   post_Write = pre_Write + 1,
 #'   pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
 #'   post_Research = pre_Research + 1,
-#'   edu_level = factor(c(
+#'   edu_level = factor(
+#'        c(
 #'       "grad", "undergrad", "grad", "undergrad", "grad",
 #'       "undergrad", "undergrad", "grad", "undergrad"
-#'  ), levels = c("grad", "undergrad"))
+#'       ),
+#'       levels = c("grad", "undergrad")
+#'       )
 #' )
+#'
 #' # Labels for response scales to recode the numeric variables to on the plot:
 #' levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #' # Question labels as a named vector with the naming structure
-#' # like this: c("{new label}" = "{original variable name}"):
+#' # like this: c("new label" = "original variable name"):
 #' question_labels <- c("Publish a lot of high quality papers" =  "Publish",
 #'                      "Write a lot of research papers" = "Write",
 #'                      "Research in a lab with faculty" = "Research",
@@ -146,10 +150,23 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
                             names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
         )
 
+    # Get total n for each question, grouped by question and timing: ----
+    totals_new_df <- {{ df }}  %>%
+        dplyr::select(!{{group}}) %>%
+        tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+        tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
+        dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+        dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
+        dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+        dplyr::ungroup()
+    # Join the `total` column to arrow_df
+    arrow_df <- arrow_df %>% full_join(totals_new_df,by = join_by(question, timing))
+
+
     # If the user supplies a named vector for questions labels: ----
     if (!is.null(question_labels)) {
       names(question_labels) <- names(question_labels) %>%
-        stringr::str_wrap(., width = 30) %>%
+        stringr::str_wrap(., width = 15) %>%
         gsub("\n", "<br>", .)
       arrow_df <- arrow_df %>%
         dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels)) %>%
@@ -158,27 +175,20 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
 
     # Set up a new question order if not supplied by the user by using the highest post score_avg: ----
     if (isFALSE(question_order)) {
-      # Set up question as a factor and arrange by the top score_avg:
-      question_order <- arrow_df %>%
-        dplyr::arrange(dplyr::desc(.data[["timing"]]), dplyr::desc(.data[["score_avg"]])) %>%
-        dplyr::distinct(.data[["question"]]) %>%
-        dplyr::mutate(question = as.character(.data[["question"]])) %>%
-        tibble::deframe()
-      arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = question_order))
-    } else {
+      # Set up question as a factor and arrange by the top post `score_avg`:
+      new_question_order <- arrow_df %>% dplyr::filter(., .data$timing == "post") %>%
+                                         dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data[["question"]]) %>%
+                                         dplyr::arrange(dplyr::desc(.data[["score_avg"]])) %>%
+                                         dplyr::ungroup() %>%
+                                         dplyr::distinct(.data[["question"]]) %>%
+                                         dplyr::select("question") %>%
+                                         tibble::deframe()
+      arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = new_question_order))
+    } else if (isTRUE(question_order)) {
       # If FALSE, use user supplied by order based on the set up the levels for question using- names(question_labels):
       arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
     }
 
-    # Get total n for each question, grouped by question and timing: ----
-    totals_new_df <- {{ df }}  %>%
-      dplyr::select(!{{group}}) %>%
-      tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
-      tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
-      dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
-      dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
-      dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
-      dplyr::ungroup()
 
     # Return N_df that will be an overall n for all the items, only if all totals_new_df[["total are equal"]]: ----
     if (length(unique(totals_new_df[["total"]])) == 1) {
@@ -201,19 +211,19 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
 
       # Otherwise, if overall_n == FALSE and, return an arrow chart with n for each question appended to the question label:
     } else if (isFALSE(overall_n)) {
-      # Change the label of the variable "question" by adding n of each to the end of the character string:
-      # Set up labels for question:
-      labels_n_questions <- arrow_df %>%
-        dplyr::mutate(
-          labels = paste0(.data[["question"]], " ", "(*n* = ", totals_new_df[["total"]], ")"),
-          labels = factor(.data[["labels"]])
-        ) %>%
-        dplyr::arrange(.data[["question"]]) %>%
-        dplyr::distinct(.data[["labels"]]) %>%
-        tibble::deframe()
-      # Set factor labels for question to labels = labels_n_questions:
-      arrow_df <- arrow_df %>%
-        dplyr::mutate(question = factor(.data[["question"]], labels = labels_n_questions))
+        # Change the label of the variable "question" by adding n of each to the end of the character string:
+        # Set up labels for question:
+        labels_n_questions <- arrow_df %>%
+            dplyr::mutate(
+                labels = paste0(.data[["question"]], "<br>(*n* = ", .data[["total"]], ")"),
+                question = as.character(.data[["question"]]),
+            ) %>%
+            dplyr::distinct(labels, .keep_all = TRUE) %>%
+            dplyr::select("labels", "question") %>%
+            tibble::deframe()
+        # Set factor labels for question to labels = labels_n_questions:
+        arrow_df <- arrow_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!labels_n_questions))
       # ggplot call for overall_n == FALSE
       arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors, scale_labels_gg = new_scale_labels)
 

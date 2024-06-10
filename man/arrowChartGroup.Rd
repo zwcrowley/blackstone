@@ -58,3 +58,49 @@ A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arr
 \code{\link[=arrowChartGroup]{arrowChartGroup()}} creates an pre-post arrow chart of group averages and returns
 a ggplot object.
 }
+\examples{
+items <- dplyr::tibble(
+  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  post_Publish = pre_Publish + 2,
+  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  post_Write = pre_Write + 1,
+  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  post_Research = pre_Research + 1,
+  edu_level = factor(
+       c(
+      "grad", "undergrad", "grad", "undergrad", "grad",
+      "undergrad", "undergrad", "grad", "undergrad"
+      ),
+      levels = c("grad", "undergrad")
+      )
+)
+
+# Labels for response scales to recode the numeric variables to on the plot:
+levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"):
+question_labels <- c("Publish a lot of high quality papers" =  "Publish",
+                     "Write a lot of research papers" = "Write",
+                     "Research in a lab with faculty" = "Research",
+                     "Organization of a large research project" = "Organization",
+                     "Source work for a research paper" = "Source")
+
+# Example grouped by the variable "edu_level", with n for each question and original labels:
+arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
+                group_levels = c("grad", "undergrad"), overall_n = FALSE,
+                question_labels = NULL, question_order = FALSE)
+
+# With new labels, question_order = FALSE, and overall_n set to TRUE:
+arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
+                group_levels = c("grad", "undergrad"),overall_n = FALSE,
+                question_labels = question_labels, question_order = FALSE)
+
+# With new labels and order taken from question_labels argument, and overall_n set to FALSE:
+arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
+                group_levels = c("grad", "undergrad"), overall_n = FALSE,
+                question_labels = question_labels, question_order = TRUE)
+}

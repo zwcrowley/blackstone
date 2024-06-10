@@ -142,6 +142,15 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
             dplyr::ungroup()
     } # End of if pre_post == FALSE
 
+    # If the user supplies a named vector for questions labels:
+    if (!is.null(question_labels)) {
+        names(question_labels) <- names(question_labels) %>%
+            stringr::str_wrap(., width = 15) %>%
+            gsub("\n", "<br>", .)
+        new_df <- new_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
+    }
+
     # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
     # if pre_post is TRUE, otherwise use questions if pre_post is FALSE (top levels depending on total response levels):
     if (isFALSE(question_order)) {
@@ -154,16 +163,7 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
         new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
     } else {
         # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
-        new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = question_labels))
-    }
-
-    # If the user supplies a named vector for questions labels:
-    if (!is.null(question_labels)) {
-        names(question_labels) <- names(question_labels) %>%
-            stringr::str_wrap(., width = 15) %>%
-            gsub("\n", "<br>", .)
-        new_df <- new_df %>%
-            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
+        new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
     }
 
     # 5 colors for chart- If statement to handle the value(s) of `fill_colors`:

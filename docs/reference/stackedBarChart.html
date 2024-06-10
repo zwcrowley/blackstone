@@ -54,6 +54,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stackedBarChart</span><span class="op">(</span></span>
 <span>  <span class="va">df</span>,</span>
 <span>  <span class="va">scale_labels</span>,</span>
+<span>  fill_colors <span class="op">=</span> <span class="st">"seq"</span>,</span>
 <span>  pre_post <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  overall_n <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  percent_label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -67,13 +68,19 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>df</dt>
 <dd><p>Required, A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a>/data frame of survey items that are categorical/character
-variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.</p></dd>
+variables, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.</p></dd>
 
 
 <dt>scale_labels</dt>
 <dd><p>Required, a character vector of labels for the response scale, must be in the desired order,
-e.g. if you have a 5 item scale of minimal to extensive it should look like this: <code>levels_min_ext &lt;- c("Minimal", "Slight", "Moderate", "Good", "Extensive")</code>.
-This argument accepts a character vector of 3 to 7 items.</p></dd>
+e.g. if you have a 5 item scale of minimal to extensive it should look like this:
+<code>levels_min_ext &lt;- c("Minimal", "Slight", "Moderate", "Good", "Extensive")</code>.</p></dd>
+
+
+<dt>fill_colors</dt>
+<dd><p>Default is "seq", If "seq", the color scale for the fill for each bar is set to blue sequential palette.
+If set to "div", it is the blue-red diverging color palette, otherwise the user can input a character vector of hex codes
+at least a long as the character vector passed to the <code>scale_labels</code> argument.</p></dd>
 
 
 <dt>pre_post</dt>
@@ -114,7 +121,7 @@ positive valenced response options on the top of the plot descending.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">pre_Organization</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  pre_Source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
@@ -127,7 +134,7 @@ positive valenced response options on the top of the plot descending.</p></dd>
 <span class="r-in"><span>  post_Research <span class="op">=</span> <span class="va">pre_Research</span> <span class="op">+</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">items_single</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">items_single</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  Source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  Publish <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
@@ -155,13 +162,12 @@ positive valenced response options on the top of the plot descending.</p></dd>
 <span class="r-in"><span>  <span class="st">"Source work for a research paper"</span> <span class="op">=</span> <span class="st">"Source"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Recode the numeric to factor variables using the levels from levels_min_ext:</span></span></span>
-<span class="r-in"><span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="recodeCat.html">recodeCat</a></span><span class="op">(</span><span class="va">items</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cat_items_single</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="recodeCat.html">recodeCat</a></span><span class="op">(</span><span class="va">items_single</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Select the factor variables:</span></span></span>
-<span class="r-in"><span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="va">cat_items</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cat_items_single</span> <span class="op">&lt;-</span> <span class="va">cat_items_single</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Recode the numeric to factor variables using the levels from levels_min_ext and</span></span></span>
+<span class="r-in"><span><span class="co"># select the factor variables::</span></span></span>
+<span class="r-in"><span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="recodeCat.html">recodeCat</a></span><span class="op">(</span><span class="va">items</span>, <span class="va">levels_min_ext</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>                 <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cat_items_single</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="recodeCat.html">recodeCat</a></span><span class="op">(</span><span class="va">items_single</span>, <span class="va">levels_min_ext</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>                        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Pass the factor variables and the levels to stackedBarChart:</span></span></span>
 <span class="r-in"><span><span class="fu">stackedBarChart</span><span class="op">(</span></span></span>

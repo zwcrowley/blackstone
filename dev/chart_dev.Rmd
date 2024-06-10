@@ -154,6 +154,326 @@ items_group <- dplyr::tibble(
  )
 ```
 
+
+```{r}
+df <- cat_items_single
+scale_labels <- levels_min_ext
+pre_post <- TRUE
+# Load all fonts:
+    extrafont::loadfonts("all", quiet = TRUE)
+
+    # Set . to NULL to stop message when using dot notation in mutate:
+    . <- NULL
+
+    # Start of data manipulation: ----
+    # Make sure the all vars in df are factors with scale_labels as their levels:
+    new_df <- {{ df }} %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = scale_labels)))
+
+    if (isTRUE(pre_post)) {
+        # If pre_post is TRUE, set up new_df with dataVizCleaning():
+        new_df <- dataVizCleaning(df = new_df, pre_post = TRUE, scale_labels = scale_labels, na_remove = TRUE)
+
+        # Get total n for each question, grouped by question and timing:
+        # totals_new_df <- new_df %>%
+        #   dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+        #   dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+        #   dplyr::ungroup() %>%
+        #   dplyr::group_by(.data[["question"]]) %>%
+        #   dplyr::distinct(.data[["question"]], .data[["total"]]) %>%
+        #   dplyr::ungroup()
+        totals_new_df <- {{ df }} %>%
+            tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+            dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
+            tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>%
+            dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+            dplyr::mutate(timing = stringr::str_to_title(.data$timing), # capitalize timing
+                          timing = factor(.data$timing, levels = c("Pre", "Post"))
+                          ) %>%
+            dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+            dplyr::ungroup()
+        # Join the `total` column to arrow_df
+        new_df <- new_df %>% full_join(totals_new_df,by = join_by(question, timing))
+        # End of if pre_post == TRUE
+    } else if (isFALSE(pre_post)) {
+        # If pre_post is FALSE, set up new_df with dataVizCleaning():
+        new_df <- dataVizCleaning(df = new_df, pre_post = FALSE, scale_labels = scale_labels, na_remove = TRUE)
+
+        # Get total n for each question, grouped by question:
+        # totals_new_df <- new_df %>%
+        #   dplyr::group_by(.data[["question"]]) %>%
+        #   dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+        #   dplyr::ungroup()
+        totals_new_df <- {{ df }} %>%
+            tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+            dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
+            dplyr::group_by(.data[["question"]]) %>%
+            dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+            dplyr::ungroup()
+        # Join the `total` column to arrow_df
+        new_df <- new_df %>% full_join(totals_new_df,by = join_by(question))
+    } # End of if pre_post == FALSE
+
+```
+
+
+```{r}
+# WORKS!!!
+df <- cat_items
+scale_labels <- levels_min_ext
+
+pre_post <- T
+question_order <- T
+# width <- NULL
+# overall_n <- F
+# percent_label <- F
+# fill_colors  <- "seq"
+question_labels <- c(
+  "Publish a lot of high quality papers" = "Publish",
+  "Write a lot of research papers" = "Write",
+  "Research in a lab with faculty" = "Research",
+  "Organization of a large research project" = "Organization",
+  "Source work for a research paper" = "Source"
+)
+
+# Start of data manipulation: ----
+    # Make sure the all vars in df are factors with scale_labels as their levels:
+    new_df <- {{ df }} %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = scale_labels)))
+
+    if (isTRUE(pre_post)) {
+        # If pre_post is TRUE, set up new_df with dataVizCleaning():
+        new_df <- dataVizCleaning(df = new_df, pre_post = TRUE, scale_labels = scale_labels, na_remove = TRUE)
+
+        # Get total n for each question, grouped by question and timing:
+        totals_new_df <- new_df %>%
+          dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+          dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+          dplyr::ungroup() %>%
+          dplyr::group_by(.data[["question"]]) %>%
+          dplyr::distinct(.data[["question"]], .data[["total"]]) %>%
+          dplyr::ungroup()
+        # End of if pre_post == TRUE
+    } else if (isFALSE(pre_post)) {
+          # If pre_post is FALSE, set up new_df with dataVizCleaning():
+          new_df <- dataVizCleaning(df = new_df, pre_post = FALSE, scale_labels = scale_labels, na_remove = TRUE)
+
+        # Get total n for each question, grouped by question:
+        totals_new_df <- new_df %>%
+          dplyr::group_by(.data[["question"]]) %>%
+          dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+          dplyr::ungroup()
+    } # End of if pre_post == FALSE
+
+    # If the user supplies a named vector for questions labels:
+    if (!is.null(question_labels)) {
+        names(question_labels) <- names(question_labels) %>%
+            stringr::str_wrap(., width = 20) %>%
+            gsub("\n", "<br>", .)
+        new_df <- new_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
+    }
+
+    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
+    # if pre_post is TRUE, otherwise use questions if pre_post is FALSE (top levels depending on total response levels):
+    if (isFALSE(question_order)) {
+        if (isTRUE(pre_post)) {
+            new_question_order <- questionOrder(df = new_df, pre_post = TRUE)
+        } else if (isFALSE(pre_post)) {
+            new_question_order <- questionOrder(df = new_df, pre_post = FALSE)
+        }
+        # change the factor levels of question to be ordered by the question_order:
+        new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
+    } else {
+        # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
+        new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
+    }
+
+```
+
+```{r}
+df <- items
+question_order <- T
+question_labels <- c(
+  "Publish a lot of high quality papers" = "Publish",
+  "Write a lot of research papers" = "Write",
+  "Research in a lab with faculty" = "Research",
+  "Organization of a large research project" = "Organization",
+  "Source work for a research paper" = "Source"
+)
+# Fixing arrow chart question ordering:
+# Main data manipulation
+arrow_df <- {{ df }} %>%
+        tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+        tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
+        dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+        dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post")),
+                      question = stringr::str_to_title(.data[["question"]])) %>%
+        dplyr::summarize(score_avg = mean(.data[["response"]], na.rm = TRUE), .groups = "keep") %>% # drops NA's
+        dplyr::ungroup() %>%
+        tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
+            id_cols = tidyselect::everything(),
+            names_from = tidyselect::all_of(c("timing")),
+            values_from = tidyselect::all_of(c("score_avg")),
+            names_glue = "{timing}_score_avg"
+        ) %>%
+        dplyr::mutate(diff_score_avg = .data[["post_score_avg"]] - .data[["pre_score_avg"]]) %>%
+        tidyr::pivot_longer(tidyselect::all_of(c("pre_score_avg","post_score_avg")),
+                            names_to = c("timing", ".value"),
+                            names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
+        )
+    # Get total n for each question, grouped by question and timing: ----
+    totals_new_df <- {{ df }}  %>%
+        tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+        tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
+        dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+        dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
+        dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+        dplyr::ungroup()
+    # Join the `total` column to arrow_df
+    arrow_df <- arrow_df %>% full_join(totals_new_df,by = join_by(question, timing))
+    # If the user supplies a named vector for questions labels: ----
+    if (!is.null(question_labels)) {
+      names(question_labels) <- names(question_labels) %>%
+        stringr::str_wrap(., width = 15) %>%
+        gsub("\n", "<br>", .)
+      arrow_df <- arrow_df %>%
+        dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels)) %>%
+        dplyr::ungroup()
+    }
+
+    # Set up a new question order if not supplied by the user by using the highest post score_avg: ----
+    if (isFALSE(question_order)) {
+        # Set up question as a factor and arrange by the top score_avg:
+        new_question_order <- arrow_df %>% dplyr::filter(., .data$timing == "post") %>% 
+            dplyr::arrange(dplyr::desc(.data[["score_avg"]])) %>%
+            dplyr::select("question") %>%
+            tibble::deframe()
+        arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = new_question_order))
+    } else {
+        # If FALSE, use user supplied by order based on the set up the levels for question using- names(question_labels):
+        arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
+    }
+
+    labels_n_questions <- arrow_df %>% 
+            dplyr::mutate(
+                labels = paste0(.data[["question"]], "<br>(*n* = ", .data[["total"]], ")"),
+                question = as.character(.data[["question"]]),
+            ) %>%
+            dplyr::distinct(labels, .keep_all = TRUE) %>%
+            dplyr::select("labels", "question") %>% 
+            tibble::deframe()
+        # Set factor labels for question to labels = labels_n_questions:
+        arrow_df <- arrow_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!labels_n_questions))
+    arrow_df
+    
+```
+
+```{r}
+# arrowChartGroup()
+df <- items_group
+group <- "edu_level"
+group_levels = c("grad", "undergrad")
+group_levels <- c("overall", group_levels) 
+
+    # Set the names of new_group_colors to group_levels
+    # names(new_group_colors) <- group_levels
+
+    #  Start of data manipulation: ----
+    # Set up a df for the original groups separate average:
+    arrow_df_group <- {{ df }} %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} ))) %>%
+      tidyr::pivot_longer(-{{group}}, names_to = "question", values_to = "response") %>%
+      dplyr::mutate( {{group}} := factor( .data[[group]] )) %>%
+      tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data[["question"]], .data[["timing"]]) %>%
+      dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
+      dplyr::summarize(score_avg = mean(.data[["response"]], na.rm = TRUE), .groups = "keep") %>%
+      dplyr::ungroup()
+
+    # Set up a df for an overall average
+    arrow_df_all <- {{ df }} %>%
+      dplyr::select(!dplyr::all_of({{group}})) %>% # drop the group var
+      tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+      tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
+      dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+      dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
+      dplyr::summarize(score_avg = mean(.data[["response"]], na.rm = TRUE), .groups = "keep") %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate({{group}} := "overall")
+
+    # Full join the data by groups and overall, and then Rev the factor order of "group":
+    arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by( {{group}}, "question", "timing", "score_avg")) %>%
+        dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data[["question"]], .data[["timing"]]) %>%
+        dplyr::mutate(
+            {{group}} := factor(.data[[group]], levels = group_levels) # recode factor levels to group by using `group_levels`
+        ) %>%
+        dplyr::ungroup() %>%
+        tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
+            id_cols = tidyselect::everything(),
+            names_from = tidyselect::all_of(c("timing")),
+            values_from = tidyselect::all_of(c("score_avg")),
+            names_glue = "{timing}_score_avg"
+        ) %>%
+        dplyr::mutate(diff_score_avg = .data[["post_score_avg"]] - .data[["pre_score_avg"]]) %>%
+        tidyr::pivot_longer(tidyselect::all_of(c("pre_score_avg","post_score_avg")),
+                            names_to = c("timing", ".value"),
+                            names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
+        )
+    
+    # Get total n for each question, grouped by question and timing: ----
+    totals_new_df <- {{ df }}  %>%
+      dplyr::select(!{{group}}) %>%
+      tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+      tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
+      dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+      dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
+      dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+      dplyr::ungroup()
+    # Join the `total` column to arrow_df
+    arrow_df <- arrow_df %>% full_join(totals_new_df,by = join_by(question, timing))
+
+
+    # If the user supplies a named vector for questions labels: ----
+    if (!is.null(question_labels)) {
+      names(question_labels) <- names(question_labels) %>%
+        stringr::str_wrap(., width = 15) %>%
+        gsub("\n", "<br>", .)
+      arrow_df <- arrow_df %>%
+        dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels)) %>%
+        dplyr::ungroup()
+    }
+
+    # Set up a new question order if not supplied by the user by using the highest post score_avg: ----
+    if (isFALSE(question_order)) {
+      # Set up question as a factor and arrange by the top post `score_avg`:
+      new_question_order <- arrow_df %>% dplyr::filter(., .data$timing == "post") %>%
+                                         dplyr::group_by(dplyr::across(dplyr::all_of( {{group}} )), .data[["question"]]) %>%
+                                         dplyr::arrange(dplyr::desc(.data[["score_avg"]])) %>%
+                                         dplyr::ungroup() %>%
+                                         dplyr::distinct(.data[["question"]]) %>%
+                                         dplyr::select("question") %>%
+                                         tibble::deframe()
+      arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = new_question_order))
+    } else if (isTRUE(question_order)) {
+      # If FALSE, use user supplied by order based on the set up the levels for question using- names(question_labels):
+      arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
+    }
+
+    labels_n_questions <- arrow_df %>%
+            dplyr::mutate(
+                labels = paste0(.data[["question"]], "<br>(*n* = ", .data[["total"]], ")"),
+                question = as.character(.data[["question"]]),
+            ) %>%
+            dplyr::distinct(labels, .keep_all = TRUE) %>%
+            dplyr::select("labels", "question") %>%
+            tibble::deframe()
+        # Set factor labels for question to labels = labels_n_questions:
+        arrow_df <- arrow_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!labels_n_questions))
+```
+
+
+
 ### Div bar chart dev:
 
 ```{r}

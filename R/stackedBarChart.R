@@ -117,24 +117,53 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
         new_df <- dataVizCleaning(df = new_df, pre_post = TRUE, scale_labels = scale_labels, na_remove = TRUE)
 
         # Get total n for each question, grouped by question and timing:
-        totals_new_df <- new_df %>%
-          dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
-          dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
-          dplyr::ungroup() %>%
-          dplyr::group_by(.data[["question"]]) %>%
-          dplyr::distinct(.data[["question"]], .data[["total"]]) %>%
-          dplyr::ungroup()
+        # totals_new_df <- new_df %>%
+        #   dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+        #   dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+        #   dplyr::ungroup() %>%
+        #   dplyr::group_by(.data[["question"]]) %>%
+        #   dplyr::distinct(.data[["question"]], .data[["total"]]) %>%
+        #   dplyr::ungroup()
+        totals_new_df <- {{ df }} %>%
+            tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+            dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
+            tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>%
+            dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+            dplyr::mutate(timing = stringr::str_to_title(.data$timing), # capitalize timing
+                          timing = factor(.data$timing, levels = c("Pre", "Post"))
+            ) %>%
+            dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+            dplyr::ungroup()
+        # Join the `total` column to arrow_df
+        new_df <- new_df %>% full_join(totals_new_df,by = join_by(question, timing))
         # End of if pre_post == TRUE
     } else if (isFALSE(pre_post)) {
-          # If pre_post is FALSE, set up new_df with dataVizCleaning():
-          new_df <- dataVizCleaning(df = new_df, pre_post = FALSE, scale_labels = scale_labels, na_remove = TRUE)
+        # If pre_post is FALSE, set up new_df with dataVizCleaning():
+        new_df <- dataVizCleaning(df = new_df, pre_post = FALSE, scale_labels = scale_labels, na_remove = TRUE)
 
         # Get total n for each question, grouped by question:
-        totals_new_df <- new_df %>%
-          dplyr::group_by(.data[["question"]]) %>%
-          dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
-          dplyr::ungroup()
+        # totals_new_df <- new_df %>%
+        #   dplyr::group_by(.data[["question"]]) %>%
+        #   dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+        #   dplyr::ungroup()
+        totals_new_df <- {{ df }} %>%
+            tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+            dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
+            dplyr::group_by(.data[["question"]]) %>%
+            dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+            dplyr::ungroup()
+        # Join the `total` column to arrow_df
+        new_df <- new_df %>% full_join(totals_new_df,by = join_by(question))
     } # End of if pre_post == FALSE
+
+    # If the user supplies a named vector for questions labels:
+    if (!is.null(question_labels)) {
+        names(question_labels) <- names(question_labels) %>%
+            stringr::str_wrap(., width = 15) %>%
+            gsub("\n", "<br>", .)
+        new_df <- new_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
+    }
 
     # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
     # if pre_post is TRUE, otherwise use questions if pre_post is FALSE (top levels depending on total response levels):
@@ -147,17 +176,8 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
         # change the factor levels of question to be ordered by the question_order:
         new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
     } else {
-        # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
-        new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = question_labels))
-    }
-
-    # If the user supplies a named vector for questions labels:
-    if (!is.null(question_labels)) {
-        names(question_labels) <- names(question_labels) %>%
-            stringr::str_wrap(., width = 15) %>%
-            gsub("\n", "<br>", .)
-        new_df <- new_df %>%
-            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
+        # If question_order == TRUE, set up the levels for question using the user supplied order = question_labels:
+        new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
     }
 
     # If statement to handle the value(s) of `fill_colors`:
@@ -211,12 +231,25 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
           stop("Error: Can not use `overall_n` for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
         }
     } else if (isFALSE(overall_n)) { # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
+        # # Change the label of the variable "question" by adding n of each to the end of the character string:
+        # labels_n_questions <- paste0(totals_new_df[["question"]], " ", "(*n* = ", totals_new_df[["total"]], ")")
+        #
+        # # Set factor labels for question to labels:
+        # new_df <- new_df %>%
+        #   dplyr::mutate(question = factor(.data[["question"]], levels = levels(.data[["question"]]), labels = labels_n_questions))
         # Change the label of the variable "question" by adding n of each to the end of the character string:
-        labels_n_questions <- paste0(totals_new_df[["question"]], " ", "(*n* = ", totals_new_df[["total"]], ")")
-
-        # Set factor labels for question to labels:
+        # Set up labels for question:
+        labels_n_questions <- new_df %>%
+            dplyr::mutate(
+                labels = paste0(.data[["question"]], "<br>(*n* = ", .data[["total"]], ")"),
+                question = as.character(.data[["question"]]),
+            ) %>%
+            dplyr::distinct(labels, .keep_all = TRUE) %>%
+            dplyr::select("labels", "question") %>%
+            tibble::deframe()
+        # Set factor labels for question to labels = labels_n_questions using the named vector string `labels_n_questions` in fct_recode():
         new_df <- new_df %>%
-          dplyr::mutate(question = factor(.data[["question"]], levels = levels(.data[["question"]]), labels = labels_n_questions))
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!labels_n_questions))
     }
 
     # Call stackedBar_ggplot ----
