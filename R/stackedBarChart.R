@@ -3,14 +3,15 @@
 #' [stackedBarChart()] creates a stacked bar chart and returns a ggplot object with Blackstone Research and Evaluation branding.
 #'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
-#'   variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.
+#'   variables, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.
 #'
 #' @param scale_labels Required, a character vector of labels for the response scale, must be in the desired order,
-#'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
-#'    This argument accepts a character vector of 3 to 7 items.
+#'    e.g. if you have a 5 item scale of minimal to extensive it should look like this:
+#'    `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
 #'
-#' @param fill_colors Default is "seq", If "seq", the color scale for the fill for each bar is set to 'cividis'. If set to "div", it is 'Blue Red 3',
-#'    otherwise the user can input a character vector of hex codes at least a long as the `scale_labels` arg.
+#' @param fill_colors Default is "seq", If "seq", the color scale for the fill for each bar is set to blue sequential palette.
+#'      If set to "div", it is the blue-red diverging color palette, otherwise the user can input a character vector of hex codes
+#'      at least a long as the character vector passed to the `scale_labels` argument.
 #'
 #' @param pre_post Logical, default is FALSE. If true, returns a pre-post stacked bar chart.
 #'
@@ -75,13 +76,12 @@
 #'   "Source work for a research paper" = "Source"
 #' )
 #'
-#' # Recode the numeric to factor variables using the levels from levels_min_ext:
-#' cat_items <- bre::recodeCat(items, levels_min_ext)
-#' cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
-#'
-#' # Select the factor variables:
-#' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
-#' cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
+#' # Recode the numeric to factor variables using the levels from levels_min_ext and
+#' # select the factor variables::
+#' cat_items <- bre::recodeCat(items, levels_min_ext) %>%
+#'                  dplyr::select(dplyr::where(is.factor))
+#' cat_items_single <- bre::recodeCat(items_single, levels_min_ext) %>%
+#'                         dplyr::select(dplyr::where(is.factor))
 #'
 #' # Pass the factor variables and the levels to stackedBarChart:
 #' stackedBarChart(
@@ -111,21 +111,6 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
     # Start of data manipulation: ----
     # Make sure the all vars in df are factors with scale_labels as their levels:
     new_df <- {{ df }} %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = scale_labels)))
-
-    # Changes scale_labels to tibble pulls out index and saves that as a vector, gets number of levels from scale_labels:
-    number_levels <- scale_labels %>%
-      tibble::enframe() %>%
-      dplyr::select("name") %>%
-      tibble::deframe()
-
-    # Error messages if number_levels is less than 3:
-    if (length(number_levels) < 3) {
-      stop("Error: the response options in scale_labels are less than 3, they must be between 3 and 7 for this function.")
-    }
-    # Error messages if number_levels is greater than 7:
-    if (length(number_levels) > 7) {
-      stop("Error: the response options in scale_labels are greater than 7, they must be between 3 and 7 for this function.")
-    }
 
     if (isTRUE(pre_post)) {
         # If pre_post is TRUE, set up new_df with dataVizCleaning():

@@ -157,7 +157,7 @@ items_group <- dplyr::tibble(
 ### Div bar chart dev:
 
 ```{r}
-
+# WORKS!!! ------
 divBarChart_new <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE, overall_n = FALSE, percent_label = TRUE,
                             question_labels = NULL, question_order= FALSE, width = NULL, font_family = "Arial", font_size = 10) {
     # Load all fonts:
@@ -377,10 +377,15 @@ stackedBarChart(
     question_labels = NULL, percent_label = TRUE, width = NULL, fill_colors = "seq"
     )
 
-divBarChart_new(
+divBarChart(
     df = cat_items_single, pre_post = F, scale_labels = levels_min_ext, overall_n = T,
     question_labels = NULL, percent_label = TRUE, width = NULL, fill_colors = "seq"
     )
+
+# divBarChart_new(
+#     df = cat_items_single, pre_post = F, scale_labels = levels_min_ext, overall_n = T,
+#     question_labels = NULL, percent_label = TRUE, width = NULL, fill_colors = "seq"
+#     )
 
 ```
 
@@ -392,11 +397,14 @@ stackedBarChart(
     question_labels = NULL, percent_label = TRUE, width = NULL, fill_colors = "seq"
     )
 
-divBarChart_new(
+divBarChart(
     df = cat_items, pre_post = T, scale_labels = levels_min_ext, overall_n = T,
     question_labels = NULL, percent_label = TRUE, width = NULL, fill_colors = "div"
     )
-
+# divBarChart_new(
+#     df = cat_items, pre_post = T, scale_labels = levels_min_ext, overall_n = T,
+#     question_labels = NULL, percent_label = TRUE, width = NULL, fill_colors = "div"
+#     )
 
 ```
 

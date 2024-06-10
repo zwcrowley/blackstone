@@ -132,7 +132,7 @@ customCols <- function(pal = qualColors(), cols = NULL) {
 #'      Drops black and yellow for use with all BRE charts and adds three other colors: "#440154FF", "#283251", and "#999933".
 #'
 #' @param n_colors Required, supply a non-negative integer that is the desired the number of color hex codes to return.
-#'#'
+#'
 #' @param rev_colors Logical, defaults to FALSE, if true returns a reverse color codes where the darkest color comes first.
 #'
 #' @return a character vector of hex color codes the length of `n_colors`.
