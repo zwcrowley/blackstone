@@ -14,30 +14,39 @@
 #'
 #' @export
 addBarChartTheme <- function(font_size, font_family) {
-    list(
-        ggplot2::theme(text = ggplot2::element_text(
-            angle = 0, hjust = 1, vjust = 0.5,
-            family = font_family, size = font_size
-        ),
-        legend.position = "top",
-        legend.title = ggplot2::element_blank(),
-        legend.background = ggplot2::element_blank(),
-        legend.box.spacing = grid::unit(0, "cm"), # no space btw legend and plot
-        legend.key.spacing.x = grid::unit(0, "cm"), # no space btw legend key boxes
-        axis.ticks = ggplot2::element_blank(),
-        axis.title = ggplot2::element_blank(),
-        axis.text = ggplot2::element_text(
-            angle = 0, hjust = 1, vjust = 0.5,
-            family = font_family, size = font_size
-        ),
-        axis.text.x = ggplot2::element_blank(), # turn off x axis labels
-        axis.text.y = ggtext::element_markdown( # Controls the '.data[["question"]]' if pre_post is F, or 'timing' if Pre post labels
-            color = "black", margin = ggplot2::margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
-        ),
-        plot.background = ggplot2::element_blank(),
-        panel.background = ggplot2::element_blank()
-        )
-    )
+    # if (isTRUE(legend_title)) { #add legend_title_theme to legend.title below and func arg: , legend_title = FALSE
+    #     legend_title_theme = ggplot2::element_text(angle = 0, hjust = 1, vjust = 0.5, # if TRUE
+    #                                                family = font_family, size = font_size
+    #     )
+    # } else if (isFALSE(legend_title)) {
+    #     legend_title_theme = ggplot2::element_blank() # if False
+    # }
+
+    new_theme <- list(
+                      ggplot2::theme(text = ggplot2::element_text(
+                          angle = 0, hjust = 1, vjust = 0.5,
+                          family = font_family, size = font_size
+                      ),
+                      legend.position = "top",
+                      legend.title = ggplot2::element_blank(),
+                      legend.background = ggplot2::element_blank(),
+                      legend.box.spacing = grid::unit(0, "cm"), # no space btw legend and plot
+                      legend.key.spacing.x = grid::unit(0, "cm"), # no space btw legend key boxes
+                      axis.ticks = ggplot2::element_blank(),
+                      axis.title = ggplot2::element_blank(),
+                      axis.text = ggplot2::element_text(
+                          angle = 0, hjust = 1, vjust = 0.5,
+                          family = font_family, size = font_size
+                      ),
+                      axis.text.x = ggplot2::element_blank(), # turn off x axis labels
+                      axis.text.y = ggtext::element_markdown( # Controls the '.data[["question"]]' if pre_post is F, or 'timing' if Pre post labels
+                          color = "black", margin = ggplot2::margin(t = 5, r = -15, b = 5, l = 5, unit = "pt")
+                      ),
+                      plot.background = ggplot2::element_blank(),
+                      panel.background = ggplot2::element_blank()
+                      )
+                    )
+    return(new_theme)
 }
 
 
