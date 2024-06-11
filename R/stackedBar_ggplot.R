@@ -46,28 +46,32 @@ stackedBar_ggplot <- function(df_gg, y_gg, pre_post = FALSE, label_gg, label_col
     # Chart creation:
     stacked_bar_chart_gg <- {{ df_gg }} %>%
         ggplot2::ggplot(ggplot2::aes(
-            x = .data[["percent_answers"]], y = forcats::fct_rev(.data[[{{y_gg}}]]), group = .data[["question"]]
+            x = .data[["percent_answers"]], y = forcats::fct_rev(.data[[{{y_gg}}]]), group = .data[["question"]],
+            fill = .data[["response"]], label = {{ label_gg }}, color = .data[["label_color"]]
         )) +
-        ggplot2::geom_col(ggplot2::aes(fill = .data[["response"]]), show.legend = TRUE,
-                          position = "fill", color = "black", # color is outline of fill boxes
-                          width = {{ width_gg }}, key_glyph = draw_key_cust #  draw_key_cust is custom key function from `gg_helpers.R`
+        ggplot2::geom_col(color = "black", # color is outline of fill boxes
+                          width = {{ width_gg }}, show.legend = TRUE, # need show.legend = TRUE to always make full legend
+                          key_glyph = draw_key_cust #  draw_key_cust is custom key function from `gg_helpers.R`
         ) +
-        ggplot2::geom_text(ggplot2::aes(label = {{ label_gg }}, color = .data[["label_color"]]),
-                           position = ggplot2::position_fill(vjust = 0.5),
+        ggplot2::geom_text(position = ggplot2::position_fill(vjust = 0.5),
                            stat = "identity", size = font_size, size.unit = "pt", family = font_family
         ) +
-        ggplot2::scale_color_identity(limits = names(label_colors_named))
+        ggplot2::scale_fill_manual(values = fill_colors_gg,
+                                   breaks = names(fill_colors_gg),
+                                   limits = names(fill_colors_gg),
+                                   drop = FALSE, labels = NULL) +
+        ggplot2::scale_color_identity()
     if (isTRUE(pre_post)) {
         stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(~ .data[["question"]], ncol = 1, strip.position = "left")
     }
-        stacked_bar_chart_gg <-  stacked_bar_chart_gg +
-            ggplot2::scale_fill_manual(values = {{ fill_colors_gg }}, labels = NULL) + # turn off labels in legend
-            ggplot2::guides(fill = ggplot2::guide_legend(
-                nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
-                override.aes = list(color = label_colors_named, # manually sets the color of the legend text to white or black
-                                    label = legend_labels) # manually sets the legend labels to wrapped scale_labels
-            )) +
-            addBarChartTheme(font_size = font_size, font_family = font_family) # function from `gg_helpers.R`
+    stacked_bar_chart_gg <-  stacked_bar_chart_gg  + # turn off labels in legend
+        ggplot2::guides(fill = ggplot2::guide_legend(
+            nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
+            override.aes = list(color = label_colors_named, # manually sets the color of the legend text to white or black
+                                label = legend_labels, # manually sets the legend labels to wrapped scale_labels
+                                fill = fill_colors_gg) # manually sets the legend labels to wrapped scale_labels
+        )) +
+        addBarChartTheme(font_size = font_size, font_family = font_family) # function from `gg_helpers.R`
 
 
     if (isTRUE(pre_post)) {

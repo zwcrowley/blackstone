@@ -156,16 +156,16 @@ items_group <- dplyr::tibble(
 
 
 ```{r}
-# items_single_three <- dplyr::tibble(
-#   Organization = c(3, 4, 3, 4, 5, 4, 3, 4, 3),
-#   Source = c(4, 4, 3, 5, 4, 3, 4, 3, 4),
-#   Publish = c(3, 3, 3, 4, 4, 4, 3, 3, 3),
-#   Write = c(4, 4, 4, 3, 3, 3, 4, 4, 4),
-#   Research = c(3, 3, 4, 4, 3, 3, 4, 4, 4),
-# )
-# 
-# # Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
-# cat_items_single_three <- bre::recodeCat(items_single_three, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+items_single_three <- dplyr::tibble(
+  Organization = c(3, 4, 3, 4, 5, 4, 3, 4, 3),
+  Source = c(4, 4, 3, 5, 4, 3, 4, 3, 4),
+  Publish = c(3, 3, 3, 4, 4, 4, 3, 3, 3),
+  Write = c(4, 4, 4, 3, 3, 3, 4, 4, 4),
+  Research = c(3, 3, 4, 4, 3, 3, 4, 4, 4),
+)
+
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items_single_three <- bre::recodeCat(items_single_three, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
 df <- cat_items_single_three
 scale_labels <- levels_min_ext
 pre_post <- F
@@ -247,20 +247,20 @@ question_labels <- NULL
     names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 10) # str wrapped for legend
 
     # Named vector created by new color palette named by the scale_labels:
-    new_fill_colors_named_unwrapped <- new_fill_colors # new color palette as values
-    names(new_fill_colors_named_unwrapped) <- scale_labels # pass to scale_fill_manual()
+    fill_colors_named <- new_fill_colors # new color palette as values
+    names(fill_colors_named) <- scale_labels # pass to scale_fill_manual()
     
     # Named vector created by new color palette named by the scale_labels:
-    new_fill_colors_named <- new_fill_colors # new color palette as values
-    names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
+    fill_colors_legend <- new_fill_colors # new color palette as values
+    names(fill_colors_legend) <- stringr::str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
 
     # Calculate the width and height of legend keys using `names(new_fill_colors_named)` (i.e. str_wrap scale_labels)
     # Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
-    key_width <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strwidth, units = "inches")) * 0.9, "in")
+    key_width <- grid::unit(max(sapply(names(fill_colors_legend), graphics::strwidth, units = "inches")) * 0.9, "in")
     # Create a minimum default of key_width being at least 0.7 inches:
     key_width <- dplyr::if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
     # Legend key height = maximum label strheight: PASS TO guide_legend keyheight
-    key_height <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strheight, units = "inches")) * 0.95, "in")
+    key_height <- grid::unit(max(sapply(names(fill_colors_legend), graphics::strheight, units = "inches")) * 0.95, "in")
     # Create a minimum default of key_height being at least 0.35 inches:
     key_height <- dplyr::if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
 
@@ -318,9 +318,9 @@ question_labels <- NULL
         pre_post = FALSE
         label_gg = label_gg
         label_colors_named = label_colors_named
-        legend_labels = names(new_fill_colors_named)
+        legend_labels = names(fill_colors_legend)
         width_gg = width 
-        fill_colors_gg = new_fill_colors
+        fill_colors_gg = fill_colors_named
         overall_n_gg = overall_n
         N_df_gg = N_df
         key_width = key_width
@@ -332,35 +332,50 @@ question_labels <- NULL
     stacked_bar_chart_gg <- {{ df_gg }} %>%
         ggplot2::ggplot(ggplot2::aes(
             x = .data[["percent_answers"]], y = forcats::fct_rev(.data[[{{y_gg}}]]), group = .data[["question"]],
-            fill = .data[["response"]],label = {{ label_gg }}, color = .data[["label_color"]]
+            fill = .data[["response"]], label = {{ label_gg }}, color = .data[["label_color"]]
         )) +
         ggplot2::geom_col(color = "black", # color is outline of fill boxes
-                          width = {{ width_gg }}
-                          # key_glyph = draw_key_cust #  draw_key_cust is custom key function from `gg_helpers.R`
+                          width = {{ width_gg }}, show.legend = TRUE, # need show.legend = TRUE to always make full legend
+                          key_glyph = draw_key_cust #  draw_key_cust is custom key function from `gg_helpers.R`
         ) +
         ggplot2::geom_text(position = ggplot2::position_fill(vjust = 0.5),
                            stat = "identity", size = font_size, size.unit = "pt", family = font_family
         ) +
-        ggplot2::scale_fill_manual(values = new_fill_colors_named_unwrapped, breaks = names(new_fill_colors_named_unwrapped), 
-                                   limits = names(new_fill_colors_named_unwrapped), # names(new_fill_colors_named_unwrapped),
-                                    drop = FALSE, labels = NULL) + 
-        ggplot2::scale_color_identity(limits = names(label_colors_named), labels = label_colors_named, drop = FALSE)
+        ggplot2::scale_fill_manual(values = fill_colors_gg, 
+                                   breaks = names(fill_colors_gg), 
+                                   limits = names(fill_colors_gg), 
+                                   drop = FALSE, labels = NULL) + 
+        ggplot2::scale_color_identity()
     if (isTRUE(pre_post)) {
         stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(~ .data[["question"]], ncol = 1, strip.position = "left")
     }
         stacked_bar_chart_gg <-  stacked_bar_chart_gg  + # turn off labels in legend
-            # ggplot2::guides(fill = ggplot2::guide_legend(
-            #     nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
-            #     override.aes = list(color = label_colors_named, # manually sets the color of the legend text to white or black
-            #                         label = legend_labels,
-            #                         fill = new_fill_colors_named_unwrapped) # manually sets the legend labels to wrapped scale_labels
-            # )) +
+            ggplot2::guides(fill = ggplot2::guide_legend(
+                nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
+                override.aes = list(color = label_colors_named, # manually sets the color of the legend text to white or black
+                                    label = legend_labels, # manually sets the legend labels to wrapped scale_labels
+                                    fill = fill_colors_gg
+                                    ) # manually sets the legend labels to wrapped scale_labels
+            )) +
             addBarChartTheme(font_size = font_size, font_family = font_family) # function from `gg_helpers.R`
 
-    stacked_bar_chart
+    stacked_bar_chart_gg
     
 
 
+```
+
+
+```{r}
+bre::stackedBarChart(
+   df = cat_items_single_three, pre_post = F, scale_labels = levels_min_ext, overall_n = T,
+   question_labels = NULL, question_order = F, percent_label = TRUE, width = NULL
+)
+
+bre::divBarChart(
+   df = cat_items_single_three, pre_post = F, scale_labels = levels_min_ext, overall_n = T,
+   question_labels = NULL, question_order = F, percent_label = TRUE, width = NULL
+)
 ```
 
 ```{r}

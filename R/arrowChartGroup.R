@@ -184,7 +184,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
                                          dplyr::select("question") %>%
                                          tibble::deframe()
       arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = new_question_order))
-    } else if (isTRUE(question_order)) {
+    } else if (isTRUE(question_order) && !is.null(question_labels)) {
       # If FALSE, use user supplied by order based on the set up the levels for question using- names(question_labels):
       arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
     }

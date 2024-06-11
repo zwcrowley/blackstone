@@ -181,7 +181,7 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
         }
         # change the factor levels of question to be ordered by the question_order:
         new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
-    } else {
+    } else if (isTRUE(question_order) && !is.null(question_labels)) {
         # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
         new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
     }
@@ -199,30 +199,34 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
         new_fill_colors <- divFillColors(length(scale_labels)) # sets the fill colors to the default diverging palette of `Blue Red 3` from namespace `colorspace`.
     }
 
+    # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
+    label_colors_named <- labelColorMaker(new_fill_colors, names = scale_labels)
+    # create a new col `label_color` using the named vector `label_colors_named` to map the text color to the variable response
+    new_df <- new_df %>% dplyr::mutate(., label_color = label_colors_named[.data[["response"]]])
+
     # Named vector created by new color palette named by the scale_labels:
     new_fill_colors_named <- new_fill_colors # new color palette as values
     names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 10) # str wrapped for legend
 
     # Named vector created by new color palette named by the scale_labels:
-    new_fill_colors_named_unwrapped <- new_fill_colors # new color palette as values
-    names(new_fill_colors_named_unwrapped) <- scale_labels # pass to scale_fill_manual()
+    fill_colors_named <- new_fill_colors # new color palette as values
+    names(fill_colors_named) <- scale_labels # pass to scale_fill_manual()
 
-    # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
-    label_colors_named <- labelColorMaker(new_fill_colors, names = names(new_fill_colors_named))
-    # create a new col `label_color` using the named vector `label_colors_named` to map the text color to the variable response
-    new_df <- new_df %>% dplyr::mutate(., label_color = label_colors_named[new_df[["response"]]])
+    # Named vector created by new color palette named by the scale_labels:
+    fill_colors_legend <- new_fill_colors # new color palette as values
+    names(fill_colors_legend) <- stringr::str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
 
     # Calculate the width and height of legend keys using `names(new_fill_colors_named)` (i.e. str_wrap scale_labels)
     # Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
-    key_width <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strwidth, units = "inches")) * 0.9, "in")
+    key_width <- grid::unit(max(sapply(names(fill_colors_legend), graphics::strwidth, units = "inches")) * 0.9, "in")
     # Create a minimum default of key_width being at least 0.7 inches:
     key_width <- dplyr::if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
     # Legend key height = maximum label strheight: PASS TO guide_legend keyheight
-    key_height <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strheight, units = "inches")) * 0.95, "in")
+    key_height <- grid::unit(max(sapply(names(fill_colors_legend), graphics::strheight, units = "inches")) * 0.95, "in")
     # Create a minimum default of key_height being at least 0.35 inches:
     key_height <- dplyr::if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
 
-    #Caluculate the split for the diverging point from the `response` variable:
+    # Calculate the split for the diverging point from the `response` variable:
     # response_levels <- levels(pull(new_df, .data[["response"]])) # gets the levels of response from data
     split_level <-  ceiling(length(scale_labels)/2) # Split the response var so that more levels on the bottom
     top_num_level <- length(scale_labels) - split_level # Get the top number of levels
@@ -316,19 +320,22 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
                            position = ggplot2::position_stack(vjust = .5, reverse = TRUE),
                            family = font_family, size = font_size, size.unit = "pt"
         ) +
+        ggplot2::scale_fill_manual(values = fill_colors_named,
+                                   breaks = names(fill_colors_named),
+                                   limits = names(fill_colors_named),
+                                   drop = FALSE, labels = NULL) +
         ggplot2::scale_color_identity()
     # If pre_post: add facet_wrap:
     if (isTRUE(pre_post)) {
         diverging_bar_chart <-  diverging_bar_chart + ggplot2::facet_wrap(~ .data[["question"]], ncol = 1, strip.position = "left")
     }
     diverging_bar_chart <-  diverging_bar_chart +
-        ggplot2::scale_fill_manual(values = new_fill_colors_named_unwrapped, labels = NULL) + # turn off labels in legend
         ggplot2::guides(fill = ggplot2::guide_legend(
             nrow = 1, keywidth = key_width, keyheight = key_height, # keywidth and keyheight need to be supplied as a grid::unit() to change size of keys!!!!!!
             override.aes = list(
                 color = label_colors_named, # manually sets the color of the legend text to white or black
-                label = names(new_fill_colors_named), # manually sets the legend labels to wrapped scale_labels
-                fill = new_fill_colors_named # manually resets the fill order of response to the original inside 'new_fill_colors_named'
+                label = names(fill_colors_legend), # manually sets the legend labels to wrapped scale_labels
+                fill = fill_colors_named # manually resets the fill order of response to the original inside 'new_fill_colors_named'
             )
         )) +
         addBarChartTheme(font_size = font_size, font_family = font_family)

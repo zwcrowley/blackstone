@@ -175,7 +175,7 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
         }
         # change the factor levels of question to be ordered by the question_order:
         new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
-    } else {
+    } else if (isTRUE(question_order) && !is.null(question_labels)) {
         # If question_order == TRUE, set up the levels for question using the user supplied order = question_labels:
         new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
     }
@@ -200,15 +200,23 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
 
     # Named vector created by new color palette named by the scale_labels:
     new_fill_colors_named <- new_fill_colors # new color palette as values
-    names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
+    names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 10) # str wrapped for legend
+
+    # Named vector created by new color palette named by the scale_labels:
+    fill_colors_named <- new_fill_colors # new color palette as values
+    names(fill_colors_named) <- scale_labels # pass to scale_fill_manual()
+
+    # Named vector created by new color palette named by the scale_labels:
+    fill_colors_legend <- new_fill_colors # new color palette as values
+    names(fill_colors_legend) <- stringr::str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
 
     # Calculate the width and height of legend keys using `names(new_fill_colors_named)` (i.e. str_wrap scale_labels)
     # Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
-    key_width <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strwidth, units = "inches")) * 0.9, "in")
+    key_width <- grid::unit(max(sapply(names(fill_colors_legend), graphics::strwidth, units = "inches")) * 0.9, "in")
     # Create a minimum default of key_width being at least 0.7 inches:
     key_width <- dplyr::if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
     # Legend key height = maximum label strheight: PASS TO guide_legend keyheight
-    key_height <- grid::unit(max(sapply(names(new_fill_colors_named), graphics::strheight, units = "inches")) * 0.95, "in")
+    key_height <- grid::unit(max(sapply(names(fill_colors_legend), graphics::strheight, units = "inches")) * 0.95, "in")
     # Create a minimum default of key_height being at least 0.35 inches:
     key_height <- dplyr::if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
 
@@ -260,20 +268,21 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
         label_gg <- new_df[["n_answers"]]
     }
 
+
     # Final call to stackedBar_ggplot() for pre_post == TRUE:
     if (isTRUE(pre_post)) {
         stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, y_gg = "timing", pre_post = TRUE,
                                                label_gg = label_gg, label_colors_named = label_colors_named,
-                                               legend_labels = names(new_fill_colors_named),
-                                               width_gg = width, fill_colors_gg = new_fill_colors,
+                                               legend_labels = names(fill_colors_legend),
+                                               width_gg = width, fill_colors_gg = fill_colors_named,
                                                overall_n_gg = overall_n, N_df_gg = N_df,
                                                key_width = key_width, key_height = key_height)
     # Final call to stackedBar_ggplot() if pre_post == FALSE:
     } else if (isFALSE(pre_post)) {
         stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, y_gg = "question", pre_post = FALSE,
                                                label_gg = label_gg, label_colors_named = label_colors_named,
-                                               legend_labels = names(new_fill_colors_named),
-                                               width_gg = width, fill_colors_gg = new_fill_colors,
+                                               legend_labels = names(fill_colors_legend),
+                                               width_gg = width, fill_colors_gg = fill_colors_named,
                                                overall_n_gg = overall_n, N_df_gg = N_df,
                                                key_width = key_width, key_height = key_height)
     }
