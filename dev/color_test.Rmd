@@ -1,0 +1,193 @@
+---
+title: "Color Tests for BRE"
+output: html_document
+date: "2024-05-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+    fig.width = 8,
+    fig.height = 6)
+
+# Load Libraries:
+library("colorspace")
+library("magrittr")
+
+# color setup for new BRE colors:
+bre_blue <- "#283251"
+bre_grey <- "#c0bfbf"
+bre_light_grey <- "#eaeaeb"
+bre_med_grey <- "#cecece"
+
+breColors <- c("dark_blue" = "#283251",
+                "light_grey" = "#eaeaeb",
+                "med_grey" = "#cecece",
+                "main_grey" = "#c0bfbf")
+
+# Trying out a white to blue palette:
+pal_bre_blues <- colorRampPalette(colors = c("white", "#283251"))
+pal_bre_blues_twelve <- pal_bre_blues(12)
+scales::show_col(pal_bre_blues(5))
+scales::show_col(pal_bre_blues(6))
+scales::show_col(pal_bre_blues(7))
+scales::show_col(pal_bre_blues(20))
+scales::show_col(pal_bre_blues_twelve[1:12])
+scales::show_col(pal_bre_blues(7)[3:7])
+```
+
+### Possible color scheme reccomendations for new BRE R package and all visuals
+
+#### Single Sequential colors:
+
+- These would be for likert scale items that have a single order like "Minimal" to "Extensive" 
+
+- `BRE Blue` is the blue color for our branding to white, dropping the lightest shades.
+
+##### Seven point scales:
+
+```{r}
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "BRE Blue" = pal_bre_blues(9)[3:9],
+    "Darker Blues"  = darken(sequential_hcl(7, "Blues", rev = TRUE)),
+    "Blues 3"  = sequential_hcl(7, "Blues 3", rev = TRUE),
+    "Oslo"  = sequential_hcl(7, "oslo")
+)
+
+```
+
+##### Five point scales:
+
+```{r}
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "BRE Blue" = pal_bre_blues(5),
+    "Darker Blues"  = darken(sequential_hcl(5, "Blues", rev = TRUE)),
+    "Blues 3"  = sequential_hcl(5, "Blues 3", rev = TRUE),
+    "Oslo"  = sequential_hcl(5, "oslo")
+)
+
+```
+
+#### Single Sequential (Multi-hue) colors:
+
+- These would be for likert scale items that have a single order like "Minimal" to "Extensive", but have a bit more color to break up 
+
+- The `Viridis` would also work for qualitative/categories
+
+```{r}
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "YlGnBu (Yellow Green Blue)"  = sequential_hcl(7, "YlGnBu", rev = TRUE),
+    "GnBu"  = sequential_hcl(7, "GnBu", rev = TRUE),
+    "Viridis" = sequential_hcl(7, "Viridis", rev = TRUE),
+)
+
+```
+
+#### Diverging colors:
+
+- These would mostly be for likert scale items that are folded scales like 'Strongly Disagee' to 'Strongly Agree'.
+
+- The `Cividis` palette could work for any type of likert scale items stacked bar charts.
+
+```{r}
+# Create a single swatchplot to share with Eval Management Team
+swatchplot(
+    "Lighter Cividis" = lighten(divergingx_hcl(7, "cividis", rev = TRUE), amount = 0.2, method = "relative", space = "HCL"),
+    "Cividis" = divergingx_hcl(7, "cividis", rev = TRUE),    
+    "Geyser" = divergingx_hcl(7, "geyser", rev = TRUE),
+    "Darker Geyser" = darken(divergingx_hcl(7, "geyser", rev = TRUE), amount = 0.2, method = "relative", space = "HCL"),
+    "Blue-Red 3"  = darken(diverging_hcl(7, "Blue-Red 3", rev = TRUE), amount = 0.35, method = "relative", space = "HCL")
+)
+darken(diverging_hcl(9, "Blue-Red 3", rev = TRUE), amount = 0.35, method = "relative", space = "HCL")
+
+```
+
+```{r}
+# # swatchplot(
+# #     "Blue-Red 3"  = darken(diverging_hcl(5, "Blue-Red 3", rev = TRUE)),
+# # )
+# swatchplot(
+#     "Blue-Red 3"  = diverging_hcl(7, "Blue-Red 3", rev = TRUE)
+# )
+# diverging_hcl(5, "Blue-Red 3", rev = TRUE)
+# diverging_hcl(7, "Blue-Red 3", rev = TRUE)
+# # 
+# # "#5F1415" "#C05D5D" "#EDB4B5" "#c0bfbf" "#B4C2EB" "#517AC9" "#002F70"
+# swatchplot(
+# c("#5F1415", "#DA8A8B", "#eaeaeb", "#879FDB", "#002F70")
+# )
+# swatchplot(
+# c("#5F1415", "#C05D5D", "#EDB4B5", "#eaeaeb", "#B4C2EB", "#517AC9", "#002F70")
+# )
+# 
+# swatchplot(
+#     "Lighter Cividis" = lighten(divergingx_hcl(5, "cividis", rev = TRUE), amount = 0.2, method = "relative", space = "HCL"),
+#     "Cividis" = divergingx_hcl(5, "cividis", rev = TRUE)
+# )
+# demoplot(divergingx_hcl(5, "cividis", rev = TRUE), type = "bar")
+# demoplot(c("#5F1415", "#DA8A8B", "#eaeaeb", "#879FDB", "#002F70"), type = "bar")
+# demoplot(sequential_hcl(7, "Viridis", rev = TRUE), type = "bar")
+# demoplot(sequential_hcl(5, "Viridis", rev = TRUE), type = "bar")
+# demoplot(divergingx_hcl(3, "cividis", rev = TRUE), type = "bar")
+
+```
+
+
+### All Color-blind Friendly Palettes:
+
+#### My recommendations:
+- "Cividis" as the default sequential color scale of likert items like: Minimal, Slight, Moderate, Good, Extensive- that are not folded/go in a single direction.
+- "Blue-Red 3" as the default sequential color scale of likert items that are folded/have a positive and negative connotation like: Strongly disagree to Strongly Agree
+- "Viridis" or "Okabe-Ito" as the default qualitative/categorical scales (e.g. demographics, gender, role).
+
+
+```{r, include=FALSE}
+# palette.pals() # get default palette names
+# Generate palettes for 3 to 7 scales:
+values <- c(3:7)
+colorblind_swatches <- purrr::map(.x = values,  ~ swatchplot(
+                                                             "Blue-Red 3"  = colorspace::diverging_hcl(n = .x, "Blue-Red 3", rev = TRUE),
+                                                             "Mako" = viridis::viridis(n = .x, alpha = 1, begin = 0, end = 1, direction = -1, option = "mako"),
+                                                             "Cividis" = viridis::viridis(n = .x, alpha = 1, begin = 0, end = 1, direction = -1, option = "cividis"),
+                                                             # "Cividis Lite" = viridisLite::cividis(n = .x, alpha = 1, begin = 0, end = 1, direction = -1),
+                                                             "Viridis" = viridis::viridis(n = .x, alpha = 1, begin = 0, end = 1, direction = -1, option = "viridis"),
+                                                             "Okabe-Ito" = rev(palette.colors(n = .x, palette = "Okabe-Ito", recycle = FALSE, names = TRUE)),
+                                                             )
+) %>% purrr::set_names(values)
+
+```
+
+```{r, results='asis'}
+  cat("<br>")
+  purrr::walk(values, \(x) {
+      cat("<br>") # line break
+      cat(stringr::str_glue("<h5>Colorblind Friendly Swatches for **{x}** Items</h5>")) # h4 header
+      # print:
+      swatchplot(
+                 "Blue-Red 3"  = colorspace::diverging_hcl(n = x, "Blue-Red 3", rev = TRUE),
+                 "Mako" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "mako"),
+                 "Cividis" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "cividis"),
+                 # "Cividis Lite" = viridisLite::cividis(n = x, alpha = 1, begin = 0, end = 1, direction = -1),
+                 "Viridis" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "viridis"),
+                 "Okabe-Ito" = rev(palette.colors(n = x, palette = "Okabe-Ito", recycle = FALSE, names = TRUE)),
+                 )
+      cat("<br>") # line break
+      # HR line to separate item sections
+      cat("<hr>")
+    }
+  )
+```
+
+```{r}
+x = 10
+swatchplot(
+    "Blue-Red 3"  = colorspace::diverging_hcl(n = x, "Blue-Red 3", rev = TRUE),
+    "Mako" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "mako"),
+    "Cividis" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "cividis"),
+    "Viridis" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "viridis"),
+    "Okabe-Ito" = rev(palette.colors(n = x, palette = "Okabe-Ito", recycle = FALSE, names = TRUE)),
+)
+```
+

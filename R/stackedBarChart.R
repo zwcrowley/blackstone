@@ -3,15 +3,19 @@
 #' [stackedBarChart()] creates a stacked bar chart and returns a ggplot object with Blackstone Research and Evaluation branding.
 #'
 #' @param df Required, A [tibble][tibble::tibble-package]/data frame of survey items that are categorical/character
-#'   variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.
+#'   variables, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.
 #'
 #' @param scale_labels Required, a character vector of labels for the response scale, must be in the desired order,
-#'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
-#'    This argument accepts a character vector of 3 to 7 items.
+#'    e.g. if you have a 5 item scale of minimal to extensive it should look like this:
+#'    `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
+#'
+#' @param fill_colors Default is "seq", If "seq", the color scale for the fill for each bar is set to blue sequential palette.
+#'      If set to "div", it is the blue-red diverging color palette, otherwise the user can input a character vector of hex codes
+#'      at least a long as the character vector passed to the `scale_labels` argument.
 #'
 #' @param pre_post Logical, default is FALSE. If true, returns a pre-post stacked bar chart.
 #'
-#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
+#' @param overall_n Logical, default is TRUE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.
 #'
 #' @param percent_label Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.
@@ -27,10 +31,11 @@
 #' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a stacked bar chart and can be exported.
+#'
 #' @export
 #'
 #' @examples
-#' items <- dplyr::tibble(
+#' items <- tibble::tibble(
 #'   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
 #'   post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
 #'   pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
@@ -43,7 +48,7 @@
 #'   post_Research = pre_Research + 1
 #' )
 #'
-#' items_single <- dplyr::tibble(
+#' items_single <- tibble::tibble(
 #'   Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
 #'   Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
 #'   Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
@@ -71,13 +76,12 @@
 #'   "Source work for a research paper" = "Source"
 #' )
 #'
-#' # Recode the numeric to factor variables using the levels from levels_min_ext:
-#' cat_items <- bre::recodeCat(items, levels_min_ext)
-#' cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
-#'
-#' # Select the factor variables:
-#' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
-#' cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
+#' # Recode the numeric to factor variables using the levels from levels_min_ext and
+#' # select the factor variables::
+#' cat_items <- bre::recodeCat(items, levels_min_ext) %>%
+#'                  dplyr::select(dplyr::where(is.factor))
+#' cat_items_single <- bre::recodeCat(items_single, levels_min_ext) %>%
+#'                         dplyr::select(dplyr::where(is.factor))
 #'
 #' # Pass the factor variables and the levels to stackedBarChart:
 #' stackedBarChart(
@@ -96,7 +100,7 @@
 #'   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
 #'   question_labels = question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
-stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALSE, percent_label = TRUE,
+stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE, overall_n = TRUE, percent_label = TRUE,
                             question_labels = NULL, question_order= FALSE, width = NULL) {
     # Load all fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -108,201 +112,179 @@ stackedBarChart <- function(df, scale_labels, pre_post = FALSE, overall_n = FALS
     # Make sure the all vars in df are factors with scale_labels as their levels:
     new_df <- {{ df }} %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = scale_labels)))
 
-    # Changes scale_labels to tibble pulls out index and saves that as a vector, gets number of levels from scale_labels:
-    number_levels <- scale_labels %>%
-      tibble::enframe() %>%
-      dplyr::select("name") %>%
-      tibble::deframe()
-
-    # Error messages if number_levels is less than 3:
-    if (length(number_levels) < 3) {
-      stop("Error: the response options in scale_labels are less than 3, they must be between 3 and 7 for this function.")
-    }
-    # Error messages if number_levels is greater than 7:
-    if (length(number_levels) > 7) {
-      stop("Error: the response options in scale_labels are greater than 7, they must be between 3 and 7 for this function.")
-    }
-
     if (isTRUE(pre_post)) {
-      # Sets up new_df if pre_post is TRUE:
-      new_df <- new_df %>%
-        tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
-        dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
-        tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>%
-        dplyr::group_by(.data$question, .data$timing, .data$response) %>%
-        dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
-        dplyr::ungroup() %>%
-        tidyr::drop_na() %>%
-        dplyr::group_by(.data$question, .data$timing) %>%
-        dplyr::mutate(
-          percent_answers = .data$n_answers / sum(.data$n_answers),
-          percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
-          response = forcats::fct_relevel(.data$response, scale_labels),
-          timing = stringr::str_to_title(.data$timing),
-          timing = factor(.data$timing, levels = c("Pre", "Post"))
-        ) %>%
-        dplyr::ungroup()
+        # If pre_post is TRUE, set up new_df with dataVizCleaning():
+        new_df <- dataVizCleaning(df = new_df, pre_post = TRUE, scale_labels = scale_labels, na_remove = TRUE)
 
-      # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
-      # (top levels depending on total response levels):
-      if (isFALSE(question_order)) {
-        question_order <- new_df %>% dplyr::filter(., .data$timing == "Post")  %>% tidyr::complete(.data$question, .data$response) %>%
-          tidyr::pivot_wider(id_cols = -c("timing", "percent_answers", "percent_answers_label"), names_from = "response", values_from = "n_answers") %>%
-          dplyr::group_by(.data$question) %>% rev() %>%
-          dplyr::arrange(dplyr::across(-c("question"), dplyr::desc)) %>%
-          dplyr::select("question") %>%
-          unique() %>%
-          tibble::deframe()
-        # change the factor levels of question to be ordered by the question_order:
-        new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
-      } else {
-        # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
-        new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_labels))
-      }
-      # If the user supplies a named vector for questions labels:
-      if (!is.null(question_labels)) {
-        names(question_labels) <- names(question_labels) %>%
-          stringr::str_wrap(., width = 30) %>%
-          gsub("\n", "<br>", .)
-        new_df <- new_df %>%
-          dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels))
-      }
-      # Get total n for each question, grouped by question and timing:
-      totals_new_df <- new_df %>%
-        dplyr::group_by(.data$question, .data$timing) %>%
-        dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
-        dplyr::ungroup() %>%
-        dplyr::group_by(.data$question) %>%
-        dplyr::distinct(.data$question, .data$total) %>%
-        dplyr::ungroup()
-      # End of if pre_post == TRUE
-    } else {
-      # If pre_post is FALSE, set up new_df:
-      new_df <- new_df %>%
-        tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
-        dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
-        dplyr::group_by(.data$question, .data$response) %>%
-        dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
-        dplyr::ungroup() %>%
-        tidyr::drop_na() %>%
-        dplyr::group_by(.data$question) %>%
-        dplyr::mutate(
-          percent_answers = .data$n_answers / sum(.data$n_answers),
-          percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
-          response = forcats::fct_relevel(.data$response, scale_labels)
-        ) %>%
-        dplyr::ungroup()
+        # Get total n for each question, grouped by question and timing:
+        # totals_new_df <- new_df %>%
+        #   dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+        #   dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+        #   dplyr::ungroup() %>%
+        #   dplyr::group_by(.data[["question"]]) %>%
+        #   dplyr::distinct(.data[["question"]], .data[["total"]]) %>%
+        #   dplyr::ungroup()
+        totals_new_df <- {{ df }} %>%
+            tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+            dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
+            tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>%
+            dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+            dplyr::mutate(timing = stringr::str_to_title(.data$timing), # capitalize timing
+                          timing = factor(.data$timing, levels = c("Pre", "Post"))
+            ) %>%
+            dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+            dplyr::ungroup()
+        # Join the `total` column to arrow_df
+        new_df <- new_df %>% dplyr::full_join(totals_new_df,by = dplyr::join_by("question", "timing"))
+        # End of if pre_post == TRUE
+    } else if (isFALSE(pre_post)) {
+        # If pre_post is FALSE, set up new_df with dataVizCleaning():
+        new_df <- dataVizCleaning(df = new_df, pre_post = FALSE, scale_labels = scale_labels, na_remove = TRUE)
 
-      # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
-      # (top levels depending on total response levels):
-      if (isFALSE(question_order)) {
-        question_order <- new_df %>% tidyr::complete(.data$question, .data$response) %>%
-          tidyr::pivot_wider(id_cols = -c("percent_answers", "percent_answers_label"), names_from = "response", values_from = "n_answers") %>%
-          dplyr::group_by(.data$question) %>% rev() %>%
-          dplyr::arrange(dplyr::across(-c("question"), dplyr::desc)) %>%
-          dplyr::select("question") %>%
-          unique() %>%
-          tibble::deframe()
-        # change the factor levels of question to be ordered by the question_order:
-        new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data$question, question_order))
-      } else {
-        # If question_order == TRUE,set up the levels for question using the user supplied order = question_labels:
-        new_df <- new_df %>% dplyr::mutate(question = factor(.data$question, levels = question_labels))
-      }
-      # If the user supplies a named vector for questions labels:
-      if (!is.null(question_labels)) {
-        names(question_labels) <- names(question_labels) %>%
-          stringr::str_wrap(., width = 30) %>%
-          gsub("\n", "<br>", .)
-        new_df <- new_df %>%
-          dplyr::mutate(question = forcats::fct_recode(.data$question, !!!question_labels))
-      }
-      # Get total n for each question, grouped by question:
-      totals_new_df <- new_df %>%
-        dplyr::group_by(.data$question) %>%
-        dplyr::summarize(total = sum(.data$n_answers), .groups = "keep") %>%
-        dplyr::ungroup()
+        # Get total n for each question, grouped by question:
+        # totals_new_df <- new_df %>%
+        #   dplyr::group_by(.data[["question"]]) %>%
+        #   dplyr::summarize(total = sum(.data[["n_answers"]]), .groups = "keep") %>%
+        #   dplyr::ungroup()
+        totals_new_df <- {{ df }} %>%
+            tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+            dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
+            dplyr::group_by(.data[["question"]]) %>%
+            dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+            dplyr::ungroup()
+        # Join the `total` column to arrow_df
+        new_df <- new_df %>% dplyr::full_join(totals_new_df,by = dplyr::join_by("question"))
     } # End of if pre_post == FALSE
 
-    # Create fill_colors vectors and label_color variable -----
-    # IF/ELSE statement, first if number_levels equals 3, sets up the label_color and fill color:
-    if (length(number_levels) == 3) {
-      new_df <- new_df %>% dplyr::mutate(label_color = "black")
-      # 3 colors for chart:
-      fill_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
-      # If number_levels) == 4
-    } else if (length(number_levels) == 4) {
-      new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"))
-      # 4 colors for chart:
-      fill_colors <- c("#FFE699", "#79AB53", "#4B9FA6", "#2C2C4F")
-      # If number_levels) == 5
-    } else if (length(number_levels) == 5) {
-      new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[1], "black", "white"))
-      # 5 colors for chart:
-      fill_colors <- c("#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
-      # If number_levels) == 6
-    } else if (length(number_levels) == 6) {
-      new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"))
-      # 6 colors for chart:
-      fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#2C2C4F")
-      # If number_levels) == 7
-    } else if (length(number_levels) == 7) {
-      new_df <- new_df %>% dplyr::mutate(label_color = dplyr::if_else(.data$response == levels(.data$response)[2], "black", "white"))
-      # 7 colors for chart:
-      fill_colors <- c("gray","#FFE699", "#79AB53","#767171", "#4B9FA6", "#37546d", "#2C2C4F")
+    # If the user supplies a named vector for questions labels:
+    if (!is.null(question_labels)) {
+        names(question_labels) <- names(question_labels) %>%
+            stringr::str_wrap(., width = 20) %>%
+            gsub("\n", "<br>", .)
+        new_df <- new_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
     }
+
+    # Set up a new question order if not supplied by the user after finding the most positive valenced items for post
+    # if pre_post is TRUE, otherwise use questions if pre_post is FALSE (top levels depending on total response levels):
+    if (isFALSE(question_order)) {
+        if (isTRUE(pre_post)) {
+            new_question_order <- questionOrder(df = new_df, pre_post = TRUE)
+        } else if (isFALSE(pre_post)) {
+            new_question_order <- questionOrder(df = new_df, pre_post = FALSE)
+        }
+        # change the factor levels of question to be ordered by the question_order:
+        new_df <- new_df %>% dplyr::mutate(question = forcats::fct_relevel(.data[["question"]], new_question_order))
+    } else if (isTRUE(question_order) && !is.null(question_labels)) {
+        # If question_order == TRUE, set up the levels for question using the user supplied order = question_labels:
+        new_df <- new_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
+    }
+
+    # If statement to handle the value(s) of `fill_colors`:
+    if (length(fill_colors) > 1) {
+        if (length(fill_colors) >= length(scale_labels)) {
+            new_fill_colors <- fill_colors # sets the fill colors to the hex codes passed in by the user.
+        } else {
+            stop("Error: the length of `fill_colors` needs to be greater than or equal to the length of `scale_labels`")
+        }
+    } else if (fill_colors == "seq") {
+        new_fill_colors <- seqFillColors(length(scale_labels)) # sets the fill colors to the default sequential palette of `cividis`.
+    } else if (fill_colors == "div") {
+        new_fill_colors <- divFillColors(length(scale_labels)) # sets the fill colors to the default diverging palette of `Blue Red 3` from namespace `colorspace`.
+    }
+
+    # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
+    label_colors_named <- labelColorMaker(new_fill_colors, names = scale_labels)
+    # create a new col `label_color` using the named vector `label_colors_named` to map the text color to the variable response
+    new_df <- new_df %>% dplyr::mutate(., label_color = label_colors_named[.data[["response"]]])
+
+    # Named vector created by new color palette named by the scale_labels:
+    new_fill_colors_named <- new_fill_colors # new color palette as values
+    names(new_fill_colors_named) <- stringr::str_wrap(scale_labels, width = 10) # str wrapped for legend
+
+    # Named vector created by new color palette named by the scale_labels:
+    fill_colors_named <- new_fill_colors # new color palette as values
+    names(fill_colors_named) <- scale_labels # pass to scale_fill_manual()
+
+    # Named vector created by new color palette named by the scale_labels:
+    fill_colors_legend <- new_fill_colors # new color palette as values
+    names(fill_colors_legend) <- stringr::str_wrap(scale_labels, width = 10) # names as str_wrap scale_labels
+
+    # Calculate the width and height of legend keys using `names(new_fill_colors_named)` (i.e. str_wrap scale_labels)
+    # Legend key width = maximum label strwidth: PASS TO guide_legend keywidth
+    key_width <- grid::unit(max(sapply(names(fill_colors_legend), graphics::strwidth, units = "inches")) * 0.9, "in")
+    # Create a minimum default of key_width being at least 0.7 inches:
+    key_width <- dplyr::if_else(as.numeric(key_width) > 0.7, as.numeric(key_width), 0.7) %>% grid::unit(., "in")
+    # Legend key height = maximum label strheight: PASS TO guide_legend keyheight
+    key_height <- grid::unit(max(sapply(names(fill_colors_legend), graphics::strheight, units = "inches")) * 0.95, "in")
+    # Create a minimum default of key_height being at least 0.35 inches:
+    key_height <- dplyr::if_else(as.numeric(key_height) > 0.35, as.numeric(key_height), 0.35) %>% grid::unit(., "in")
 
     # Set default width for geom_col() bars if not supplied by user:
     if (is.null(width)) {
-      width <- dplyr::if_else(dplyr::n_distinct(new_df$question) < 4, 0.5,
-                              dplyr::if_else(dplyr::n_distinct(new_df$question) < 7, 0.75, 0.95)
-      )
+        width <- dplyr::if_else(dplyr::n_distinct(new_df[["question"]]) < 4, 0.7, 0.9)
     }
 
     if (isTRUE(overall_n)) {
-      # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal to each other: ----
-      N_df <- NULL
-      if (length(unique(totals_new_df$total)) == 1) {
-        # Get overall n if it is the same for each item:
-        N_df <- totals_new_df %>%
-          dplyr::summarize(N = mean(.data$total)) %>%
-          tibble::deframe()
-      }
-
-      # Error messages if N_df is null, not filled by last if statement above:
-      if (is.null(N_df)) {
-        stop("Error: Can not use `overall_n` for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
-      }
-    }
-
-    # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
-    if (isFALSE(overall_n)) {
-      # Change the label of the variable "question" by adding n of each to the end of the character string:
-      labels_n_questions <- paste0(totals_new_df$question, " ", "(*n* = ", totals_new_df$total, ")")
-
-      # Set factor labels for question to labels:
-      new_df <- new_df %>%
-        dplyr::mutate(question = factor(.data$question, levels = levels(.data$question), labels = labels_n_questions))
+        # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal to each other: ----
+        N_df <- NULL
+        if (length(unique(totals_new_df[["total"]])) == 1) {
+          # Get overall n if it is the same for each item:
+          N_df <- totals_new_df %>%
+            dplyr::summarize(N = mean(.data[["total"]])) %>%
+            tibble::deframe()
+        }
+        # Error messages if N_df is null, not filled by last if statement above:
+        if (is.null(N_df)) {
+          stop("Error: Can not use `overall_n` for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
+        }
+    } else if (isFALSE(overall_n)) { # Otherwise, if overall_n == FALSE, return a stacked_bar_chart with n for each question appended to the question label:
+        # # Change the label of the variable "question" by adding n of each to the end of the character string:
+        # labels_n_questions <- paste0(totals_new_df[["question"]], " ", "(*n* = ", totals_new_df[["total"]], ")")
+        #
+        # # Set factor labels for question to labels:
+        # new_df <- new_df %>%
+        #   dplyr::mutate(question = factor(.data[["question"]], levels = levels(.data[["question"]]), labels = labels_n_questions))
+        # Change the label of the variable "question" by adding n of each to the end of the character string:
+        # Set up labels for question:
+        labels_n_questions <- new_df %>%
+            dplyr::mutate(
+                labels = paste0(.data[["question"]], "<br>(*n* = ", .data[["total"]], ")"),
+                question = as.character(.data[["question"]]),
+            ) %>%
+            dplyr::distinct(labels, .keep_all = TRUE) %>%
+            dplyr::select("labels", "question") %>%
+            tibble::deframe()
+        # Set factor labels for question to labels = labels_n_questions using the named vector string `labels_n_questions` in fct_recode():
+        new_df <- new_df %>%
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!labels_n_questions))
     }
 
     # Call stackedBar_ggplot ----
     # Set labels to percent or n_answers:
     if (isTRUE(percent_label)) {
-      label_gg <- new_df$percent_answers_label
+        label_gg <- new_df[["percent_answers_label"]]
     } else {
-      label_gg <- new_df$n_answers
+        label_gg <- new_df[["n_answers"]]
     }
+
 
     # Final call to stackedBar_ggplot() for pre_post == TRUE:
     if (isTRUE(pre_post)) {
-      stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data$percent_answers , y_gg = .data$timing, fill_gg = .data$response, group_gg = .data$question,
-                                             label_gg = label_gg, label_color_gg = .data$label_color, scale_labels_gg = scale_labels,
-                                             width_gg = width, fill_colors_gg = fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = TRUE)
-      # Final call to stackedBar_ggplot() if pre_post == FALSE:
-    } else {
-      stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, x_gg = .data$percent_answers , y_gg = .data$question, fill_gg = .data$response, group_gg = .data$question,
-                                             label_gg = label_gg, label_color_gg = .data$label_color, scale_labels_gg = scale_labels,
-                                             width_gg = width, fill_colors_gg = fill_colors, overall_n_gg = overall_n, N_df_gg = N_df, pre_post = FALSE)
+        stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, y_gg = "timing", pre_post = TRUE,
+                                               label_gg = label_gg, label_colors_named = label_colors_named,
+                                               legend_labels = names(fill_colors_legend),
+                                               width_gg = width, fill_colors_gg = fill_colors_named,
+                                               overall_n_gg = overall_n, N_df_gg = N_df,
+                                               key_width = key_width, key_height = key_height)
+    # Final call to stackedBar_ggplot() if pre_post == FALSE:
+    } else if (isFALSE(pre_post)) {
+        stacked_bar_chart <- stackedBar_ggplot(df_gg = new_df, y_gg = "question", pre_post = FALSE,
+                                               label_gg = label_gg, label_colors_named = label_colors_named,
+                                               legend_labels = names(fill_colors_legend),
+                                               width_gg = width, fill_colors_gg = fill_colors_named,
+                                               overall_n_gg = overall_n, N_df_gg = N_df,
+                                               key_width = key_width, key_height = key_height)
     }
 
     return(stacked_bar_chart)

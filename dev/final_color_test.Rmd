@@ -1,0 +1,354 @@
+---
+title: "Final Color for BRE"
+output: html_document
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+    fig.width = 8,
+    fig.height = 6)
+
+# Load Libraries:
+library(colorspace)
+library(magrittr)
+library(tidyverse)
+library(bre) # blackstone R package
+
+set.seed(424429) # for reproducibility
+
+##### colors:
+breColors <- c("dark_blue" = "#283251",
+                "light_grey" = "#eaeaeb",
+                "med_grey" = "#cecece",
+                "main_grey" = "#c0bfbf")
+
+######## Data
+items <- dplyr::tibble(
+  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  post_Publish = pre_Publish + 2,
+  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  post_Write = pre_Write + 1,
+  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  post_Research = pre_Research + 1
+)
+
+items_single <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+)
+
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_min_ext_named <- c(
+  "Minimal" = "1", "Slight" = "2", "Moderate" = "3",
+  "Good" = "4", "Extensive" = "5"
+)
+
+# levels_min_ext as just the names from levels_min_ext_named:
+levels_min_ext <- names(levels_min_ext_named) 
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"):
+question_labels <- c(
+  "Publish a lot of high quality papers" = "Publish",
+  "Write a lot of research papers" = "Write",
+  "Research in a lab with faculty" = "Research",
+  "Organization of a large research project" = "Organization",
+  "Source work for a research paper" = "Source"
+)
+
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items <- bre::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+
+
+######## Data: Strongly disagree to Strongly Agree
+items_single_div <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2, 6, 6, 6, 7, 7,7),
+  Publish = c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4 , 5, 6, 7, 6),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4, 5,6,7,1,2,3),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4, 5,6,7,1,2,3),
+)
+
+items_div <- dplyr::tibble(
+  pre_Organization = items_single_div[["Organization"]],
+  post_Organization = dplyr::if_else(pre_Organization < 7, pre_Organization + 1, pre_Organization),
+  pre_Source = items_single_div[["Source"]],
+  post_Source = dplyr::if_else(pre_Source < 5, pre_Source + 2, pre_Source),
+  pre_Publish = items_single_div[["Publish"]],
+  post_Publish = dplyr::if_else(pre_Publish < 6, pre_Publish + 2, pre_Publish),
+  pre_Write = items_single_div[["Write"]],
+  post_Write = dplyr::if_else(pre_Write < 7, pre_Write + 1, pre_Write),
+  pre_Research = items_single_div[["Research"]],
+  post_Research = dplyr::if_else(pre_Research < 7, pre_Research + 1, pre_Research) 
+)
+
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_dis_agree_named <- c(
+  "Strongly Disagree" = "1", "Somewhat Disagree" = "2", "Disagree" = "3",
+  "Neither Agree or Disagree" = "4", "Agree" = "5", "Somewhat Agree" = "6", "Strongly Agree" = "7"
+)
+
+# levels_min_ext as just the names from levels_min_ext_named:
+levels_dis_agree <- names(levels_dis_agree_named) 
+
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items_div <- bre::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+
+```
+
+```{css, echo = FALSE}
+body, ul, li{
+  font-family: "Arial";
+  font-size: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Arial";
+}
+
+h1 {
+  background-color: #2C2C4F;
+  color: white;
+  font-size: 38px;
+  font-weight: 500;
+}
+
+h2 {
+  background-color: #dadada;
+  color: #283251;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+h3 {
+  background-color: #dadada;
+  color: #18323a;
+  font-size: 28px;
+  font-weight: bold;
+}
+    
+h4 {
+  color: #283251; 
+  font-size: 26px;
+}
+  
+h5 {
+  color: #18323a; 
+  font-size: 24px;
+}
+
+hr {
+  height: 3px;
+  background-color: #283251;
+}
+
+```
+
+### Arrow charts without a grouping variable:
+
+#### - With arrows in Blackstone dark blue "#283251"
+
+```{r}
+bre::arrowChart(df = items, scale_labels = levels_min_ext,
+           overall_n = T, question_labels = question_labels, question_order = TRUE)
+
+```
+
+
+## Qualitative/Categorical Color Palette
+
+### Example Swatch of the new Qualitative/Categorical Color Palette with 11 colors
+
+#### - Most colors taken from `Okabe-Ito` palette, took out black and yellow and replaced with other colorblind friendly colors and the BRE dark blue.
+
+```{r}
+swatchplot(
+    customCols()
+)
+```
+
+#### - Color palette with names and hex codes:
+
+```{r}
+# purrr::map_chr(seq_along(qualColors(add_names = T)), \(x) paste0("'",names(qualColors(add_names = T))[x], "':  ", qualColors(add_names = T)[x]))
+
+# function to show color, names and hex codes as visual:
+show_colors2 <- function(colors) { 
+  labels_color <- purrr::map_chr(seq_along(colors), \(x) paste0("'",names(colors)[x], "': ", colors[x]))
+  labels_text_color <- labelColorMaker(colors = colors)
+  ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
+    ggplot2::geom_tile(ggplot2::aes(1, id, fill = rev(color))) + 
+    ggplot2::geom_text(ggplot2::aes(1, id, label = labels_color), color = labels_text_color) + 
+    ggplot2::scale_fill_identity() +
+    ggplot2::scale_color_identity() +
+    ggplot2::theme_void()
+}
+show_colors2(colors = qualColors(add_names = T))
+```
+
+
+#### Hex codes for the full Qualitative Color Palette
+
+```{r, results='asis'}
+# knitr::combine_words(customCols(), before = '"', after = '"', and = "", sep = ", ")
+cat(paste0(paste0("`", customCols(), "`"), collapse = ", "))
+```
+
+### Arrow charts section with 3 grouping variables and an arrow for the whole sample labelled "Overall":
+
+```{r, include=FALSE}
+# add a grouping var to the data set `items`: 
+items_group <- dplyr::tibble(
+   items,
+   edu_level = factor(c(
+       "grad", "undergrad", "grad", "undergrad", "grad",
+       "undergrad", "undergrad", "grad", "undergrad"
+  ), levels = c("grad", "undergrad"))
+ ) %>% mutate(
+            post_Research = dplyr::if_else(post_Research > 2, pre_Research - 2, pre_Research)
+ ) 
+```
+
+### Arrow chart with new custom qualitative color Palette based on `Okabe-Ito` colors:
+
+#### - The "Overall" group will always be the color black
+#### - This also shows what left/negative direction arrows would look like with the `Research` items.
+
+```{r}
+new_cols <- c("#000000", qualFillColors(2)) %>% set_names(c("overall","grad", "undergrad"))
+bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, group_colors = new_cols,
+    overall_n = T, question_labels = NULL, question_order = FALSE)
+
+```
+
+<hr>
+
+## Horizontal Bar Chart with 7 racial categories
+
+```{r, include=FALSE}
+# New fake data for testing horzBarChart() colors with racial categories:
+# Generate fake data
+n <- 100  # number of observations
+
+# Define racial categories
+racial_categories <- c("Asian", "Hispanic or Latino", "Caucasian or White (non-Hispanic)", "African American or Black", "Native American or American Indian", 
+                       "Native Hawaiian or other Pacific Islander", "Mixed Race")
+
+# Set up the fake racial data as a tibble:
+data <- dplyr::tibble(
+  race = sample(racial_categories, n, replace = TRUE) # Generate random racial categories for each observation
+)
+
+# set up data for chart:
+race_summ <- data %>%
+  dplyr::select(race) %>%
+  bre::dataSumm(sort_n = T)
+
+# Filtered to only three categories:
+three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or Latino", "African American or Black")) 
+```
+
+### Horizontal Bar Chart with custom qualitative color Palette:
+
+```{r}
+r_colors <- bre::qualFillColors(n_colors = length(unique(race_summ[["response"]]))) %>% purrr::set_names(race_summ[["response"]])
+# horzBarChart() with custom qual colors c("#E69F00"", "#56B4E9", "#009E73", "#CC79A7", "#D55E00", "#0072B2", "#440154FF")
+bre::horzBarChart(df = race_summ, scale_colors = r_colors, width = 0.6)
+
+```
+
+
+#### - Same palette, Only 3 categories:
+
+```{r}
+# horzBarChart() with colors
+bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73"), width = 0.6)
+
+```
+
+
+### Reversed color palette with 7 categories in horizontal bar chart to show bottom colors:
+
+```{r}
+rev_colors <- bre::qualFillColors(n_colors = 11, rev_colors = T)[1:7] %>% purrr::set_names(race_summ[["response"]])
+# horzBarChart() with custom qual colors c("#E69F00"", "#56B4E9", "#009E73", "#CC79A7", "#D55E00", "#0072B2", "#440154FF")
+bre::horzBarChart(df = race_summ, scale_colors = rev_colors, width = 0.6)
+
+```
+
+<hr>
+
+## Diverging Color Palette: slightly darkened `Blue Red 3`
+
+### Stacked Pre-Post bar chart with `Blue Red 3` color palette on a 7 point scale:
+
+```{r}
+cat_items_div %>%
+bre::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
+   question_labels = question_labels, question_order = F, percent_label = TRUE, width = NULL, overall_n = T
+)
+```
+
+### Stacked bar chart (single items) with `Blue Red 3` color palette on a 7 point scale:
+
+```{r}
+cat_items_single_div %>% 
+bre::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree, 
+    percent_label = TRUE, width = NULL, question_order = T, overall_n = F, question_labels = question_labels
+) 
+
+```
+
+### Hex Codes for the Diverging Color Palette: Darkened `Blue Red 3`
+
+```{r, results='asis'}
+cat("<h4><b>5 point scale:</b></h4>")
+cat(paste0(paste0("`", divFillColors(n_colors = 5), "`"), collapse = ", "))
+cat("<br>")
+cat("<h4><b>7 point scale:</b></h4> ")
+cat(paste0(paste0("`", divFillColors(n_colors = 7), "`"), collapse = ", "))
+cat("<br>")
+```
+
+
+
+
+## Sequential Color Scales: slightly darkened `Blues 3`
+
+### Stacked bar chart with `Blues 3` color scale:
+
+```{r}
+bre::stackedBarChart(
+   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+)
+
+```
+
+
+### Hex Codes for the Sequential Color Scale Darkened `Blues 3`
+
+```{r, results='asis'}
+cat("<h4><b>5 point scale:</b></h4>")
+cat(paste0(paste0("`", seqFillColors(n_colors = 5), "`"), collapse = ", "))
+cat("<br>")
+cat("<h4><b>7 point scale:</b></h4> ")
+cat(paste0(paste0("`", seqFillColors(n_colors = 7), "`"), collapse = ", "))
+cat("<br>") 
+```
+
+
+

@@ -1,0 +1,85 @@
+---
+title: "Color Blind Palette Tests for BRE"
+output: html_document
+date: "2024-05-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+    fig.width = 8,
+    fig.height = 6)
+
+# Load Libraries:
+library("colorspace")
+library("magrittr")
+
+# color setup for new BRE colors:
+bre_blue <- "#283251"
+bre_grey <- "#c0bfbf"
+bre_light_grey <- "#eaeaeb"
+bre_med_grey <- "#cecece"
+
+breColors <- c("dark_blue" = "#283251",
+                "light_grey" = "#eaeaeb",
+                "med_grey" = "#cecece",
+                "main_grey" = "#c0bfbf")
+
+# Trying out a white to blue palette:
+pal_bre_blues <- colorRampPalette(colors = c("white", "#283251"))
+pal_bre_blues_twelve <- pal_bre_blues(12)
+scales::show_col(pal_bre_blues(5))
+scales::show_col(pal_bre_blues(6))
+scales::show_col(pal_bre_blues(7))
+scales::show_col(pal_bre_blues(20))
+scales::show_col(pal_bre_blues_twelve[1:12])
+scales::show_col(pal_bre_blues(7)[3:7])
+```
+
+### Possible color scheme reccomendations for new BRE R package and all visuals
+
+### All Color-blind Friendly Palettes:
+
+#### My recommendations:
+- "Cividis" as the default sequential color scale of likert items like: Minimal, Slight, Moderate, Good, Extensive- that are not folded/go in a single direction.
+- "Blue-Red 3" as the default sequential color scale of likert items that are folded/have a positive and negative connotation like: Strongly disagree to Strongly Agree
+- "Viridis" or "Okabe-Ito" as the default qualitative/categorical scales (e.g. demographics, gender, role).
+
+
+```{r, include=FALSE}
+# palette.pals() # get default palette names
+# Generate palettes for 3 to 7 scales:
+values <- c(3:7)
+colorblind_swatches <- purrr::map(.x = values,  ~ swatchplot(
+                                                             "Blue-Red 3"  = colorspace::diverging_hcl(n = .x, "Blue-Red 3", rev = TRUE),
+                                                             "Mako" = viridis::viridis(n = .x, alpha = 1, begin = 0, end = 1, direction = -1, option = "mako"),
+                                                             "Cividis" = viridis::viridis(n = .x, alpha = 1, begin = 0, end = 1, direction = -1, option = "cividis"),
+                                                             # "Cividis Lite" = viridisLite::cividis(n = .x, alpha = 1, begin = 0, end = 1, direction = -1),
+                                                             "Viridis" = viridis::viridis(n = .x, alpha = 1, begin = 0, end = 1, direction = -1, option = "viridis"),
+                                                             "Okabe-Ito" = rev(palette.colors(n = .x, palette = "Okabe-Ito", recycle = FALSE, names = TRUE)),
+                                                             )
+) %>% purrr::set_names(values)
+
+```
+
+<!-- Print out the swatches -->
+
+```{r, results='asis'}
+  cat("<br>")
+  purrr::walk(values, \(x) {
+      cat("<br>") # line break
+      cat(stringr::str_glue("<h5>Colorblind Friendly Swatches for **{x}** Items</h5>")) # h4 header
+      # print:
+      swatchplot(
+                 "Blue-Red 3"  = colorspace::diverging_hcl(n = x, "Blue-Red 3", rev = TRUE),
+                 "Mako" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "mako"),
+                 "Cividis" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "cividis"),
+                 # "Cividis Lite" = viridisLite::cividis(n = x, alpha = 1, begin = 0, end = 1, direction = -1),
+                 "Viridis" = viridis::viridis(n = x, alpha = 1, begin = 0, end = 1, direction = -1, option = "viridis"),
+                 "Okabe-Ito" = rev(palette.colors(n = x, palette = "Okabe-Ito", recycle = FALSE, names = TRUE)),
+                 )
+      cat("<br>") # line break
+      # HR line to separate item sections
+      cat("<hr>")
+    }
+  )
+```

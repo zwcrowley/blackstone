@@ -7,8 +7,9 @@
 stackedBarChart(
   df,
   scale_labels,
+  fill_colors = "seq",
   pre_post = FALSE,
-  overall_n = FALSE,
+  overall_n = TRUE,
   percent_label = TRUE,
   question_labels = NULL,
   question_order = FALSE,
@@ -17,15 +18,19 @@ stackedBarChart(
 }
 \arguments{
 \item{df}{Required, A \link[tibble:tibble-package]{tibble}/data frame of survey items that are categorical/character
-variables, in 3 to 7 point scales, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.}
+variables, that will be inserted into a stacked bar chart with Blackstone Research and Evaluation branding.}
 
 \item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
-e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.
-This argument accepts a character vector of 3 to 7 items.}
+e.g. if you have a 5 item scale of minimal to extensive it should look like this:
+\code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.}
+
+\item{fill_colors}{Default is "seq", If "seq", the color scale for the fill for each bar is set to blue sequential palette.
+If set to "div", it is the blue-red diverging color palette, otherwise the user can input a character vector of hex codes
+at least a long as the character vector passed to the \code{scale_labels} argument.}
 
 \item{pre_post}{Logical, default is FALSE. If true, returns a pre-post stacked bar chart.}
 
-\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
+\item{overall_n}{Logical, default is TRUE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
 If False, adds \emph{n} to each question/item after the respective labels.}
 
 \item{percent_label}{Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.}
@@ -47,7 +52,7 @@ A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a sta
 \code{\link[=stackedBarChart]{stackedBarChart()}} creates a stacked bar chart and returns a ggplot object with Blackstone Research and Evaluation branding.
 }
 \examples{
-items <- dplyr::tibble(
+items <- tibble::tibble(
   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
   pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
@@ -60,7 +65,7 @@ items <- dplyr::tibble(
   post_Research = pre_Research + 1
 )
 
-items_single <- dplyr::tibble(
+items_single <- tibble::tibble(
   Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
   Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
   Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
@@ -88,13 +93,12 @@ question_labels <- c(
   "Source work for a research paper" = "Source"
 )
 
-# Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- bre::recodeCat(items, levels_min_ext)
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
-
-# Select the factor variables:
-cat_items <- cat_items \%>\% dplyr::select(dplyr::where(is.factor))
-cat_items_single <- cat_items_single \%>\% dplyr::select(dplyr::where(is.factor))
+# Recode the numeric to factor variables using the levels from levels_min_ext and
+# select the factor variables::
+cat_items <- bre::recodeCat(items, levels_min_ext) \%>\%
+                 dplyr::select(dplyr::where(is.factor))
+cat_items_single <- bre::recodeCat(items_single, levels_min_ext) \%>\%
+                        dplyr::select(dplyr::where(is.factor))
 
 # Pass the factor variables and the levels to stackedBarChart:
 stackedBarChart(

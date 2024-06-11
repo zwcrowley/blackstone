@@ -8,8 +8,6 @@
 #'
 #' @return A [tibble][tibble::tibble-package] which contains one character variable of clean text ready for use or output.
 #'
-#' @importFrom stringi stri_rand_lipsum
-#'
 #' @export
 #'
 #' @examples

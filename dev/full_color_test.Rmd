@@ -1,0 +1,384 @@
+---
+title: "Color Tests for BRE"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+    fig.width = 8,
+    fig.height = 6)
+
+# Load Libraries:
+library(colorspace)
+library(magrittr)
+library(tidyverse)
+library(bre)
+
+set.seed(424429) # for reproducibility
+
+##### colors:
+breColors <- c("dark_blue" = "#283251",
+                "light_grey" = "#eaeaeb",
+                "med_grey" = "#cecece",
+                "main_grey" = "#c0bfbf")
+
+
+# light grey to BRE Blue color scale:
+pal_bre_grey_blue <- colorRampPalette(c(breColors["light_grey"], breColors["dark_blue"]))
+# pal_bre_grey_blue(length(scale_labels))
+# 
+# white to BRE Blue color scale:
+pal_bre_blue <- colorRampPalette(c("white", breColors["dark_blue"]))
+# pal_bre_grey_blue(length(scale_labels))
+
+######## Data
+items <- dplyr::tibble(
+  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
+  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
+  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  post_Publish = pre_Publish + 2,
+  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  post_Write = pre_Write + 1,
+  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+  post_Research = pre_Research + 1
+)
+
+items_single <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
+  Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
+)
+
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_min_ext_named <- c(
+  "Minimal" = "1", "Slight" = "2", "Moderate" = "3",
+  "Good" = "4", "Extensive" = "5"
+)
+
+# levels_min_ext as just the names from levels_min_ext_named:
+levels_min_ext <- names(levels_min_ext_named) 
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"):
+question_labels <- c(
+  "Publish a lot of high quality papers" = "Publish",
+  "Write a lot of research papers" = "Write",
+  "Research in a lab with faculty" = "Research",
+  "Organization of a large research project" = "Organization",
+  "Source work for a research paper" = "Source"
+)
+
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items <- bre::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+
+
+######## Data: Strongly disagree to Strongly Agree
+items_single_div <- dplyr::tibble(
+  Organization = c(1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 1),
+  Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2, 6, 6, 6, 7, 7,7),
+  Publish = c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4 , 5, 6, 7, 6),
+  Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4, 5,6,7,1,2,3),
+  Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4, 5,6,7,1,2,3),
+)
+
+items_div <- dplyr::tibble(
+  pre_Organization = items_single_div[["Organization"]],
+  post_Organization = dplyr::if_else(pre_Organization < 7, pre_Organization + 1, pre_Organization),
+  pre_Source = items_single_div[["Source"]],
+  post_Source = dplyr::if_else(pre_Source < 5, pre_Source + 2, pre_Source),
+  pre_Publish = items_single_div[["Publish"]],
+  post_Publish = dplyr::if_else(pre_Publish < 6, pre_Publish + 2, pre_Publish),
+  pre_Write = items_single_div[["Write"]],
+  post_Write = dplyr::if_else(pre_Write < 7, pre_Write + 1, pre_Write),
+  pre_Research = items_single_div[["Research"]],
+  post_Research = dplyr::if_else(pre_Research < 7, pre_Research + 1, pre_Research) 
+)
+
+# Set scale_labels for recodeCat function:
+# scale_labels as a named character vector, items in correct order:
+levels_dis_agree_named <- c(
+  "Strongly Disagree" = "1", "Somewhat Disagree" = "2", "Disagree" = "3",
+  "Neither Agree or Disagree" = "4", "Agree" = "5", "Somewhat Agree" = "6", "Strongly Agree" = "7"
+)
+
+# levels_min_ext as just the names from levels_min_ext_named:
+levels_dis_agree <- names(levels_dis_agree_named) 
+
+# Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
+cat_items_div <- bre::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+
+```
+
+```{css, echo = FALSE}
+body, ul, li{
+  font-family: "Arial";
+  font-size: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Arial";
+}
+
+h1 {
+  background-color: #2C2C4F;
+  color: white;
+  font-size: 38px;
+  font-weight: 500;
+}
+
+h2 {
+  background-color: #dadada;
+  color: #283251;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+h3 {
+  background-color: #dadada;
+  color: #18323a;
+  font-size: 28px;
+  font-weight: bold;
+}
+    
+h4 {
+  color: #283251; 
+  font-size: 26px;
+}
+  
+h5 {
+  color: #18323a; 
+  font-size: 24px;
+}
+
+hr {
+  height: 3px;
+  background-color: #283251;
+}
+
+```
+
+
+```{r, include=FALSE}
+material_BRE_blue <- rev(c("#283251", "#384c77", "#62759a", "#a1aec4", "#e9ebf0"))
+# c("#283251", "#405683", "#62759a", "#a1aec4", "#e9ebf0")
+
+# Used material design app to generate colors, based off of BRE Blue (#283251) as primary: https://m2.material.io/inline-tools/color/ 
+# Generates PRIMARY, COMPLEMENTARY, 2 ANALOGOUS, and 2 TRIADIC Colors for the palette:
+# Set names like in md app:
+names_nums_pals <- c("900", "800", "700", "600", "500", "400", "300", "200", "100", "50")
+# Primary: 900 is main (BRE Blue, "#283251")
+md_bre_blue <- c("#283251", "#32436a", "#384c77", "#405683", "#475e8c", "#62759a", "#7e8eab", "#a1aec4", "#c5cedc", "#e9ebf0") %>% purrr::set_names(names_nums_pals)
+# COMPLEMENTARY: 800 is main ("#514728")
+md_bre_comp <- c("#2e2505", "#514728", "#726646", "#877a59", "#b2a481", "#d1c29e", "#f4e4bf", "#fff0cb", "#fff5cf", "#fffad4") %>% purrr::set_names(names_nums_pals)
+# ANALOGOUS: 800 is main for teal ("#284751"), 900 is main for teal ("#322851")
+md_bre_teal <- c("#18323a", "#284751", "#355a66", "#436e7b", "#4f7d8c", "#68909e", "#82a4b1", "#a3bfc9", "#c3dae0", "#e2f1f8") %>% purrr::set_names(names_nums_pals)
+md_bre_purple <- c("#322851", "#403869", "#484175", "#514b81", "#57528a", "#6d6b9a", "#8586ab", "#a6a8c4", "#c9cadc", "#e9eaf0") %>% purrr::set_names(names_nums_pals)
+
+# Triadic: 900 is main for both ("#514728") and ("#512832")
+md_bre_tri_purp <- c("#472851", "#603166", "#6e3670", "#7d3d79", "#88427f", "#9a5791", "#ac72a4", "#c498be", "#dbc0d7", "#f0e6ee") %>% purrr::set_names(names_nums_pals)
+md_bre_maroon <- c("#512832", "#63353e", "#734147", "#854c53", "#92555b", "#a56f73", "#b9898b", "#d2a9ac", "#ebcacb", "#ffe7e5") %>% purrr::set_names(names_nums_pals)
+
+```
+
+
+## Qualitative/Categorical Color Scales
+
+### Arrow charts section with 3 grouping variables and an arrow for the whole sample labelled "All":
+
+```{r, include=FALSE}
+# add a grouping var to the data set `items`:
+items_group <- dplyr::tibble(
+   items,
+   edu_level = factor(c(
+       "grad", "undergrad", "grad", "undergrad", "grad",
+       "undergrad", "undergrad", "grad", "undergrad"
+  ), levels = c("grad", "undergrad"))
+ )
+```
+
+### Arrow chart with `viridis` color scale:
+
+#### - With yellow
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
+    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+#### - With green
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(c("#440154FF", "#31688EFF", "#35B779FF")),
+    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+### Arrow chart with `cividis` color scale:
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::cividis(n = (length(unique(items_group[["edu_level"]])) + 1))),
+    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+### Arrow chart with `Okabe-Ito` color scale:
+
+#### - Including black as a color:
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
+                     group_colors = grDevices::palette.colors(n = (length(unique(items_group[["edu_level"]])) + 1), palette = "Okabe-Ito"),
+                     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+#### - Skipping the color black in palette:
+
+```{r}
+bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
+                     group_colors = c("#E69F00", "#56B4E9", "#009E73"),
+                     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+```
+
+## Horizontal Bar Chart with 7 racial categories
+
+```{r, include=FALSE}
+# New fake data for testing horzBarChart() colors with racial categories:
+# Generate fake data
+n <- 100  # number of observations
+
+# Define racial categories
+racial_categories <- c("Asian", "Hispanic or Latino", "Caucasian or White (non-Hispanic)", "African American or Black", "Native American or American Indian", 
+                       "Native Hawaiian or other Pacific Islander", "Mixed Race")
+
+# Set up the fake racial data as a tibble:
+data <- dplyr::tibble(
+  race = sample(racial_categories, n, replace = TRUE) # Generate random racial categories for each observation
+)
+
+# set up data for chart:
+race_summ <- data %>%
+  dplyr::select(race) %>%
+  bre::dataSumm(sort_n = T)
+
+# Filtered to only three categories:
+three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or Latino", "African American or Black")) 
+```
+
+### Horizontal Bar Chart with `viridis` color scale:
+
+```{r}
+# horzBarChart() with viridis colors
+bre::horzBarChart(df = race_summ, scale_colors = viridisLite::viridis(n = length(unique(data[["race"]]))), width = 0.6)
+
+```
+
+
+#### - Same palette, Only 3 categories, skipping yellow color in palette:
+
+```{r}
+# horzBarChart() with colors
+bre::horzBarChart(df = three_race_summ, scale_colors = c("#440154FF", "#31688EFF", "#35B779FF"), width = 0.6)
+
+```
+
+
+### Horizontal Bar Chart with `Okabe-Ito` color scale:
+
+```{r}
+# horzBarChart() with Okabe-Ito colors
+bre::horzBarChart(df = race_summ, scale_colors = grDevices::palette.colors(n = length(unique(data[["race"]])), palette = "Okabe-Ito"), width = 0.6)
+
+```
+
+
+#### - Same palette, Only 3 categories, skipping black color in palette:
+
+```{r}
+# horzBarChart() with colors
+bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73"), width = 0.6)
+
+```
+
+
+### Horizontal Bar Chart with `cividis` color scale:
+
+```{r}
+# horzBarChart() with cividis colors
+bre::horzBarChart(df = race_summ, scale_colors = viridisLite::cividis(n = length(unique(data[["race"]]))), width = 0.6)
+
+```
+
+#### - Same palette, Only 3 categories:
+
+```{r}
+# horzBarChart() with cividis colors
+bre::horzBarChart(df = three_race_summ, scale_colors = viridisLite::cividis(n = 3), width = 0.6)
+
+```
+
+<hr>
+
+## Diverging Color Scale
+
+### Stacked Pre-Post bar chart with `Blue Red 3` color palette on a 7 point scale:
+
+```{r}
+cat_items_div %>%
+bre::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
+   question_labels = question_labels, question_order = F, percent_label = TRUE, width = NULL, overall_n = T
+)
+```
+
+### Stacked bar chart (single items) with `Blue Red 3` color palette on a 7 point scale:
+
+```{r}
+cat_items_single_div %>% 
+bre::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree, 
+    percent_label = TRUE, width = NULL, question_order = T, overall_n = F, question_labels = question_labels
+) 
+
+```
+
+
+## Sequential Color Scales
+
+### Stacked bar chart with `Blues 3` color scale:
+
+```{r}
+bre::stackedBarChart(
+   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+)
+```
+
+
+
+### Stacked bar chart with `cividis` color scale:
+
+```{r}
+# `Blues 3` from `colorspace` package
+bre::stackedBarChart(
+   df = cat_items_single, scale_labels = levels_min_ext,
+   fill_color = viridisLite::cividis(n = length(levels_min_ext), alpha = 1, begin = 0, end = 1, direction = -1),
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = T
+)
+```
+
+#### - Same palette, Pre-post data:
+
+```{r}
+cat_items %>%
+bre::stackedBarChart( 
+   df = ., pre_post = T, scale_labels = levels_min_ext,
+   fill_color = viridisLite::cividis(n = length(levels_min_ext), alpha = 1, begin = 0, end = 1, direction = -1),
+   question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = F
+)
+```
+

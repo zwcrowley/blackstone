@@ -5,7 +5,7 @@
 #' @param na.rm Logical, defaults to TRUE. Drops NA values.
 #'
 #' @param sort_n Logical, defaults to FALSE. If TRUE, sorts the data by the count of each response (n_answers).
-#'    If FALSE., sorts by response.
+#'    If FALSE, sorts by response.
 #'
 #' @return a [tibble][tibble::tibble-package] with the data in 5 columns: item, response, n_answers, percent_answers and percent_answers_label.
 #' Item is the name of the original item, Response is all of the categorical responses possible for the item. n_answers is the count of each response,
@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' data <- dplyr::tibble(
+#' data <- tibble::tibble(
 #'   role = factor(c(
 #'     "Faculty", "Postdoc", "Undergraduate student", "Graduate student",
 #'     "Graduate student", "Postdoc", "Postdoc", "Faculty",

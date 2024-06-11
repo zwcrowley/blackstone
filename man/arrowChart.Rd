@@ -7,10 +7,12 @@
 arrowChart(
   df,
   scale_labels,
-  arrow_colors,
-  overall_n = FALSE,
+  arrow_colors = "#283251",
+  overall_n = TRUE,
   question_labels = NULL,
-  question_order = FALSE
+  question_order = FALSE,
+  font_family = "Arial",
+  font_size = 10
 )
 }
 \arguments{
@@ -19,10 +21,10 @@ arrowChart(
 \item{scale_labels}{Required, a character vector of labels for the response scale, must be in the desired order,
 e.g. if you have a 5 item scale of minimal to extensive it should look like this: \code{levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")}.}
 
-\item{arrow_colors}{Required, a character vector of hex codes for colors to associate
+\item{arrow_colors}{Required, defaults to dark blue BRE color code "#283251" for all values, a character vector of hex codes for colors to associate
 each item, needs to be the same length or longer than the items to place in the same chart.}
 
-\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
+\item{overall_n}{Logical, default is TRUE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
 If False, adds \emph{n} to each question/item after the respective labels.}
 
 \item{question_labels}{Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
@@ -32,6 +34,10 @@ desired order of appearing in the plot, first item will appear at the top of the
 \item{question_order}{Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
 question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
 post score average on the top of the plot descending.}
+
+\item{font_family}{Character value to set the font family for all text in the chart, defaults to "Arial".}
+
+\item{font_size}{Numeric value to set the font size in points for all text in the chart, defaults to size 10.}
 }
 \value{
 A \link[ggplot2:ggplot2-package]{ggplot2} object that plots the items into a arrow bar chart.
@@ -55,23 +61,20 @@ items <- dplyr::tibble(
 # Labels for response scales to recode the numeric variables to on the plot:
 levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 # Question labels as a named vector with the naming structure
-# like this: c("{new label}" = "{original variable name}"):
+# like this: c("new label" = "original variable name"):
 question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Write a lot of research papers" = "Write",
                      "Research in a lab with faculty" = "Research",
                      "Organization of a large research project" = "Organization",
                      "Source work for a research paper" = "Source")
-# Set up a character vector of scale colors to pass to the argument group_colors:
-five_colors <- c("#2C2C4F", "#37546d", "#4B9FA6", "#79AB53", "#767171")
-
 
 # Example with n for each question and original labels:
-arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = five_colors,
-    overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+arrowChart(df = items, scale_labels = levels_min_ext, overall_n = FALSE,
+           question_labels = NULL, question_order = FALSE)
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = five_colors,
-           overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
+arrowChart(df = items, scale_labels = levels_min_ext, overall_n = TRUE,
+           question_labels = question_labels, question_order = FALSE)
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = five_colors,
-           overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
+arrowChart(df = items, scale_labels = levels_min_ext, overall_n = FALSE,
+           question_labels = question_labels, question_order = TRUE)
 }

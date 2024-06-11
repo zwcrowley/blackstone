@@ -206,9 +206,10 @@ stacked_chart_single
 <img src="man/figures/README-stackedBarChart_single-1.png" width="100%" />
 
 ``` r
-# With new labels and order taken from question_labels argument:
+# With new labels and order taken from `question_labels` argument, each 
+# item has it's own sample size in the label:
 stacked_chart_single_labels <- bre::stackedBarChart(
-   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
+   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels, overall_n = FALSE,
    question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = 0.6
 )
 stacked_chart_single_labels
@@ -220,11 +221,11 @@ stacked_chart_single_labels
 
 ``` r
 # Select only the categorical/factor vars from the df in the from the oriinal recodeCat() in the first chunk (cat_items_1) using select(tidyselect::where(is.factor):
-cat_items_plot <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
+cat_items <- cat_items_1 %>% dplyr::select(tidyselect::where(is.factor))
 
 # Run the function with the factor items and the character vector of the factor levels:
 stacked_chart_pre_post <- bre::stackedBarChart(
-   df = cat_items_plot, pre_post = TRUE, scale_labels = bar_scale_labels,
+   df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels,
    percent_label = TRUE, width = NULL
 )
 stacked_chart_pre_post
@@ -233,9 +234,10 @@ stacked_chart_pre_post
 <img src="man/figures/README-stackedBarChart_pre_post-1.png" width="100%" />
 
 ``` r
-# With new labels and order taken from question_labels argument:
+# With new labels and order taken from question_labels argument, each 
+# item has it's own sample size in the label:
 stacked_chart_pre_post_labels <- bre::stackedBarChart(
-   df = cat_items_plot, pre_post = TRUE, scale_labels = bar_scale_labels,
+   df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels, overall_n = FALSE,
    question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = NULL
 )
 stacked_chart_pre_post_labels
@@ -288,55 +290,56 @@ bars. Default is NULL.
 
 #### **Examples using** `divBarChart()`
 
+#### Single Time Point Data with Percentage labels Example for `divBarChart()`:
+
 ``` r
-items <- dplyr::tibble(
-  pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
-  post_Organization = dplyr::if_else(pre_Organization < 5, pre_Organization + 1, pre_Organization),
-  pre_Source = c(2, 2, 3, 5, 4, 3, 2, 1, 2),
-  post_Source = dplyr::if_else(pre_Source < 4, pre_Source + 2, pre_Source),
-  pre_Publish = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-  post_Publish = pre_Publish + 2,
-  pre_Write = c(2, 2, 2, 3, 3, 3, 4, 4, 4),
-  post_Write = pre_Write + 1,
-  pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
-  post_Research = pre_Research + 1
+# Pass the single time point factor variables and the levels to 'divBarChart()':
+div_chart_single <- bre::divBarChart(
+   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
+   percent_label = TRUE, width = 0.6
 )
-# scale_labels as a named character vector, items in correct order:
-levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
+div_chart_single
+```
 
-# bar_scale_labels as just the names from levels_min_ext:
-bar_scale_labels <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+<img src="man/figures/README-divBarChart_single-1.png" width="100%" />
 
-# Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):
-question_labels <- c("Publish a lot of high quality papers" =  "Publish",
-                    "Write a lot of research papers" = "Write",
-                    "Research in a lab with faculty" = "Research",
-                    "Organization of a large research project" = "Organization",
-                    "Source work for a research paper" = "Source")
-# Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- bre::recodeCat(items, levels_min_ext)
-# Select the factor variables:
-cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
+``` r
+# With new labels and order taken from `question_labels` argument, each 
+# item has it's own sample size in the label:
+div_chart_single_labels <- bre::divBarChart(
+   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels, overall_n = FALSE,
+   question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = 0.6
+)
+div_chart_single_labels
+```
+
+<img src="man/figures/README-divBarChart_single-2.png" width="100%" />
+
+#### Pre-Post Data Example for `divBarChart()`
+
+``` r
 # Pass the factor variables and the levels to 'divBarChart()', set so that it 
 # returns the percent labels on the bars:
 div_chart <- divBarChart(
- df = cat_items, scale_labels = bar_scale_labels, percent_label = TRUE
+  df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels,
+  question_labels = NULL, percent_label = TRUE, width = NULL, fill_colors = "seq"
 )
 div_chart
 ```
 
-<img src="man/figures/README-divBarChart-1.png" width="100%" />
+<img src="man/figures/README-divBarChart_pre_post-1.png" width="100%" />
 
 ``` r
 # With new labels and order taken from question_labels argument:
 div_chart_labels <- divBarChart(
- df = cat_items, scale_labels = bar_scale_labels,
- question_labels = question_labels, question_order = TRUE, percent_label = TRUE, width = NULL
+  df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels,
+  question_labels = question_labels, question_order = TRUE,
+  percent_label = TRUE, width = NULL, fill_colors = "seq"
 )
 div_chart_labels
 ```
 
-<img src="man/figures/README-divBarChart-2.png" width="100%" />
+<img src="man/figures/README-divBarChart_pre_post-2.png" width="100%" />
 
 ### `arrowChart()`
 
@@ -405,11 +408,9 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                     "Organization of a large research project" = "Organization",
                     "Source work for a research paper" = "Source")
 
-# Set up a character vector of scale colors to pass to the argument group_colors:
-five_colors <- c("#2C2C4F", "#37546d", "#4B9FA6", "#79AB53", "#767171")
 
 # Example with n for each question and original labels:
-arrow_chart_1 <- bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = five_colors,
+arrow_chart_1 <- bre::arrowChart(df = items, scale_labels = levels_min_ext, 
                                  overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 arrow_chart_1
 ```
@@ -419,7 +420,7 @@ arrow_chart_1
 ``` r
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrow_chart_labels <- bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = five_colors,
+arrow_chart_labels <- bre::arrowChart(df = items, scale_labels = levels_min_ext, 
                                       overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
 arrow_chart_labels
 ```
@@ -429,7 +430,7 @@ arrow_chart_labels
 ``` r
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrow_chart_labels_ordered <- bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = five_colors,
+arrow_chart_labels_ordered <- bre::arrowChart(df = items, scale_labels = levels_min_ext, 
                                               overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
 arrow_chart_labels_ordered
 ```
@@ -505,12 +506,10 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                     "Organization of a large research project" = "Organization",
                     "Source work for a research paper" = "Source")
 
-# Set up a character vector of scale colors to pass to the argument group_colors:
-three_colors <- c("#79AB53", "#4B9FA6", "#2C2C4F")
-
 # Example with n for each question and original labels:
-arrow_chart_grouped <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
-     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
+arrow_chart_grouped <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", group_levels = c("grad", "undergrad"),
+                                            scale_labels = levels_min_ext, overall_n = FALSE, question_labels = NULL, 
+                                            question_order = FALSE)
 arrow_chart_grouped
 ```
 
@@ -519,8 +518,9 @@ arrow_chart_grouped
 ``` r
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
-arrow_chart_grouped_labels <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
-     overall_n = FALSE, question_labels = question_labels, question_order = FALSE)
+arrow_chart_grouped_labels <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", group_levels = c("grad", "undergrad"),
+                                                   scale_labels = levels_min_ext, overall_n = FALSE, question_labels = question_labels, 
+                                                   question_order = FALSE)
 arrow_chart_grouped_labels
 ```
 
@@ -529,8 +529,9 @@ arrow_chart_grouped_labels
 ``` r
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
-arrow_chart_grouped_labels_ordered <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
-     overall_n = FALSE, question_labels = question_labels, question_order = TRUE)
+arrow_chart_grouped_labels_ordered <- bre::arrowChartGroup(df = arrow_items, group = "edu_level", group_levels = c("grad", "undergrad"), 
+                                                           scale_labels = levels_min_ext, overall_n = FALSE, question_labels = question_labels, 
+                                                           question_order = TRUE)
 arrow_chart_grouped_labels_ordered
 ```
 
