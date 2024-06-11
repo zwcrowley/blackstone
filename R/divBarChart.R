@@ -165,7 +165,7 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
     # If the user supplies a named vector for questions labels:
     if (!is.null(question_labels)) {
         names(question_labels) <- names(question_labels) %>%
-            stringr::str_wrap(., width = 15) %>%
+            stringr::str_wrap(., width = 20) %>%
             gsub("\n", "<br>", .)
         new_df <- new_df %>%
             dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
