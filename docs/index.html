@@ -204,9 +204,10 @@
 <span><span class="va">stacked_chart_single</span></span></code></pre></div>
 <p><img src="reference/figures/README-stackedBarChart_single-1.png" width="100%"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># With new labels and order taken from question_labels argument:</span></span>
+<code class="sourceCode R"><span><span class="co"># With new labels and order taken from `question_labels` argument, each </span></span>
+<span><span class="co"># item has it's own sample size in the label:</span></span>
 <span><span class="va">stacked_chart_single_labels</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/stackedBarChart.html">stackedBarChart</a></span><span class="op">(</span></span>
-<span>   df <span class="op">=</span> <span class="va">cat_items_single</span>, pre_post <span class="op">=</span> <span class="cn">FALSE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
+<span>   df <span class="op">=</span> <span class="va">cat_items_single</span>, pre_post <span class="op">=</span> <span class="cn">FALSE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>   question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="fl">0.6</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">stacked_chart_single_labels</span></span></code></pre></div>
@@ -218,19 +219,20 @@
 </h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the categorical/factor vars from the df in the from the oriinal recodeCat() in the first chunk (cat_items_1) using select(tidyselect::where(is.factor):</span></span>
-<span><span class="va">cat_items_plot</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="va">cat_items_1</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Run the function with the factor items and the character vector of the factor levels:</span></span>
 <span><span class="va">stacked_chart_pre_post</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/stackedBarChart.html">stackedBarChart</a></span><span class="op">(</span></span>
-<span>   df <span class="op">=</span> <span class="va">cat_items_plot</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
+<span>   df <span class="op">=</span> <span class="va">cat_items</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
 <span>   percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">stacked_chart_pre_post</span></span></code></pre></div>
 <p><img src="reference/figures/README-stackedBarChart_pre_post-1.png" width="100%"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># With new labels and order taken from question_labels argument:</span></span>
+<code class="sourceCode R"><span><span class="co"># With new labels and order taken from question_labels argument, each </span></span>
+<span><span class="co"># item has it's own sample size in the label:</span></span>
 <span><span class="va">stacked_chart_pre_post_labels</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/stackedBarChart.html">stackedBarChart</a></span><span class="op">(</span></span>
-<span>   df <span class="op">=</span> <span class="va">cat_items_plot</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
+<span>   df <span class="op">=</span> <span class="va">cat_items</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>   question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">stacked_chart_pre_post_labels</span></span></code></pre></div>
@@ -255,50 +257,50 @@
 <strong>Examples using</strong> <code>divBarChart()</code>
 <a class="anchor" aria-label="anchor" href="#examples-using-divbarchart"></a>
 </h4>
+</div>
+<div class="section level4">
+<h4 id="single-time-point-data-with-percentage-labels-example-for-divbarchart">Single Time Point Data with Percentage labels Example for <code>divBarChart()</code>:<a class="anchor" aria-label="anchor" href="#single-time-point-data-with-percentage-labels-example-for-divbarchart"></a>
+</h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  post_Organization <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Organization</span> <span class="op">&lt;</span> <span class="fl">5</span>, <span class="va">pre_Organization</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">pre_Organization</span><span class="op">)</span>,</span>
-<span>  pre_Source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  post_Source <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">pre_Source</span> <span class="op">&lt;</span> <span class="fl">4</span>, <span class="va">pre_Source</span> <span class="op">+</span> <span class="fl">2</span>, <span class="va">pre_Source</span><span class="op">)</span>,</span>
-<span>  pre_Publish <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span>  post_Publish <span class="op">=</span> <span class="va">pre_Publish</span> <span class="op">+</span> <span class="fl">2</span>,</span>
-<span>  pre_Write <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>  post_Write <span class="op">=</span> <span class="va">pre_Write</span> <span class="op">+</span> <span class="fl">1</span>,</span>
-<span>  pre_Research <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>  post_Research <span class="op">=</span> <span class="va">pre_Research</span> <span class="op">+</span> <span class="fl">1</span></span>
+<code class="sourceCode R"><span><span class="co"># Pass the single time point factor variables and the levels to 'divBarChart()':</span></span>
+<span><span class="va">div_chart_single</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/divBarChart.html">divBarChart</a></span><span class="op">(</span></span>
+<span>   df <span class="op">=</span> <span class="va">cat_items_single</span>, pre_post <span class="op">=</span> <span class="cn">FALSE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
+<span>   percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="fl">0.6</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co"># scale_labels as a named character vector, items in correct order:</span></span>
-<span><span class="va">levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span> <span class="op">=</span> <span class="st">"1"</span>, <span class="st">"Slight"</span> <span class="op">=</span> <span class="st">"2"</span>, <span class="st">"Moderate"</span> <span class="op">=</span> <span class="st">"3"</span>, <span class="st">"Good"</span> <span class="op">=</span> <span class="st">"4"</span>, <span class="st">"Extensive"</span> <span class="op">=</span> <span class="st">"5"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># bar_scale_labels as just the names from levels_min_ext:</span></span>
-<span><span class="va">bar_scale_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span>, <span class="st">"Slight"</span>, <span class="st">"Moderate"</span>, <span class="st">"Good"</span>, <span class="st">"Extensive"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):</span></span>
-<span><span class="va">question_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Publish a lot of high quality papers"</span> <span class="op">=</span>  <span class="st">"Publish"</span>,</span>
-<span>                    <span class="st">"Write a lot of research papers"</span> <span class="op">=</span> <span class="st">"Write"</span>,</span>
-<span>                    <span class="st">"Research in a lab with faculty"</span> <span class="op">=</span> <span class="st">"Research"</span>,</span>
-<span>                    <span class="st">"Organization of a large research project"</span> <span class="op">=</span> <span class="st">"Organization"</span>,</span>
-<span>                    <span class="st">"Source work for a research paper"</span> <span class="op">=</span> <span class="st">"Source"</span><span class="op">)</span></span>
-<span><span class="co"># Recode the numeric to factor variables using the levels from levels_min_ext:</span></span>
-<span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/recodeCat.html">recodeCat</a></span><span class="op">(</span><span class="va">items</span>, <span class="va">levels_min_ext</span><span class="op">)</span></span>
-<span><span class="co"># Select the factor variables:</span></span>
-<span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="va">cat_items</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># Pass the factor variables and the levels to 'divBarChart()', set so that it </span></span>
+<span><span class="va">div_chart_single</span></span></code></pre></div>
+<p><img src="reference/figures/README-divBarChart_single-1.png" width="100%"></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># With new labels and order taken from `question_labels` argument, each </span></span>
+<span><span class="co"># item has it's own sample size in the label:</span></span>
+<span><span class="va">div_chart_single_labels</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/divBarChart.html">divBarChart</a></span><span class="op">(</span></span>
+<span>   df <span class="op">=</span> <span class="va">cat_items_single</span>, pre_post <span class="op">=</span> <span class="cn">FALSE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>   question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="fl">0.6</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">div_chart_single_labels</span></span></code></pre></div>
+<p><img src="reference/figures/README-divBarChart_single-2.png" width="100%"></p>
+</div>
+<div class="section level4">
+<h4 id="pre-post-data-example-for-divbarchart">Pre-Post Data Example for <code>divBarChart()</code>
+<a class="anchor" aria-label="anchor" href="#pre-post-data-example-for-divbarchart"></a>
+</h4>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Pass the factor variables and the levels to 'divBarChart()', set so that it </span></span>
 <span><span class="co"># returns the percent labels on the bars:</span></span>
 <span><span class="va">div_chart</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/divBarChart.html">divBarChart</a></span><span class="op">(</span></span>
-<span> df <span class="op">=</span> <span class="va">cat_items</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  df <span class="op">=</span> <span class="va">cat_items</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
+<span>  question_labels <span class="op">=</span> <span class="cn">NULL</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="cn">NULL</span>, fill_colors <span class="op">=</span> <span class="st">"seq"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">div_chart</span></span></code></pre></div>
-<p><img src="reference/figures/README-divBarChart-1.png" width="100%"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p><img src="reference/figures/README-divBarChart_pre_post-1.png" width="100%"></p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># With new labels and order taken from question_labels argument:</span></span>
 <span><span class="va">div_chart_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/divBarChart.html">divBarChart</a></span><span class="op">(</span></span>
-<span> df <span class="op">=</span> <span class="va">cat_items</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
-<span> question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  df <span class="op">=</span> <span class="va">cat_items</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">bar_scale_labels</span>,</span>
+<span>  question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  percent_label <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="cn">NULL</span>, fill_colors <span class="op">=</span> <span class="st">"seq"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">div_chart_labels</span></span></code></pre></div>
-<p><img src="reference/figures/README-divBarChart-2.png" width="100%"></p>
+<p><img src="reference/figures/README-divBarChart_pre_post-2.png" width="100%"></p>
 </div>
 </div>
 <div class="section level3">
@@ -318,7 +320,7 @@
 <strong>Examples using</strong> <code>arrowChart()</code>
 <a class="anchor" aria-label="anchor" href="#examples-using-arrowchart"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select only the numeric variables from the df in the last chunk (cat_items_1) using tidy select(contains("cat")), adding a group variable that is set as a factor:</span></span>
 <span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  pre_Organization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -343,25 +345,23 @@
 <span>                    <span class="st">"Organization of a large research project"</span> <span class="op">=</span> <span class="st">"Organization"</span>,</span>
 <span>                    <span class="st">"Source work for a research paper"</span> <span class="op">=</span> <span class="st">"Source"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Set up a character vector of scale colors to pass to the argument group_colors:</span></span>
-<span><span class="va">five_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#2C2C4F"</span>, <span class="st">"#37546d"</span>, <span class="st">"#4B9FA6"</span>, <span class="st">"#79AB53"</span>, <span class="st">"#767171"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Example with n for each question and original labels:</span></span>
-<span><span class="va">arrow_chart_1</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, arrow_colors <span class="op">=</span> <span class="va">five_colors</span>,</span>
+<span><span class="va">arrow_chart_1</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, </span>
 <span>                                 overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="cn">NULL</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_1</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChart-1.png" width="100%"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># With new labels, question_order = FALSE, and overall_n set to TRUE:</span></span>
-<span><span class="va">arrow_chart_labels</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, arrow_colors <span class="op">=</span> <span class="va">five_colors</span>,</span>
+<span><span class="va">arrow_chart_labels</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, </span>
 <span>                                      overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_labels</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChart-2.png" width="100%"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># With new labels and order taken from question_labels argument, and overall_n set to FALSE:</span></span>
-<span><span class="va">arrow_chart_labels_ordered</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, arrow_colors <span class="op">=</span> <span class="va">five_colors</span>,</span>
+<span><span class="va">arrow_chart_labels_ordered</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChart.html">arrowChart</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, </span>
 <span>                                              overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_labels_ordered</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChart-3.png" width="100%"></p>
@@ -385,7 +385,7 @@
 <strong>Examples using</strong> <code>arrowChartGroup()</code>
 <a class="anchor" aria-label="anchor" href="#examples-using-arrowchartgroup"></a>
 </h4>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add a group variable `edu_level` that is set as a factor to the numeric items above called `items`:</span></span>
 <span><span class="va">arrow_items</span> <span class="op">&lt;-</span> <span class="va">items</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -404,26 +404,26 @@
 <span>                    <span class="st">"Organization of a large research project"</span> <span class="op">=</span> <span class="st">"Organization"</span>,</span>
 <span>                    <span class="st">"Source work for a research paper"</span> <span class="op">=</span> <span class="st">"Source"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Set up a character vector of scale colors to pass to the argument group_colors:</span></span>
-<span><span class="va">three_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#79AB53"</span>, <span class="st">"#4B9FA6"</span>, <span class="st">"#2C2C4F"</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># Example with n for each question and original labels:</span></span>
-<span><span class="va">arrow_chart_grouped</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChartGroup.html">arrowChartGroup</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, group <span class="op">=</span> <span class="st">"edu_level"</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">three_colors</span>,</span>
-<span>     overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="cn">NULL</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">arrow_chart_grouped</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChartGroup.html">arrowChartGroup</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, group <span class="op">=</span> <span class="st">"edu_level"</span>, group_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grad"</span>, <span class="st">"undergrad"</span><span class="op">)</span>,</span>
+<span>                                            scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>                                            question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_grouped</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChartGroup-1.png" width="100%"></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># With new labels, question_order = FALSE, and overall_n set to TRUE:</span></span>
-<span><span class="va">arrow_chart_grouped_labels</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChartGroup.html">arrowChartGroup</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, group <span class="op">=</span> <span class="st">"edu_level"</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">three_colors</span>,</span>
-<span>     overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">arrow_chart_grouped_labels</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChartGroup.html">arrowChartGroup</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, group <span class="op">=</span> <span class="st">"edu_level"</span>, group_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grad"</span>, <span class="st">"undergrad"</span><span class="op">)</span>,</span>
+<span>                                                   scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, </span>
+<span>                                                   question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_grouped_labels</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChartGroup-2.png" width="100%"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># With new labels and order taken from question_labels argument, and overall_n set to FALSE:</span></span>
-<span><span class="va">arrow_chart_grouped_labels_ordered</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChartGroup.html">arrowChartGroup</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, group <span class="op">=</span> <span class="st">"edu_level"</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, group_colors <span class="op">=</span> <span class="va">three_colors</span>,</span>
-<span>     overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">arrow_chart_grouped_labels_ordered</span> <span class="op">&lt;-</span> <span class="fu">bre</span><span class="fu">::</span><span class="fu"><a href="reference/arrowChartGroup.html">arrowChartGroup</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">arrow_items</span>, group <span class="op">=</span> <span class="st">"edu_level"</span>, group_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grad"</span>, <span class="st">"undergrad"</span><span class="op">)</span>, </span>
+<span>                                                           scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, </span>
+<span>                                                           question_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">arrow_chart_grouped_labels_ordered</span></span></code></pre></div>
 <p><img src="reference/figures/README-arrowChartGroup-3.png" width="100%"></p>
 <p>More functions and visuals will be added to <code>bre</code> package as needed, be sure to reach out with any ideas for the package or issues!</p>

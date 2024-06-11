@@ -53,21 +53,35 @@ labelColorMaker <- function(colors, names = NULL) {
 #' @return a character vector hex color codes the length of `n_colors` from the `Blues 3` palette.
 #'
 #' @export
+#'
+#' @examples
+#' # Returns the 5 colors in the sequential palette:
+#' seqFillColors(n_colors = 5)
+#'
+#' # Returns the 7 colors colors in the sequential palette::
+#' seqFillColors(n_colors = 7)
 seqFillColors <- function(n_colors) {
     colorspace::darken(colorspace::sequential_hcl(n_colors, "Blues 3", rev = TRUE), amount = 0.1)
     # colorspace::sequential_hcl(n_colors, "Blues 3", rev = TRUE) # not darkened
 }
 
 
-#' Helper to create a sequential color scale using `Blue-Red 3` that is reversed.
+#' Helper to create a diverging color palette using `Blue-Red 3` that is reversed.
 #'
-#' @description A function to create a sequential color scale using `Blue-Red 3` that is reversed and slightly darkened.
+#' @description A function to create a diverging color palette using `Blue-Red 3` that is reversed and slightly darkened.
 #'
 #' @param n_colors Required, the number of color hex codes to return.
 #'
 #' @return a character vector hex color codes the length of `n_colors`from the `Blue-Red 3` palette from the package `colorspace`.
 #'
 #' @export
+#'
+#' @examples
+#' # Returns the 5 colors in the diverging palette:
+#' divFillColors(n_colors = 5)
+#'
+#' # Returns the 7 colors colors in the diverging palette::
+#' divFillColors(n_colors = 7)
 divFillColors <- function(n_colors) {
     colorspace::darken(colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE), amount = 0.1)
     # colorspace::diverging_hcl(n_colors, "Blue-Red 3", rev = TRUE) # not darkened
@@ -84,6 +98,24 @@ divFillColors <- function(n_colors) {
 #' @return A vector or named vector of hex colors for Qualitative color scale for Blackstone Research and Evaluation.
 #'
 #' @export
+#'
+#' @examples
+#' # Full color palette with names:
+#' qualColors(add_names = TRUE)
+#'
+#' # function to show color, names and hex codes as visual:
+#' show_colors2 <- function(colors) {
+#'     labels_color <- purrr::map_chr(seq_along(colors),
+#'                                    \(x) paste0("'",names(colors)[x], "': ", colors[x]))
+#'     labels_text_color <- labelColorMaker(colors = colors)
+#'     ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) +
+#'         ggplot2::geom_tile(ggplot2::aes(1, id, fill = rev(color))) +
+#'         ggplot2::geom_text(ggplot2::aes(1, id, label = labels_color), color = labels_text_color) +
+#'         ggplot2::scale_fill_identity() +
+#'         ggplot2::scale_color_identity() +
+#'         ggplot2::theme_void()
+#' }
+#' show_colors2(colors = qualColors(add_names = TRUE))
 qualColors <- function(add_names = FALSE) {
     qual_colors <- c(
         `orange`         = "#E69F00",   # 1
@@ -138,7 +170,17 @@ customCols <- function(pal = qualColors(), cols = NULL) {
 #' @return a character vector of hex color codes the length of `n_colors`.
 #'
 #' @export
-qualFillColors <- function(n_colors, rev_colors = FALSE) {
+#'
+#' @examples
+#' # Returns the full color palette:
+#' qualFillColors()
+#'
+#' # Returns the first 5 colors in the palette:
+#' qualFillColors(n_colors = 5)
+#'
+#' # Returns the first 5 colors in the palette reversed:
+#' qualFillColors(n_colors = 5, rev_colors = TRUE)
+qualFillColors <- function(n_colors = 11, rev_colors = FALSE) {
     if (n_colors > length(qualColors())) {
         warning("This palette can handle a maximum of ", length(qualColors()), " values.",
                 "You have supplied ", n_colors, ", colors will be recycled to reach this number of values.")

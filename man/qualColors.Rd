@@ -16,3 +16,21 @@ A vector or named vector of hex colors for Qualitative color scale for Blackston
 \description{
 A utils function for loading Qualitative color scale Blackstone Research and Evaluation colors for charts.
 }
+\examples{
+# Full color palette with names:
+qualColors(add_names = TRUE)
+
+# function to show color, names and hex codes as visual:
+show_colors2 <- function(colors) {
+    labels_color <- purrr::map_chr(seq_along(colors),
+                                   \(x) paste0("'",names(colors)[x], "': ", colors[x]))
+    labels_text_color <- labelColorMaker(colors = colors)
+    ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) +
+        ggplot2::geom_tile(ggplot2::aes(1, id, fill = rev(color))) +
+        ggplot2::geom_text(ggplot2::aes(1, id, label = labels_color), color = labels_text_color) +
+        ggplot2::scale_fill_identity() +
+        ggplot2::scale_color_identity() +
+        ggplot2::theme_void()
+}
+show_colors2(colors = qualColors(add_names = TRUE))
+}

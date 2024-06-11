@@ -4,7 +4,7 @@
 \alias{qualFillColors}
 \title{Helper function to create qualitative colors from the \code{Okabe-Ito} palette.}
 \usage{
-qualFillColors(n_colors, rev_colors = FALSE)
+qualFillColors(n_colors = 11, rev_colors = FALSE)
 }
 \arguments{
 \item{n_colors}{Required, supply a non-negative integer that is the desired the number of color hex codes to return.}
@@ -17,4 +17,14 @@ a character vector of hex color codes the length of \code{n_colors}.
 \description{
 A function to create a custom qualitative colors palette from the \code{Okabe-Ito} palette, reversed if rev_colors is set to TRUE.
 Drops black and yellow for use with all BRE charts and adds three other colors: "#440154FF", "#283251", and "#999933".
+}
+\examples{
+# Returns the full color palette:
+qualFillColors()
+
+# Returns the first 5 colors in the palette:
+qualFillColors(n_colors = 5)
+
+# Returns the first 5 colors in the palette reversed:
+qualFillColors(n_colors = 5, rev_colors = TRUE)
 }

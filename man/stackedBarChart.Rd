@@ -9,7 +9,7 @@ stackedBarChart(
   scale_labels,
   fill_colors = "seq",
   pre_post = FALSE,
-  overall_n = FALSE,
+  overall_n = TRUE,
   percent_label = TRUE,
   question_labels = NULL,
   question_order = FALSE,
@@ -30,7 +30,7 @@ at least a long as the character vector passed to the \code{scale_labels} argume
 
 \item{pre_post}{Logical, default is FALSE. If true, returns a pre-post stacked bar chart.}
 
-\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
+\item{overall_n}{Logical, default is TRUE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
 If False, adds \emph{n} to each question/item after the respective labels.}
 
 \item{percent_label}{Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/color_helpers.R
 \name{divFillColors}
 \alias{divFillColors}
-\title{Helper to create a sequential color scale using \verb{Blue-Red 3} that is reversed.}
+\title{Helper to create a diverging color palette using \verb{Blue-Red 3} that is reversed.}
 \usage{
 divFillColors(n_colors)
 }
@@ -13,5 +13,12 @@ divFillColors(n_colors)
 a character vector hex color codes the length of \code{n_colors}from the \verb{Blue-Red 3} palette from the package \code{colorspace}.
 }
 \description{
-A function to create a sequential color scale using \verb{Blue-Red 3} that is reversed and slightly darkened.
+A function to create a diverging color palette using \verb{Blue-Red 3} that is reversed and slightly darkened.
+}
+\examples{
+# Returns the 5 colors in the diverging palette:
+divFillColors(n_colors = 5)
+
+# Returns the 7 colors colors in the diverging palette::
+divFillColors(n_colors = 7)
 }

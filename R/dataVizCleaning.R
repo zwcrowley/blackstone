@@ -109,8 +109,7 @@ dataVizCleaning <- function(df, scale_labels, pre_post = FALSE, na_remove = TRUE
                     percent_answers = .data$n_answers / sum(.data$n_answers),
                     percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1),
                     timing = stringr::str_to_title(.data$timing), # capitalize timing
-                    timing = factor(.data$timing, levels = c("Pre", "Post")),
-                    response = factor(.data$response, levels = scale_labels)
+                    timing = factor(.data$timing, levels = c("Pre", "Post"))
                 ) %>%
                 dplyr::ungroup() %>%
                 dplyr::arrange(.data$question, .data$timing, .data$response)

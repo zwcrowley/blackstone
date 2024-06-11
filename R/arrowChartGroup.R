@@ -21,7 +21,7 @@
 #'   the group based on the factor levels for the group variable. Defaults to BRE custom qualitative palette and
 #'   black is always the color for the "Overall" group.
 #'
-#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
+#' @param overall_n Logical, default is TRUE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.
 #'
 #' @param question_labels Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
@@ -77,7 +77,7 @@
 #'
 #' # With new labels, question_order = FALSE, and overall_n set to TRUE:
 #' arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
-#'                 group_levels = c("grad", "undergrad"),overall_n = FALSE,
+#'                 group_levels = c("grad", "undergrad"), overall_n = TRUE,
 #'                 question_labels = question_labels, question_order = FALSE)
 #'
 #' # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
@@ -85,7 +85,7 @@
 #'                 group_levels = c("grad", "undergrad"), overall_n = FALSE,
 #'                 question_labels = question_labels, question_order = TRUE)
 arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_levels,
-                            overall_n = FALSE, question_labels = NULL,
+                            overall_n = TRUE, question_labels = NULL,
                             question_order = FALSE, font_family = "Arial", font_size = 10) {
     # Load fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -160,7 +160,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
         dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
         dplyr::ungroup()
     # Join the `total` column to arrow_df
-    arrow_df <- arrow_df %>% full_join(totals_new_df,by = join_by(question, timing))
+    arrow_df <- arrow_df %>% dplyr::full_join(totals_new_df,by = dplyr::join_by("question", "timing"))
 
 
     # If the user supplies a named vector for questions labels: ----

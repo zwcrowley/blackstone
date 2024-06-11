@@ -19,8 +19,9 @@ questionOrder <- function(df, pre_post = TRUE) {
                                   dplyr::group_by(.data$question) %>% rev() %>%
                                   dplyr::arrange(dplyr::across(-c("question"), dplyr::desc)) %>%
                                   dplyr::select("question") %>%
-                                  unique() %>%
-                                  tibble::deframe()
+                                  dplyr::distinct() %>%
+                                  tibble::deframe() %>%
+                                  as.character()
         # var_order <- {{ df }} %>% dplyr::filter(., .data$timing == "Post") %>% tidyr::complete(.data$question, .data$response) %>%
         #     tidyr::pivot_wider(id_cols = -c("timing", "percent_answers", "percent_answers_label"), names_from = "response", values_from = "n_answers") %>%
         #     dplyr::group_by(.data$question) %>% rev() %>%
@@ -35,8 +36,9 @@ questionOrder <- function(df, pre_post = TRUE) {
                                   dplyr::group_by(.data$question) %>% rev() %>%
                                   dplyr::arrange(dplyr::across(-c("question"), dplyr::desc)) %>%
                                   dplyr::select("question") %>%
-                                  unique() %>%
-                                  tibble::deframe()
+                                  dplyr::distinct() %>%
+                                  tibble::deframe() %>%
+                                  as.character()
     }
     return(var_order)
 }

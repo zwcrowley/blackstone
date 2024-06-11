@@ -48,7 +48,7 @@ stackedBar_ggplot <- function(df_gg, y_gg, pre_post = FALSE, label_gg, label_col
         ggplot2::ggplot(ggplot2::aes(
             x = .data[["percent_answers"]], y = forcats::fct_rev(.data[[{{y_gg}}]]), group = .data[["question"]]
         )) +
-        ggplot2::geom_col(ggplot2::aes(fill = .data[["response"]]),
+        ggplot2::geom_col(ggplot2::aes(fill = .data[["response"]]), show.legend = TRUE,
                           position = "fill", color = "black", # color is outline of fill boxes
                           width = {{ width_gg }}, key_glyph = draw_key_cust #  draw_key_cust is custom key function from `gg_helpers.R`
         ) +
@@ -56,7 +56,7 @@ stackedBar_ggplot <- function(df_gg, y_gg, pre_post = FALSE, label_gg, label_col
                            position = ggplot2::position_fill(vjust = 0.5),
                            stat = "identity", size = font_size, size.unit = "pt", family = font_family
         ) +
-        ggplot2::scale_color_identity()
+        ggplot2::scale_color_identity(limits = names(label_colors_named))
     if (isTRUE(pre_post)) {
         stacked_bar_chart_gg <-  stacked_bar_chart_gg + ggplot2::facet_wrap(~ .data[["question"]], ncol = 1, strip.position = "left")
     }

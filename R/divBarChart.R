@@ -15,7 +15,7 @@
 #'
 #' @param pre_post Logical, default is FALSE. If true, returns a pre-post stacked bar chart.
 #'
-#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
+#' @param overall_n Logical, default is TRUE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.
 #'
 #' @param percent_label Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.
@@ -106,7 +106,7 @@
 #'   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
 #'   question_labels = question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
-divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE, overall_n = FALSE, percent_label = TRUE,
+divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE, overall_n = TRUE, percent_label = TRUE,
                          question_labels = NULL, question_order= FALSE, width = NULL, font_family = "Arial", font_size = 10) {
     # Load all fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -141,7 +141,7 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
             dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
             dplyr::ungroup()
         # Join the `total` column to arrow_df
-        new_df <- new_df %>% full_join(totals_new_df,by = join_by(question, timing))
+        new_df <- new_df %>% dplyr::full_join(totals_new_df,by = dplyr::join_by("question", "timing"))
         # End of if pre_post == TRUE
     } else if (isFALSE(pre_post)) {
         # If pre_post is FALSE, set up new_df with dataVizCleaning():
@@ -159,7 +159,7 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
             dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
             dplyr::ungroup()
         # Join the `total` column to arrow_df
-        new_df <- new_df %>% full_join(totals_new_df,by = join_by(question))
+        new_df <- new_df %>% dplyr::full_join(totals_new_df,by = dplyr::join_by("question"))
     } # End of if pre_post == FALSE
 
     # If the user supplies a named vector for questions labels:
@@ -310,7 +310,7 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
     }
     # Set up geom_col for bars, text for labels and use scale_color_identity() to color the text of labels:
     diverging_bar_chart <-  diverging_bar_chart +
-        ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE),
+        ggplot2::geom_col(width = width, position = ggplot2::position_stack(reverse = TRUE), show.legend = TRUE,
                           color = "black", key_glyph = draw_key_cust) + # sets up custom legend as text boxes with fill colors
         ggplot2::geom_text(ggplot2::aes(color = .data[["label_color"]]),
                            position = ggplot2::position_stack(vjust = .5, reverse = TRUE),

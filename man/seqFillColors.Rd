@@ -15,3 +15,10 @@ a character vector hex color codes the length of \code{n_colors} from the \verb{
 \description{
 A function to create a sequential color scale using \verb{Blues 3}, that is reversed and slightly darkened.
 }
+\examples{
+# Returns the 5 colors in the sequential palette:
+seqFillColors(n_colors = 5)
+
+# Returns the 7 colors colors in the sequential palette::
+seqFillColors(n_colors = 7)
+}

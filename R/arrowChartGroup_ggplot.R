@@ -40,7 +40,7 @@ arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg, font_
             label = scales::number(.data[["score_avg"]], accuracy = 0.01), group = .data[[group]]
         )) +
         ggplot2::geom_path(
-            lineend = "round", linejoin = "round", linewidth = 1,
+            lineend = "round", linejoin = "round", linewidth = 1, show.legend = TRUE,
             arrow = grid::arrow(type = "closed", length = ggplot2::unit(0.1, "inches"))
         ) +
         ggplot2::geom_text(

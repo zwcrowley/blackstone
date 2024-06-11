@@ -15,7 +15,7 @@
 #'
 #' @param pre_post Logical, default is FALSE. If true, returns a pre-post stacked bar chart.
 #'
-#' @param overall_n Logical, default is FALSE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
+#' @param overall_n Logical, default is TRUE. If TRUE, returns an overall *n* for all questions that is in the upper left tag of the plot.
 #'    If False, adds *n* to each question/item after the respective labels.
 #'
 #' @param percent_label Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.
@@ -100,7 +100,7 @@
 #'   df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
 #'   question_labels = question_labels, question_order = FALSE, percent_label = TRUE, width = NULL
 #' )
-stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE, overall_n = FALSE, percent_label = TRUE,
+stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE, overall_n = TRUE, percent_label = TRUE,
                             question_labels = NULL, question_order= FALSE, width = NULL) {
     # Load all fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -135,7 +135,7 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
             dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
             dplyr::ungroup()
         # Join the `total` column to arrow_df
-        new_df <- new_df %>% full_join(totals_new_df,by = join_by(question, timing))
+        new_df <- new_df %>% dplyr::full_join(totals_new_df,by = dplyr::join_by("question", "timing"))
         # End of if pre_post == TRUE
     } else if (isFALSE(pre_post)) {
         # If pre_post is FALSE, set up new_df with dataVizCleaning():
@@ -153,7 +153,7 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
             dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
             dplyr::ungroup()
         # Join the `total` column to arrow_df
-        new_df <- new_df %>% full_join(totals_new_df,by = join_by(question))
+        new_df <- new_df %>% dplyr::full_join(totals_new_df,by = dplyr::join_by("question"))
     } # End of if pre_post == FALSE
 
     # If the user supplies a named vector for questions labels:
@@ -196,7 +196,7 @@ stackedBarChart <- function(df, scale_labels, fill_colors = "seq", pre_post = FA
     # Use the internal function labelColorMaker(), to create text color labels of black or white, see `helpers.R`:
     label_colors_named <- labelColorMaker(new_fill_colors, names = scale_labels)
     # create a new col `label_color` using the named vector `label_colors_named` to map the text color to the variable response
-    new_df <- new_df %>% dplyr::mutate(., label_color = label_colors_named[.data[["response"]]]) # create a new col `label_color` using the named vector `label_colors_named` to map the text color to the variable response
+    new_df <- new_df %>% dplyr::mutate(., label_color = label_colors_named[.data[["response"]]])
 
     # Named vector created by new color palette named by the scale_labels:
     new_fill_colors_named <- new_fill_colors # new color palette as values

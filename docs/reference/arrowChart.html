@@ -55,7 +55,7 @@
 <span>  <span class="va">df</span>,</span>
 <span>  <span class="va">scale_labels</span>,</span>
 <span>  arrow_colors <span class="op">=</span> <span class="st">"#283251"</span>,</span>
-<span>  overall_n <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overall_n <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  question_labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  question_order <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  font_family <span class="op">=</span> <span class="st">"Arial"</span>,</span>
@@ -80,7 +80,7 @@ each item, needs to be the same length or longer than the items to place in the 
 
 
 <dt>overall_n</dt>
-<dd><p>Logical, default is FALSE. If TRUE, returns an overall <em>n</em> for all questions that is in the upper left tag of the plot.
+<dd><p>Logical, default is TRUE. If TRUE, returns an overall <em>n</em> for all questions that is in the upper left tag of the plot.
 If False, adds <em>n</em> to each question/item after the respective labels.</p></dd>
 
 
@@ -128,27 +128,24 @@ post score average on the top of the plot descending.</p></dd>
 <span class="r-in"><span><span class="co"># Labels for response scales to recode the numeric variables to on the plot:</span></span></span>
 <span class="r-in"><span><span class="va">levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span>, <span class="st">"Slight"</span>, <span class="st">"Moderate"</span>, <span class="st">"Good"</span>, <span class="st">"Extensive"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Question labels as a named vector with the naming structure</span></span></span>
-<span class="r-in"><span><span class="co"># like this: c("{new label}" = "{original variable name}"):</span></span></span>
+<span class="r-in"><span><span class="co"># like this: c("new label" = "original variable name"):</span></span></span>
 <span class="r-in"><span><span class="va">question_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Publish a lot of high quality papers"</span> <span class="op">=</span>  <span class="st">"Publish"</span>,</span></span>
 <span class="r-in"><span>                     <span class="st">"Write a lot of research papers"</span> <span class="op">=</span> <span class="st">"Write"</span>,</span></span>
 <span class="r-in"><span>                     <span class="st">"Research in a lab with faculty"</span> <span class="op">=</span> <span class="st">"Research"</span>,</span></span>
 <span class="r-in"><span>                     <span class="st">"Organization of a large research project"</span> <span class="op">=</span> <span class="st">"Organization"</span>,</span></span>
 <span class="r-in"><span>                     <span class="st">"Source work for a research paper"</span> <span class="op">=</span> <span class="st">"Source"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Set up a character vector of scale colors to pass to the argument group_colors:</span></span></span>
-<span class="r-in"><span><span class="va">five_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#2C2C4F"</span>, <span class="st">"#37546d"</span>, <span class="st">"#4B9FA6"</span>, <span class="st">"#79AB53"</span>, <span class="st">"#767171"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example with n for each question and original labels:</span></span></span>
-<span class="r-in"><span><span class="fu">arrowChart</span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, arrow_colors <span class="op">=</span> <span class="va">five_colors</span>,</span></span>
-<span class="r-in"><span>    overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="cn">NULL</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">arrowChart</span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>           question_labels <span class="op">=</span> <span class="cn">NULL</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="arrowChart-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># With new labels, question_order = FALSE, and overall_n set to TRUE:</span></span></span>
-<span class="r-in"><span><span class="fu">arrowChart</span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, arrow_colors <span class="op">=</span> <span class="va">five_colors</span>,</span></span>
-<span class="r-in"><span>           overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">arrowChart</span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, overall_n <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>           question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="arrowChart-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># With new labels and order taken from question_labels argument, and overall_n set to FALSE:</span></span></span>
-<span class="r-in"><span><span class="fu">arrowChart</span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, arrow_colors <span class="op">=</span> <span class="va">five_colors</span>,</span></span>
-<span class="r-in"><span>           overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">arrowChart</span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>           question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="arrowChart-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

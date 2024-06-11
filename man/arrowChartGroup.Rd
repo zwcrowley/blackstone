@@ -10,7 +10,7 @@ arrowChartGroup(
   scale_labels,
   group_colors = NULL,
   group_levels,
-  overall_n = FALSE,
+  overall_n = TRUE,
   question_labels = NULL,
   question_order = FALSE,
   font_family = "Arial",
@@ -36,7 +36,7 @@ black is always the color for the "Overall" group.}
 \item{group_levels}{Required, a character vector of factor levels for the grouping variable, e.g. if the
 grouping variable is gender this could be: "male", "female", "non-binary".}
 
-\item{overall_n}{Logical, default is FALSE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
+\item{overall_n}{Logical, default is TRUE. If TRUE, returns an overall \emph{n} for all questions that is in the upper left tag of the plot.
 If False, adds \emph{n} to each question/item after the respective labels.}
 
 \item{question_labels}{Default is NULL. Takes in a named character vector to both supply labels the questions and sort the order of the questions.
@@ -96,7 +96,7 @@ arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
 
 # With new labels, question_order = FALSE, and overall_n set to TRUE:
 arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext,
-                group_levels = c("grad", "undergrad"),overall_n = FALSE,
+                group_levels = c("grad", "undergrad"), overall_n = TRUE,
                 question_labels = question_labels, question_order = FALSE)
 
 # With new labels and order taken from question_labels argument, and overall_n set to FALSE:
