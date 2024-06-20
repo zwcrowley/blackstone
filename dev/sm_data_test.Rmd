@@ -1,0 +1,45 @@
+---
+title: "SurveyMonkey Data Test"
+author: "ZC"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk[["set"]](
+    echo = FALSE, 
+    fig.width = 8,
+    fig.height = 6
+    )
+
+# Prevents sci notation and sets the output of decimals to 4 (0.0000):
+options(scipen = 999, digits = 4)
+
+# Load Libraries:
+library(readr)
+library(dplyr)
+library(bre) # blackstone R package
+```
+
+
+### How to read in .csv data from SurveyMonkey to create nice variable names:
+```{r load in .csv data example}
+# Read in the pre fake data data:
+pre_data_names <- readr::read_csv("sm_data/fake_sm_pre.csv", col_names = FALSE, show_col_types = FALSE) %>% slice(1:2) %>%  
+    mutate(type = c('question_name', 'full_text')) %>% 
+    tidyr::pivot_longer(!type) |> 
+    tidyr::pivot_wider(names_from = type, values_from = value) |> 
+    select(!name) %>% 
+    mutate(full_text = case_when(full_text == "Response" ~ NA_character_, TRUE ~ full_text), # turn "Response" to NA
+           full_question_text = coalesce(full_text, question_name)) # combine two columns into new col, take first non-missing
+pre_data_names
+
+write_csv(pre_data_names, file = "sm_data/fake_codebook.csv")
+
+pre_data <- readr::read_csv("sm_data/fake_sm_pre.csv", skip = 2, col_names = FALSE, show_col_types = FALSE) 
+names(pre_data) <- pre_data_names[["full_question_text"]]
+pre_data
+# Read in the post fake data:
+# post_data <- readr::read_csv("sm_data/fake_sm_post.csv")
+
+```

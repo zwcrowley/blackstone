@@ -13,8 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   warning = FALSE, 
   message = FALSE, 
-  fig.width = 6.5,
-  fig.height = 4
+  out.width = "100%"
 )
 ```
 
@@ -28,7 +27,7 @@ library(readr)  # tidy data manipulation
 library(readxl)  # tidy data manipulation
 library(ggplot2) # all viz
 library(extrafont) # load fonts especially "Arial" font for use in visuals
-loadfonts(device = "win", quiet = TRUE)
+loadfonts(device = "all", quiet = TRUE)
 
 # If you haven't installed "bre", un-comment and run the next two lines then load library(bre):
 # install.packages("devtools")
@@ -41,6 +40,9 @@ options(scipen = 999, digits = 4)
 
 ```{r setup}
 library(bre)
+
+# Prevents sci notation and sets the output of decimals to 4 (0.0000):
+options(scipen = 999, digits = 4)
 ```
 
 ## Vignette for Data Analysis at Blackstone Research and Evaluation:
