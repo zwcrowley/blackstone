@@ -31,13 +31,47 @@ pre_data_names <- readr::read_csv("sm_data/fake_sm_pre.csv", col_names = FALSE, 
     tidyr::pivot_wider(names_from = type, values_from = value) |> 
     select(!name) %>% 
     mutate(full_text = case_when(full_text == "Response" ~ NA_character_, TRUE ~ full_text), # turn "Response" to NA
-           full_question_text = coalesce(full_text, question_name)) # combine two columns into new col, take first non-missing
-pre_data_names
+           full_question_text = coalesce(full_text, question_name), # combine two columns into new col, take first non-missing
+           variable_name = janitor::make_clean_names(full_question_text)) # create variable_name col
 
-write_csv(pre_data_names, file = "sm_data/fake_codebook.csv")
+# createCodebook() takes one argument, `file_path` = file path of the data from SM to be read in, creates a partial codebook 
+#   that can be edited to create useful variable names from SM data.
+createCodebook <- function(file_path) {
+    codebook <- readr::read_csv(file_path, col_names = FALSE, show_col_types = FALSE) %>% slice(1:2) %>%  
+                mutate(type = c('question_name', 'full_text')) %>% 
+                tidyr::pivot_longer(!type) |> 
+                tidyr::pivot_wider(names_from = type, values_from = value) |> 
+                select(!name) %>% 
+                mutate(full_text = case_when(full_text == "Response" ~ NA_character_, TRUE ~ full_text), # turn "Response" to NA
+                       full_question_text = coalesce(full_text, question_name), # combine two columns into new col, take first non-missing
+                       variable_name = janitor::make_clean_names(full_question_text)) 
+    return(codebook)
+}
+pre_data_names <- createCodebook("sm_data/fake_sm_pre.csv")
+# pre_data_names
 
-pre_data <- readr::read_csv("sm_data/fake_sm_pre.csv", skip = 2, col_names = FALSE, show_col_types = FALSE) 
-names(pre_data) <- pre_data_names[["full_question_text"]]
+# Write out codebook, need to go in and edit the column named `variable_name` manually:
+# write_csv(pre_data_names, file = "sm_data/fake_codebook.csv")
+# variable_name <- c("respondent_id", "collector_id", "start_date", "end_date", "ip_address", "email_address", "first_name", "last_name", "unique_id", "knowledge", 
+#                    "research_1", "research_2", "research_3", "research_4", "research_5", "research_6", "research_7", "research_8", 
+#                    "ability_1", "ability_2", "ability_3", "ability_4", "ability_5", "ability_6", 
+#                    "gender", "ethnicity", "first_gen")
+
+# read in codebook
+codebook_pre <- readr::read_csv("sm_data/fake_codebook.csv", show_col_types = FALSE)
+
+# pre_data <- readr::read_csv("sm_data/fake_sm_pre.csv", skip = 2, col_names = FALSE, show_col_types = FALSE) 
+# names(pre_data) <- codebook[["variable_name"]]
+
+# renameData() takes two argument, `file_path` = file path of the data from SM to be read in and `codebook` = tibble of codebook from createCodebook() with column named `variable_name`, 
+# Reads in the SM data with new variable names taken from the codebook df column named `variable_name`.
+renameData <- function(file_path, codebook) {
+    sm_data <- readr::read_csv(file_path, skip = 2, col_names = FALSE, show_col_types = FALSE) # read in data skipping two lines and no col_names.
+    names(sm_data) <- codebook[["variable_name"]]
+    
+    return(sm_data)
+}
+pre_data <- renameData("sm_data/fake_sm_pre.csv",codebook = codebook_pre)
 pre_data
 # Read in the post fake data:
 # post_data <- readr::read_csv("sm_data/fake_sm_post.csv")
