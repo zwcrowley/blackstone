@@ -31,8 +31,9 @@ getHeaders <- function(file_path) {
                               csv = readr::read_csv(file_path, col_names = FALSE, n_max = 2, show_col_types = FALSE), # only first two rows
                               xlsx = readxl::read_xlsx(file_path, col_names = FALSE, n_max = 2, .name_repair = "unique_quiet"), # only first two rows
                               # Return an error message if file is not .csx or .xlsx:
-                              warning("Invalid file! Please upload a .csv or .xlsx file")
+                              warning("Invalid file! Please use a .csv or .xlsx file")
                               )
+    # Manipulate the data so that headers is a three column tibble: header 1 = `question_name`, header 2 = `full_text`, and `full_question_text` is the combination of the two:
     headers <- sm_data_headers %>% 
                 dplyr::mutate(type = c('question_name', 'full_text')) %>% 
                 tidyr::pivot_longer(!type) %>%  
@@ -46,6 +47,54 @@ getHeaders(file_path = "sm_data/fake_sm_post_excel.xlsx")
 
 ```
 
+
+```{r}
+# createCodebook() takes one argument, `file_path` = file path of the data from SM to be read in, creates a partial codebook 
+#   that can be edited to create useful variable names from SM data.
+createCodebook <- function(file_path) {
+    codebook <- getHeaders(file_path = file_path) %>% # helper function that returns tibble of 3 cols: question_name, full_text, full_question_text
+                mutate(variable_name = janitor::make_clean_names(full_question_text), # make `variable_name` by cleaning names of new col `full_question_text`
+                       position = seq_along(variable_name)) # make `position` by cleaning names of new col `full_question_text`
+    return(codebook)
+}
+pre_data_names <- createCodebook("sm_data/fake_sm_pre.csv")
+```
+
+```{r}
+# renameData() takes two argument, `file_path` = file path of the data from SM to be read in and `codebook` = tibble of codebook from createCodebook() with column named `variable_name`, 
+# Reads in the SM data with new variable names taken from the codebook df column named `variable_name`.
+readRenameData <- function(file_path, codebook) {
+    # Using `getHeaders()`- Condense the two header rows into one row (column named `full_question_text`) and set as a character vector:
+    sm_names <- getHeaders(file_path = file_path) %>% # helper function that returns tibble of 3 cols: question_name, full_text, full_question_text
+                dplyr::select(full_question_text) %>% # select the combined header
+                tibble::deframe() # set as a character vector
+    ext <- tools::file_ext(file_path) # get file_path extension
+    # Read in the data, using switch with ext from above to determine the function, skipping first 2 lines, and then set the column names using the vector `sm_names`:
+    sm_data <- switch(ext,
+                      csv = readr::read_csv(file_path, skip = 2, col_names = sm_names, show_col_types = FALSE),
+                      xlsx = readxl::read_xlsx(file_path, skip = 2, col_names = sm_names, .name_repair = "unique_quiet"),
+                      # Return an error message if file is not .csx or .xlsx:
+                      warning("Invalid file! Please use a .csv or .xlsx file")
+                      )
+    
+    # Create a named vector of the columns from `codebook` named `variable_name` and `full_question_text` where `variable_name` is the names and 
+    # will be the new names in data (tibble::deframe() creates a named vector where `names` is the first col and second col will be the `values`):
+    sm_new_names <- {{ codebook }} %>% dplyr::select(variable_name, full_question_text) %>% tibble::deframe()
+    
+    # Use it to rename the vars in `sm_data` so they match (current names of sm_data were `full_question_text`, the use of a named vector ensures the right 
+    # columns are being renamed):
+    sm_data <- sm_data %>% dplyr::rename(!!!sm_new_names)
+    sm_data
+    
+    return(sm_data)
+}
+
+# read in codebook
+codebook_pre <- readr::read_csv("sm_data/fake_codebook.csv", show_col_types = FALSE)
+# Read in data with new names take from the codebook column named "variable_name":
+pre_data <- readRenameData("sm_data/fake_sm_pre.csv", codebook = codebook_pre)
+pre_data
+```
 
 ### How to read in .csv data from SurveyMonkey to create nice variable names:
 ```{r load in .csv data example}
@@ -105,24 +154,23 @@ codebook_pre <- readr::read_csv("sm_data/fake_codebook.csv", show_col_types = FA
 readRenameData <- function(file_path, codebook) {
     # Using `getHeaders()`- Condense the two header rows into one row (column named `full_question_text`) and set as a character vector:
     sm_names <- getHeaders(file_path = file_path) %>% # helper function that returns tibble of 3 cols: question_name, full_text, full_question_text
-                dplyr::select(full_question_text) %>% 
-                tibble::deframe()
+                dplyr::select(full_question_text) %>% # select the combined header
+                tibble::deframe() # set as a character vector
     ext <- tools::file_ext(file_path) # get file_path extension
-    # Read in the data, using switch with ext from above, skipping first 2 lines, and then set names using the vector `sm_names`:
+    # Read in the data, using switch with ext from above to determine the function, skipping first 2 lines, and then set the column names using the vector `sm_names`:
     sm_data <- switch(ext,
-                      csv = readr::read_csv(file_path, skip = 2, col_names = FALSE, show_col_types = FALSE),
-                      xlsx = readxl::read_xlsx(file_path, skip = 2, col_names = FALSE, .name_repair = "unique_quiet"),
+                      csv = readr::read_csv(file_path, skip = 2, col_names = sm_names, show_col_types = FALSE),
+                      xlsx = readxl::read_xlsx(file_path, skip = 2, col_names = sm_names, .name_repair = "unique_quiet"),
                       # Return an error message if file is not .csx or .xlsx:
-                      warning("Invalid file! Please upload a .csv or .xlsx file")
-                      ) %>% 
-                purrr::set_names(sm_names) 
-    # names(sm_data) <- sm_names
+                      warning("Invalid file! Please use a .csv or .xlsx file")
+                      )
     
     # Create a named vector of the columns from `codebook` named `variable_name` and `full_question_text` where `variable_name` is the names and 
     # will be the new names in data (tibble::deframe() creates a named vector where `names` is the first col and second col will be the `values`):
     sm_new_names <- {{ codebook }} %>% dplyr::select(variable_name, full_question_text) %>% tibble::deframe()
     
-    # use it to rename the vars in `sm_data` so they match:
+    # Use it to rename the vars in `sm_data` so they match (current names of sm_data were `full_question_text`, the use of a named vector ensures the right 
+    # columns are being renamed):
     sm_data <- sm_data %>% dplyr::rename(!!!sm_new_names)
     sm_data
     
@@ -136,6 +184,87 @@ pre_data
 
 ```
 
+
+    
+### Test on fake post data:
+```{r}
+# TODO: turn this into a vignette for reading in data from SurveyMonkey:
+
+# File path for post data:
+post_data_fp <- "sm_data/fake_sm_post.csv"
+# 1. Create the codebook:
+codebook_post <- createCodebook(post_data_fp)
+
+# One way to change the `variable_name` column without position numbers: ----
+# # Create names as vectors:
+# research_names <- purrr::map_chr(1:8, \(x) paste0("research_",x))
+# ability_names <- purrr::map_chr(1:6, \(x) paste0("ability_",x))
+# 
+# # Create old Names as vectors:
+# research_vals <- c("research_relevant_background_literature", "identify_a_scientific_problem", "develop_testable_and_realistic_research_questions", "develop_a_falsifiable_hypothesis", 
+#                    "conduct_quantitative_data_analysis", "design_an_experiment_create_a_research_design", "interpret_findings_and_making_recommendations", "scientific_or_technical_writing")
+# ability_vals <- c("judge_the_value_of_new_information_or_evidence_presented_to_me", "approach_complex_issues_in_a_variety_of_ways", "weigh_both_sides_of_an_argument", 
+#                   "identify_analogies_between_theories", "eliminate_extraneous_variables_when_designing_experiments", "rephrase_the_arguments_of_others_in_my_own_words")
+# # Use replace and case_when to change all variable names, inside replace, select the old names using the _vals vectors and replace with the _names vectors:
+# codebook_post <- codebook_post %>% mutate(variable_name = replace(variable_name, variable_name %in% research_vals, research_names),
+#                                           variable_name = replace(variable_name, variable_name %in% ability_vals, ability_names),
+#                                          variable_name = case_match(variable_name,
+#                                                                     'custom_data_1' ~ "unique_id",
+#                                                                     'to_what_extent_are_you_knowledgeable_in_conducting_research_in_your_field_of_study' ~ "knowledge",
+#                                                                     'with_which_gender_do_you_most_closely_identify' ~ "gender",
+#                                                                     'which_race_ethnicity_best_describes_you_please_choose_only_one' ~ "ethnicity",
+#                                                                     'are_you_a_first_generation_college_student' ~ "first_gen",
+#                                                                      .default = variable_name) # returns default value of the original variable 11:18
+#                                           )
+
+# Step 2. Edit the codebook: --------
+# Set up variables with shared root names:
+# Another way to change the `variable_name` column with position numbers:
+# 8 items that are matrix-style likert scales- turned into a scale called `research`- here is how to easily name them all at once:
+# Columns 11 to 18 belong to the "research" matrix question
+research_items <- codebook_post[["variable_name"]][11:18]
+
+# Create a new named vector of names for these columns
+research_names <- paste0("research_", seq_along(research_items)) %>% purrr::set_names(., research_items)
+
+# 6 items that are matrix-style likert scales- turned into a scale called `ability`- here is how to easily name them all at once:
+# Columns 19 to 24 belong to the "ability" matrix question: selecting by row position in column named `variable_name`:
+ability_items <- codebook_post[["variable_name"]][19:24]
+# # this works too:
+# ability_items  <- codebook_post[["variable_name"]][match("judge_the_value_of_new_information_or_evidence_presented_to_me", codebook_post[["variable_name"]]):match("rephrase_the_arguments_of_others_in_my_own_words", codebook_post[["variable_name"]])]
+# # and this:
+# codebook_post %>% select(variable_name) %>%  
+#     dplyr::slice(match("judge_the_value_of_new_information_or_evidence_presented_to_me", variable_name):match("rephrase_the_arguments_of_others_in_my_own_words", variable_name)) %>% 
+#     tibble::deframe()
+
+# Create a new vector of names for these columns
+ability_names <- paste0("ability_", seq_along(ability_items)) %>% purrr::set_names(., ability_items)
+
+# Edit the `variable_names` column
+# Use dplyr::mutate() and dplyr::case_match() to change the column `variable_name`:
+codebook_post <- codebook_post %>% dplyr::mutate(
+    variable_name = dplyr::case_match(
+        variable_name, # column to match
+        'custom_data_1' ~ "unique_id", # changes 'custom_data_1' to "unique_id"
+        'to_what_extent_are_you_knowledgeable_in_conducting_research_in_your_field_of_study' ~ "knowledge",
+        'with_which_gender_do_you_most_closely_identify' ~ "gender",
+        'which_race_ethnicity_best_describes_you_please_choose_only_one' ~ "ethnicity",
+        'are_you_a_first_generation_college_student' ~ "first_gen",
+        names(research_names) ~ research_names[variable_name], # takes the above named vector and when the name matches, applies new value in that position as replacement.
+        names(ability_names) ~ ability_names[variable_name],   # Same for `ability_names`
+        .default = variable_name # returns default value from original `variable_name` if not changed.
+        )
+    )
+
+# Write out the edited codebook, be sure to double check questions match new names before writing out:
+readr::write_csv(codebook_post, file = "sm_data/fake_codebook_post.csv")
+
+# Read in the codebook: 
+codebook_post <- readr::read_csv("sm_data/fake_codebook_post.csv", show_col_types = FALSE)
+# 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook: -----
+post_data <- readRenameData(post_data_fp, codebook = codebook_post)
+post_data
+```
 
 ```{r}
 # chatGPT suggestion:
@@ -195,78 +324,3 @@ print(colnames(data))  # Print new column names
 
 
 ```
-
-    
-    
-### Test on fake post data:
-```{r}
-post_data_fp <- "sm_data/fake_sm_post.csv"
-# 1. Create and the codebook:
-codebook_post <- createCodebook(post_data_fp)
-
-# One way to change the `variable_name` column without position numbers:
-# # Create names as vectors:
-# research_names <- purrr::map_chr(1:8, \(x) paste0("research_",x))
-# ability_names <- purrr::map_chr(1:6, \(x) paste0("ability_",x))
-# 
-# # Create old Names as vectors:
-# research_vals <- c("research_relevant_background_literature", "identify_a_scientific_problem", "develop_testable_and_realistic_research_questions", "develop_a_falsifiable_hypothesis", 
-#                    "conduct_quantitative_data_analysis", "design_an_experiment_create_a_research_design", "interpret_findings_and_making_recommendations", "scientific_or_technical_writing")
-# ability_vals <- c("judge_the_value_of_new_information_or_evidence_presented_to_me", "approach_complex_issues_in_a_variety_of_ways", "weigh_both_sides_of_an_argument", 
-#                   "identify_analogies_between_theories", "eliminate_extraneous_variables_when_designing_experiments", "rephrase_the_arguments_of_others_in_my_own_words")
-# # Use replace and case_when to change all variable names, inside replace, select the old names using the _vals vectors and replace with the _names vectors:
-# codebook_post <- codebook_post %>% mutate(variable_name = replace(variable_name, variable_name %in% research_vals, research_names),
-#                                           variable_name = replace(variable_name, variable_name %in% ability_vals, ability_names),
-#                                          variable_name = case_match(variable_name,
-#                                                                     'custom_data_1' ~ "unique_id",
-#                                                                     'to_what_extent_are_you_knowledgeable_in_conducting_research_in_your_field_of_study' ~ "knowledge",
-#                                                                     'with_which_gender_do_you_most_closely_identify' ~ "gender",
-#                                                                     'which_race_ethnicity_best_describes_you_please_choose_only_one' ~ "ethnicity",
-#                                                                     'are_you_a_first_generation_college_student' ~ "first_gen",
-#                                                                      .default = variable_name) # returns default value of the original variable 11:18
-#                                           )
-
-# Another way to change the `variable_name` column with position numbers:
-# 8 items that are matrix-style likert scales- turned into a scale called `research`- here is how to easily name them all at once:
-# Columns 11 to 18 belong to the "research" matrix question
-research_items <- codebook_post[["variable_name"]][11:18]
-
-# Create a new named vector of names for these columns
-research_names <- paste0("research_", seq_along(research_items)) %>% purrr::set_names(., research_items)
-
-# 6 items that are matrix-style likert scales- turned into a scale called `ability`- here is how to easily name them all at once:
-# Columns 19 to 24 belong to the "ability" matrix question: selecting by row position in column named `variable_name`:
-ability_items <- codebook_post[["variable_name"]][19:24]
-# # this works too:
-# codebook_post %>% select(variable_name) %>%  
-#     dplyr::slice(match("judge_the_value_of_new_information_or_evidence_presented_to_me", variable_name):match("rephrase_the_arguments_of_others_in_my_own_words", variable_name)) %>% 
-#     tibble::deframe()
-
-# Create a new vector of names for these columns
-ability_names <- paste0("ability_", seq_along(ability_items)) %>% purrr::set_names(., ability_items)
-
-# Use dplyr::mutate() and dplyr::case_match() to change the column `variable_name`:
-codebook_post <- codebook_post %>% dplyr::mutate(
-    variable_name = dplyr::case_match(
-        variable_name, # column to match
-        'custom_data_1' ~ "unique_id", # changes 'custom_data_1' to "unique_id"
-        'to_what_extent_are_you_knowledgeable_in_conducting_research_in_your_field_of_study' ~ "knowledge",
-        'with_which_gender_do_you_most_closely_identify' ~ "gender",
-        'which_race_ethnicity_best_describes_you_please_choose_only_one' ~ "ethnicity",
-        'are_you_a_first_generation_college_student' ~ "first_gen",
-        names(research_names) ~ research_names[variable_name], # takes the above named vector and when the name matches, applies new value in that position as replacement.
-        names(ability_names) ~ ability_names[variable_name],   # Same for `ability_names`
-        .default = variable_name # returns default value from original `variable_name` if not changed.
-        )
-    )
-
-# Write out the edited codebook, need to go in and edit the column named `variable_name` manually:
-readr::write_csv(codebook_post, file = "sm_data/fake_codebook_post.csv")
-
-# Read in the codebook: 
-codebook_post <- readr::read_csv("sm_data/fake_codebook_post.csv", show_col_types = FALSE)
-# 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook :
-post_data <- readRenameData(post_data_fp, codebook = codebook_post)
-post_data
-```
-
