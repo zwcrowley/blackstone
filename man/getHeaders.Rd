@@ -2,7 +2,7 @@
 % Please edit documentation in R/readData.R
 \name{getHeaders}
 \alias{getHeaders}
-\title{Create Codebooks and Read in Data with New Names from SurveyMonkey Data}
+\title{Convert two row headers from SurveyMonkey data into long from data}
 \usage{
 getHeaders(file_path)
 }
@@ -14,18 +14,5 @@ A \link[tibble:tibble-package]{tibble} with the data in 3 columns: \code{questio
 \code{question_name} is the first header row, \code{full_text} is the second header row, and \code{full_question_text} is the combination of the two headers.
 }
 \description{
-\code{\link[=getHeaders]{getHeaders()}}, \code{\link[=createCodebook]{createCodebook()}}, and \code{\link[=readRenameData]{readRenameData()}} provide tools for
-dealing with survey data from SurveyMonkey.
-\code{\link[=getHeaders]{getHeaders()}} is a helper function that turns the two-headers from SurveyMonkey
-data into a three column tibble where the third column \code{full_question_text}
-is the combination of the two headers.
-\code{\link[=createCodebook]{createCodebook()}} returns the three columns from \code{getHeaders()} and adds two more
-columns, \code{variable_name} which is a cleaned up version of \code{full_question_text} and
-\code{position} which is the column position number for each \code{variable_name}.
-\code{\link[=readRenameData]{readRenameData()}} takes in a file path and the codebook created from  \code{createCodebook()}
-and reads in the data with the updated variable names.
-
-Convert two row headers from SurveyMonkey data into long from data
-
 \code{getHeaders()} is a helper function to get headers into a long form tibble.
 }

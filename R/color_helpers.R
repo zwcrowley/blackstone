@@ -147,7 +147,7 @@ qualColors <- function(add_names = FALSE) {
 #'      from the named vector of color hex codes , defaults to `NULL` and returns the full palette.
 #'
 #' @return a named character vector of color hex codes.
-#'
+#' @keywords internal
 #' @export
 customCols <- function(pal = qualColors(), cols = NULL) {
     # Gather all color names or vector positions into a new character vector:

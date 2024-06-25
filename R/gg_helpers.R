@@ -1,6 +1,3 @@
-#' Helper Functions for ggplot2 visuals for the `bre` package
-#'
-#'
 #' Helper function to Add Theme Options to a Bar Chart
 #'
 #' @description A function for add all plot theme options to a bar chart, pass as args the
@@ -11,7 +8,6 @@
 #' @param font_family Required, character, the name of the font family to use for chart.
 #'
 #' @return A list of ggplot2 guides and theme objects to add to a ggplot2 object.
-#'
 #' @export
 addBarChartTheme <- function(font_size, font_family) {
     # if (isTRUE(legend_title)) { #add legend_title_theme to legend.title below and func arg: , legend_title = FALSE
@@ -60,7 +56,6 @@ addBarChartTheme <- function(font_size, font_family) {
 #' @param font_family Required, character, the name of the font family to use for chart.
 #'
 #' @return A list of ggplot2 guides and theme objects to add to a ggplot2 object.
-#'
 #' @export
 addBarChartPrePostTheme <- function(font_size, font_family) {
     list(
@@ -95,7 +90,6 @@ addBarChartPrePostTheme <- function(font_size, font_family) {
 #'      places the plot tag, defaults to c(-0.01, 1.05).
 #'
 #' @return A list of ggplot2 labs and theme objects to add to a ggplot2 object.
-#'
 #' @export
 addPlotTag <- function(n, font_size, font_family, plot_tag_position = c(-0.01, 1.05)) {
     list(

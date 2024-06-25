@@ -1,25 +1,10 @@
-#' Create Codebooks and Read in Data with New Names from SurveyMonkey Data
-#'
-#' @description
-#'
-#' [getHeaders()], [createCodebook()], and [readRenameData()] provide tools for
-#' dealing with survey data from SurveyMonkey.
-#' [getHeaders()] is a helper function that turns the two-headers from SurveyMonkey
-#' data into a three column tibble where the third column `full_question_text`
-#' is the combination of the two headers.
-#' [createCodebook()] returns the three columns from `getHeaders()` and adds two more
-#' columns, `variable_name` which is a cleaned up version of `full_question_text` and
-#' `position` which is the column position number for each `variable_name`.
-#' [readRenameData()] takes in a file path and the codebook created from  `createCodebook()`
-#' and reads in the data with the updated variable names.
-#'
 #' Convert two row headers from SurveyMonkey data into long from data
 #'
 #' `getHeaders()` is a helper function to get headers into a long form tibble.
 #'
 #' @param file_path Required, A file path with extension of .csv or .xlsx.
 #'
-#' @return A [tibble][tibble::tibble-package] with the data in 3 columns: `question_name`, `full_text`, and `full_question_text`.
+#' @return A [tibble][tibble::tibble-package] with 3 columns: `question_name`, `full_text`, and `full_question_text`.
 #'      `question_name` is the first header row, `full_text` is the second header row, and `full_question_text` is the combination of the two headers.
 #'
 #' @export
@@ -50,9 +35,9 @@ getHeaders <- function(file_path) {
 #'      It returns a long form tibble to use as a code book for the SurveyMonkey data, it returns 5 columns described below and `variable_name`
 #'      is the column that will be used in the function [readRenameData()] to rename the variable names in the data to be imported into R.
 #'
-#' @param file_path Required, A file path with extension of .csv or .xlsx.
+#' @inheritParams getHeaders
 #'
-#' @return A [tibble][tibble::tibble-package] with the data in 5 columns: `question_name`, `full_text`, `full_question_text`, `variable_name` and `position`.
+#' @return A [tibble][tibble::tibble-package] with 5 columns: `question_name`, `full_text`, `full_question_text`, `variable_name` and `position`.
 #'      `question_name` is the first header row, `full_text` is the second header row, `full_question_text` is the combination of the two headers,
 #'      `variable_name` is a cleaned up version for `full_question_text` and will be the column to edit to change the column names later on to more
 #'      meaningful and shorter names, and `position` is the column number for each `variable_name`.
@@ -71,12 +56,12 @@ createCodebook <- function(file_path) {
 #' `readRenameData()` Reads in SurveyMonkey data with new variable names taken from the codebook [tibble][tibble::tibble-package] column named `variable_name`
 #'      created by using the function [createCodebook()].
 #'
-#' @param file_path Required, A file path with extension of .csv or .xlsx.
+#' @inheritParams getHeaders
 #'
 #' @param codebook Required, A [tibble][tibble::tibble-package] created by using the function [createCodebook()] that has the column named `variable_name`
 #'      that will be the new names of the data imported into R.
 #'
-#' @return A [tibble][tibble::tibble-package] that is the data from SurveyMonkey that has new variable names.
+#' @return A [tibble][tibble::tibble-package] of SurveyMonkey data with new variable names.
 #'
 #' @export
 readRenameData <- function(file_path, codebook) {

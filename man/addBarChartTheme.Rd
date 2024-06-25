@@ -2,7 +2,7 @@
 % Please edit documentation in R/gg_helpers.R
 \name{addBarChartTheme}
 \alias{addBarChartTheme}
-\title{Helper Functions for ggplot2 visuals for the \code{bre} package}
+\title{Helper function to Add Theme Options to a Bar Chart}
 \usage{
 addBarChartTheme(font_size, font_family)
 }
@@ -17,7 +17,4 @@ A list of ggplot2 guides and theme objects to add to a ggplot2 object.
 \description{
 A function for add all plot theme options to a bar chart, pass as args the
 font size and family.
-}
-\details{
-Helper function to Add Theme Options to a Bar Chart
 }
