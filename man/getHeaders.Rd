@@ -10,7 +10,7 @@ getHeaders(file_path)
 \item{file_path}{Required, A file path with extension of .csv or .xlsx.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} with the data in 3 columns: \code{question_name}, \code{full_text}, and \code{full_question_text}.
+A \link[tibble:tibble-package]{tibble} with 3 columns: \code{question_name}, \code{full_text}, and \code{full_question_text}.
 \code{question_name} is the first header row, \code{full_text} is the second header row, and \code{full_question_text} is the combination of the two headers.
 }
 \description{

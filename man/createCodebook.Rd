@@ -10,7 +10,7 @@ createCodebook(file_path)
 \item{file_path}{Required, A file path with extension of .csv or .xlsx.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} with the data in 5 columns: \code{question_name}, \code{full_text}, \code{full_question_text}, \code{variable_name} and \code{position}.
+A \link[tibble:tibble-package]{tibble} with 5 columns: \code{question_name}, \code{full_text}, \code{full_question_text}, \code{variable_name} and \code{position}.
 \code{question_name} is the first header row, \code{full_text} is the second header row, \code{full_question_text} is the combination of the two headers,
 \code{variable_name} is a cleaned up version for \code{full_question_text} and will be the column to edit to change the column names later on to more
 meaningful and shorter names, and \code{position} is the column number for each \code{variable_name}.

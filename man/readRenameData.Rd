@@ -13,7 +13,7 @@ readRenameData(file_path, codebook)
 that will be the new names of the data imported into R.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} that is the data from SurveyMonkey that has new variable names.
+A \link[tibble:tibble-package]{tibble} of SurveyMonkey data with new variable names.
 }
 \description{
 \code{readRenameData()} Reads in SurveyMonkey data with new variable names taken from the codebook \link[tibble:tibble-package]{tibble} column named \code{variable_name}

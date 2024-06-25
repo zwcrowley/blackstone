@@ -1,6 +1,3 @@
-#' Helper Functions for the `bre` package
-#'
-#'
 #' Helper function to get question order for bar charts
 #'
 #' @description Helper function to get question order for bar charts when not supplied by user. Takes the
@@ -41,4 +38,24 @@ questionOrder <- function(df, pre_post = TRUE) {
                                   as.character()
     }
     return(var_order)
+}
+
+
+#' Get path to `bre` example data
+#'
+#' @description `bre` comes bundled with some example files in its `inst/extdata`
+#'      directory. This function make them easy to access.
+#'
+#' @param path Name of file. If `NULL`, all of the example files will be listed.
+#' @importFrom fs path_package
+#' @export
+#' @examples
+#' bre_example()
+#' bre_example("fake_data.csv")
+bre_example <- function(path = NULL) {
+    if (is.null(path)) {
+        dir(fs::path_package("extdata", package = "bre"))
+    } else {
+        fs::path_package("extdata", path, package = "bre")
+    }
 }
