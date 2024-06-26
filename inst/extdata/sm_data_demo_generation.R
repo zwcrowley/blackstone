@@ -1,8 +1,8 @@
-# Fake SurveyMonkey and demograpich data for `bre` package:
+# Fake SurveyMonkey and demographic data for `bre` package:
 # Zack Crowley
 # Creating a fake dataset to use in the 'bre' package, this will be all the standard SurveyMonkey data fields
-# and three demographic variables: This will be the basis for pre-post data generated in the two other scripts in
-# `data-raw`
+# and three demographic variables: This will be the basis for pre-post data generated in the other two scripts in
+# `extdata`- `sm_data_pre.R` and `sm_data_post.R`
 
 # Prevents sci notation and sets the output of decimals to 4 (0.0000):
 options(scipen = 999, digits = 4)
@@ -19,9 +19,8 @@ lp <- LoremProvider_en_US$new()
 np <- NumericsProvider$new()
 person <- PersonProvider_en_US$new()
 
-# Total N of 100 clients:
+# Total N of 100 fake survey respondets:
 n <- 100
-
 
 # SurveyMonkey respondent_id, numeric vector
 respondent_id <- as.numeric(114628000001:114628000100)
@@ -57,7 +56,6 @@ sm_data_demo <- tibble(
 ) %>% select(respondent_id, collector_id, start_date, end_date, ip_address, email_address, first_name, last_name, unique_id, gender, ethnicity, first_gen) # set correct order
 sm_data_demo
 
-# Write out data tibble with sm data and demos to `data-raw` folder:
-readr::write_csv(sm_data_demo, "sm_data_demo.csv")
-# For this data set, it will NOT be used in the package, but code below would do that:
-# usethis::use_data(sm_data_demo, overwrite = TRUE)
+# Write out data tibble with sm data and demos to `extdata` folder:
+readr::write_csv(sm_data_demo, "inst/extdata/sm_data_demo.csv")
+

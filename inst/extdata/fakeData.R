@@ -82,29 +82,8 @@ data <- dplyr::tibble(
 )
 
 # Write out fake data set "data" to .xlsx excel file in new directory called "extdata", and a .csv file with the same name and location:
-write_xlsx(data, "extdata/fake_data.xlsx")
+# write_xlsx(data, "extdata/fake_data.xlsx")
 # .csv file:
-write_csv(data, "extdata/fake_data.csv")
-# .csv file to dashboard_test:
-write_csv(data, "dashboard_test/fake_data.csv")
-####
-# How to make new names that can be used in "R_Reporting_template.Rmd" to create charts and tables:
-# Cleaning names
-data <- data %>% clean_names()
-# Set names- add suffix to variables to use later to build charts and tables:
-# For gender and role variables, create horizontal bar charts
-names(data)[2:3] <- str_glue("{names(data)[2:3]}_horzbar")
-# For composite scales, create stacked bar charts, with scale levels:
-# Research items
-names(data)[4:8] <- str_glue("{names(data)[4:8]}_stack_levels_min_ext")
-# Collab items
-names(data)[9:11] <- str_glue("{names(data)[9:11]}_stack_levels_never_always")
-# Training usefulness items
-names(data)[12:16] <- str_glue("{names(data)[12:16]}_stack_levels_useful")
+write_csv(data, "inst/extdata/fake_data.csv")
 
-# Write out data that has the names suffixes added that are used to know how to create visuals/charts/tables:
-# .xlsx excel file in new directory called "extdata", and a .csv file with the same name and location:
-write_xlsx(data, "extdata/fake_data_new_names.xlsx")
-# .csv file:
-write_csv(data, "extdata/fake_data_new_names.csv")
 
