@@ -4,11 +4,11 @@
 \name{bre-package}
 \alias{bre}
 \alias{bre-package}
-\title{bre: Helper Functions for Blackstone Research and Evaluation}
+\title{bre: Blackstone Research and Evaluation Data Analysis and Visualization}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-The goal of `bre` is to make data cleaning and the creation of visualizations easier and faster for Blackstone Research and Evaluation. `bre` contains functions to create visuals with Blackstone Research and Evaluation branding and helper functions for common data cleaning and manipulation tasks for everyone at Blackstone Research and Evaluation.
+The goal of `bre` is to make data manipulation, analysis, and visualization easier and faster for Blackstone Research and Evaluation. `bre` contains functions to create visuals with Blackstone Research and Evaluation branding and as well as common data cleaning, manipulation and analysis tasks for everyone at Blackstone Research and Evaluation.
 }
 \seealso{
 Useful links:

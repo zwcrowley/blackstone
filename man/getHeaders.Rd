@@ -10,8 +10,8 @@ getHeaders(file_path)
 \item{file_path}{Required, A file path with extension of .csv or .xlsx.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} with 3 columns: \code{question_name}, \code{full_text}, and \code{full_question_text}.
-\code{question_name} is the first header row, \code{full_text} is the second header row, and \code{full_question_text} is the combination of the two headers.
+A \link[tibble:tibble-package]{tibble} with 3 columns: \code{header_1}, \code{header_2}, and \code{combined_header}.
+\code{header_1} is the first header row, \code{header_2} is the second header row, and \code{combined_header} is the combination of the two headers.
 }
 \description{
 \code{getHeaders()} is a helper function to get headers into a long form tibble.

@@ -10,10 +10,10 @@ createCodebook(file_path)
 \item{file_path}{Required, A file path with extension of .csv or .xlsx.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} with 5 columns: \code{question_name}, \code{full_text}, \code{full_question_text}, \code{variable_name} and \code{position}.
-\code{question_name} is the first header row, \code{full_text} is the second header row, \code{full_question_text} is the combination of the two headers,
-\code{variable_name} is a cleaned up version for \code{full_question_text} and will be the column to edit to change the column names later on to more
-meaningful and shorter names, and \code{position} is the column number for each \code{variable_name}.
+A \link[tibble:tibble-package]{tibble} with 5 columns: \code{header_1}, \code{header_2}, \code{combined_header}, \code{variable_name} and \code{position}.
+\code{header_1} is the first header row, \code{header_2} is the second header row, \code{combined_header} is the combination of the two headers,
+\code{position} is the column number for each \code{combined_header}, and \code{variable_name} is a cleaned up version for \code{combined_header} and
+will be the column to edit to change the column names later on to shorter and more meaningful names.
 }
 \description{
 \code{createCodebook()} creates a partial codebook that can be edited to create useful variable names from SurveyMonkey data.
