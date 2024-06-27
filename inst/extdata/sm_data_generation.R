@@ -248,7 +248,7 @@ full_text_header_2_post_named <- full_text_header_2_post %>% purrr::set_names(na
 # Convert whole tibble to character variables, Add the `full_text_header_2` vector as row 1 in the tibble and
 # set names to question_name_header_1_post: ready to write out to .csv
 sm_data_post <- sm_data_post %>% mutate(across(everything(), as.character))  %>%
-    add_row(!!!full_text_header_2_post_named, .before = 1) %>%
+    add_row(!!!full_text_header_2_post_named, .before = 1) %>% # add as first row the named full_text_header_2_post
     purrr::set_names(question_name_header_1_post)
 
 
