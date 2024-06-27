@@ -9,11 +9,11 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of `bre` is to make data cleaning and the creation of
-visualizations easier and faster for Blackstone Research and Evaluation.
+The goal of `bre` is to make data manipulation, analysis, and
+visualization easier and faster for Blackstone Research and Evaluation.
 `bre` contains functions to create visuals with Blackstone Research and
-Evaluation branding and helper functions for common data cleaning and
-manipulation tasks for everyone at Blackstone Research and Evaluation.
+Evaluation branding and as well as common data cleaning, manipulation
+and analysis tasks for everyone at Blackstone Research and Evaluation.
 
 ## Installation
 
@@ -26,7 +26,7 @@ devtools::install_github("zwcrowley/bre")
 ```
 
 On the initial installation you will also have to install and import
-fonts from `extrafont` package:
+fonts from the `extrafont` package:
 
 ``` r
 # install.packages("extrafont")
@@ -39,6 +39,9 @@ extrafont::loadfonts("all", quiet = TRUE)
 ```
 
 ## Usage
+
+Here is just one use for `bre` that creates a stacked bar chart of
+pre-post data:
 
 ``` r
 library(bre)
@@ -55,16 +58,16 @@ items <- dplyr::tibble(
   pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   post_Research = pre_Research + 1
 )
-# Set up the named vector to pass to scale_labels, follow this pattern- c("<new label>" = "<original variable value>"):
-levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
+# Set up the named vector to pass to scale_labels, follow this pattern- c("{new label}" = "{original variable name}"):
+named_levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
 # Recode numeric variables to factors using `recodeCat()` and select the factor variables:
-cat_items <- bre::recodeCat(df = items, scale_labels = levels_min_ext) %>% 
+cat_items <- bre::recodeCat(df = items, scale_labels = named_levels_min_ext) %>% 
                 dplyr::select(dplyr::where(is.factor))
 
-# bar_scale_labels as just the names from levels_min_ext:
-bar_scale_labels <- names(levels_min_ext)
+# `levels_min_ext` as just the names from `named_levels_min_ext`:
+levels_min_ext <- names(named_levels_min_ext)
 
-# Question labels as a named vector with the naming structure like this: c("{new label}" = "{original variable name}"):
+# Question labels as a named vector with the naming structure like this- c("{new label}" = "{original variable name}"):
 question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Write a lot of research papers" = "Write",
                      "Research in a lab with faculty" = "Research",
@@ -72,9 +75,9 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Source work for a research paper" = "Source")
 
 # With new labels and order taken from `question_labels` argument, each 
-# item has it's own sample size in the label:
+# item has it's own sample size in the label (overall_n = FALSE):
 bre::stackedBarChart(
-   df = cat_items, pre_post = TRUE, scale_labels = bar_scale_labels, overall_n = FALSE,
+   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext, overall_n = FALSE,
    question_labels = question_labels, question_order = TRUE, percent_label = TRUE
 )
 ```
@@ -90,4 +93,5 @@ More functions and visuals will be added to `bre` package as needed, be
 sure to reach out with any ideas for the package or issues!
 
 If you encounter a clear bug or need any help with this package, please
-reach out to me on the Google Chat space, direct message me or email.
+reach out to Zack Crowley on the Google Chat space, direct message, or
+email at <zcrowley@blackstoneevaluation.com>.

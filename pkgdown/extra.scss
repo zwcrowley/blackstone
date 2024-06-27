@@ -1,0 +1,20 @@
+/* SCSS Styling options for app layout: */
+
+/*-- scss:defaults -- */
+$bre_blue: #283251;
+$light_grey: #eaeaeb;
+/*-- $navbar-bg: $bre_blue; -- */
+
+/*-- Code chunks --*/
+pre, code {
+  background-color: $light_grey;
+}
+/*-- Active Navbar link --*/
+.navbar-dark .navbar-nav .active>.nav-link {
+    background: $light_grey;
+    color: $bre_blue;
+}
+/*-- Navbar links --*/
+.navbar-dark, .navbar[data-bs-theme="dark"] {
+    --bs-navbar-color: $light_grey;
+}
