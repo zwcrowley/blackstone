@@ -2,7 +2,7 @@
 % Please edit documentation in R/colorHelpers.R
 \name{qualColors}
 \alias{qualColors}
-\title{BRE Qualitative Colors as a Vector}
+\title{blackstone Qualitative Colors as a Vector}
 \usage{
 qualColors(add_names = FALSE)
 }

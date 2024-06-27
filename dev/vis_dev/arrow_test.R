@@ -391,8 +391,8 @@ new_arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_e
 five_colors <- c("grey","lightgreen","#79AB53", "#4B9FA6", "#2C2C4F")
 
 
-items %>% dplyr::select(-edu_level) %>% bre::arrowChart(scale_labels = levels_min_ext, arrow_colors = five_colors,
+items %>% dplyr::select(-edu_level) %>% blackstone::arrowChart(scale_labels = levels_min_ext, arrow_colors = five_colors,
                     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 
-bre::arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
+blackstone::arrowChartGroup(df = items, group = "edu_level", scale_labels = levels_min_ext, group_colors = three_colors,
                     overall_n = FALSE, question_labels = NULL, question_order = FALSE)

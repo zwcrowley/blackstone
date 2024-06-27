@@ -13,11 +13,11 @@ data <- dplyr::tibble(
 
 role_summ <- data %>%
     dplyr::select(role) %>%
-    bre::dataSumm()
+    blackstone::dataSumm()
 
 role_color <- c("#2C2C4F", "#4B9FA6", "#79AB53", "#767171", "yellow")
 
-bre::horzBarChart(df = role_summ, scale_colors = role_color, width = 0.6)
+blackstone::horzBarChart(df = role_summ, scale_colors = role_color, width = 0.6)
 
 width = 0.6
 # Create a font family character var so that it is easy to change, could also be a new arg:

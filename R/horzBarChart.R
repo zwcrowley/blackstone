@@ -24,7 +24,7 @@
 #'
 #' role_summ <- data %>%
 #'   dplyr::select(role) %>%
-#'   bre::dataSumm()
+#'   blackstone::dataSumm()
 #'
 #' role_color <- c("#2C2C4F", "#4B9FA6", "#79AB53", "#767171")
 #'

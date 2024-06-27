@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = FALSE,
 library(colorspace)
 library(magrittr)
 library(tidyverse)
-library(bre) # blackstone R package
+library(blackstone) # blackstone R package
 
 set.seed(424429) # for reproducibility
 
@@ -65,8 +65,8 @@ question_labels <- c(
 )
 
 # Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
-cat_items <- bre::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items <- blackstone::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- blackstone::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
 
 
 ######## Data: Strongly disagree to Strongly Agree
@@ -102,8 +102,8 @@ levels_dis_agree_named <- c(
 levels_dis_agree <- names(levels_dis_agree_named) 
 
 # Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
-cat_items_div <- bre::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
-cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_div <- blackstone::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single_div <- blackstone::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
 
 ```
 
@@ -160,7 +160,7 @@ hr {
 #### - With arrows in Blackstone dark blue "#283251"
 
 ```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext,
+blackstone::arrowChart(df = items, scale_labels = levels_min_ext,
            overall_n = T, question_labels = question_labels, question_order = TRUE)
 
 ```
@@ -227,7 +227,7 @@ items_group <- dplyr::tibble(
 
 ```{r}
 new_cols <- c("#000000", qualFillColors(2)) %>% set_names(c("overall","grad", "undergrad"))
-bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, group_colors = new_cols,
+blackstone::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, group_colors = new_cols,
     overall_n = T, question_labels = NULL, question_order = FALSE)
 
 ```
@@ -253,7 +253,7 @@ data <- dplyr::tibble(
 # set up data for chart:
 race_summ <- data %>%
   dplyr::select(race) %>%
-  bre::dataSumm(sort_n = T)
+  blackstone::dataSumm(sort_n = T)
 
 # Filtered to only three categories:
 three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or Latino", "African American or Black")) 
@@ -262,9 +262,9 @@ three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or La
 ### Horizontal Bar Chart with custom qualitative color Palette:
 
 ```{r}
-r_colors <- bre::qualFillColors(n_colors = length(unique(race_summ[["response"]]))) %>% purrr::set_names(race_summ[["response"]])
+r_colors <- blackstone::qualFillColors(n_colors = length(unique(race_summ[["response"]]))) %>% purrr::set_names(race_summ[["response"]])
 # horzBarChart() with custom qual colors c("#E69F00"", "#56B4E9", "#009E73", "#CC79A7", "#D55E00", "#0072B2", "#440154FF")
-bre::horzBarChart(df = race_summ, scale_colors = r_colors, width = 0.6)
+blackstone::horzBarChart(df = race_summ, scale_colors = r_colors, width = 0.6)
 
 ```
 
@@ -273,7 +273,7 @@ bre::horzBarChart(df = race_summ, scale_colors = r_colors, width = 0.6)
 
 ```{r}
 # horzBarChart() with colors
-bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73"), width = 0.6)
+blackstone::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73"), width = 0.6)
 
 ```
 
@@ -281,9 +281,9 @@ bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "
 ### Reversed color palette with 7 categories in horizontal bar chart to show bottom colors:
 
 ```{r}
-rev_colors <- bre::qualFillColors(n_colors = 11, rev_colors = T)[1:7] %>% purrr::set_names(race_summ[["response"]])
+rev_colors <- blackstone::qualFillColors(n_colors = 11, rev_colors = T)[1:7] %>% purrr::set_names(race_summ[["response"]])
 # horzBarChart() with custom qual colors c("#E69F00"", "#56B4E9", "#009E73", "#CC79A7", "#D55E00", "#0072B2", "#440154FF")
-bre::horzBarChart(df = race_summ, scale_colors = rev_colors, width = 0.6)
+blackstone::horzBarChart(df = race_summ, scale_colors = rev_colors, width = 0.6)
 
 ```
 
@@ -295,7 +295,7 @@ bre::horzBarChart(df = race_summ, scale_colors = rev_colors, width = 0.6)
 
 ```{r}
 cat_items_div %>%
-bre::stackedBarChart( 
+blackstone::stackedBarChart( 
    df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
    question_labels = question_labels, question_order = F, percent_label = TRUE, width = NULL, overall_n = T
 )
@@ -305,7 +305,7 @@ bre::stackedBarChart(
 
 ```{r}
 cat_items_single_div %>% 
-bre::stackedBarChart( 
+blackstone::stackedBarChart( 
    df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree, 
     percent_label = TRUE, width = NULL, question_order = T, overall_n = F, question_labels = question_labels
 ) 
@@ -331,7 +331,7 @@ cat("<br>")
 ### Stacked bar chart with `Blues 3` color scale:
 
 ```{r}
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )

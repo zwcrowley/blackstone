@@ -19,11 +19,11 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Organization of a large research project" = "Organization",
                      "Source work for a research paper" = "Source")
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
+cat_items_single <- blackstone::recodeCat(items_single, levels_min_ext)
 # Select the factor variables:
 cat_items_single <- cat_items_single %>% dplyr::select(dplyr::where(is.factor))
 # Pass the factor variables and the levels to 'stackedBarChart()':
-stacked_chart_single <- bre::stackedBarChart(
+stacked_chart_single <- blackstone::stackedBarChart(
     df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
     percent_label = TRUE, width = 0.6
 )

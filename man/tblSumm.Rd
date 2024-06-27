@@ -39,7 +39,7 @@ data <- dplyr::tibble(
 
 role_summ <- data \%>\%
   dplyr::select(role) \%>\%
-  bre::dataSumm()
+  blackstone::dataSumm()
 
 role_summ \%>\% tblSumm()
 }

@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# bre <a href="https://zwcrowley.github.io/bre/"><img src="man/figures/logo.png" align="right" height="139" alt="bre website" /></a>
+# blackstone <a href="https://zwcrowley.github.io/blackstone/"><img src="man/figures/logo.png" align="right" height="139" alt="blackstone website" /></a>
 
 <!-- badges: start -->
 
@@ -9,20 +9,21 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of `bre` is to make data manipulation, analysis, and
+The goal of `blackstone` is to make data manipulation, analysis, and
 visualization easier and faster for Blackstone Research and Evaluation.
-`bre` contains functions to create visuals with Blackstone Research and
-Evaluation branding and as well as common data cleaning, manipulation
-and analysis tasks for everyone at Blackstone Research and Evaluation.
+`blackstone` contains functions to create visuals with Blackstone
+Research and Evaluation branding and as well as common data cleaning,
+manipulation and analysis tasks for everyone at Blackstone Research and
+Evaluation.
 
 ## Installation
 
-You can install the development version of `bre` from
+You can install the development version of `blackstone` from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("zwcrowley/bre")
+devtools::install_github("zwcrowley/blackstone")
 ```
 
 On the initial installation you will also have to install and import
@@ -31,7 +32,7 @@ fonts from the `extrafont` package:
 ``` r
 # install.packages("extrafont")
 library(extrafont)
-# Import fonts to get "Arial", this only has to be done one time, then `bre` package will use the code below to load the fonts automatically 
+# Import fonts to get "Arial", this only has to be done one time, then `blackstone` package will use the code below to load the fonts automatically 
 # for the functions that require that step:
 extrafont::font_import()
 # Load all fonts:
@@ -40,11 +41,11 @@ extrafont::loadfonts("all", quiet = TRUE)
 
 ## Usage
 
-Here is just one use for `bre` that creates a stacked bar chart of
-pre-post data:
+Here is just one use for `blackstone` that creates a stacked bar chart
+of pre-post data:
 
 ``` r
-library(bre)
+library(blackstone)
 # Example pre-post data:
 items <- dplyr::tibble(
   pre_Organization = c(1, 2, 3, 4, 5, 4, 3, 2, 1),
@@ -61,7 +62,7 @@ items <- dplyr::tibble(
 # Set up the named vector to pass to scale_labels, follow this pattern- c("{new label}" = "{original variable name}"):
 named_levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
 # Recode numeric variables to factors using `recodeCat()` and select the factor variables:
-cat_items <- bre::recodeCat(df = items, scale_labels = named_levels_min_ext) %>% 
+cat_items <- blackstone::recodeCat(df = items, scale_labels = named_levels_min_ext) %>% 
                 dplyr::select(dplyr::where(is.factor))
 
 # `levels_min_ext` as just the names from `named_levels_min_ext`:
@@ -76,7 +77,7 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
 
 # With new labels and order taken from `question_labels` argument, each 
 # item has it's own sample size in the label (overall_n = FALSE):
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext, overall_n = FALSE,
    question_labels = question_labels, question_order = TRUE, percent_label = TRUE
 )
@@ -89,8 +90,8 @@ how they work.
 
 ## Getting help
 
-More functions and visuals will be added to `bre` package as needed, be
-sure to reach out with any ideas for the package or issues!
+More functions and visuals will be added to `blackstone` package as
+needed, be sure to reach out with any ideas for the package or issues!
 
 If you encounter a clear bug or need any help with this package, please
 reach out to Zack Crowley on the Google Chat space, direct message, or

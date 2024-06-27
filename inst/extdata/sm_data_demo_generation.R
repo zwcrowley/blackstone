@@ -1,6 +1,6 @@
-# Fake SurveyMonkey and demographic data for `bre` package:
+# Fake SurveyMonkey and demographic data for `blackstone` package:
 # Zack Crowley
-# Creating a fake dataset to use in the 'bre' package, this will be all the standard SurveyMonkey data fields
+# Creating a fake dataset to use in the 'blackstone' package, this will be all the standard SurveyMonkey data fields
 # and three demographic variables: This will be the basis for pre-post data generated in the other two scripts in
 # `extdata`- `sm_data_pre.R` and `sm_data_post.R`
 

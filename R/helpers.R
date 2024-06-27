@@ -41,21 +41,21 @@ questionOrder <- function(df, pre_post = TRUE) {
 }
 
 
-#' Get path to `bre` example data
+#' Get path to `blackstone` example data
 #'
-#' @description `bre` comes bundled with some example files in its `inst/extdata`
+#' @description `blackstone` comes bundled with some example files in its `inst/extdata`
 #'      directory. This function make them easy to access.
 #'
 #' @param path Name of file. If `NULL`, all of the example files will be listed.
 #' @importFrom fs path_package
 #' @export
 #' @examples
-#' bre_example()
-#' bre_example("fake_data.csv")
-bre_example <- function(path = NULL) {
+#' blackstoneExample()
+#' blackstoneExample("fake_data.csv")
+blackstoneExample <- function(path = NULL) {
     if (is.null(path)) {
-        dir(fs::path_package("extdata", package = "bre"))
+        dir(fs::path_package("extdata", package = "blackstone"))
     } else {
-        fs::path_package("extdata", path, package = "bre")
+        fs::path_package("extdata", path, package = "blackstone")
     }
 }

@@ -15,7 +15,7 @@ library(magrittr)
 library(grid)
 library(gridExtra)
 library(tidyverse)
-library(bre) # blackstone R package
+library(blackstone) # blackstone R package
 
 set.seed(424429) # for reproducibility
 
@@ -100,9 +100,9 @@ question_labels <- c(
 )
 
 # Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
-cat_items <- bre::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
-cat_items_four <- bre::recodeCat(items_four , levels_min_good_named) %>% dplyr::select(dplyr::where(is.factor))
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items <- blackstone::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_four <- blackstone::recodeCat(items_four , levels_min_good_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- blackstone::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
 
 
 ######## Data: Strongly disagree to Strongly Agree
@@ -138,8 +138,8 @@ levels_dis_agree_named <- c(
 levels_dis_agree <- names(levels_dis_agree_named) 
 
 # Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
-cat_items_div <- bre::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
-cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_div <- blackstone::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single_div <- blackstone::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
 
 # for grouped arrow chart:
 # add a grouping var to the data set `items`:
@@ -165,7 +165,7 @@ items_single_three <- dplyr::tibble(
 )
 
 # Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
-cat_items_single_three <- bre::recodeCat(items_single_three, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single_three <- blackstone::recodeCat(items_single_three, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
 df <- cat_items_single_three
 scale_labels <- levels_min_ext
 pre_post <- F
@@ -367,12 +367,12 @@ question_labels <- NULL
 
 
 ```{r}
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single_three, pre_post = F, scale_labels = levels_min_ext, overall_n = T,
    question_labels = NULL, question_order = F, percent_label = TRUE, width = NULL
 )
 
-bre::divBarChart(
+blackstone::divBarChart(
    df = cat_items_single_three, pre_post = F, scale_labels = levels_min_ext, overall_n = T,
    question_labels = NULL, question_order = F, percent_label = TRUE, width = NULL
 )
@@ -1260,7 +1260,7 @@ fill_colors  <- "seq"
 #   `dark green`     = "#117733",   # 7
 #   `viridis purple` = "#440154FF", # 8
 #   `dark grey`      = "#999999",   # 9
-#   `bre blue`       = "#283251",   # 11
+#   `blackstone blue`       = "#283251",   # 11
 #   `yellow green`   = "#999933"    # 12
 #   )
 # 
@@ -1360,7 +1360,7 @@ fill_colors  <- "seq"
 
 ```{r}
 new_cols <- c(qualFillColors(2))
-bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, 
+blackstone::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, 
                      group_colors = new_cols, overall_n = T, question_labels = NULL, question_order = FALSE)
 
 ```
@@ -1370,7 +1370,7 @@ bre::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("gr
 #### - With arrows in Blackstone dark blue "#283251" as the default, users can also specify qualatative colors.
 
 ```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext, 
+blackstone::arrowChart(df = items, scale_labels = levels_min_ext, 
            overall_n = T, question_labels = question_labels, question_order = TRUE)
 
 ```
@@ -1481,10 +1481,10 @@ addBarChartPrePostTheme <- function(font_size, font_family) {
 ```
 
 
-### Update `bre::stackedBarChart()`
+### Update `blackstone::stackedBarChart()`
 
 ```{r}
-# Start by processing the data using `bre::stackedBarChart()`:
+# Start by processing the data using `blackstone::stackedBarChart()`:
 clean_items_div <- dataVizCleaning(df = cat_items_div, scale_labels = levels_dis_agree, pre_post = T, na_remove = TRUE)
 
 # Pull in all code from `stackBar_ggplot.R`:
@@ -1616,7 +1616,7 @@ stacked_bar_chart_gg
 
 
 ```{r}
-# Start by processing the data using `bre::stackedBarChart()`:
+# Start by processing the data using `blackstone::stackedBarChart()`:
 clean_items_single_div <- dataVizCleaning(df = cat_items_single_div, scale_labels = levels_dis_agree, pre_post = F, na_remove = TRUE)
 fill_colors = "div"
 # If statement to handle the value(s) of `fill_colors`:
@@ -1977,7 +1977,7 @@ ggplot(dat) +
 
 ```{r}
 scale_labels = levels_dis_agree
-# Start by processing the data using `bre::stackedBarChart()`:
+# Start by processing the data using `blackstone::stackedBarChart()`:
 clean_items_single_div <- dataVizCleaning(df = cat_items_single_div, scale_labels = levels_dis_agree, pre_post = F, na_remove = TRUE)
 fill_colors = "div"
 # If statement to handle the value(s) of `fill_colors`:

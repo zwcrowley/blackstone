@@ -16,7 +16,7 @@ a character vector of hex color codes the length of \code{n_colors}.
 }
 \description{
 A function to create a custom qualitative colors palette from the \code{Okabe-Ito} palette, reversed if rev_colors is set to TRUE.
-Drops black and yellow for use with all BRE charts and adds three other colors: "#440154FF", "#283251", and "#999933".
+Drops black and yellow for use with all Blackstone charts and adds three other colors: "#440154FF", "#283251", and "#999933".
 }
 \examples{
 # Returns the full color palette:

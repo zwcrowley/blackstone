@@ -11,7 +11,7 @@
 #' # inside scripts and Rmd docs, and eventually when moving to automating reporting in R.
 #' #
 #' # Try with three levels that are normally used like this in vectors to pass to the
-#' # scale_labels argument across bre package:
+#' # scale_labels argument across blackstone package:
 #' # # levels min_ext:
 #' # levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
 #' #

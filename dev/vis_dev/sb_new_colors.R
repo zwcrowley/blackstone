@@ -111,8 +111,8 @@ question_labels <- c(
 )
 #'
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- bre::recodeCat(items, levels_min_ext)
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext)
+cat_items <- blackstone::recodeCat(items, levels_min_ext)
+cat_items_single <- blackstone::recodeCat(items_single, levels_min_ext)
 #'
 # Select the factor variables:
 cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))

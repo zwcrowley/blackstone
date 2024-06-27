@@ -101,9 +101,9 @@ question_labels <- c(
 
 # Recode the numeric to factor variables using the levels from levels_min_ext and
 # select the factor variables::
-cat_items <- bre::recodeCat(items, levels_min_ext) \%>\%
+cat_items <- blackstone::recodeCat(items, levels_min_ext) \%>\%
                  dplyr::select(dplyr::where(is.factor))
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext) \%>\%
+cat_items_single <- blackstone::recodeCat(items_single, levels_min_ext) \%>\%
                         dplyr::select(dplyr::where(is.factor))
 
 # Pass the factor variables and the levels to stackedBarChart:

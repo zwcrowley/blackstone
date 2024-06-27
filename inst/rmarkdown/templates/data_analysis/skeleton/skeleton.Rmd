@@ -34,10 +34,10 @@ library(extraInserts) # extra symbol helpers like %<>%
 library(extrafont) # load fonts espcially "Arial" font for use in visuals
 loadfonts(device = "win", quiet = TRUE)
 
-# If you haven't installed "bre", un-comment and run the next two lines then load library(bre):
+# If you haven't installed "blackstone", un-comment and run the next two lines then load library(blackstone):
 # install.packages("devtools")
-# devtools::install_github("zwcrowley/bre")
-library(bre) # Blackstone Research and Evaluation helpers
+# devtools::install_github("zwcrowley/blackstone")
+library(blackstone) # Blackstone Research and Evaluation helpers
 
 # Prevents sci notation and sets the output of decimals to 4 (0.0000):
 options(scipen = 999, digits = 4)
@@ -143,7 +143,7 @@ merged_data <- merged_data %>% mutate(cat_role = factor(case_when(
                       )
 # case_when() takes in a statement on the left side of the ~ and when that is true returns the statement on the right side of the ~ to the new variable, in this case cat_role
 # so when role == 1 then cat_role will be == "Undergraduate student" and so on.
-# bre package also has a function that works similar to the above code called recodeCat(), This function takes in a df, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument, returns a the original variable(s) new factor variable named "cat_{variable(s)}":
+# blackstone package also has a function that works similar to the above code called recodeCat(), This function takes in a df, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument, returns a the original variable(s) new factor variable named "cat_{variable(s)}":
 cat_role <- merged_data %>% select(role) %>% 
     recodeCat(scale_labels = c("Undergraduate student", "Graduate student", "Postdoc", "Faculty"), number_levels = c(1,2,3,4)) %>% select(cat_role) 
 # Add new cat_role variable back to merged data:
@@ -173,13 +173,13 @@ merged_data <- merged_data %>% mutate(cat_institution)
 
 ## Frequency Tables for all demographics:
 
-A common task at Blackstone Research and Evaluation for data analysis is creating frequency tables, the next examples will show how to do with with *bre* package.
+A common task at Blackstone Research and Evaluation for data analysis is creating frequency tables, the next examples will show how to do with with *blackstone* package.
 
 ```{r freq table for role}
-# The first step is to us the dataSumm() from "bre" to calculate frequency and percentages of the variable, be sure to use the recoded factor var with "cat_" prefix:
-role_summ <- merged_data %>% select(cat_role) %>% bre::dataSumm()
+# The first step is to us the dataSumm() from "blackstone" to calculate frequency and percentages of the variable, be sure to use the recoded factor var with "cat_" prefix:
+role_summ <- merged_data %>% select(cat_role) %>% blackstone::dataSumm()
 role_summ
-# Next, the tblSumm() from "bre" will use flextable() to create a nice formatted table that can be rendered to html and also works nicely in .pptx and .docx
+# Next, the tblSumm() from "blackstone" will use flextable() to create a nice formatted table that can be rendered to html and also works nicely in .pptx and .docx
 tbl_role <- role_summ %>% tblSumm()
 tbl_role
 ```
@@ -187,7 +187,7 @@ tbl_role
 Now, do the same thing for gender and institution:
 
 ```{r freq tables for gender and institution}
-# dataSumm() and tblSumm() from "bre" can be used in one line to calculate frequency and percentages of the variable and make flextable output:
+# dataSumm() and tblSumm() from "blackstone" can be used in one line to calculate frequency and percentages of the variable and make flextable output:
 # gender
 tbl_gender <- merged_data %>% select(cat_gender) %>% dataSumm() %>% tblSumm()
 tbl_gender
@@ -201,7 +201,7 @@ tbl_institution
 In the current Blackstone Research and Evaluation workflow, the most common data analysis is with survey items with Likert scales, usually 1-5 point scales. In the example data provided, the 5 variables named: Organization, Source, Publish, Write, Research. These variables represent items with 5-point Likert scales. The following code will create new factor variables from the numeric variables on 1-5 point scales with the correct labels of: "Minimal", "Slight", "Moderate", "Good", "Extensive".
 
 ```{r recode likert items}
-# recodeCat() from bre package takes in a tibble/data frame of as many variables that share the same desired scale_labels, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument.
+# recodeCat() from blackstone package takes in a tibble/data frame of as many variables that share the same desired scale_labels, use the scale_labels argument to pass the new labels in the order of the number_levels which you can also pass as an argument.
 # Returns the original variable(s) and the new factor variable(s) named "cat_{variable(s)}":
 # use the : symbol to select all the variables that are consecutive in the tibble, i.e. select(pre_organization:post_write) selects all the likert scale items,
 # the second select call (select()) selects all the new variables created with the prefix "cat_{variable(s)}":

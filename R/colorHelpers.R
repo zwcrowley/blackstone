@@ -1,14 +1,11 @@
-#' Helper Functions for colors of visuals for the `bre` package
-#'
-#'
-#' BRE Colors as a Named Vector
+#' blackstone Colors as a Named Vector
 #'
 #' @description A utils function for loading Blackstone Research and Evaluation colors for charts.
 #'
 #' @return A named vector of hex colors for Blackstone Research and Evaluation.
 #'
 #' @export
-breColors <- c("dark_blue" = "#283251",
+blackstoneColors <- c("dark_blue" = "#283251",
                 "light_grey" = "#eaeaeb",
                 "med_grey" = "#cecece",
                 "main_grey" = "#c0bfbf")
@@ -21,7 +18,7 @@ breColors <- c("dark_blue" = "#283251",
 #' @return a colorRampPalette function.
 #'
 #' @noRd
-pal_bre_grey_blue <- colorRampPalette(c(breColors["main_grey"], breColors["dark_blue"]))
+pal_blackstone_grey_blue <- colorRampPalette(c(blackstoneColors["main_grey"], blackstoneColors["dark_blue"]))
 
 #' Helper function that creates text label colors.
 #'
@@ -88,7 +85,7 @@ divFillColors <- function(n_colors) {
 }
 
 
-#' BRE Qualitative Colors as a Vector
+#' blackstone Qualitative Colors as a Vector
 #'
 #' @description A utils function for loading Qualitative color scale Blackstone Research and Evaluation colors for charts.
 #'
@@ -127,7 +124,7 @@ qualColors <- function(add_names = FALSE) {
         `viridis purple` = "#440154FF", # 7
         `dark grey`      = "#999999",   # 8
         `dark green`     = "#117733",   # 9
-        `bre blue`       = "#283251",   # 10
+        `blackstone blue`       = "#283251",   # 10
         `yellow green`   = "#999933"    # 11
         )
     if (isFALSE(add_names)) {
@@ -161,7 +158,7 @@ customCols <- function(pal = qualColors(), cols = NULL) {
 #' Helper function to create qualitative colors from the `Okabe-Ito` palette.
 #'
 #' @description A function to create a custom qualitative colors palette from the `Okabe-Ito` palette, reversed if rev_colors is set to TRUE.
-#'      Drops black and yellow for use with all BRE charts and adds three other colors: "#440154FF", "#283251", and "#999933".
+#'      Drops black and yellow for use with all Blackstone charts and adds three other colors: "#440154FF", "#283251", and "#999933".
 #'
 #' @param n_colors Required, supply a non-negative integer that is the desired the number of color hex codes to return.
 #'

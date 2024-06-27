@@ -73,8 +73,8 @@ question_labels <- c(
 )
 
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- bre::recodeCat(items, levels_min_ext_named)
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named)
+cat_items <- blackstone::recodeCat(items, levels_min_ext_named)
+cat_items_single <- blackstone::recodeCat(items_single, levels_min_ext_named)
 
 # Select the factor variables:
 cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor))
@@ -120,7 +120,7 @@ scales::show_col(md_bre_blue)
 - Note: This palette was darkened a bit to get the middle color to be a light shade of gray.
 
 ```{r}
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, fill_color = "div",pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
@@ -131,7 +131,7 @@ bre::stackedBarChart(
 ### Stacked bar chart with `cividis` color scale:
 
 ```{r}
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
@@ -141,7 +141,7 @@ bre::stackedBarChart(
 ### Stacked bar chart with white to `BRE` Blue color scale with Colors from Material Design App:
 
 ```{r}
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, fill_color = material_BRE_blue, pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
@@ -150,7 +150,7 @@ bre::stackedBarChart(
 ### Stacked bar chart with `BRE` Blue to `BRE` light gray color scale:
 
 ```{r}
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, fill_color = pal_bre_grey_blue(length(bar_scale_labels)), pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
@@ -160,7 +160,7 @@ bre::stackedBarChart(
 ### Stacked bar chart with white to `BRE` Blue color scale:
 
 ```{r}
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, fill_color = pal_bre_blue(length(bar_scale_labels)), pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
@@ -171,7 +171,7 @@ bre::stackedBarChart(
 
 ```{r}
 # `Blues 3` from `colorspace` package
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, fill_color = colorspace::sequential_hcl(length(bar_scale_labels), "Blues 3", rev = TRUE), pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
@@ -181,7 +181,7 @@ bre::stackedBarChart(
 
 ```{r}
 # `Blues 3` from `colorspace` package
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, fill_color = viridis::viridis(n = length(bar_scale_labels), direction = -1, option = "mako"), pre_post = FALSE, scale_labels = bar_scale_labels,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
@@ -193,21 +193,21 @@ bre::stackedBarChart(
 ### Arrow chart with `viridis` color scale:
 
 ```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = viridisLite::viridis(n = length(levels_min_ext)),
+blackstone::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = viridisLite::viridis(n = length(levels_min_ext)),
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
 
 ### Arrow chart with `Okabe-Ito` color scale:
 
 ```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = grDevices::palette.colors(n = length(levels_min_ext), palette = "Okabe-Ito"),
+blackstone::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = grDevices::palette.colors(n = length(levels_min_ext), palette = "Okabe-Ito"),
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
 
 ### Arrow chart with `turbo` color scale:
 
 ```{r}
-bre::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = viridisLite::turbo(n = length(levels_min_ext)),
+blackstone::arrowChart(df = items, scale_labels = levels_min_ext, arrow_colors = viridisLite::turbo(n = length(levels_min_ext)),
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
 
@@ -228,10 +228,10 @@ data <- dplyr::tibble(
 # set up data for chart:
 role_summ <- data %>%
   dplyr::select(role) %>%
-  bre::dataSumm()
+  blackstone::dataSumm()
 
 # horzBarChart() with viridis colors
-bre::horzBarChart(df = role_summ, scale_colors = viridisLite::viridis(n = length(unique(data[["role"]]))), width = 0.6)
+blackstone::horzBarChart(df = role_summ, scale_colors = viridisLite::viridis(n = length(unique(data[["role"]]))), width = 0.6)
 
 ```
 
@@ -239,11 +239,11 @@ bre::horzBarChart(df = role_summ, scale_colors = viridisLite::viridis(n = length
 
 ```{r}
 # horzBarChart() with Okabe-Ito colors
-bre::horzBarChart(df = role_summ, scale_colors = grDevices::palette.colors(n = length(unique(data[["role"]])), palette = "Okabe-Ito"), width = 0.6)
+blackstone::horzBarChart(df = role_summ, scale_colors = grDevices::palette.colors(n = length(unique(data[["role"]])), palette = "Okabe-Ito"), width = 0.6)
 
 
 # horzBarChart() with Okabe-Ito colors
-bre::horzBarChart(df = role_summ, scale_colors = sequential_hcl(length(unique(data[["role"]])), "Blues 3"), width = 0.6)
+blackstone::horzBarChart(df = role_summ, scale_colors = sequential_hcl(length(unique(data[["role"]])), "Blues 3"), width = 0.6)
 ```
 
 

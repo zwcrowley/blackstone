@@ -1,5 +1,5 @@
 ---
-title: "Data Wrangling Function for `bre`"
+title: "Data Wrangling Function for `blackstone`"
 output: html_document
 date: "2024-05-28"
 ---
@@ -57,8 +57,8 @@ question_labels <- c(
 )
 
 # Recode the numeric to factor variables using the levels from levels_min_ext:
-cat_items <- bre::recodeCat(items, levels_min_ext_named)
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named)
+cat_items <- blackstone::recodeCat(items, levels_min_ext_named)
+cat_items_single <- blackstone::recodeCat(items_single, levels_min_ext_named)
 
 # Select the factor variables:
 items_pre_post <- cat_items %>% dplyr::select(dplyr::where(is.factor)) %>% select(contains(c("pre_", "post_")))
@@ -248,9 +248,9 @@ dataVizCleaning(df = items_pre_post_na, pre_post = FALSE, scale_labels = levels_
 ```
 
 ```{r}
-# items_pre_post %>% bre::dataSumm() %>% filter(stringr::str_detect(question, "pre_")) %>% arrange(question)
-# items_pre_post %>% bre::dataSumm() %>% filter(stringr::str_detect(question, "post_")) %>% arrange(question)
-items_single %>% bre::dataSumm() %>% arrange(question)
+# items_pre_post %>% blackstone::dataSumm() %>% filter(stringr::str_detect(question, "pre_")) %>% arrange(question)
+# items_pre_post %>% blackstone::dataSumm() %>% filter(stringr::str_detect(question, "post_")) %>% arrange(question)
+items_single %>% blackstone::dataSumm() %>% arrange(question)
 
 ```
 

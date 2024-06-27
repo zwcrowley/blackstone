@@ -36,4 +36,4 @@ data <- dplyr::tibble(
 remove_values <- c("N/A", ".", "A")
 
 # Make a nice table with the function:
-data %>% bre::openendedCleanup(., "Responsible_oe", remove_values) %>% openendedFlextable(., header_label = "Made up text example in a nicely formatted table")
+data %>% blackstone::openendedCleanup(., "Responsible_oe", remove_values) %>% openendedFlextable(., header_label = "Made up text example in a nicely formatted table")

@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = FALSE,
 library(colorspace)
 library(magrittr)
 library(tidyverse)
-library(bre)
+library(blackstone)
 
 set.seed(424429) # for reproducibility
 
@@ -74,8 +74,8 @@ question_labels <- c(
 )
 
 # Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
-cat_items <- bre::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
-cat_items_single <- bre::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items <- blackstone::recodeCat(items, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single <- blackstone::recodeCat(items_single, levels_min_ext_named) %>% dplyr::select(dplyr::where(is.factor))
 
 
 ######## Data: Strongly disagree to Strongly Agree
@@ -111,8 +111,8 @@ levels_dis_agree_named <- c(
 levels_dis_agree <- names(levels_dis_agree_named) 
 
 # Recode the numeric to factor variables using the levels from levels_min_ext and Select the factor variables:
-cat_items_div <- bre::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
-cat_items_single_div <- bre::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_div <- blackstone::recodeCat(items_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
+cat_items_single_div <- blackstone::recodeCat(items_single_div, levels_dis_agree_named) %>% dplyr::select(dplyr::where(is.factor))
 
 ```
 
@@ -208,21 +208,21 @@ items_group <- dplyr::tibble(
 #### - With yellow
 
 ```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
+blackstone::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::viridis(n = (length(unique(items_group[["edu_level"]])) + 1))),
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
 
 #### - With green
 
 ```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(c("#440154FF", "#31688EFF", "#35B779FF")),
+blackstone::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(c("#440154FF", "#31688EFF", "#35B779FF")),
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
 
 ### Arrow chart with `cividis` color scale:
 
 ```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::cividis(n = (length(unique(items_group[["edu_level"]])) + 1))),
+blackstone::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, group_colors = rev(viridisLite::cividis(n = (length(unique(items_group[["edu_level"]])) + 1))),
     overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
 
@@ -231,7 +231,7 @@ bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = level
 #### - Including black as a color:
 
 ```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
+blackstone::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
                      group_colors = grDevices::palette.colors(n = (length(unique(items_group[["edu_level"]])) + 1), palette = "Okabe-Ito"),
                      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
@@ -239,7 +239,7 @@ bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = level
 #### - Skipping the color black in palette:
 
 ```{r}
-bre::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
+blackstone::arrowChartGroup(df = items_group, group = "edu_level", scale_labels = levels_min_ext, 
                      group_colors = c("#E69F00", "#56B4E9", "#009E73"),
                      overall_n = FALSE, question_labels = NULL, question_order = FALSE)
 ```
@@ -263,7 +263,7 @@ data <- dplyr::tibble(
 # set up data for chart:
 race_summ <- data %>%
   dplyr::select(race) %>%
-  bre::dataSumm(sort_n = T)
+  blackstone::dataSumm(sort_n = T)
 
 # Filtered to only three categories:
 three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or Latino", "African American or Black")) 
@@ -273,7 +273,7 @@ three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or La
 
 ```{r}
 # horzBarChart() with viridis colors
-bre::horzBarChart(df = race_summ, scale_colors = viridisLite::viridis(n = length(unique(data[["race"]]))), width = 0.6)
+blackstone::horzBarChart(df = race_summ, scale_colors = viridisLite::viridis(n = length(unique(data[["race"]]))), width = 0.6)
 
 ```
 
@@ -282,7 +282,7 @@ bre::horzBarChart(df = race_summ, scale_colors = viridisLite::viridis(n = length
 
 ```{r}
 # horzBarChart() with colors
-bre::horzBarChart(df = three_race_summ, scale_colors = c("#440154FF", "#31688EFF", "#35B779FF"), width = 0.6)
+blackstone::horzBarChart(df = three_race_summ, scale_colors = c("#440154FF", "#31688EFF", "#35B779FF"), width = 0.6)
 
 ```
 
@@ -291,7 +291,7 @@ bre::horzBarChart(df = three_race_summ, scale_colors = c("#440154FF", "#31688EFF
 
 ```{r}
 # horzBarChart() with Okabe-Ito colors
-bre::horzBarChart(df = race_summ, scale_colors = grDevices::palette.colors(n = length(unique(data[["race"]])), palette = "Okabe-Ito"), width = 0.6)
+blackstone::horzBarChart(df = race_summ, scale_colors = grDevices::palette.colors(n = length(unique(data[["race"]])), palette = "Okabe-Ito"), width = 0.6)
 
 ```
 
@@ -300,7 +300,7 @@ bre::horzBarChart(df = race_summ, scale_colors = grDevices::palette.colors(n = l
 
 ```{r}
 # horzBarChart() with colors
-bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73"), width = 0.6)
+blackstone::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73"), width = 0.6)
 
 ```
 
@@ -309,7 +309,7 @@ bre::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "
 
 ```{r}
 # horzBarChart() with cividis colors
-bre::horzBarChart(df = race_summ, scale_colors = viridisLite::cividis(n = length(unique(data[["race"]]))), width = 0.6)
+blackstone::horzBarChart(df = race_summ, scale_colors = viridisLite::cividis(n = length(unique(data[["race"]]))), width = 0.6)
 
 ```
 
@@ -317,7 +317,7 @@ bre::horzBarChart(df = race_summ, scale_colors = viridisLite::cividis(n = length
 
 ```{r}
 # horzBarChart() with cividis colors
-bre::horzBarChart(df = three_race_summ, scale_colors = viridisLite::cividis(n = 3), width = 0.6)
+blackstone::horzBarChart(df = three_race_summ, scale_colors = viridisLite::cividis(n = 3), width = 0.6)
 
 ```
 
@@ -329,7 +329,7 @@ bre::horzBarChart(df = three_race_summ, scale_colors = viridisLite::cividis(n = 
 
 ```{r}
 cat_items_div %>%
-bre::stackedBarChart( 
+blackstone::stackedBarChart( 
    df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
    question_labels = question_labels, question_order = F, percent_label = TRUE, width = NULL, overall_n = T
 )
@@ -339,7 +339,7 @@ bre::stackedBarChart(
 
 ```{r}
 cat_items_single_div %>% 
-bre::stackedBarChart( 
+blackstone::stackedBarChart( 
    df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree, 
     percent_label = TRUE, width = NULL, question_order = T, overall_n = F, question_labels = question_labels
 ) 
@@ -352,7 +352,7 @@ bre::stackedBarChart(
 ### Stacked bar chart with `Blues 3` color scale:
 
 ```{r}
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
 )
@@ -364,7 +364,7 @@ bre::stackedBarChart(
 
 ```{r}
 # `Blues 3` from `colorspace` package
-bre::stackedBarChart(
+blackstone::stackedBarChart(
    df = cat_items_single, scale_labels = levels_min_ext,
    fill_color = viridisLite::cividis(n = length(levels_min_ext), alpha = 1, begin = 0, end = 1, direction = -1),
    question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = T
@@ -375,7 +375,7 @@ bre::stackedBarChart(
 
 ```{r}
 cat_items %>%
-bre::stackedBarChart( 
+blackstone::stackedBarChart( 
    df = ., pre_post = T, scale_labels = levels_min_ext,
    fill_color = viridisLite::cividis(n = length(levels_min_ext), alpha = 1, begin = 0, end = 1, direction = -1),
    question_labels = question_labels, percent_label = TRUE, width = NULL, overall_n = F

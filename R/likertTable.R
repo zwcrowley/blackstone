@@ -60,7 +60,7 @@
 #' named_levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3",
 #'                     "Good" = "4", "Extensive" = "5")
 #' # Recode the numeric to factor variables using the levels from levels_min_ext:
-#' cat_items <- bre::recodeCat(data, named_levels_min_ext)
+#' cat_items <- blackstone::recodeCat(data, named_levels_min_ext)
 #' # Select the factor variables, and remove the prefix that recodeCat() added to the factor variables:
 #' cat_items <- cat_items %>% dplyr::select(dplyr::where(is.factor)) %>%
 #'                            dplyr::rename_with(., ~ stringr::str_remove(.,"cat_"))

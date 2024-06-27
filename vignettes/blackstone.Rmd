@@ -1,10 +1,10 @@
 ---
-title: "Introduction to `bre`"
+title: "Introduction to blackstone"
 output: rmarkdown::html_vignette
 description: >
-  Start here if this is your first time using bre.
+  Start here if this is your first time using blackstone.
 vignette: >
-  %\VignetteIndexEntry{Introduction to bre}
+  %\VignetteIndexEntry{Introduction to blackstone}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,19 +19,19 @@ knitr::opts_chunk$set(
 )
 options(scipen = 999, digits = 4, # Prevents sci notation and sets the output of decimals to 4 (0.0000)
         tibble.print_min = 5L, tibble.print_max = 5L) # tibble only print 5 rows 
-library(bre) # load Blackstone R package
+library(blackstone) # load Blackstone R package
 set.seed(424629) # set reproducible seed
 ```
 
 
 Blackstone Research and Evaluation uses the `R` programming language as its main tool for data analysis and visualization.
-The main goal of `bre` is to make the process of coding in `R` as efficient as possible for everyone at Blackstone Research and Evaluation.
+The main goal of `blackstone` is to make the process of coding in `R` as efficient as possible for everyone at Blackstone Research and Evaluation.
 
-In order to reach this goal, `bre` leverages established `R` packages and the [tidyverse](https://www.tidyverse.org/) family of `R` packages in particular. 
-These packages use the system of "tidy data" to make data manipulation and analysis in `R` consistent and well organized, `bre` also strives to follow this philosophy. 
+In order to reach this goal, `blackstone` leverages established `R` packages and the [tidyverse](https://www.tidyverse.org/) family of `R` packages in particular. 
+These packages use the system of "tidy data" to make data manipulation and analysis in `R` consistent and well organized, `blackstone` also strives to follow this philosophy. 
 
-The vignettes provided with `bre` will go into greater detail as to how to use `bre` alongside these other packages.
-This document introduces you to `bre` and how it fits into the basic workflow of data analysis and visualization at Blackstone Research and Evaluation.
+The vignettes provided with `blackstone` will go into greater detail as to how to use `blackstone` alongside these other packages.
+This document introduces you to `blackstone` and how it fits into the basic workflow of data analysis and visualization at Blackstone Research and Evaluation.
 
 ## Overview of Data Workflow
 
@@ -43,21 +43,21 @@ This document introduces you to `bre` and how it fits into the basic workflow of
 
 ## Importing data from SurveyMonkey
 
-Our current survey provider is [SurveyMonkey](https://www.surveymonkey.com/?ut_source=homepage&ut_source3=header), `bre` contains several functions that makes the process of 
+Our current survey provider is [SurveyMonkey](https://www.surveymonkey.com/?ut_source=homepage&ut_source3=header), `blackstone` contains several functions that makes the process of 
 reading SurveyMonkey data into `R` a more manageable process and creates a codebook for the data along the way.
 
 SurveyMonkey exports data with two header rows, which does not work in a straightforward with `R` where tibbles and dataframes can only have one row of names.
 
-Here is how to import data from SurveyMonkey using example data provided with `bre`, this is a fake dataset of a pre (baseline) survey. 
+Here is how to import data from SurveyMonkey using example data provided with `blackstone`, this is a fake dataset of a pre (baseline) survey. 
 There are three steps to this process:
 
 1. Create a codebook.
 
 ```{r create_codebook}
 # File path for pre example data:
-pre_data_fp <- bre::bre_example("sm_data_pre.csv")
+pre_data_fp <- blackstone::blackstoneExample("sm_data_pre.csv")
 # 1. Create the codebook:
-codebook_pre <- bre::createCodebook(pre_data_fp)
+codebook_pre <- blackstone::createCodebook(pre_data_fp)
 codebook_pre
 ```
 For this codebook, the first column `header_1` is the first header from the SurveyMonkey data, the second column `header_2` is the second header,
@@ -107,7 +107,7 @@ codebook_pre
 
 ```{r import}
 # 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook:
-pre_data <- bre::readRenameData(pre_data_fp, codebook = codebook_pre)
+pre_data <- blackstone::readRenameData(pre_data_fp, codebook = codebook_pre)
 pre_data
 ```
 
@@ -120,7 +120,7 @@ names(pre_data)
 # TODO add link to vignette below
 ```
 
-The vignette `Importing Data using bre` goes into deeper detail into using `bre` to read in data into `R`.
+The vignette `Importing Data using blackstone` goes into deeper detail into using `blackstone` to read in data into `R`.
 
 
 ## Data analysis and statistical inference

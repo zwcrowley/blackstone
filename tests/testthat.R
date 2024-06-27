@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(bre)
+library(blackstone)
 
-test_check("bre")
+test_check("blackstone")

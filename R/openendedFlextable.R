@@ -42,7 +42,7 @@
 #' remove_values <- c("N/A", ".", "A")
 #'
 #' # Make a nice table after cleaning up the responses from the variable "Responsible_oe":
-#' data %>% bre::openendedCleanup(., "Responsible_oe", remove_values) %>%
+#' data %>% blackstone::openendedCleanup(., "Responsible_oe", remove_values) %>%
 #'   openendedFlextable(., header_label = "Made up text example in a nicely formatted table")
 openendedFlextable <- function(df, header_label) {
     extrafont::loadfonts("all", quiet = TRUE)
