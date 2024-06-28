@@ -176,10 +176,10 @@ sm_data_post <- tibble(knowledge = sample(levels_knowledge, size = n, replace = 
 sm_data_demo <- readr::read_csv("inst/extdata/sm_data_demo.csv", show_col_types = FALSE)
 
 # Merge sm_data_pre with sm_data_demo and move demographic vars to the end of the tibble:
-sm_data_pre <- dplyr::bind_cols(sm_data_demo, sm_data_pre) %>% relocate(gender, ethnicity, first_gen, .after = last_col())
+sm_data_pre_cleanNames <- dplyr::bind_cols(sm_data_demo, sm_data_pre) %>% relocate(gender, ethnicity, first_gen, .after = last_col())
 
 # Merge sm_data_post with sm_data_demo and move demographic vars to the end of the tibble:
-sm_data_post <- dplyr::bind_cols(sm_data_demo, sm_data_post) %>% relocate(gender, ethnicity, first_gen, .after = last_col())
+sm_data_post_cleanNames <- dplyr::bind_cols(sm_data_demo, sm_data_post) %>% relocate(gender, ethnicity, first_gen, .after = last_col())
 
 
 ### Add two header rows for the names of each tibble for the pre and post data in order to emulate SurveyMonkey data export:
@@ -207,10 +207,10 @@ full_text_header_2 <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "Response", # sm dat
 
 # Renaming pre data:
 # First add names to the vector `full_text_header_2` using `question_name_header_1`
-full_text_header_2_named <- full_text_header_2 %>% purrr::set_names(names(sm_data_pre))
+full_text_header_2_named <- full_text_header_2 %>% purrr::set_names(names(sm_data_pre_cleanNames))
 # Convert whole tibble to character variables, Add the `full_text_header_2` vector as row 1 in the tibble and
 # set names to question_name_header_1: ready to write out to .csv
-sm_data_pre <- sm_data_pre %>% mutate(across(everything(), as.character))  %>%
+sm_data_pre <- sm_data_pre_cleanNames %>% mutate(across(everything(), as.character))  %>%
                 add_row(!!!full_text_header_2_named, .before = 1) %>%
                 purrr::set_names(question_name_header_1)
 
@@ -244,10 +244,10 @@ full_text_header_2_post <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "Response", # s
 
 # Renaming post data:
 # First add names to the vector `full_text_header_2` using `question_name_header_1_post`
-full_text_header_2_post_named <- full_text_header_2_post %>% purrr::set_names(names(sm_data_post))
+full_text_header_2_post_named <- full_text_header_2_post %>% purrr::set_names(names(sm_data_post_cleanNames))
 # Convert whole tibble to character variables, Add the `full_text_header_2` vector as row 1 in the tibble and
 # set names to question_name_header_1_post: ready to write out to .csv
-sm_data_post <- sm_data_post %>% mutate(across(everything(), as.character))  %>%
+sm_data_post <- sm_data_post_cleanNames %>% mutate(across(everything(), as.character))  %>%
     add_row(!!!full_text_header_2_post_named, .before = 1) %>% # add as first row the named full_text_header_2_post
     purrr::set_names(question_name_header_1_post)
 
@@ -256,3 +256,18 @@ sm_data_post <- sm_data_post %>% mutate(across(everything(), as.character))  %>%
 # readr::write_csv(sm_data_pre, "inst/extdata/sm_data_pre.csv")
 # # Write out pre data tibble `sm_data_post` to the `extdata` folder:
 # readr::write_csv(sm_data_post, "inst/extdata/sm_data_post.csv")
+
+### Merge and write out data with clean names:
+# Add pre and post prefixes to all variables that will be merged, (i.e. the survey items that differ pre-post the SM items and demos are identical):
+# Pre data:
+sm_data_pre_cleanNames <- sm_data_pre_cleanNames %>% rename_with(~ paste0("pre_", .), .cols = c(knowledge:ethics_5))
+# Pre data:
+sm_data_post_cleanNames <- sm_data_post_cleanNames %>% rename_with(~ paste0("post_", .), .cols = c(knowledge:ethics_5_oe))
+## Merge pre-post data:
+sm_data_clean <- sm_data_pre_cleanNames %>% dplyr::left_join(sm_data_post_cleanNames, by = join_by(respondent_id, collector_id, start_date, end_date, ip_address, email_address,
+                                                                                                   first_name, last_name, unique_id, gender, ethnicity, first_gen))
+
+# # Write out clean and merged pre-post sm data tibble `sm_data_clean` to the `extdata` folder:
+# readr::write_csv(sm_data_clean, "inst/extdata/sm_data_clean.csv")
+
+

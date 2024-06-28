@@ -107,7 +107,7 @@ likertTable <- function(df, scale_labels, question_labels = NULL, str_width = 20
                            names_vary = "slowest", names_expand = TRUE) %>%
         dplyr::mutate(question = stringr::str_wrap(.data$question, width = str_width)) %>%
         dplyr::relocate(.data$total_n, .after = tidyselect::last_col()) %>%
-        dplyr::rename_with(., ~ stringr::str_wrap(., 1), .cols = tidyselect::everything()) %>%
+        dplyr::rename_with(., ~ stringr::str_wrap(., 10), .cols = tidyselect::everything()) %>%
         dplyr::mutate(dplyr::across(tidyselect::where(is.character), ~ dplyr::case_when(is.na(.) ~ "-",
                                                                                         TRUE ~ .))) %>%
         flextable::flextable() %>%
