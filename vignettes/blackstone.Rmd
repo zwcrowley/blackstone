@@ -46,7 +46,7 @@ This document introduces you to `blackstone` and how it fits into the basic work
 Our current survey provider is [SurveyMonkey](https://www.surveymonkey.com/?ut_source=homepage&ut_source3=header), `blackstone` contains several functions that makes the process of 
 reading SurveyMonkey data into `R` a more manageable process and creates a codebook for the data along the way.
 
-SurveyMonkey exports data with two header rows, which does not work in a straightforward with `R` where tibbles and dataframes can only have one row of names.
+SurveyMonkey exports data with two header rows, which does not work with `R` where tibbles and dataframes can only have one row of names.
 
 Here is how to import data from SurveyMonkey using example data provided with `blackstone`, this is a fake dataset of a pre (baseline) survey. 
 There are three steps to this process:
@@ -62,7 +62,7 @@ codebook_pre
 ```
 For this codebook, the first column `header_1` is the first header from the SurveyMonkey data, the second column `header_2` is the second header,
 the third column `combined_header` is the combination of the two headers,
-`position` is the column number for each `combined_header`, and `variable_name` is a cleaned up version for `combined_header` and
+`position` is the column number position for each `combined_header`, and `variable_name` is a cleaned up version for `combined_header` and
 will be the column to edit to change the column names later on to shorter and more meaningful names.
 
 `variable_name` will be the column that renames all the variables in the SurveyMonkey data.
