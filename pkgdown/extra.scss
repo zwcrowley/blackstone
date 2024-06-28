@@ -3,6 +3,8 @@
 /*-- scss:defaults -- */
 $bre_blue: #283251;
 $light_grey: #eaeaeb;
+$med_grey: #cecece;
+$main_grey: #c0bfbf;
 /*-- $navbar-bg: $bre_blue; -- */
 
 /*-- Code chunks --*/
@@ -11,10 +13,19 @@ pre, code {
 }
 /*-- Active Navbar link --*/
 .navbar-dark .navbar-nav .active>.nav-link {
-    background: $light_grey;
-    color: $bre_blue;
+  background: $light_grey;
+  color: $bre_blue;
+}
+/*-- Blackstone Res and Eval logo pic in author/developers sidebar --*/
+#bre_author_logo {
+  background: $bre_blue;
+  color: $main_grey;
 }
 /*-- Navbar links --*/
 .navbar-dark, .navbar[data-bs-theme="dark"] {
-    --bs-navbar-color: $light_grey;
+  --bs-navbar-color: $light_grey;
+}
+/*-- Navbar links active link, hover--*/
+.navbar-dark .navbar-nav .active>.nav-link:hover {
+    color: $main_grey;
 }

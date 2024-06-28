@@ -9,25 +9,28 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+## Overview
+
 The goal of `blackstone` is to make data manipulation, analysis, and
 visualization easier and faster for Blackstone Research and Evaluation.
-`blackstone` contains functions to create visuals with Blackstone
-Research and Evaluation branding and as well as common data cleaning,
-manipulation and analysis tasks for everyone at Blackstone Research and
-Evaluation.
+
+`blackstone` is used to create visuals with Blackstone Research and
+Evaluation branding and as well as common data cleaning, manipulation
+and analysis tasks for everyone at Blackstone Research and Evaluation.
 
 ## Installation
 
 You can install the development version of `blackstone` from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/) with the R package
+[`pak`](https://pak.r-lib.org/) :
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("zwcrowley/blackstone")
+# install.packages("pak")
+pak::pak("zwcrowley/blackstone")
 ```
 
 On the initial installation you will also have to install and import
-fonts from the `extrafont` package:
+fonts from the [`extrafont`](https://github.com/wch/extrafont) package:
 
 ``` r
 # install.packages("extrafont")
