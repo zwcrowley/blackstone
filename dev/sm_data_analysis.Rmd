@@ -168,38 +168,62 @@ sm_data <- pre_data %>% dplyr::left_join(post_data, by = join_by(respondent_id, 
 sm_data
 ```
 
+## Data Cleaning
+
+- Convert all likert scales to factors (for ordering) and all demographics.
+
+```{r}
+## Knowledge scale
+levels_knowledge <- c("Not knowledgeable at all", "A little knowledgeable", "Somewhat knowledgeable", "Very knowledgeable", "Extremely knowledgeable")
+## Research Items scale:
+levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
+## Ability Items scale: 
+levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+## Ethics Items scale:
+levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
+
+# Demographic levels:
+gender_levels <- c("Female","Male","Non-binary", "Do not wish to specify")
+ethnicity_levels <- c("White (Non-Hispanic/Latino)", "Asian", "Black",  "Hispanic or Latino", "American Indian or Alaskan Native",
+                      "Native Hawaiian or other Pacific Islander", "Do not wish to specify")
+first_gen_levels <- c("Yes", "No", "I'm not sure")
+
+# Use mutate() for convert each item in each scale to a factor with vectors above, across() will perform a function for items selected using contains() or can be selected 
+# by variables names individually using a character vector: _knowledge or use c("pre_knowledg","post_knowledge")
+sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowledge"), ~ factor(., levels = levels_knowledge)), # match each name pattern to select to each factor level
+                                     dplyr::across(tidyselect::contains("research_"), ~ factor(., levels = levels_confidence)), 
+                                     dplyr::across(tidyselect::contains("ability_"), ~ factor(., levels = levels_min_ext)),
+                                     # select ethics items but not the open_ended responses:
+                                     dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), ~ factor(., levels = levels_agree5)),
+                                     # individually convert all demographics to facter variables:
+                                     gender = factor(gender, levels = gender_levels),
+                                     ethnicity = factor(ethnicity, levels = ethnicity_levels),
+                                     first_gen = factor(first_gen, levels = first_gen_levels),
+                                     )
+
+```
+
 ## Data analysis and statistical inference
 
 The most common task is creating frequency tables for likert scale items, `blackstone` has a few helper functions for that:
 
 ```{r}
-# Research items pre and post frequency table, with counts and percentages:
-# set up the likert scale as a character vector:
-levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
-# convert all items to factors using this scale: (this could also be done by selecting from the codebook 'variable_name' column)
-research_df <- sm_data %>% dplyr::select(tidyselect::contains("research_")) %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = levels_confidence)))
+# Research items pre and post frequency table, with counts and percentages: use levels_confidence character vector
 # use likertTable to return frequency table, passing the scale_labels: (can also label the individual questions using the arg question_label)
-research_df %>% blackstone::likertTable(scale_labels = levels_confidence)
-
+sm_data %>% dplyr::select(tidyselect::contains("research_")) %>% blackstone::likertTable(., scale_labels = levels_confidence)
 ```
 
 ```{r}
-# using pmap to do multiple likertTable() at once:
+# Another way to make a list of many freq_tables to print out with other data analysis later on, using pmap() to do multiple likertTable() at once:
+# Set up tibbles of each set of scales that contain all pre and post data:
 # research:
-levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
-# convert all items to factors using this scale: (this could also be done by selecting from the codebook 'variable_name' column)
-research_df <- sm_data %>% dplyr::select(tidyselect::contains("research_")) %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = levels_confidence)))
-# repeat for all scales: this dataset has 3 composite scales and knowledge is a single item with pre-post data:
+research_df <- sm_data %>% dplyr::select(tidyselect::contains("research_")) 
 # knowledge:
-levels_knowledge <- c("Not knowledgeable at all", "A little knowledgeable", "Somewhat knowledgeable", "Very knowledgeable", "Extremely knowledgeable")
-knowledge_df <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge")) %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = levels_knowledge)))
+knowledge_df <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge"))
 # ability:
-levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
-ability_df <- sm_data %>% dplyr::select(tidyselect::contains("ability_")) %>% dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = levels_min_ext)))
+ability_df <- sm_data %>% dplyr::select(tidyselect::contains("ability_"))
 # ethics:
-levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
-ethics_df <- sm_data %>% dplyr::select(tidyselect::contains("ethics_")) %>% dplyr::select(!tidyselect::contains("_oe")) %>% # select ethics but not the open-ended items with the suffix '_oe'
-                            dplyr::mutate(dplyr::across(tidyselect::everything(), ~ factor(., levels = levels_agree5)))
+ethics_df <- sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contains("_oe")) 
 
 # set up tibble with the columns as the args to pass to likertTable(), each row of the column `df` is the tibble of items and each row of `scale_labels` is the vector of likert scale labels:
 freq_params <- tribble(
@@ -210,8 +234,24 @@ freq_params <- tribble(
    ethics_df,     levels_agree5
 )
 # Create a named list of frequency tables
-freq_tables <- freq_params %>% purrr::pmap(blackstone::likertTable) %>% set_names("Knowledge Items", "Reserach Items", "Ability Items", "Ethics Items")
+freq_tables <- freq_params %>% purrr::pmap(blackstone::likertTable) %>% purrr::set_names(., c("Knowledge Items", "Reserach Items", "Ability Items", "Ethics Items"))
 freq_tables
+# can select the list by position of name:
+# freq_tables[[1]]
+# freq_tables[["Knowledge Items"]]
+```
+
+## Grouped Demograpic table:
+
+```{r demos table}
+# Set up labels for variables
+# Labels for questions column of table, pass to question_labels argument:
+demos_labels <- c('Gender' = "gender",
+                  'Race/Ethnicity' = "ethnicity",
+                  'First-Generation College Student' = "first_gen")
+
+sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the vars
+                 blackstone::groupedTable(question_labels = demos_labels) # pass the new labeles for the 'Question' column.
 ```
 
 
