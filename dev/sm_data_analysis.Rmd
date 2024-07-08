@@ -190,12 +190,17 @@ first_gen_levels <- c("Yes", "No", "I'm not sure")
 
 # Use mutate() for convert each item in each scale to a factor with vectors above, across() will perform a function for items selected using contains() or can be selected 
 # by variables names individually using a character vector: _knowledge or use c("pre_knowledg","post_knowledge")
+# Also create new numeric variables for all the likert scale items and use the suffix '_num' to denote numeric:
 sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowledge"), ~ factor(., levels = levels_knowledge)), # match each name pattern to select to each factor level
+                                     dplyr::across(tidyselect::contains("_knowledge"), as.numeric, .names = "{.col}_num"), # create new numeric items for all knowledge items
                                      dplyr::across(tidyselect::contains("research_"), ~ factor(., levels = levels_confidence)), 
+                                     dplyr::across(tidyselect::contains("research_"), as.numeric, .names = "{.col}_num"), # create new numeric items for all research items
                                      dplyr::across(tidyselect::contains("ability_"), ~ factor(., levels = levels_min_ext)),
+                                     dplyr::across(tidyselect::contains("ability_"), as.numeric, .names = "{.col}_num"), # create new numeric items for all ability items
                                      # select ethics items but not the open_ended responses:
                                      dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), ~ factor(., levels = levels_agree5)),
-                                     # individually convert all demographics to facter variables:
+                                     dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), as.numeric, .names = "{.col}_num"), # new numeric items for all ethics items
+                                     # individually convert all demographics to factor variables:
                                      gender = factor(gender, levels = gender_levels),
                                      ethnicity = factor(ethnicity, levels = ethnicity_levels),
                                      first_gen = factor(first_gen, levels = first_gen_levels),
@@ -205,7 +210,7 @@ sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowle
 
 ## Data analysis and statistical inference
 
-The most common task is creating frequency tables for likert scale items, `blackstone` has a few helper functions for that:
+The most common task is creating frequency tables of counts and percentages for likert scale items, `blackstone` has the `likertTable()` for that:
 
 ```{r}
 # Research items pre and post frequency table, with counts and percentages: use levels_confidence character vector
@@ -234,7 +239,7 @@ freq_params <- tribble(
    ethics_df,     levels_agree5
 )
 # Create a named list of frequency tables
-freq_tables <- freq_params %>% purrr::pmap(blackstone::likertTable) %>% purrr::set_names(., c("Knowledge Items", "Reserach Items", "Ability Items", "Ethics Items"))
+freq_tables <- freq_params %>% purrr::pmap(blackstone::likertTable) %>% purrr::set_names(., c("Knowledge Items", "Research Items", "Ability Items", "Ethics Items"))
 freq_tables
 # can select the list by position of name:
 # freq_tables[[1]]
@@ -243,6 +248,8 @@ freq_tables
 
 ## Grouped Demograpic table:
 
+`blackstone` contains a function to create frequency tables for demographics that can be grouped by a variable like role or cohort as well.
+
 ```{r demos table}
 # Set up labels for variables
 # Labels for questions column of table, pass to question_labels argument:
@@ -250,9 +257,60 @@ demos_labels <- c('Gender' = "gender",
                   'Race/Ethnicity' = "ethnicity",
                   'First-Generation College Student' = "first_gen")
 
-sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the vars
-                 blackstone::groupedTable(question_labels = demos_labels) # pass the new labeles for the 'Question' column.
+sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the demographic vars
+                 blackstone::groupedTable(question_labels = demos_labels) # pass the new labels for the 'Question' column.
+```
+
+## Simple interential tests- T-test or Wilcoxon test
+
+## Single pre-post items:
+
+### Running normality test, then t-test or wilcoxon test:
+
+```{r}
+sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>%  # select knowledge pre and post numeric items
+    dplyr::mutate(knowledge_diff = post_knowledge_num - pre_knowledge_num) %>% # get difference of pre and post scores
+    rstatix::shapiro_test(knowledge_diff)
+
+```
+Data is *not* normally distributed for the knowledge items (since the p-value is < 0.05)- use a Wilcoxon test.
+
+```{r}
+# Either use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable:
+sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>% 
+            tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+            tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>% 
+            rstatix::wilcox_test(response ~ timing, paired = TRUE, detailed = TRUE)
+# Or use the simple base R wilcox.test with each pre and post item:
+wilcox.test(sm_data[["post_knowledge_num"]], sm_data[["pre_knowledge_num"]], paired = TRUE)
+
+```
+
+## Composite Scales (multiple items)
+
+### Create composite scores for pre and post data by taking the mean of each and then get difference scores between pre and post mean:
+
+```{r}
+sm_data <- sm_data %>% dplyr::rowwise() %>% # Get the mean for each individual by row
+    dplyr::mutate(pre_research_mean = mean(dplyr::c_across(tidyselect::contains("pre_research_") & tidyselect::contains("_num"))), # pre mean for each individual
+                  post_research_mean = mean(dplyr::c_across(tidyselect::contains("post_research_") & tidyselect::contains("_num"))), # post mean for each individual
+                  diff_research = post_research_mean - pre_research_mean # get difference scores of pre and post means.
+    ) %>% dplyr::ungroup()
+        
+sm_data %>% rstatix::shapiro_test(diff_research) # significant
 ```
 
 
+Data is normally distributed for the research composite items (since the p-values is > 0.05)- use a T-test.
 
+
+```{r}
+# Either use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable:
+sm_data %>% dplyr::select(pre_research_mean, post_research_mean) %>% # select the pre and post means for research items
+            tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+            tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>% 
+            rstatix::t_test(response ~ timing, paired = TRUE, detailed = TRUE)
+# Or use the simple base R wilcox.test with each pre and post item:
+t.test(sm_data[["post_research_mean"]], sm_data[["pre_research_mean"]],  paired = TRUE)
+```
+T-test is significant, there is a difference in pre and post scores of 1.02 on average.
