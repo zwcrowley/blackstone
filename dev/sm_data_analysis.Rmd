@@ -6,16 +6,17 @@ output: html_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk[["set"]](
-    echo = FALSE, 
-    fig.width = 8,
-    fig.height = 6
+    warning = FALSE, 
+    message = FALSE, 
+    fig.width = 9,
+    fig.height = 8
     )
 
 # Prevents sci notation and sets the output of decimals to 4 (0.0000):
 options(scipen = 999, digits = 4)
 
 # Set seed to reproduce data:
-set.seed(04240629)
+set.seed(424629)
 
 # Load Libraries:
 library(readr)
@@ -23,7 +24,8 @@ library(dplyr)
 library(blackstone) # blackstone R package
 ```
 
-### Copied from blackstone vignette- developing for other vignettes:
+# Data Cleaning and Manipulation
+
 ## Importing data from SurveyMonkey
 
 Our current survey provider is [SurveyMonkey](https://www.surveymonkey.com/?ut_source=homepage&ut_source3=header), `blackstone` contains several functions that makes the process of 
@@ -208,29 +210,32 @@ sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowle
 
 ```
 
-## Data analysis and statistical inference
+# Data analysis and Statistical Inference
 
 The most common task is creating frequency tables of counts and percentages for likert scale items, `blackstone` has the `likertTable()` for that:
 
 ```{r}
 # Research items pre and post frequency table, with counts and percentages: use levels_confidence character vector
 # use likertTable to return frequency table, passing the scale_labels: (can also label the individual questions using the arg question_label)
-sm_data %>% dplyr::select(tidyselect::contains("research_")) %>% blackstone::likertTable(., scale_labels = levels_confidence)
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% 
+                blackstone::likertTable(., scale_labels = levels_confidence)
 ```
 
 ```{r}
-# Another way to make a list of many freq_tables to print out with other data analysis later on, using pmap() to do multiple likertTable() at once:
+# Another way to make a list of many freq_tables to print out with other data analysis later on, 
+# using pmap() to do multiple likertTable() at once:
 # Set up tibbles of each set of scales that contain all pre and post data:
 # research:
-research_df <- sm_data %>% dplyr::select(tidyselect::contains("research_")) 
+research_df <- sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor))
 # knowledge:
-knowledge_df <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge"))
+knowledge_df <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & !tidyselect::contains("_num") & where(is.factor))
 # ability:
-ability_df <- sm_data %>% dplyr::select(tidyselect::contains("ability_"))
+ability_df <- sm_data %>% dplyr::select(tidyselect::contains("ability_") & !tidyselect::contains("_num") & where(is.factor))
 # ethics:
-ethics_df <- sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contains("_oe")) 
+ethics_df <- sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contains("_oe") & !tidyselect::contains("_num") & where(is.factor)) 
 
-# set up tibble with the columns as the args to pass to likertTable(), each row of the column `df` is the tibble of items and each row of `scale_labels` is the vector of likert scale labels:
+# set up tibble with the columns as the args to pass to likertTable(), each row of the column `df` is the tibble of items and 
+# each row of `scale_labels` is the vector of likert scale labels:
 freq_params <- tribble(
   ~df,           ~scale_labels, # name of columns
    knowledge_df,  levels_knowledge, 
@@ -239,16 +244,21 @@ freq_params <- tribble(
    ethics_df,     levels_agree5
 )
 # Create a named list of frequency tables
-freq_tables <- freq_params %>% purrr::pmap(blackstone::likertTable) %>% purrr::set_names(., c("Knowledge Items", "Research Items", "Ability Items", "Ethics Items"))
-freq_tables
-# can select the list by position of name:
+freq_tables <- freq_params %>% purrr::pmap(blackstone::likertTable) %>% 
+    purrr::set_names(., c("Knowledge Items", "Research Items", "Ability Items", "Ethics Items"))
+
+# can select the list by position or by name:
 # freq_tables[[1]]
-# freq_tables[["Knowledge Items"]]
+freq_tables[["Knowledge Items"]]
+freq_tables[["Research Items"]]
+freq_tables[["Ability Items"]]
+freq_tables[["Ethics Items"]]
+
 ```
 
 ## Grouped Demograpic table:
 
-`blackstone` contains a function to create frequency tables for demographics that can be grouped by a variable like role or cohort as well.
+`blackstone` contains a function to create frequency tables for demographics that can be grouped by a variable like role or cohort as well: [`groupedTable()`].
 
 ```{r demos table}
 # Set up labels for variables
@@ -297,7 +307,7 @@ sm_data <- sm_data %>% dplyr::rowwise() %>% # Get the mean for each individual b
                   diff_research = post_research_mean - pre_research_mean # get difference scores of pre and post means.
     ) %>% dplyr::ungroup()
         
-sm_data %>% rstatix::shapiro_test(diff_research) # significant
+sm_data %>% rstatix::shapiro_test(diff_research) # not significant
 ```
 
 
@@ -306,11 +316,243 @@ Data is normally distributed for the research composite items (since the p-value
 
 ```{r}
 # Either use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable:
-sm_data %>% dplyr::select(pre_research_mean, post_research_mean) %>% # select the pre and post means for research items
-            tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
-            tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>% 
-            rstatix::t_test(response ~ timing, paired = TRUE, detailed = TRUE)
+research_t_test <- sm_data %>% dplyr::select(pre_research_mean, post_research_mean) %>% # select the pre and post means for research items
+                               tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+                               tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>% 
+                               rstatix::t_test(response ~ timing, paired = TRUE, detailed = TRUE)
+research_t_test
 # Or use the simple base R wilcox.test with each pre and post item:
 t.test(sm_data[["post_research_mean"]], sm_data[["pre_research_mean"]],  paired = TRUE)
 ```
-T-test is significant, there is a difference in pre and post scores of 1.02 on average.
+T-test is significant, there is a mean difference in pre and post scores of `r research_t_test[["estimate"]]`.
+
+
+# Data Visualization
+
+`blackstone` has functions that create 3 types of charts for data visualization: stacked bar charts, diverging stacked bar charts, and arrow charts.
+
+The functions for stacked bar charts and diverging stacked bar charts can use two different color palettes: a blue sequential palette or a blue-red diverging color palette. 
+
+The blue sequential palette should be used for all likert scales that have one clear direction like: `r levels_confidence`
+
+The blue-red diverging color palette should be used if the items have a likert scale that is folded or runs from a negative to positive valence like this: `r levels_agree5` 
+
+The next three sections show examples on how to use these functions.
+
+## Stacked Bar Charts
+
+The most common visual that is used with reporting at Blackstone Research and Evaluation is a stacked bar chart, `blackstone` has a function to that makes creating these charts
+fast and easy: [`stackedBarChart()`].
+
+`stackedBarChart()` takes in a [tibble][tibble::tibble-package] of factor/character variables to turn into a stacked bar chart. The other requirement is a character vector of 
+scale labels for the likert scale that makes up the items in the tibble (same as the one use to set them up as factors in the data cleaning section). 
+
+#### Pre-post Stacked Bar Chart with Overall *n* and Percentages:
+
+- By default, `stackedBarChart()` uses the blue sequential palette to color the bars and sorts the items by the ones with the highest post items with the highest counts/percentages.
+
+```{r}
+# Research Items scale:
+levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
+
+# select variables and pass them to `stackedBarChart()` along with scale_labels.
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::stackedBarChart(., scale_labels = levels_confidence, pre_post = TRUE)
+
+```
+
+#### Pre-post Stacked Bar Chart with Individual Item *n* and Counts:
+
+```{r}
+# Select variables and pass them to `stackedBarChart()` along with scale_labels, change the arguements `percent_label` and `overall_n` both to FALSE:
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::stackedBarChart(., scale_labels = levels_confidence, pre_post = TRUE, percent_label = FALSE, overall_n = FALSE)
+```
+
+#### Pre-post Stacked Bar Chart with Blue-Red Diverging Color Palette:
+
+```{r}
+## Ethics Items scale:
+levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
+
+# select variables and pass them to `stackedBarChart()` along with scale_labels, 
+# change `fill_colors` to "div" to use the blue-red diverging color palette:
+sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contains("_num") & # select the factor variables for the ethics items
+                              !tidyselect::contains("_oe") & where(is.factor)) %>% 
+            blackstone::stackedBarChart(., scale_labels = levels_agree5, pre_post = TRUE, fill_colors = "div")
+```
+#### Pre-post Stacked Bar Chart with New Question Labels and Order:
+
+```{r}
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"), where the 
+# names are the new question labels and the old names are the values without pre or post prefixes:
+# Here I will use paste0 to create 8 research items like they appear without prefixes:
+research_question_labels <- paste0(paste0("research_", 1:8))
+# Set new labels as names of `research_question_labels`
+names(research_question_labels) <- c("Research relevant background literature", "Identify a scientific problem", 
+                                     "Develop testable and realistic research questions", "Develop a falsifiable hypothesis", 
+                                     "Conduct quantitative data analysis", "Design an experiment/Create a research design", 
+                                     "Interpret findings and making recommendations", "Scientific or technical writing")
+
+# select variables and pass them to `stackedBarChart()` along with scale_labels, also pass research_question_labels to `question_labels` and set `question_order` to TRUE.
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::stackedBarChart(., scale_labels = levels_confidence, pre_post = TRUE, question_labels = research_question_labels, question_order = TRUE)
+```
+
+#### Single time point Stacked Bar Chart with New Question Labels and Order:
+
+```{r}
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"), where the 
+# names are the new question labels and the old names are the values without pre or post prefixes:
+# Here I will use paste0 to create 8 research items like they appear without prefixes:
+research_question_labels <- paste0(paste0("post_research_", 1:8))
+# Set new labels as names of `research_question_labels`
+names(research_question_labels) <- c("Research relevant background literature", "Identify a scientific problem", 
+                                     "Develop testable and realistic research questions", "Develop a falsifiable hypothesis", 
+                                     "Conduct quantitative data analysis", "Design an experiment/Create a research design", 
+                                     "Interpret findings and making recommendations", "Scientific or technical writing")
+
+# select variables and pass them to `stackedBarChart()` along with scale_labels, set pre_post to FALSE (default),
+#  also pass research_question_labels to `question_labels` and set `question_order` to TRUE.
+sm_data %>% dplyr::select(tidyselect::contains("post_research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::stackedBarChart(., scale_labels = levels_confidence, question_labels = research_question_labels, question_order = TRUE)
+```
+
+## Diverging Stacked Bar Charts
+
+Another common visual that is used with reporting at Blackstone Research and Evaluation is a diverging stacked bar chart, which I will refer to from now on as a diverging bar chart.
+`blackstone` has a function to make this type of chart, it is called: [`divBarChart()`].
+
+The diverging bar charts created using `divBarChart()`, diverge just after the mid-point of the likert scale of the items supplied to the function. See examples below.
+
+`divBarChart()` has all of the same arguments as `stackedBarChart()`, so using it has the same requirements.
+
+#### Pre-post Diverging Bar Chart with Overall *n* and Percentages:
+
+- By default, `divBarChart()` uses the blue sequential palette to color the bars and sorts the items by the ones with the highest post items with the highest counts/percentages.
+
+```{r}
+# Research Items scale:
+levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
+
+# select variables and pass them to `divBarChart()` along with scale_labels.
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::divBarChart(., scale_labels = levels_confidence, pre_post = TRUE)
+
+```
+
+#### Pre-post Diverging Bar Chart with Individual Item *n* and Counts:
+
+```{r}
+# Select variables and pass them to `divBarChart()` along with scale_labels, change the arguements `percent_label` and `overall_n` both to FALSE:
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::divBarChart(., scale_labels = levels_confidence, pre_post = TRUE, percent_label = FALSE, overall_n = FALSE)
+```
+
+#### Pre-post Diverging Bar Chart with Blue-Red Diverging Color Palette:
+
+```{r}
+## Ethics Items scale:
+levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
+
+# select variables and pass them to `divBarChart()` along with scale_labels, 
+# change `fill_colors` to "div" to use the blue-red diverging color palette:
+sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contains("_num") & # select the factor variables for the ethics items
+                              !tidyselect::contains("_oe") & where(is.factor)) %>% 
+            blackstone::divBarChart(., scale_labels = levels_agree5, pre_post = TRUE, fill_colors = "div")
+```
+#### Pre-post Stacked Bar Chart with New Question Labels and Order:
+
+```{r}
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"), where the 
+# names are the new question labels and the old names are the values without pre or post prefixes:
+# Here I will use paste0 to create 8 research items like they appear without prefixes:
+research_question_labels <- paste0(paste0("research_", 1:8))
+# Set new labels as names of `research_question_labels`
+names(research_question_labels) <- c("Research relevant background literature", "Identify a scientific problem", 
+                                     "Develop testable and realistic research questions", "Develop a falsifiable hypothesis", 
+                                     "Conduct quantitative data analysis", "Design an experiment/Create a research design", 
+                                     "Interpret findings and making recommendations", "Scientific or technical writing")
+
+# select variables and pass them to `divBarChart()` along with scale_labels, also pass research_question_labels to `question_labels` and set `question_order` to TRUE.
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::divBarChart(., scale_labels = levels_confidence, pre_post = TRUE, question_labels = research_question_labels, question_order = TRUE)
+```
+
+#### Single time point Stacked Bar Chart with New Question Labels and Order:
+
+```{r}
+# Question labels as a named vector with the naming structure
+# like this: c("new label" = "original variable name"), where the 
+# names are the new question labels and the old names are the values without pre or post prefixes:
+# Here I will use paste0 to create 8 research items like they appear without prefixes:
+research_question_labels <- paste0(paste0("post_research_", 1:8))
+# Set new labels as names of `research_question_labels`
+names(research_question_labels) <- c("Research relevant background literature", "Identify a scientific problem", 
+                                     "Develop testable and realistic research questions", "Develop a falsifiable hypothesis", 
+                                     "Conduct quantitative data analysis", "Design an experiment/Create a research design", 
+                                     "Interpret findings and making recommendations", "Scientific or technical writing")
+
+# select variables and pass them to `divBarChart()` along with scale_labels, set pre_post to FALSE (default),
+#  also pass research_question_labels to `question_labels` and set `question_order` to TRUE.
+sm_data %>% dplyr::select(tidyselect::contains("post_research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::divBarChart(., scale_labels = levels_confidence, question_labels = research_question_labels, question_order = TRUE)
+```
+
+
+## Arrow Charts
+
+Arrow charts show the difference in means at two time points, `blackstone` has two functions that create arrow charts: `arrowChart()` and `arrowChartGroup()`.
+
+Both in a [tibble][tibble::tibble-package] of numeric pre-post data as the main input, and also require a character vector of scale labels for the numeric scale 
+that makes up the items in the tibble. The rest of the arguments for the two arrow chart functions are the sames as the stacked bar chart functions.
+
+### `arrowChart()`
+
+#### Arrow Chart with defaults
+
+```{r}
+# Research Items scale:
+levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
+
+# select variables and pass them to `divBarChart()` along with scale_labels.
+sm_data %>% dplyr::select(tidyselect::contains("research_") & tidyselect::contains("_num") & where(is.numeric)) %>% # select the numeric variables for the research items
+    blackstone::arrowChart(., scale_labels = levels_confidence)
+
+# df <- sm_data %>%  dplyr::select(tidyselect::contains("research_") & tidyselect::contains("_num") & where(is.numeric))
+# # Data wrangling to long format, three cols: question, timing and score_avg:
+#     arrow_df <- {{ df }} %>%
+#         tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+#         tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>%
+#         dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+#         dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post")),
+#                       question = stringr::str_to_title(.data[["question"]])) %>%
+#         dplyr::summarize(score_avg = mean(.data[["response"]], na.rm = TRUE), .groups = "keep") %>% # drops NA's
+#         dplyr::ungroup() %>%
+#         tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
+#             id_cols = tidyselect::everything(),
+#             names_from = tidyselect::all_of(c("timing")),
+#             values_from = tidyselect::all_of(c("score_avg")),
+#             names_glue = "{timing}_score_avg"
+#         ) %>%
+#         dplyr::mutate(diff_score_avg = .data[["post_score_avg"]] - .data[["pre_score_avg"]]) %>%
+#         tidyr::pivot_longer(tidyselect::all_of(c("pre_score_avg","post_score_avg")),
+#                             names_to = c("timing", ".value"),
+#                             names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
+#         )
+#     
+#     # Get total n for each question, grouped by question and timing: ----
+#     totals_new_df <- {{ df }}  %>%
+#         tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+#         tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>%
+#         dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
+#         dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post")),
+#                       question = stringr::str_to_title(.data[["question"]])) %>%
+#         dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
+#         dplyr::ungroup()
+#     # Join the `total` column to arrow_df
+#     arrow_df <- arrow_df %>% dplyr::full_join(totals_new_df,by = dplyr::join_by("question", "timing"))
+```

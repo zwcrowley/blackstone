@@ -70,10 +70,10 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = T
     # Data wrangling to long format, three cols: question, timing and score_avg:
     arrow_df <- {{ df }} %>%
         tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
-        tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
+        dplyr::mutate(question = stringr::str_remove(.data$question, "_num")) %>%
+        tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>%
         dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
-        dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post")),
-                      question = stringr::str_to_title(.data[["question"]])) %>%
+        dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
         dplyr::summarize(score_avg = mean(.data[["response"]], na.rm = TRUE), .groups = "keep") %>% # drops NA's
         dplyr::ungroup() %>%
         tidyr::pivot_wider( # pivot wider to add a difference in `score_avg` column
@@ -87,10 +87,12 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = T
                             names_to = c("timing", ".value"),
                             names_pattern = "([A-Za-z]+)_(.*)" # puts prefix of timing and then "score_avg" as the value
         )
+
     # Get total n for each question, grouped by question and timing: ----
     totals_new_df <- {{ df }}  %>%
         tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
-        tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_") %>%
+        dplyr::mutate(question = stringr::str_remove(.data$question, "_num")) %>%
+        tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>%
         dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
         dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
         dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
