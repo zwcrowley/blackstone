@@ -106,8 +106,7 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = T
             stringr::str_wrap(., width = 20) %>%
             gsub("\n", "<br>", .)
         arrow_df <- arrow_df %>%
-            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels)) %>%
-            dplyr::ungroup()
+            dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!question_labels))
     }
 
     # Set up a new question order if not supplied by the user by using the highest post score_avg: ----
@@ -164,7 +163,7 @@ arrowChart <- function(df, scale_labels, arrow_colors = "#283251", overall_n = T
         # Set up labels for question:
         labels_n_questions <- arrow_df %>%
             dplyr::mutate(
-                labels = paste0(.data[["question"]], "<br>(*n* = ", .data[["total"]], ")"),
+                labels = paste0(.data[["question"]],"<br>(*n* = ", .data[["total"]], ")"),
                 question = as.character(.data[["question"]]),
             ) %>%
             dplyr::distinct(labels, .keep_all = TRUE) %>%

@@ -156,6 +156,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
     totals_new_df <- {{ df }}  %>%
         dplyr::select(!{{group}}) %>%
         tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+        dplyr::mutate(question = stringr::str_remove(.data$question, "_num")) %>%
         tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>%
         dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
         dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
