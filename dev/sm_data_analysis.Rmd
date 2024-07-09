@@ -9,11 +9,12 @@ knitr::opts_chunk[["set"]](
     warning = FALSE, 
     message = FALSE, 
     fig.width = 9,
-    fig.height = 8
+    fig.height = 8,
+    out.width = "100%"
     )
-
 # Prevents sci notation and sets the output of decimals to 4 (0.0000):
-options(scipen = 999, digits = 4)
+options(scipen = 999, digits = 4,
+        tibble.print_min = 5, tibble.print_max = 5)
 
 # Set seed to reproduce data:
 set.seed(424629)
@@ -287,14 +288,15 @@ Data is *not* normally distributed for the knowledge items (since the p-value is
 
 ```{r}
 # Either use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable:
-sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>% 
-            tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
-            tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>% 
-            rstatix::wilcox_test(response ~ timing, paired = TRUE, detailed = TRUE)
+knowledge_wilcoxon <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>% 
+                                  tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+                                  tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>% 
+                                  rstatix::wilcox_test(response ~ timing, paired = TRUE, detailed = TRUE)
 # Or use the simple base R wilcox.test with each pre and post item:
 wilcox.test(sm_data[["post_knowledge_num"]], sm_data[["pre_knowledge_num"]], paired = TRUE)
-
 ```
+
+Wilcoxon test is significant, there is a significant difference in pre and post scores of knowledge scores.
 
 ## Composite Scales (multiple items)
 
@@ -361,7 +363,9 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 ```
 
+
 #### Pre-post Stacked Bar Chart with Individual Item *n* and Counts:
+
 
 ```{r}
 # Select variables and pass them to `stackedBarChart()` along with scale_labels, change the arguements `percent_label` and `overall_n` both to FALSE:
@@ -369,7 +373,9 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
     blackstone::stackedBarChart(., scale_labels = levels_confidence, pre_post = TRUE, percent_label = FALSE, overall_n = FALSE)
 ```
 
+
 #### Pre-post Stacked Bar Chart with Blue-Red Diverging Color Palette:
+
 
 ```{r}
 ## Ethics Items scale:
@@ -381,7 +387,10 @@ sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contain
                               !tidyselect::contains("_oe") & where(is.factor)) %>% 
             blackstone::stackedBarChart(., scale_labels = levels_agree5, pre_post = TRUE, fill_colors = "div")
 ```
+
+
 #### Pre-post Stacked Bar Chart with New Question Labels and Order:
+
 
 ```{r}
 # Question labels as a named vector with the naming structure
@@ -400,7 +409,9 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
     blackstone::stackedBarChart(., scale_labels = levels_confidence, pre_post = TRUE, question_labels = research_question_labels, question_order = TRUE)
 ```
 
+
 #### Single time point Stacked Bar Chart with New Question Labels and Order:
+
 
 ```{r}
 # Question labels as a named vector with the naming structure
@@ -463,6 +474,7 @@ sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contain
                               !tidyselect::contains("_oe") & where(is.factor)) %>% 
             blackstone::divBarChart(., scale_labels = levels_agree5, pre_post = TRUE, fill_colors = "div")
 ```
+
 #### Pre-post Stacked Bar Chart with New Question Labels and Order:
 
 ```{r}
