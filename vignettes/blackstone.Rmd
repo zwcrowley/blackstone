@@ -15,6 +15,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   warning = FALSE, 
   message = FALSE, 
+  fig.width = 9,
+  fig.height = 8,
   out.width = "100%"
 )
 options(scipen = 999, digits = 4, # Prevents sci notation and sets the output of decimals to 4 (0.0000)
@@ -46,9 +48,10 @@ This document introduces you to `blackstone` and how it fits into the basic work
 Our current survey provider is [SurveyMonkey](https://www.surveymonkey.com/?ut_source=homepage&ut_source3=header), `blackstone` contains several functions that makes the process of 
 reading SurveyMonkey data into `R` a more manageable process and creates a codebook for the data along the way.
 
-SurveyMonkey exports data with two header rows, which does not work with `R` where tibbles and dataframes can only have one row of names.
+SurveyMonkey exports data with two header rows, which does not work with `R`, where tibbles and dataframes can only have one row of names.
 
-Here is how to import data from SurveyMonkey using example data provided with `blackstone`, this is a fake dataset of a pre (baseline) survey. 
+Here is how to import data from SurveyMonkey using example data provided with `blackstone`, this is a fake dataset of a pre (baseline) survey.
+
 There are three steps to this process:
 
 1. Create a codebook.
@@ -118,11 +121,155 @@ names(pre_data)
 ```
 
 ```{r, include=FALSE}
-# TODO add link to vignette below
+# TODO add link to vignette below to 'vignette/import_clean.Rmd'
 ```
 
-The vignette `Importing Data using blackstone` goes into deeper detail into using `blackstone` to read in data into `R`.
+The vignette `Import and Clean Data using blackstone` goes into deeper detail with example data on how to use `blackstone` to import and clean data.
 
 
-## Data analysis and statistical inference
+## Data Analysis and Statistical Inference
+
+First, read in the data that is merged and cleaned in the vignette `Import and Clean Data using blackstone`:
+
+```{r}
+# Read in clean SM data:
+sm_data <- readr::read_csv(blackstone::blackstoneExample("sm_data_clean.csv"), show_col_types = FALSE)
+
+## Set up character vectors of likert scale levels:
+## Knowledge scale
+levels_knowledge <- c("Not knowledgeable at all", "A little knowledgeable", "Somewhat knowledgeable", "Very knowledgeable", "Extremely knowledgeable")
+## Research Items scale:
+levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
+## Ability Items scale: 
+levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+## Ethics Items scale:
+levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
+
+# Demographic levels:
+gender_levels <- c("Female","Male","Non-binary", "Do not wish to specify")
+ethnicity_levels <- c("White (Non-Hispanic/Latino)", "Asian", "Black",  "Hispanic or Latino", "American Indian or Alaskan Native",
+                      "Native Hawaiian or other Pacific Islander", "Do not wish to specify")
+first_gen_levels <- c("Yes", "No", "I'm not sure")
+
+# Use mutate() for convert each item in each scale to a factor with vectors above, across() will perform a function for items selected using contains() or can be selected 
+# by variables names individually using a character vector: _knowledge or use c("pre_knowledg","post_knowledge")
+# Also create new numeric variables for all the likert scale items and use the suffix '_num' to denote numeric:
+sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowledge"), ~ factor(., levels = levels_knowledge)), # match each name pattern to select to each factor level
+                                     dplyr::across(tidyselect::contains("_knowledge"), as.numeric, .names = "{.col}_num"), # create new numeric items for all knowledge items
+                                     dplyr::across(tidyselect::contains("research_"), ~ factor(., levels = levels_confidence)), 
+                                     dplyr::across(tidyselect::contains("research_"), as.numeric, .names = "{.col}_num"), # create new numeric items for all research items
+                                     dplyr::across(tidyselect::contains("ability_"), ~ factor(., levels = levels_min_ext)),
+                                     dplyr::across(tidyselect::contains("ability_"), as.numeric, .names = "{.col}_num"), # create new numeric items for all ability items
+                                     # select ethics items but not the open_ended responses:
+                                     dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), ~ factor(., levels = levels_agree5)),
+                                     dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), as.numeric, .names = "{.col}_num"), # new numeric items for all ethics items
+                                     # individually convert all demographics to factor variables:
+                                     gender = factor(gender, levels = gender_levels),
+                                     ethnicity = factor(ethnicity, levels = ethnicity_levels),
+                                     first_gen = factor(first_gen, levels = first_gen_levels),
+                                     )
+sm_data
+```
+
+
+### Likert Scale Table:
+
+The most common task is creating frequency tables of counts and percentages for likert scale items, `blackstone` has the `likertTable()` for that:
+
+```{r}
+# Research items pre and post frequency table, with counts and percentages: use levels_confidence character vector
+# use likertTable to return frequency table, passing the scale_labels: (can also label the individual questions using the arg question_label)
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% 
+                blackstone::likertTable(., scale_labels = levels_confidence)
+```
+
+### Grouped Demograpic table:
+
+`blackstone` contains a function to create frequency tables for demographics that can be grouped by a variable like role or cohort as well: [`groupedTable()`].
+
+```{r demos table}
+# Set up labels for variables
+# Labels for questions column of table, pass to question_labels argument:
+demos_labels <- c('Gender' = "gender",
+                  'Race/Ethnicity' = "ethnicity",
+                  'First-Generation College Student' = "first_gen")
+
+sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the demographic vars
+                 blackstone::groupedTable(question_labels = demos_labels) # pass the new labels for the 'Question' column.
+```
+
+
+### Statistical Inference- T-test or Wilcoxon test
+
+#### Running normality test on Single pre-post items:
+
+```{r}
+sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>%  # select knowledge pre and post numeric items
+    dplyr::mutate(knowledge_diff = post_knowledge_num - pre_knowledge_num) %>% # get difference of pre and post scores
+    rstatix::shapiro_test(knowledge_diff)
+
+```
+
+Data is *not* normally distributed for the knowledge items (since the p-value is < 0.05)- use a Wilcoxon test.
+
+```{r}
+# Use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable,
+# the column named `p` is the p-value:
+sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>% 
+            tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+            tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>% 
+            rstatix::wilcox_test(response ~ timing, paired = TRUE, detailed = TRUE)
+```
+
+Wilcoxon test is significant, there is a significant difference in pre and post scores of knowledge scores.
+
+```{r, include=FALSE}
+# TODO add link to vignette below to 'vignette/analysis.Rmd'
+```
+
+The vignette `Data analysis and Statistical Inference` goes into deeper detail on how to use `blackstone` to perform more analysis and statistical tests on example data.
+
+## Data Visualization
+
+`blackstone` has functions that create 3 types of charts for data visualization: stacked bar charts, diverging stacked bar charts, and arrow charts.
+
+The functions for stacked bar charts and diverging stacked bar charts can use two different color palettes: a blue sequential palette or a blue-red diverging color palette. 
+
+The blue sequential palette should be used for all likert scales that have one clear direction like: `r levels_confidence`
+
+The blue-red diverging color palette should be used if the items have a likert scale that is folded or runs from a negative to positive valence like this: `r levels_agree5` 
+
+```{r, include=FALSE}
+# TODO add link to vignette below to 'vignette/data_visualization.Rmd'
+```
+
+This introduction will only show how to create a stacked bar chart, see the vignette `Data Visualization` for a full explanation of all the data visualization functions in `blackstone`.
+
+### Stacked Bar Charts
+
+The most common visual that is used with reporting at Blackstone Research and Evaluation is a stacked bar chart, `blackstone` has a function to that makes creating these charts
+fast and easy: [`stackedBarChart()`].
+
+`stackedBarChart()` takes in a [tibble](https://tibble.tidyverse.org/) of factor/character variables to turn into a stacked bar chart. The other requirement is a character vector of 
+scale labels for the likert scale that makes up the items in the tibble (same as the one use to set them up as factors in the data cleaning section). 
+
+#### Pre-post Stacked Bar Chart with Overall *n* and Percentages:
+
+- By default, `stackedBarChart()` uses the blue sequential palette to color the bars and sorts the items by the ones with the highest post items with the highest counts/percentages.
+
+```{r}
+# Research Items scale:
+levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
+
+# select variables and pass them to `stackedBarChart()` along with scale_labels.
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
+    blackstone::stackedBarChart(., scale_labels = levels_confidence, pre_post = TRUE)
+
+```
+
+```{r, include=FALSE}
+# TODO add link to vignette below to 'vignette/data_visualization.Rmd'
+```
+
+The vignette `Data Visualization` goes into deeper detail on how to use `blackstone` to create data visualizations with example data .
 

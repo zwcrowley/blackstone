@@ -25,6 +25,8 @@ library(dplyr)
 library(blackstone) # blackstone R package
 ```
 
+- Start of new vignette: `Import and Clean Data using blackstone` name file: 'import_clean.Rmd'
+
 # Data Cleaning and Manipulation
 
 ## Importing data from SurveyMonkey
@@ -107,10 +109,12 @@ names(pre_data)
 
 ## Post data:
 
+- Do that same process over again with the post data, if the variables are all the same you can use the same codebook, for this example there are additional post variables so a new codebook will need to be created to rename the variables when reading in the data with `readRenameData()`.
+
 ```{r import_post_data}
 # File path for pre example data:
 post_data_fp <- blackstone::blackstoneExample("sm_data_post.csv")
-# 1. Create the codebook:
+# 1. Create the codebook using the filepath:
 codebook_post <- blackstone::createCodebook(post_data_fp)
 codebook_post
 
@@ -154,7 +158,7 @@ post_data <- blackstone::readRenameData(post_data_fp, codebook = codebook_post)
 post_data
 ```
 
-Add pre and post prefixes to all variables that will be merged, (i.e. the survey items that differ pre-post the SM items and demos are identical):
+Add pre and post prefixes to all variables that will be merged, (i.e. the survey items that differ pre-post- the SM items and demos are identical):
 
 ```{r}
 # Pre data:
@@ -176,6 +180,8 @@ sm_data
 ## Data Cleaning
 
 - Convert all likert scales to factors (for ordering) and all demographics.
+
+- Create numeric variables from the factor variables for use with statistical tests later on.
 
 ```{r}
 ## Knowledge scale
@@ -213,7 +219,13 @@ sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowle
 
 ```
 
+- end of vignette `Import and Clean Data using blackstone` 
+
 # Data analysis and Statistical Inference
+
+- Start of new vignette: `Data analysis and Statistical Inference using blackstone` name file: 'analysis.Rmd'
+
+## Likert Scale Table:
 
 The most common task is creating frequency tables of counts and percentages for likert scale items, `blackstone` has the `likertTable()` for that:
 
@@ -330,8 +342,11 @@ t.test(sm_data[["post_research_mean"]], sm_data[["pre_research_mean"]],  paired 
 ```
 T-test is significant, there is a mean difference in pre and post scores of `r research_t_test[["estimate"]]`.
 
+- End vignette: `Data analysis and Statistical Inference` name file: 'analysis.Rmd'
 
 # Data Visualization
+
+- Start of new vignette: `Data Visualization` name file: 'data_visualization.Rmd'
 
 `blackstone` has functions that create 3 types of charts for data visualization: stacked bar charts, diverging stacked bar charts, and arrow charts.
 
@@ -573,13 +588,17 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & tidyselect::contai
 
 #### Arrow Chart by Group with defaults
 
-- By default, `arrowChartGroup()` sorts the items/arrows by the ones with the highest post average on down and the arrows are the dark blue color hex code `r blackstoneColors[["dark_blue"]]`.
+- By default, `arrowChartGroup()` sorts the items/arrows by the ones with the highest post average on down and the arrows are colored using the Qualitative Color Palette, which has 11 distinct colors: 
+    - `r blackstone::qualColors()` 
+<br>
+- `arrowChartGroup()` returns pre-post averages for each group passed to `group_levels` as well as an "Overall" which is the whole sample and will always be the color black, 
+also the order of `group_levels` will also determining the order of the arrows and legend.
 
 ```{r}
 # Research Items scale:
 levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
 
-# select variables and pass them to `divBarChart()` along with scale_labels.
+# select variables and pass them to `arrowChartGroup()` along with scale_labels, the grouping variable in `group` and the levels for each group in `group_levels`:
 sm_data %>% dplyr::select(gender, tidyselect::contains("research_") & tidyselect::contains("_num") & where(is.numeric)) %>% # select the numeric variables for the research items
     blackstone::arrowChartGroup(., group = "gender", group_levels = gender_levels, scale_labels = levels_confidence)
 ```
@@ -610,3 +629,7 @@ names(research_question_labels) <- c("Research relevant background literature", 
 sm_data %>% dplyr::select(gender, tidyselect::contains("research_") & tidyselect::contains("_num") & where(is.numeric)) %>% # select the numeric variables for the research items
     blackstone::arrowChartGroup(., group = "gender", group_levels = gender_levels,scale_labels = levels_confidence, question_labels = research_question_labels, question_order = TRUE)
 ```
+
+
+- End vignette: `Data Visualization using blackstone` name file: 'data_visualization.Rmd'
+
