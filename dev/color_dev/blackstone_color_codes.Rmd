@@ -1,5 +1,5 @@
 ---
-title: "Final Color for BRE"
+title: "Color Codes for Blackstone"
 output: html_document
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 ---
@@ -7,7 +7,12 @@ date: "`r format(Sys.Date(), '%B %d, %Y')`"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, 
     fig.width = 8,
-    fig.height = 6)
+    fig.height = 6,
+    out.width = "100%"
+    )
+# Prevents sci notation and sets the output of decimals to 4 (0.0000):
+options(scipen = 999, digits = 4,
+        tibble.print_min = 5, tibble.print_max = 5)
 
 # Load Libraries:
 library(colorspace)
@@ -17,11 +22,6 @@ library(blackstone) # blackstone R package
 
 set.seed(424429) # for reproducibility
 
-##### colors:
-breColors <- c("dark_blue" = "#283251",
-                "light_grey" = "#eaeaeb",
-                "med_grey" = "#cecece",
-                "main_grey" = "#c0bfbf")
 
 ######## Data
 items <- dplyr::tibble(
@@ -155,30 +155,128 @@ hr {
 
 ```
 
-### Arrow charts without a grouping variable:
+# Updated Color Codes and Guidance for Data Visualizations
 
-#### - With arrows in Blackstone dark blue "#283251"
+Updated guidance for colors to be used in all visuals for Blackstone Research and Evaluation
+
+There are three new color palettes, each to be used in specific circumstances: 
+
+  - The Blue Sequential Color Palette
+  - The Blue-Red Diverging Color Palette
+  - The Qualitative Color Palette
+
+The Blue Sequential Color Palette should be used with stacked bar charts that have a likert scale that has one clear direction like: `r levels_min_ext`
+
+The Blue-Red Diverging Color Palette should be used with stacked bar charts that have a likert scale that is folded or runs from a negative to positive valence like this: `r levels_dis_agree` 
+
+The Qualitative Color Palette should be used for arrow charts with a grouping variable or horizontal bar charts with demographics (this palette may have limited uses at this time).
+
+Below are the full hex color codes for each of the color palettes and examples that use each of color palettes.
+
+Please reach out to Zack Crowley via Google Chat or email if you need hex codes for scales or different lengths than those provided here or 
+if you have any other questions or clarifications about which color palettes to use and data visualizations in general. 
+
+## Blue Sequential Color Palette
+
+### Hex Codes for the Blue Sequential Color Palette
+
+```{r, results='asis'}
+cat("<h4><b>5 point scale:</b></h4>")
+cat(paste0(paste0("`", seqFillColors(n_colors = 5), "`"), collapse = ", "))
+cat("<br>")
+cat("<h4><b>7 point scale:</b></h4> ")
+cat(paste0(paste0("`", seqFillColors(n_colors = 7), "`"), collapse = ", "))
+cat("<br>") 
+
+```
+
+```{r}
+colors <- seqFillColors(n_colors = 5)
+labels_text_color <- labelColorMaker(colors = colors)
+ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
+  ggplot2::geom_col(ggplot2::aes(y = 1, x = id, fill = rev(colors))) + 
+  ggplot2::geom_text(ggplot2::aes(y = 1, x = id, label = rev(colors)), position = ggplot2::position_fill(vjust = 0.5), color = rev(labels_text_color)) + 
+  ggplot2::scale_fill_identity() +
+  ggplot2::scale_color_identity() +
+  ggplot2::theme_void()
+```
+
+### Example use of the Blue Sequential Color Palette in a Stacked Bar Chart with a 5-point Likert Scale:
+
+```{r}
+blackstone::stackedBarChart(
+   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
+   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
+)
+
+```
+
+
+
+<hr>
+
+
+## The Blue-Red Diverging Color Palette
+
+### Hex Codes for the Blue-Red Diverging Color Palette
+
+```{r, results='asis'}
+cat("<h4><b>5 point scale:</b></h4>")
+cat(paste0(paste0("`", divFillColors(n_colors = 5), "`"), collapse = ", "))
+cat("<br>")
+cat("<h4><b>7 point scale:</b></h4> ")
+cat(paste0(paste0("`", divFillColors(n_colors = 7), "`"), collapse = ", "))
+cat("<br>")
+```
+
+
+### Example of a Stacked Pre-Post bar chart with The Blue-Red Diverging Color Palette on a 7 point scale:
+
+```{r}
+cat_items_div %>%
+blackstone::stackedBarChart( 
+   df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
+   question_labels = question_labels, question_order = F, percent_label = TRUE, width = NULL, overall_n = T
+)
+```
+
+
+<hr>
+
+
+## Main color for arrow charts without groups or table headings
+
+### Blackstone Dark Blue `r blackstone::blackstoneColors["dark_blue"]`
+
+### Arrow chart example without grouping variable:
 
 ```{r}
 blackstone::arrowChart(df = items, scale_labels = levels_min_ext,
            overall_n = T, question_labels = question_labels, question_order = TRUE)
-
 ```
 
 
 ## Qualitative/Categorical Color Palette
 
-### Example Swatch of the new Qualitative/Categorical Color Palette with 11 colors
+The Qualitative Color Palette should be used for arrow charts with a grouping variable or for horizontal bar charts for demographics.
 
-#### - Most colors taken from `Okabe-Ito` palette, took out black and yellow and replaced with other colorblind friendly colors and the BRE dark blue.
+### Hex codes for the Qualitative Color Palette
+
+```{r, results='asis'}
+# knitr::combine_words(customCols(), before = '"', after = '"', and = "", sep = ", ")
+cat(paste0(paste0("`", qualColors(), "`"), collapse = ", "))
+```
+
+### Example Swatch of the new Qualitative/Categorical Color Palette with 11 colors
 
 ```{r}
 swatchplot(
-    customCols()
+    qualColors()
 )
+
 ```
 
-#### - Color palette with names and hex codes:
+### Qualitative Color Palette with names and hex codes:
 
 ```{r}
 # purrr::map_chr(seq_along(qualColors(add_names = T)), \(x) paste0("'",names(qualColors(add_names = T))[x], "':  ", qualColors(add_names = T)[x]))
@@ -198,16 +296,12 @@ show_colors2(colors = qualColors(add_names = T))
 ```
 
 
-#### Hex codes for the full Qualitative Color Palette
+### Example of an Arrow chart with Grouping Variable and the Qualitative Color Palette:
 
-```{r, results='asis'}
-# knitr::combine_words(customCols(), before = '"', after = '"', and = "", sep = ", ")
-cat(paste0(paste0("`", customCols(), "`"), collapse = ", "))
-```
+#### - The "Overall" group will always be the color black
+#### - This also shows what left/negative direction arrows would look like with the `Research` items.
 
-### Arrow charts section with 3 grouping variables and an arrow for the whole sample labelled "Overall":
-
-```{r, include=FALSE}
+```{r}
 # add a grouping var to the data set `items`: 
 items_group <- dplyr::tibble(
    items,
@@ -218,24 +312,15 @@ items_group <- dplyr::tibble(
  ) %>% mutate(
             post_Research = dplyr::if_else(post_Research > 2, pre_Research - 2, pre_Research)
  ) 
-```
 
-### Arrow chart with new custom qualitative color Palette based on `Okabe-Ito` colors:
-
-#### - The "Overall" group will always be the color black
-#### - This also shows what left/negative direction arrows would look like with the `Research` items.
-
-```{r}
 blackstone::arrowChartGroup(df = items_group, group = "edu_level", group_levels = c("grad", "undergrad"), scale_labels = levels_min_ext, 
     overall_n = T, question_labels = NULL, question_order = FALSE)
 
 ```
 
-<hr>
+### Example of a Horizontal Bar Chart with Qualitative Color Palette:
 
-## Horizontal Bar Chart with 7 racial categories
-
-```{r, include=FALSE}
+```{r}
 # New fake data for testing horzBarChart() colors with racial categories:
 # Generate fake data
 n <- 100  # number of observations
@@ -256,99 +341,14 @@ race_summ <- data %>%
 
 # Filtered to only three categories:
 three_race_summ <- race_summ %>% filter(response %in% c("Asian", "Hispanic or Latino", "African American or Black")) 
-```
 
-### Horizontal Bar Chart with custom qualitative color Palette:
-
-```{r}
 r_colors <- blackstone::qualFillColors(n_colors = length(unique(race_summ[["response"]]))) %>% purrr::set_names(race_summ[["response"]])
 # horzBarChart() with custom qual colors c("#E69F00"", "#56B4E9", "#009E73", "#CC79A7", "#D55E00", "#0072B2", "#440154FF")
 blackstone::horzBarChart(df = race_summ, scale_colors = r_colors, width = 0.6)
 
 ```
 
-
-#### - Same palette, Only 3 categories:
-
-```{r}
-# horzBarChart() with colors
-blackstone::horzBarChart(df = three_race_summ, scale_colors = c("#E69F00", "#56B4E9", "#009E73"), width = 0.6)
-
-```
-
-
-### Reversed color palette with 7 categories in horizontal bar chart to show bottom colors:
-
-```{r}
-rev_colors <- blackstone::qualFillColors(n_colors = 11, rev_colors = T)[1:7] %>% purrr::set_names(race_summ[["response"]])
-# horzBarChart() with custom qual colors c("#E69F00"", "#56B4E9", "#009E73", "#CC79A7", "#D55E00", "#0072B2", "#440154FF")
-blackstone::horzBarChart(df = race_summ, scale_colors = rev_colors, width = 0.6)
-
-```
-
 <hr>
-
-## Diverging Color Palette: slightly darkened `Blue Red 3`
-
-### Stacked Pre-Post bar chart with `Blue Red 3` color palette on a 7 point scale:
-
-```{r}
-cat_items_div %>%
-blackstone::stackedBarChart( 
-   df = ., fill_color = "div", pre_post = T, scale_labels = levels_dis_agree,
-   question_labels = question_labels, question_order = F, percent_label = TRUE, width = NULL, overall_n = T
-)
-```
-
-### Stacked bar chart (single items) with `Blue Red 3` color palette on a 7 point scale:
-
-```{r}
-cat_items_single_div %>% 
-blackstone::stackedBarChart( 
-   df = ., fill_color = "div", pre_post = F, scale_labels = levels_dis_agree, 
-    percent_label = TRUE, width = NULL, question_order = T, overall_n = F, question_labels = question_labels
-) 
-
-```
-
-### Hex Codes for the Diverging Color Palette: Darkened `Blue Red 3`
-
-```{r, results='asis'}
-cat("<h4><b>5 point scale:</b></h4>")
-cat(paste0(paste0("`", divFillColors(n_colors = 5), "`"), collapse = ", "))
-cat("<br>")
-cat("<h4><b>7 point scale:</b></h4> ")
-cat(paste0(paste0("`", divFillColors(n_colors = 7), "`"), collapse = ", "))
-cat("<br>")
-```
-
-
-
-
-## Sequential Color Scales: slightly darkened `Blues 3`
-
-### Stacked bar chart with `Blues 3` color scale:
-
-```{r}
-blackstone::stackedBarChart(
-   df = cat_items_single, pre_post = FALSE, scale_labels = levels_min_ext,
-   question_labels = NULL, percent_label = TRUE, width = NULL, overall_n = F
-)
-
-```
-
-
-### Hex Codes for the Sequential Color Scale Darkened `Blues 3`
-
-```{r, results='asis'}
-cat("<h4><b>5 point scale:</b></h4>")
-cat(paste0(paste0("`", seqFillColors(n_colors = 5), "`"), collapse = ", "))
-cat("<br>")
-cat("<h4><b>7 point scale:</b></h4> ")
-cat(paste0(paste0("`", seqFillColors(n_colors = 7), "`"), collapse = ", "))
-cat("<br>") 
-
-```
 
 
 
