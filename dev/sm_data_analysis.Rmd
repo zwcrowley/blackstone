@@ -6,6 +6,7 @@ output: html_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk[["set"]](
+    collapse = TRUE,
     warning = FALSE, 
     message = FALSE, 
     fig.width = 9,
@@ -25,7 +26,7 @@ library(dplyr)
 library(blackstone) # blackstone R package
 ```
 
-- Start of new vignette: `Import and Clean Data using blackstone` name file: 'import_clean.Rmd'
+- Start of new vignette: `Importing and Cleaning Data` name file: 'import_clean.Rmd'
 
 # Data Cleaning and Manipulation
 
@@ -219,11 +220,11 @@ sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowle
 
 ```
 
-- end of vignette `Import and Clean Data using blackstone` 
+- end of vignette `Importing and Cleaning Data` 
 
 # Data analysis and Statistical Inference
 
-- Start of new vignette: `Data analysis and Statistical Inference using blackstone` name file: 'analysis.Rmd'
+- Start of new vignette: `Data analysis and Statistical Inference` name file: 'analysis.Rmd'
 
 ## Likert Scale Table:
 
@@ -631,5 +632,5 @@ sm_data %>% dplyr::select(gender, tidyselect::contains("research_") & tidyselect
 ```
 
 
-- End vignette: `Data Visualization using blackstone` name file: 'data_visualization.Rmd'
+- End vignette: `Data Visualization` name file: 'data_visualization.Rmd'
 

@@ -204,16 +204,16 @@ sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the demogra
 #### Running normality test on Single pre-post items:
 
 ```{r}
+# Use a pipe-friendly version of `shapiro_test()` from `rstatix`, need to covert create a differnce score of post_knowledge_num - pre_knowledge_num named `knowledge_diff`:
 sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>%  # select knowledge pre and post numeric items
     dplyr::mutate(knowledge_diff = post_knowledge_num - pre_knowledge_num) %>% # get difference of pre and post scores
     rstatix::shapiro_test(knowledge_diff)
-
 ```
 
 Data is *not* normally distributed for the knowledge items (since the p-value is < 0.05)- use a Wilcoxon test.
 
 ```{r}
-# Use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable,
+# Use a pipe-friendly version of `wilcox_test()` from `rstatix`, need to covert to long form and have `timing` as a variable,
 # the column named `p` is the p-value:
 sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>% 
             tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%

@@ -1,0 +1,228 @@
+---
+title: "Importing and Cleaning Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Importing and Cleaning Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk[["set"]](
+    collapse = TRUE,
+    warning = FALSE, 
+    message = FALSE, 
+    fig.width = 9,
+    fig.height = 8,
+    out.width = "100%"
+    )
+# Prevents sci notation and sets the output of decimals to 4 (0.0000):
+options(scipen = 999, digits = 4,
+        tibble.print_min = 5, tibble.print_max = 5)
+
+# Set seed to reproduce data:
+set.seed(424629)
+```
+
+```{r setup}
+library(blackstone)
+```
+
+# Data Cleaning and Manipulation
+
+## Importing data from SurveyMonkey
+
+Our current survey provider is [SurveyMonkey](https://www.surveymonkey.com/?ut_source=homepage&ut_source3=header), `blackstone` contains several functions that makes the process of 
+reading SurveyMonkey data into `R` a more manageable process and creates a codebook for the data along the way.
+
+SurveyMonkey exports data with two header rows, which does not work with `R` where tibbles and dataframes can only have one row of names.
+
+Here is how to import data from SurveyMonkey using example data provided with `blackstone`, this is a fake dataset of a pre (baseline) survey. 
+There are three steps to this process:
+
+## Pre Survey Data
+
+1. Create a codebook.
+
+```{r create_codebook}
+# File path for pre example data:
+pre_data_fp <- blackstone::blackstoneExample("sm_data_pre.csv")
+# 1. Create the codebook:
+codebook_pre <- blackstone::createCodebook(pre_data_fp)
+codebook_pre
+```
+For this codebook, the first column `header_1` is the first header from the SurveyMonkey data, the second column `header_2` is the second header,
+the third column `combined_header` is the combination of the two headers,
+`position` is the column number position for each `combined_header`, and `variable_name` is a cleaned up version for `combined_header` and
+will be the column to edit to change the column names later on to shorter and more meaningful names.
+
+`variable_name` will be the column that renames all the variables in the SurveyMonkey data.
+
+2. Edit the codebook to create meaningful variable names.
+
+```{r edit_codebook}
+# Step 2. Edit the codebook: 
+# Set up sequential naming convections for matrix-style questions with shared likert scale response options:
+# 8 items that are matrix-style likert scales- turned into a scale called `research`- here is how to easily name them all at once:
+# Rows 11 to 18 belong to the "research" matrix question (you will have to look at the codebook and match the header_1 and header_2 to variable_name to change)
+research_items <- codebook_pre[["variable_name"]][11:18]
+research_names <- paste0("research_", seq_along(research_items)) %>% purrr::set_names(., research_items) # Create a new named vector of names for these columns
+# 6 items that are matrix-style likert scales- turned into a scale called `ability`- Rows 19 to 24 named `variable_name`:
+ability_items <- codebook_pre[["variable_name"]][19:24]
+ability_names <- paste0("ability_", seq_along(ability_items)) %>% purrr::set_names(., ability_items) # Create a new named vector of names for these columns
+# 6 items that are matrix-style likert scales- turned into a scale called `ethics`- Rows 19 to 24 named `variable_name`:
+ethics_items <- codebook_pre[["variable_name"]][25:29]
+ethics_names <- paste0("ethics_", seq_along(ethics_items)) %>% purrr::set_names(., ethics_items) # Create a new named vector of names for these columns
+# Edit the `variable_names` column: Use dplyr::mutate() and dplyr::case_match() to change the column `variable_name`:
+codebook_pre <- codebook_pre %>% dplyr::mutate(
+    variable_name = dplyr::case_match(
+        variable_name, # column to match
+        'custom_data_1' ~ "unique_id", # changes 'custom_data_1' to "unique_id"
+        'to_what_extent_are_you_knowledgeable_in_conducting_research_in_your_field_of_study' ~ "knowledge",
+        'with_which_gender_do_you_most_closely_identify' ~ "gender",
+        'which_race_ethnicity_best_describes_you_please_choose_only_one' ~ "ethnicity",
+        'are_you_a_first_generation_college_student' ~ "first_gen",
+        names(research_names) ~ research_names[variable_name], # takes the above named vector and when the name matches, applies new value in that position as replacement.
+        names(ability_names) ~ ability_names[variable_name],   # Same for `ability_names`
+        names(ethics_names) ~ ethics_names[variable_name],   # Same for `ability_names`
+        .default = variable_name # returns default value from original `variable_name` if not changed.
+        )
+    )
+codebook_pre
+# Write out the edited codebook to save for future use-
+# Be sure to double check questions match new names before writing out:
+# readr::write_csv(codebook_pre, file = "{filepath-to-codebok}")
+```
+
+3. Read in the data and rename the variables with the codebook.
+
+```{r import}
+# 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook:
+pre_data <- blackstone::readRenameData(pre_data_fp, codebook = codebook_pre)
+pre_data
+```
+
+The SurveyMonkey example data is now imported with names taken from the codebook column `variable_name`:
+
+```{r data_names}
+names(pre_data)
+```
+
+## Post data:
+
+- Do that same process over again with the post data, if the variables are all the same you can use the same codebook, for this example there are additional post variables so a new codebook will need to be created to rename the variables when reading in the data with `readRenameData()`.
+
+```{r import_post_data}
+# File path for pre example data:
+post_data_fp <- blackstone::blackstoneExample("sm_data_post.csv")
+# 1. Create the codebook using the filepath:
+codebook_post <- blackstone::createCodebook(post_data_fp)
+codebook_post
+
+# Step 2. Edit the codebook: 
+# Set up sequential naming convections for matrix-style questions with shared likert scale response options:
+# 8 items that are matrix-style likert scales- turned into a scale called `research`- here is how to easily name them all at once:
+# Rows 11 to 18 belong to the "research" matrix question (you will have to look at the codebook and match the header_1 and header_2 to variable_name to change)
+research_items <- codebook_post[["variable_name"]][11:18]
+research_names <- paste0("research_", seq_along(research_items)) %>% purrr::set_names(., research_items) # Create a new named vector of names for these columns
+# 6 items that are matrix-style likert scales- turned into a scale called `ability`- Rows 19 to 24 named `variable_name`:
+ability_items <- codebook_post[["variable_name"]][19:24]
+ability_names <- paste0("ability_", seq_along(ability_items)) %>% purrr::set_names(., ability_items) # Create a new named vector of names for these columns
+# 6 items that are matrix-style likert scales- turned into a scale called `ethics`- Rows 19 to 24 named `variable_name`:
+ethics_items <- codebook_post[["variable_name"]][25:29]
+ethics_names <- paste0("ethics_", seq_along(ethics_items)) %>% purrr::set_names(., ethics_items) # Create a new named vector of names for these columns
+# 5 items that are Open-ended follow up when corresponeding ethics items were answered "Strongly disagree"or "Disagree"- Rows 30 to 34 named `variable_name`:
+ethics_items_oe <- codebook_post[["variable_name"]][30:34]
+ethics_names_oe <- paste0("ethics_", seq_along(ethics_items), "_oe") %>% purrr::set_names(., ethics_items_oe) # Create a new named vector of names for these columns
+# Edit the `variable_names` column: Use dplyr::mutate() and dplyr::case_match() to change the column `variable_name`:
+codebook_post <- codebook_post %>% dplyr::mutate(
+    variable_name = dplyr::case_match(
+        variable_name, # column to match
+        'custom_data_1' ~ "unique_id", # changes 'custom_data_1' to "unique_id"
+        'to_what_extent_are_you_knowledgeable_in_conducting_research_in_your_field_of_study' ~ "knowledge",
+        'with_which_gender_do_you_most_closely_identify' ~ "gender",
+        'which_race_ethnicity_best_describes_you_please_choose_only_one' ~ "ethnicity",
+        'are_you_a_first_generation_college_student' ~ "first_gen",
+        names(research_names) ~ research_names[variable_name], # takes the above named vector and when the name matches, applies new value in that position as replacement.
+        names(ability_names) ~ ability_names[variable_name],   # Same for `ability_names`
+        names(ethics_names) ~ ethics_names[variable_name],   # Same for `ability_names`
+        names(ethics_names_oe) ~ ethics_names_oe[variable_name],   # Same for `ethics_names_oe`
+        .default = variable_name # returns default value from original `variable_name` if not changed.
+        )
+    )
+codebook_post
+# Write out the edited codebook to save for future use-
+# Be sure to double check questions match new names before writing out:
+# readr::write_csv(codebook_post, file = "{filepath-to-codebok}")
+# 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook:
+post_data <- blackstone::readRenameData(post_data_fp, codebook = codebook_post)
+post_data
+```
+
+Add pre and post prefixes to all variables that will be merged, (i.e. the survey items that differ pre-post- the SM items and demos are identical):
+
+```{r}
+# Pre data:
+pre_data <- pre_data %>% dplyr::rename_with(~ paste0("pre_", .), .cols = c(knowledge:ethics_5))
+# Pre data:
+post_data <- post_data %>% dplyr::rename_with(~ paste0("post_", .), .cols = c(knowledge:ethics_5_oe))
+```
+
+
+## Merge pre-post data:
+
+```{r}
+# left_join() will automatically join by all the shared columns, to silence the message in the future add the 'by = join_by()' as an arg:
+sm_data <- pre_data %>% dplyr::left_join(post_data, by = dplyr::join_by(respondent_id, collector_id, start_date, end_date, ip_address, email_address, 
+                                                                        first_name, last_name, unique_id, gender, ethnicity, first_gen))
+sm_data
+```
+
+## Data Cleaning
+
+- Convert all likert scales to factors (for ordering) and all demographics.
+
+- Create numeric variables from the factor variables for use with statistical tests later on.
+
+```{r}
+## Knowledge scale
+levels_knowledge <- c("Not knowledgeable at all", "A little knowledgeable", "Somewhat knowledgeable", "Very knowledgeable", "Extremely knowledgeable")
+## Research Items scale:
+levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
+## Ability Items scale: 
+levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+## Ethics Items scale:
+levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
+
+# Demographic levels:
+gender_levels <- c("Female","Male","Non-binary", "Do not wish to specify")
+ethnicity_levels <- c("White (Non-Hispanic/Latino)", "Asian", "Black",  "Hispanic or Latino", "American Indian or Alaskan Native",
+                      "Native Hawaiian or other Pacific Islander", "Do not wish to specify")
+first_gen_levels <- c("Yes", "No", "I'm not sure")
+
+# Use mutate() for convert each item in each scale to a factor with vectors above, across() will perform a function for items selected using contains() or can be selected 
+# by variables names individually using a character vector: _knowledge or use c("pre_knowledg","post_knowledge")
+# Also create new numeric variables for all the likert scale items and use the suffix '_num' to denote numeric:
+sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowledge"), ~ factor(., levels = levels_knowledge)), # match each name pattern to select to each factor level
+                                     dplyr::across(tidyselect::contains("_knowledge"), as.numeric, .names = "{.col}_num"), # create new numeric items for all knowledge items
+                                     dplyr::across(tidyselect::contains("research_"), ~ factor(., levels = levels_confidence)), 
+                                     dplyr::across(tidyselect::contains("research_"), as.numeric, .names = "{.col}_num"), # create new numeric items for all research items
+                                     dplyr::across(tidyselect::contains("ability_"), ~ factor(., levels = levels_min_ext)),
+                                     dplyr::across(tidyselect::contains("ability_"), as.numeric, .names = "{.col}_num"), # create new numeric items for all ability items
+                                     # select ethics items but not the open_ended responses:
+                                     dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), ~ factor(., levels = levels_agree5)),
+                                     dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), as.numeric, .names = "{.col}_num"), # new numeric items for all ethics items
+                                     # individually convert all demographics to factor variables:
+                                     gender = factor(gender, levels = gender_levels),
+                                     ethnicity = factor(ethnicity, levels = ethnicity_levels),
+                                     first_gen = factor(first_gen, levels = first_gen_levels),
+                                     )
+sm_data
+```
+
+```{r, include=FALSE}
+# TODO add links to vignettes below to: 'vignette/analysis.Rmd' and 'vignette/data_visualization.Rmd'
+```
+
+The data cleaned in this vignette will be used as the example data in the vignettes `Data analysis and Statistical Inference` and `Data Visualization` 
+to further showcase all the functions contained in `blackstone`.
