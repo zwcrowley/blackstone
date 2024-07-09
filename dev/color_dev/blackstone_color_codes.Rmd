@@ -184,17 +184,33 @@ if you have any other questions or clarifications about which color palettes to 
 cat("<h4><b>5 point scale:</b></h4>")
 cat(paste0(paste0("`", seqFillColors(n_colors = 5), "`"), collapse = ", "))
 cat("<br>")
+
+```
+
+```{r fig.width = 5,fig.height = 1}
+colors <- seqFillColors(n_colors = 5)
+labels_text_color <- labelColorMaker(colors = colors)
+ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
+  ggplot2::geom_col(ggplot2::aes(y = 1, x = id, fill = rev(colors)), color = "black", width = 1) + 
+  ggplot2::geom_text(ggplot2::aes(y = 1, x = id, label = rev(colors)), position = ggplot2::position_fill(vjust = 0.5), color = rev(labels_text_color)) + 
+  ggplot2::scale_fill_identity() +
+  ggplot2::scale_color_identity() +
+  ggplot2::theme_void()
+```
+
+```{r, results='asis'}
+cat("<br>")
 cat("<h4><b>7 point scale:</b></h4> ")
 cat(paste0(paste0("`", seqFillColors(n_colors = 7), "`"), collapse = ", "))
 cat("<br>") 
 
 ```
 
-```{r}
-colors <- seqFillColors(n_colors = 5)
+```{r fig.width = 7,fig.height = 1.25}
+colors <- seqFillColors(n_colors = 7)
 labels_text_color <- labelColorMaker(colors = colors)
 ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
-  ggplot2::geom_col(ggplot2::aes(y = 1, x = id, fill = rev(colors))) + 
+  ggplot2::geom_col(ggplot2::aes(y = 1, x = id, fill = rev(colors)), color = "black", width = 1) + 
   ggplot2::geom_text(ggplot2::aes(y = 1, x = id, label = rev(colors)), position = ggplot2::position_fill(vjust = 0.5), color = rev(labels_text_color)) + 
   ggplot2::scale_fill_identity() +
   ggplot2::scale_color_identity() +
@@ -224,11 +240,38 @@ blackstone::stackedBarChart(
 cat("<h4><b>5 point scale:</b></h4>")
 cat(paste0(paste0("`", divFillColors(n_colors = 5), "`"), collapse = ", "))
 cat("<br>")
-cat("<h4><b>7 point scale:</b></h4> ")
-cat(paste0(paste0("`", divFillColors(n_colors = 7), "`"), collapse = ", "))
-cat("<br>")
+
 ```
 
+```{r fig.width = 5,fig.height = 1}
+colors <- divFillColors(n_colors = 5)
+labels_text_color <- labelColorMaker(colors = colors)
+ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
+  ggplot2::geom_col(ggplot2::aes(y = 1, x = id, fill = rev(colors)), color = "black", width = 1) + 
+  ggplot2::geom_text(ggplot2::aes(y = 1, x = id, label = rev(colors)), position = ggplot2::position_fill(vjust = 0.5), color = rev(labels_text_color)) + 
+  ggplot2::scale_fill_identity() +
+  ggplot2::scale_color_identity() +
+  ggplot2::theme_void()
+```
+
+```{r, results='asis'}
+cat("<br>")
+cat("<h4><b>7 point scale:</b></h4> ")
+cat(paste0(paste0("`", divFillColors(n_colors = 7), "`"), collapse = ", "))
+cat("<br>") 
+
+```
+
+```{r fig.width = 7, fig.height = 1.25}
+colors <- divFillColors(n_colors = 7)
+labels_text_color <- labelColorMaker(colors = colors)
+ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
+  ggplot2::geom_col(ggplot2::aes(y = 1, x = id, fill = rev(colors)), color = "black", width = 1) + 
+  ggplot2::geom_text(ggplot2::aes(y = 1, x = id, label = rev(colors)), position = ggplot2::position_fill(vjust = 0.5), color = rev(labels_text_color)) + 
+  ggplot2::scale_fill_identity() +
+  ggplot2::scale_color_identity() +
+  ggplot2::theme_void()
+```
 
 ### Example of a Stacked Pre-Post bar chart with The Blue-Red Diverging Color Palette on a 7 point scale:
 
@@ -244,9 +287,27 @@ blackstone::stackedBarChart(
 <hr>
 
 
-## Main color for arrow charts without groups or table headings
+### Main color for arrow charts without groups or table headings
 
-### Blackstone Dark Blue `r blackstone::blackstoneColors["dark_blue"]`
+### Blackstone Dark Blue Hex Code `r blackstone::blackstoneColors["dark_blue"]`
+
+```{r, fig.height = 2, fig.width = 1.5, out.width="20%", fig.align='center'}
+# Create a data frame with the colors and their labels
+blue_color_data <- tibble(
+  color = blackstone::blackstoneColors["dark_blue"],
+  label = "blackstone\n dark blue",
+  labels_text_color = labelColorMaker(colors = blackstone::blackstoneColors["dark_blue"])
+)
+# Set up ggplot and resize using the R code chunk: {fig.width = 11, fig.height = 2}
+ggplot2::ggplot(blue_color_data, aes(x = label, y = 1, fill = color)) +
+  ggplot2::geom_col(color = "black", width = 1) +
+  ggplot2::geom_text(aes(label = color), position = ggplot2::position_fill(vjust = 0.5), color = blue_color_data[["labels_text_color"]]) +
+  ggplot2::scale_fill_identity() +
+  ggplot2::theme_void() +
+  ggplot2::theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+
+```
+
 
 ### Arrow chart example without grouping variable:
 
@@ -267,33 +328,39 @@ The Qualitative Color Palette should be used for arrow charts with a grouping va
 cat(paste0(paste0("`", qualColors(), "`"), collapse = ", "))
 ```
 
-### Example Swatch of the new Qualitative/Categorical Color Palette with 11 colors
 
-```{r}
-swatchplot(
-    qualColors()
-)
+### Example Swatch of Qualitative Color Palette with names and hex codes:
 
-```
-
-### Qualitative Color Palette with names and hex codes:
-
-```{r}
+```{r fig.width = 11, fig.height = 2}
 # purrr::map_chr(seq_along(qualColors(add_names = T)), \(x) paste0("'",names(qualColors(add_names = T))[x], "':  ", qualColors(add_names = T)[x]))
 
 # function to show color, names and hex codes as visual:
-show_colors2 <- function(colors) { 
-  labels_color <- purrr::map_chr(seq_along(colors), \(x) paste0("'",names(colors)[x], "': ", colors[x]))
-  labels_text_color <- labelColorMaker(colors = colors)
-  ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
-    ggplot2::geom_tile(ggplot2::aes(1, id, fill = rev(color))) + 
-    ggplot2::geom_text(ggplot2::aes(1, id, label = labels_color), color = labels_text_color) + 
-    ggplot2::scale_fill_identity() +
-    ggplot2::scale_color_identity() +
-    ggplot2::theme_void()
-}
-show_colors2(colors = qualColors(add_names = T))
+# show_colors2 <- function(colors) { 
+#   labels_color <- purrr::map_chr(seq_along(colors), \(x) paste0(" '",names(colors)[x], "':\n", colors[x]))
+#   labels_text_color <- labelColorMaker(colors = colors)
+#   ggplot2::ggplot(data.frame(id = rev(seq_along(colors)), color = rev(colors))) + 
+#     ggplot2::geom_tile(ggplot2::aes(1, id, fill = rev(color))) + 
+#     ggplot2::geom_text(ggplot2::aes(1, id, label = labels_color), color = labels_text_color) + 
+#     ggplot2::scale_fill_identity() +
+#     ggplot2::scale_color_identity() +
+#     ggplot2::theme_void()
+# }
+
+# Create a data frame with the colors and their labels
+color_data <- tibble(
+  color = qualColors(add_names = T),
+  label = factor(names(qualColors(add_names = T)), levels = names(qualColors(add_names = T))),
+  labels_text_color = labelColorMaker(colors = qualColors(add_names = T))
+)
+# Set up ggplot and resize using the R code chunk: {fig.width = 11, fig.height = 2}
+ggplot2::ggplot(color_data, aes(x = label, y = 1, fill = color)) +
+  ggplot2::geom_col(color = "black", width = 1) +
+  ggplot2::geom_text(aes(label = color), position = ggplot2::position_fill(vjust = 0.5), color = color_data[["labels_text_color"]]) +
+  ggplot2::scale_fill_identity() +
+  ggplot2::theme_void() +
+  ggplot2::theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
+
 
 
 ### Example of an Arrow chart with Grouping Variable and the Qualitative Color Palette:
