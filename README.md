@@ -97,5 +97,6 @@ More functions and visuals will be added to `blackstone` package as
 needed, be sure to reach out with any ideas for the package or issues!
 
 If you encounter a clear bug or need any help with this package, please
-reach out to Zack Crowley on the Google Chat space, direct message, or
-email at <zcrowley@blackstoneevaluation.com>.
+reach out to Zack Crowley on the Google Chat space titled
+`blackstone R package`, direct message, or email at
+<zcrowley@blackstoneevaluation.com>.
