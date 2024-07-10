@@ -1,0 +1,252 @@
+---
+title: "Data analysis and Statistical Inference"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data analysis and Statistical Inference}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk[["set"]](
+    collapse = TRUE,
+    warning = FALSE, 
+    message = FALSE, 
+    fig.width = 9,
+    fig.height = 8,
+    out.width = "100%"
+    )
+# Prevents sci notation and sets the output of decimals to 4 (0.0000):
+options(scipen = 999, digits = 4,
+        tibble.print_min = 5, tibble.print_max = 5)
+
+# Set seed to reproduce data:
+set.seed(424629)
+```
+
+```{r setup}
+library(blackstone)
+```
+
+
+# Data analysis and Statistical Inference
+
+```{r, include=FALSE}
+# TODO add link to vignette below to: 'vignette/import_clean.Rmd'
+```
+
+First, read in the data that is merged and cleaned in the vignette `Importing and Cleaning Data`:
+
+```{r}
+# Read in clean SM data:
+sm_data <- readr::read_csv(blackstone::blackstoneExample("sm_data_clean.csv"), show_col_types = FALSE)
+
+## Set up character vectors of likert scale levels:
+## Knowledge scale
+levels_knowledge <- c("Not knowledgeable at all", "A little knowledgeable", "Somewhat knowledgeable", "Very knowledgeable", "Extremely knowledgeable")
+## Research Items scale:
+levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
+## Ability Items scale: 
+levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")
+## Ethics Items scale:
+levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
+
+# Demographic levels:
+gender_levels <- c("Female","Male","Non-binary", "Do not wish to specify")
+ethnicity_levels <- c("White (Non-Hispanic/Latino)", "Asian", "Black",  "Hispanic or Latino", "American Indian or Alaskan Native",
+                      "Native Hawaiian or other Pacific Islander", "Do not wish to specify")
+first_gen_levels <- c("Yes", "No", "I'm not sure")
+
+# Use mutate() for convert each item in each scale to a factor with vectors above, across() will perform a function for items selected using contains() or can be selected 
+# by variables names individually using a character vector: _knowledge or use c("pre_knowledg","post_knowledge")
+# Also create new numeric variables for all the likert scale items and use the suffix '_num' to denote numeric:
+sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowledge"), ~ factor(., levels = levels_knowledge)), # match each name pattern to select to each factor level
+                                     dplyr::across(tidyselect::contains("_knowledge"), as.numeric, .names = "{.col}_num"), # create new numeric items for all knowledge items
+                                     dplyr::across(tidyselect::contains("research_"), ~ factor(., levels = levels_confidence)), 
+                                     dplyr::across(tidyselect::contains("research_"), as.numeric, .names = "{.col}_num"), # create new numeric items for all research items
+                                     dplyr::across(tidyselect::contains("ability_"), ~ factor(., levels = levels_min_ext)),
+                                     dplyr::across(tidyselect::contains("ability_"), as.numeric, .names = "{.col}_num"), # create new numeric items for all ability items
+                                     # select ethics items but not the open_ended responses:
+                                     dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), ~ factor(., levels = levels_agree5)),
+                                     dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), as.numeric, .names = "{.col}_num"), # new numeric items for all ethics items
+                                     # individually convert all demographics to factor variables:
+                                     gender = factor(gender, levels = gender_levels),
+                                     ethnicity = factor(ethnicity, levels = ethnicity_levels),
+                                     first_gen = factor(first_gen, levels = first_gen_levels),
+                                     )
+sm_data
+```
+
+
+## Likert Scale Table:
+
+The most common task is creating frequency tables of counts and percentages for likert scale items, `blackstone` has the `likertTable()` for that:
+
+```{r}
+# Research items pre and post frequency table, with counts and percentages: use levels_confidence character vector
+# use likertTable to return frequency table, passing the scale_labels: (can also label the individual questions using the arg question_label)
+sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% 
+                blackstone::likertTable(., scale_labels = levels_confidence)
+```
+
+
+```{r, include=FALSE}
+# TODO add link to R package below for `purrr`
+```
+
+Here is one approach to use function programming from the `purrr` package create many frequency tables at once:
+
+```{r}
+# Another way to make a list of many freq_tables to print out with other data analysis later on, 
+# using pmap() to do multiple likertTable() at once:
+# Set up tibbles of each set of scales that contain all pre and post data:
+# research:
+research_df <- sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor))
+# knowledge:
+knowledge_df <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & !tidyselect::contains("_num") & where(is.factor))
+# ability:
+ability_df <- sm_data %>% dplyr::select(tidyselect::contains("ability_") & !tidyselect::contains("_num") & where(is.factor))
+# ethics:
+ethics_df <- sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contains("_oe") & !tidyselect::contains("_num") & where(is.factor)) 
+
+# set up tibble with the columns as the args to pass to likertTable(), each row of the column `df` is the tibble of items and 
+# each row of `scale_labels` is the vector of likert scale labels:
+freq_params <- tibble::tribble(
+  ~df,           ~scale_labels, # name of columns (these need to match the names of the arguments in the function that you want to use later in `purrr::pmap()`)
+   knowledge_df,  levels_knowledge, 
+   research_df,   levels_confidence,  
+   ability_df,    levels_min_ext,
+   ethics_df,     levels_agree5
+)
+# Create a named list of frequency tables by using `purrr::pmap()` which takes in a tibble where each column is an argument that is passed to the function, and 
+# each row is contains the inputs for a single output, so here each row will be one frequency table that is return to a list and named for easy retrieval later on:
+freq_tables <- freq_params %>% purrr::pmap(blackstone::likertTable) %>% 
+    purrr::set_names(., c("Knowledge Items", "Research Items", "Ability Items", "Ethics Items"))
+
+# Can select the list by position or by name:
+# freq_tables[[1]] # by list position
+freq_tables[["Knowledge Items"]] # by name
+freq_tables[["Research Items"]]
+freq_tables[["Ability Items"]]
+freq_tables[["Ethics Items"]]
+
+```
+
+## Grouped Demograpic table:
+
+`blackstone` contains a function to create frequency tables for demographics (combined demographics table) that can also be grouped by a variable, like role or cohort as well: [`groupedTable()`].
+
+```{r demos table}
+# Set up labels for variables
+# Labels for questions column of table, pass to question_labels argument:
+demos_labels <- c('Gender' = "gender",
+                  'Race/Ethnicity' = "ethnicity",
+                  'First-Generation College Student' = "first_gen")
+
+sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the demographic vars
+                 blackstone::groupedTable(question_labels = demos_labels) # pass the new labels for the 'Question' column.
+```
+
+## Statistical Inference: T-test or Wilcoxon test
+
+```{r, include=FALSE}
+# TODO add link to R package below for `rstatix`
+```
+
+In this section, we will run simple statistical tests using the pipe-friendly functions contained in the `rstatix` package
+
+## Single pre-post items:
+
+### Running normality test, then t-test or Wilcoxon test:
+
+Since a large number of our surveys have a sample size smaller than 30, it is important to check the normality assumption before running any 
+statistical tests. If the data is distributed normally we can use T-tests (parametric tests) for simple hypothesis testing of pre-post items, to see if any 
+changes between the surveys are statistically significant. 
+
+If the data is *not* distributed normally (non-normal) then we will have to use non-parametric statistical tests, like the Wilcoxon test.
+
+Determining if data is distributed normally includes both visual and statistical tests
+
+```{r}
+# First create a difference score for the pre and post items:
+sm_data <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>%  # select knowledge pre and post numeric items
+    dplyr::mutate(knowledge_diff = post_knowledge_num - pre_knowledge_num)  # get difference of pre and post scores
+# Density plot:
+ggpubr::ggdensity(sm_data, "knowledge_diff", fill = "lightgray")
+# QQ plot:
+ggpubr::ggqqplot(sm_data, "knowledge_diff")
+```
+
+If the data is normally distributed, the density plot would be shaped like a bell curve and the QQ plot would have all of the sample observations (points), lined up along the 
+45-degree reference line within the shaded confidence interval.
+
+This data is probably not distributed normally, lets run a statistical test to confirm.
+
+Next, run the Shapiro-Wilk's test. The null hypothesis of this test is the sample distribution is normal. That means that if the test is significant (p-value < 0.05), 
+the distribution is non-normal. 
+
+```{r}
+sm_data %>% rstatix::shapiro_test(knowledge_diff)
+```
+
+`rstatix::shapiro_test()` returns a tibble with three column, the column named `p` is the p-value for the Shapiro's test.
+
+Data is *not* normally distributed for the knowledge items (since the p-value is < 0.05)- use a Wilcoxon test.
+
+### Wilcoxon test
+
+There are a couple of ways to run a Wilcoxon test- either a pipe-friendly version `rstatix::wilcox_test()` or base R has wilcox.test where you must 
+pass each variable as a numeric vector.
+
+```{r}
+# Either use a pipe-friendly version of `wilcox_test()` from `rstatix`, need to covert to long form and have `timing` as a variable:
+knowledge_wilcoxon <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>%  # select the data
+                                  tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>% # pivot to long-form
+                                  tidyr::separate(.data$question, into = c("timing", "question"), sep = "_", extra = "merge") %>% # Separate out the prefix to get timing
+                                  rstatix::wilcox_test(response ~ timing, paired = TRUE, detailed = TRUE) # Run the Wilcoxon test using column "response" (numeric values) on "timing" (pre or post)
+knowledge_wilcoxon
+# Or use the simple base R wilcox.test with each pre and post item:
+wilcox.test(sm_data[["post_knowledge_num"]], sm_data[["pre_knowledge_num"]], paired = TRUE)
+```
+
+Wilcoxon test is **significant**, there is a significant difference in pre and post scores of knowledge scores.
+
+## Composite Scales (multiple items)
+
+Most of the surveys we conduct use composite scales of items that measure any underlying concept. These are average together to create a more reliable 
+measure that can then be used in statistical inference.
+
+### Creating Composite Scores
+
+Create composite scores for pre and post data by taking the mean of each set of items, and then get difference scores between pre and post mean:
+
+```{r}
+sm_data <- sm_data %>% dplyr::rowwise() %>% # Get the mean for each individual by row
+    dplyr::mutate(pre_research_mean = mean(dplyr::c_across(tidyselect::contains("pre_research_") & tidyselect::contains("_num"))), # pre mean for each individual
+                  post_research_mean = mean(dplyr::c_across(tidyselect::contains("post_research_") & tidyselect::contains("_num"))), # post mean for each individual
+                  diff_research = post_research_mean - pre_research_mean # get difference scores of pre and post means.
+    ) %>% dplyr::ungroup()
+        
+sm_data %>% rstatix::shapiro_test(diff_research) # not significant
+```
+
+Data is normally distributed for the research composite items (since the p-values is > 0.05)- use a T-test.
+
+```{r}
+# Either use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable:
+research_t_test <- sm_data %>% dplyr::select(pre_research_mean, post_research_mean) %>% # select the pre and post means for research items
+                               tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
+                               tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>% 
+                               rstatix::t_test(response ~ timing, paired = TRUE, detailed = TRUE)
+research_t_test
+# Or use the simple base R wilcox.test with each pre and post item:
+t.test(sm_data[["post_research_mean"]], sm_data[["pre_research_mean"]],  paired = TRUE)
+```
+
+T-test is significant, there is a mean difference in pre and post scores of `r research_t_test[["estimate"]]`.
+
+```{r, include=FALSE}
+# TODO add link to vignettes below to: 'vignette/data_visualization.Rmd'
+```
+
+The vignette `Data Visualization` will explain how to create visuals using `blackstone` with the example data analyzed in this vignette.

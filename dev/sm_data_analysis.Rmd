@@ -327,9 +327,7 @@ sm_data <- sm_data %>% dplyr::rowwise() %>% # Get the mean for each individual b
 sm_data %>% rstatix::shapiro_test(diff_research) # not significant
 ```
 
-
 Data is normally distributed for the research composite items (since the p-values is > 0.05)- use a T-test.
-
 
 ```{r}
 # Either use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable:
@@ -341,6 +339,7 @@ research_t_test
 # Or use the simple base R wilcox.test with each pre and post item:
 t.test(sm_data[["post_research_mean"]], sm_data[["pre_research_mean"]],  paired = TRUE)
 ```
+
 T-test is significant, there is a mean difference in pre and post scores of `r research_t_test[["estimate"]]`.
 
 - End vignette: `Data analysis and Statistical Inference` name file: 'analysis.Rmd'
