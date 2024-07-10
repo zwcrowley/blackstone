@@ -1,8 +1,8 @@
 ---
-title: "Data analysis and Statistical Inference"
+title: "Data Analysis and Statistical Inference"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Data analysis and Statistical Inference}
+  %\VignetteIndexEntry{Data Analysis and Statistical Inference}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,6 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk[["set"]](
     collapse = TRUE,
+    comment = "#>",
     warning = FALSE, 
     message = FALSE, 
     fig.width = 9,
@@ -24,12 +25,24 @@ options(scipen = 999, digits = 4,
 set.seed(424629)
 ```
 
+
+`blackstone` contains many functions for data analysis. This vignette shows you:
+
+- How to create frequency tables for survey items and demographics with Blackstone Research and Evaluation branding.
+
+- How create composite scales from survey items with a shared underlying concept.
+
+- How to determine the if data is distributed normally.
+
+- How to run appropriate statistical tests for common data analysis tasks.
+
+We’ll start by loading `blackstone`:
+
 ```{r setup}
 library(blackstone)
 ```
 
-
-# Data analysis and Statistical Inference
+### Read in Example Data
 
 ```{r, include=FALSE}
 # TODO add link to vignette below to: 'vignette/import_clean.Rmd'
@@ -89,6 +102,7 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
                 blackstone::likertTable(., scale_labels = levels_confidence)
 ```
 
+#### Using Function Programming to Speed Up Analysis
 
 ```{r, include=FALSE}
 # TODO add link to R package below for `purrr`
@@ -132,9 +146,9 @@ freq_tables[["Ethics Items"]]
 
 ```
 
-## Grouped Demograpic table:
+## Grouped Demograpic Table:
 
-`blackstone` contains a function to create frequency tables for demographics (combined demographics table) that can also be grouped by a variable, like role or cohort as well: [`groupedTable()`].
+`blackstone` contains a function to create frequency tables for demographics (combined demographics table) that can also be grouped by a variable, like role or cohort as well: `groupedTable()`.
 
 ```{r demos table}
 # Set up labels for variables
@@ -153,7 +167,7 @@ sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the demogra
 # TODO add link to R package below for `rstatix`
 ```
 
-In this section, we will run simple statistical tests using the pipe-friendly functions contained in the `rstatix` package
+In this section, we will run simple statistical tests using the pipe-friendly functions contained in the `rstatix` package.
 
 ## Single pre-post items:
 
@@ -165,12 +179,15 @@ changes between the surveys are statistically significant.
 
 If the data is *not* distributed normally (non-normal) then we will have to use non-parametric statistical tests, like the Wilcoxon test.
 
-Determining if data is distributed normally includes both visual and statistical tests
+Determining if data is distributed normally includes both visual and statistical tests.
+
+#### Normality Visualizations: Density and QQ (Quantile-Quantile) Plots
+
+The `ggpubr` package contains functions to create density and QQ plots to visually inspect if data is distributed normally.
 
 ```{r}
 # First create a difference score for the pre and post items:
-sm_data <- sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::contains("_num")) %>%  # select knowledge pre and post numeric items
-    dplyr::mutate(knowledge_diff = post_knowledge_num - pre_knowledge_num)  # get difference of pre and post scores
+sm_data <- sm_data %>% dplyr::mutate(knowledge_diff = post_knowledge_num - pre_knowledge_num)  # get difference of pre and post scores
 # Density plot:
 ggpubr::ggdensity(sm_data, "knowledge_diff", fill = "lightgray")
 # QQ plot:
@@ -226,8 +243,23 @@ sm_data <- sm_data %>% dplyr::rowwise() %>% # Get the mean for each individual b
                   post_research_mean = mean(dplyr::c_across(tidyselect::contains("post_research_") & tidyselect::contains("_num"))), # post mean for each individual
                   diff_research = post_research_mean - pre_research_mean # get difference scores of pre and post means.
     ) %>% dplyr::ungroup()
-        
-sm_data %>% rstatix::shapiro_test(diff_research) # not significant
+```
+
+#### Normality Testing of Composite Scales
+
+Run a visual inspection of the difference scores between pre and post mean of the research items:
+
+```{r}
+# Density plot:
+ggpubr::ggdensity(sm_data, "diff_research", fill = "lightgray")
+# QQ plot:
+ggpubr::ggqqplot(sm_data, "diff_research")
+```
+
+Visually, the data appears normally distributed, Next, run the Shapiro-Wilk's test to confirm.
+
+```{r}
+sm_data %>% rstatix::shapiro_test(diff_research) # not significant, data likely normal
 ```
 
 Data is normally distributed for the research composite items (since the p-values is > 0.05)- use a T-test.
@@ -235,9 +267,9 @@ Data is normally distributed for the research composite items (since the p-value
 ```{r}
 # Either use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable:
 research_t_test <- sm_data %>% dplyr::select(pre_research_mean, post_research_mean) %>% # select the pre and post means for research items
-                               tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>%
-                               tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>% 
-                               rstatix::t_test(response ~ timing, paired = TRUE, detailed = TRUE)
+                               tidyr::pivot_longer(tidyselect::contains(c("pre_", "post_")), names_to = "question", values_to = "response") %>% # pivot to long-form
+                               tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>% # Separate out the prefix to get timing
+                               rstatix::t_test(response ~ timing, paired = TRUE, detailed = TRUE)# Run the T-test using column "response" (numeric values) on "timing" (pre or post)
 research_t_test
 # Or use the simple base R wilcox.test with each pre and post item:
 t.test(sm_data[["post_research_mean"]], sm_data[["pre_research_mean"]],  paired = TRUE)

@@ -10,6 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk[["set"]](
     collapse = TRUE,
+    comment = "#>",
     warning = FALSE, 
     message = FALSE, 
     fig.width = 9,
@@ -23,6 +24,18 @@ options(scipen = 999, digits = 4,
 # Set seed to reproduce data:
 set.seed(424629)
 ```
+
+`blackstone` contains many functions for importing and cleaning data. This vignette shows you:
+
+- How to create a codebook for SurveyMonkey data.
+
+- How edit the codebook and use it to read in SurveyMonkey data.
+
+- How to merge data from different time points (pre-post data).
+
+- How to clean a dataset and make sure all variables are the correct type for analysis.
+
+We’ll start by loading `blackstone`:
 
 ```{r setup}
 library(blackstone)
@@ -40,9 +53,13 @@ SurveyMonkey exports data with two header rows, which does not work with `R` whe
 Here is how to import data from SurveyMonkey using example data provided with `blackstone`, this is a fake dataset of a pre (baseline) survey. 
 There are three steps to this process:
 
+  1. Create a codebook.
+  2. Edit the codebook to create meaningful variable names.
+  3. Read in the data and rename the variables with the codebook.
+
 ## Pre Survey Data
 
-1. Create a codebook.
+### 1. Creating the codebook
 
 ```{r create_codebook}
 # File path for pre example data:
@@ -58,7 +75,7 @@ will be the column to edit to change the column names later on to shorter and mo
 
 `variable_name` will be the column that renames all the variables in the SurveyMonkey data.
 
-2. Edit the codebook to create meaningful variable names.
+### 2. Editing the codebook to create meaningful variable names
 
 ```{r edit_codebook}
 # Step 2. Edit the codebook: 
@@ -94,7 +111,7 @@ codebook_pre
 # readr::write_csv(codebook_pre, file = "{filepath-to-codebok}")
 ```
 
-3. Read in the data and rename the variables with the codebook.
+### 3. Import the data and rename the variables with the codebook.
 
 ```{r import}
 # 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook:
@@ -159,7 +176,7 @@ post_data <- blackstone::readRenameData(post_data_fp, codebook = codebook_post)
 post_data
 ```
 
-Add pre and post prefixes to all variables that will be merged, (i.e. the survey items that differ pre-post- the SM items and demos are identical):
+Finally, it is important to add pre and post prefixes to all variables that will be merged, (i.e. the survey items that differ pre-post- the SM items and demos are identical):
 
 ```{r}
 # Pre data:
@@ -169,11 +186,24 @@ post_data <- post_data %>% dplyr::rename_with(~ paste0("post_", .), .cols = c(kn
 ```
 
 
-## Merge pre-post data:
+## Merging Data
+
+Merge pre-post data by joining on all the variables that are shared in common. 
+
+```{r, include=FALSE}
+# TODO add link to R package below for `dplyr`
+```
+
+The `dplyr` package has many [joining functions](https://dplyr.tidyverse.org/articles/two-table.html), the most commonly use is `dplyr::left_join()`
+which keeps all the observations from the first table provided and merges all observations from the second that match.
+
+For most data analysis, we will want to use the post data as the primary table and merge all the pre data since most post surveys drop some participants, so we can run 
+our analysis on complete data.
 
 ```{r}
-# left_join() will automatically join by all the shared columns, to silence the message in the future add the 'by = join_by()' as an arg:
-sm_data <- pre_data %>% dplyr::left_join(post_data, by = dplyr::join_by(respondent_id, collector_id, start_date, end_date, ip_address, email_address, 
+# left_join() will automatically join by all the shared columns, be sure to include all shared variables that should be identical pre-post to the 'by = join_by()' as an arg
+# (otherwise you will get a message about additional variables to be joined by):
+sm_data <- post_data %>% dplyr::left_join(pre_data, by = dplyr::join_by(respondent_id, collector_id, start_date, end_date, ip_address, email_address, 
                                                                         first_name, last_name, unique_id, gender, ethnicity, first_gen))
 sm_data
 ```
@@ -183,6 +213,8 @@ sm_data
 - Convert all likert scales to factors (for ordering) and all demographics.
 
 - Create numeric variables from the factor variables for use with statistical tests later on.
+
+- If applicable, drop all "Missing"/`NA` observations.
 
 ```{r}
 ## Knowledge scale
