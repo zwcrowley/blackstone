@@ -41,6 +41,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/import_clean.html">Importing and Cleaning Data</a></li>
+    <li><a class="dropdown-item" href="../articles/analysis.html">Data Analysis and Statistical Inference</a></li>
+    <li><a class="dropdown-item" href="../articles/data_visualization.html">Data Visualization</a></li>
   </ul>
 </li>
       </ul>
@@ -70,6 +72,18 @@
 
     
     
+<p><code>blackstone</code> contains many functions for importing and
+cleaning data. This vignette shows you:</p>
+<ul>
+<li><p>How to create a codebook for SurveyMonkey data.</p></li>
+<li><p>How edit the codebook and use it to read in SurveyMonkey
+data.</p></li>
+<li><p>How to merge data from different time points (pre-post
+data).</p></li>
+<li><p>How to clean a dataset and make sure all variables are the
+correct type for analysis.</p></li>
+</ul>
+<p>We’ll start by loading <code>blackstone</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zwcrowley/blackstone" class="external-link">blackstone</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
@@ -89,28 +103,33 @@ of names.</p>
 <p>Here is how to import data from SurveyMonkey using example data
 provided with <code>blackstone</code>, this is a fake dataset of a pre
 (baseline) survey. There are three steps to this process:</p>
+<ol style="list-style-type: decimal">
+<li>Create a codebook.</li>
+<li>Edit the codebook to create meaningful variable names.</li>
+<li>Read in the data and rename the variables with the codebook.</li>
+</ol>
 </div>
 <div class="section level3">
 <h3 id="pre-survey-data">Pre Survey Data<a class="anchor" aria-label="anchor" href="#pre-survey-data"></a>
 </h3>
-<ol style="list-style-type: decimal">
-<li>Create a codebook.</li>
-</ol>
+<div class="section level4">
+<h4 id="creating-the-codebook">1. Creating the codebook<a class="anchor" aria-label="anchor" href="#creating-the-codebook"></a>
+</h4>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># File path for pre example data:</span></span>
 <span><span class="va">pre_data_fp</span> <span class="op">&lt;-</span> <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="../reference/blackstoneExample.html">blackstoneExample</a></span><span class="op">(</span><span class="st">"sm_data_pre.csv"</span><span class="op">)</span></span>
 <span><span class="co"># 1. Create the codebook:</span></span>
 <span><span class="va">codebook_pre</span> <span class="op">&lt;-</span> <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="../reference/createCodebook.html">createCodebook</a></span><span class="op">(</span><span class="va">pre_data_fp</span><span class="op">)</span></span>
 <span><span class="va">codebook_pre</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 32 × 5</span></span></span>
-<span><span class="co">##   header_1      header_2 combined_header position variable_name</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> Respondent ID <span style="color: #BB0000;">NA</span>       Respondent ID          1 respondent_id</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> Collector ID  <span style="color: #BB0000;">NA</span>       Collector ID           2 collector_id </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> Start Date    <span style="color: #BB0000;">NA</span>       Start Date             3 start_date   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 27 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 32 × 5</span></span></span>
+<span><span class="co">#&gt;   header_1      header_2 combined_header position variable_name</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Respondent ID <span style="color: #BB0000;">NA</span>       Respondent ID          1 respondent_id</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Collector ID  <span style="color: #BB0000;">NA</span>       Collector ID           2 collector_id </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Start Date    <span style="color: #BB0000;">NA</span>       Start Date             3 start_date   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 27 more rows</span></span></span></code></pre></div>
 <p>For this codebook, the first column <code>header_1</code> is the
 first header from the SurveyMonkey data, the second column
 <code>header_2</code> is the second header, the third column
@@ -122,9 +141,10 @@ column to edit to change the column names later on to shorter and more
 meaningful names.</p>
 <p><code>variable_name</code> will be the column that renames all the
 variables in the SurveyMonkey data.</p>
-<ol start="2" style="list-style-type: decimal">
-<li>Edit the codebook to create meaningful variable names.</li>
-</ol>
+</div>
+<div class="section level4">
+<h4 id="editing-the-codebook-to-create-meaningful-variable-names">2. Editing the codebook to create meaningful variable names<a class="anchor" aria-label="anchor" href="#editing-the-codebook-to-create-meaningful-variable-names"></a>
+</h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Step 2. Edit the codebook: </span></span>
 <span><span class="co"># Set up sequential naming convections for matrix-style questions with shared likert scale response options:</span></span>
@@ -154,52 +174,54 @@ variables in the SurveyMonkey data.</p>
 <span>        <span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="va">codebook_pre</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 32 × 5</span></span></span>
-<span><span class="co">##   header_1      header_2 combined_header position variable_name</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> Respondent ID <span style="color: #BB0000;">NA</span>       Respondent ID          1 respondent_id</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> Collector ID  <span style="color: #BB0000;">NA</span>       Collector ID           2 collector_id </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> Start Date    <span style="color: #BB0000;">NA</span>       Start Date             3 start_date   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 27 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 32 × 5</span></span></span>
+<span><span class="co">#&gt;   header_1      header_2 combined_header position variable_name</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Respondent ID <span style="color: #BB0000;">NA</span>       Respondent ID          1 respondent_id</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Collector ID  <span style="color: #BB0000;">NA</span>       Collector ID           2 collector_id </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Start Date    <span style="color: #BB0000;">NA</span>       Start Date             3 start_date   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 27 more rows</span></span></span>
 <span><span class="co"># Write out the edited codebook to save for future use-</span></span>
 <span><span class="co"># Be sure to double check questions match new names before writing out:</span></span>
 <span><span class="co"># readr::write_csv(codebook_pre, file = "{filepath-to-codebok}")</span></span></code></pre></div>
-<ol start="3" style="list-style-type: decimal">
-<li>Read in the data and rename the variables with the codebook.</li>
-</ol>
+</div>
+<div class="section level4">
+<h4 id="import-the-data-and-rename-the-variables-with-the-codebook-">3. Import the data and rename the variables with the codebook.<a class="anchor" aria-label="anchor" href="#import-the-data-and-rename-the-variables-with-the-codebook-"></a>
+</h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook:</span></span>
 <span><span class="va">pre_data</span> <span class="op">&lt;-</span> <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="../reference/readRenameData.html">readRenameData</a></span><span class="op">(</span><span class="va">pre_data_fp</span>, codebook <span class="op">=</span> <span class="va">codebook_pre</span><span class="op">)</span></span>
 <span><span class="va">pre_data</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 100 × 32</span></span></span>
-<span><span class="co">##   respondent_id collector_id start_date end_date   ip_address      email_address</span></span>
-<span><span class="co">##           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001    431<span style="text-decoration: underline;">822</span>954 2024-06-05 2024-06-06 227.224.138.113 coraima59@me…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002    431<span style="text-decoration: underline;">822</span>954 2024-06-21 2024-06-22 110.241.132.50  mstamm@hermi…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003    431<span style="text-decoration: underline;">822</span>954 2024-06-14 2024-06-15 165.58.112.64   precious.fei…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>004    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 49.34.121.147   ines52@gmail…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>005    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 115.233.66.80   franz44@hotm…</span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 95 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 26 more variables: first_name &lt;chr&gt;, last_name &lt;chr&gt;, unique_id &lt;dbl&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   knowledge &lt;chr&gt;, research_1 &lt;chr&gt;, research_2 &lt;chr&gt;, research_3 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   research_4 &lt;chr&gt;, research_5 &lt;chr&gt;, research_6 &lt;chr&gt;, research_7 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   research_8 &lt;chr&gt;, ability_1 &lt;chr&gt;, ability_2 &lt;chr&gt;, ability_3 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ability_4 &lt;chr&gt;, ability_5 &lt;chr&gt;, ability_6 &lt;chr&gt;, ethics_1 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ethics_2 &lt;chr&gt;, ethics_3 &lt;chr&gt;, ethics_4 &lt;chr&gt;, ethics_5 &lt;chr&gt;, …</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 32</span></span></span>
+<span><span class="co">#&gt;   respondent_id collector_id start_date end_date   ip_address      email_address</span></span>
+<span><span class="co">#&gt;           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001    431<span style="text-decoration: underline;">822</span>954 2024-06-05 2024-06-06 227.224.138.113 coraima59@me…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002    431<span style="text-decoration: underline;">822</span>954 2024-06-21 2024-06-22 110.241.132.50  mstamm@hermi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003    431<span style="text-decoration: underline;">822</span>954 2024-06-14 2024-06-15 165.58.112.64   precious.fei…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>004    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 49.34.121.147   ines52@gmail…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>005    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 115.233.66.80   franz44@hotm…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 95 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 26 more variables: first_name &lt;chr&gt;, last_name &lt;chr&gt;, unique_id &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   knowledge &lt;chr&gt;, research_1 &lt;chr&gt;, research_2 &lt;chr&gt;, research_3 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   research_4 &lt;chr&gt;, research_5 &lt;chr&gt;, research_6 &lt;chr&gt;, research_7 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   research_8 &lt;chr&gt;, ability_1 &lt;chr&gt;, ability_2 &lt;chr&gt;, ability_3 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   ability_4 &lt;chr&gt;, ability_5 &lt;chr&gt;, ability_6 &lt;chr&gt;, ethics_1 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   ethics_2 &lt;chr&gt;, ethics_3 &lt;chr&gt;, ethics_4 &lt;chr&gt;, ethics_5 &lt;chr&gt;, …</span></span></span></code></pre></div>
 <p>The SurveyMonkey example data is now imported with names taken from
 the codebook column <code>variable_name</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pre_data</span><span class="op">)</span></span>
-<span><span class="co">##  [1] "respondent_id" "collector_id"  "start_date"    "end_date"     </span></span>
-<span><span class="co">##  [5] "ip_address"    "email_address" "first_name"    "last_name"    </span></span>
-<span><span class="co">##  [9] "unique_id"     "knowledge"     "research_1"    "research_2"   </span></span>
-<span><span class="co">## [13] "research_3"    "research_4"    "research_5"    "research_6"   </span></span>
-<span><span class="co">## [17] "research_7"    "research_8"    "ability_1"     "ability_2"    </span></span>
-<span><span class="co">## [21] "ability_3"     "ability_4"     "ability_5"     "ability_6"    </span></span>
-<span><span class="co">## [25] "ethics_1"      "ethics_2"      "ethics_3"      "ethics_4"     </span></span>
-<span><span class="co">## [29] "ethics_5"      "gender"        "ethnicity"     "first_gen"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "respondent_id" "collector_id"  "start_date"    "end_date"     </span></span>
+<span><span class="co">#&gt;  [5] "ip_address"    "email_address" "first_name"    "last_name"    </span></span>
+<span><span class="co">#&gt;  [9] "unique_id"     "knowledge"     "research_1"    "research_2"   </span></span>
+<span><span class="co">#&gt; [13] "research_3"    "research_4"    "research_5"    "research_6"   </span></span>
+<span><span class="co">#&gt; [17] "research_7"    "research_8"    "ability_1"     "ability_2"    </span></span>
+<span><span class="co">#&gt; [21] "ability_3"     "ability_4"     "ability_5"     "ability_6"    </span></span>
+<span><span class="co">#&gt; [25] "ethics_1"      "ethics_2"      "ethics_3"      "ethics_4"     </span></span>
+<span><span class="co">#&gt; [29] "ethics_5"      "gender"        "ethnicity"     "first_gen"</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="post-data">Post data:<a class="anchor" aria-label="anchor" href="#post-data"></a>
@@ -217,15 +239,15 @@ to rename the variables when reading in the data with
 <span><span class="co"># 1. Create the codebook using the filepath:</span></span>
 <span><span class="va">codebook_post</span> <span class="op">&lt;-</span> <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="../reference/createCodebook.html">createCodebook</a></span><span class="op">(</span><span class="va">post_data_fp</span><span class="op">)</span></span>
 <span><span class="va">codebook_post</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 37 × 5</span></span></span>
-<span><span class="co">##   header_1      header_2 combined_header position variable_name</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> Respondent ID <span style="color: #BB0000;">NA</span>       Respondent ID          1 respondent_id</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> Collector ID  <span style="color: #BB0000;">NA</span>       Collector ID           2 collector_id </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> Start Date    <span style="color: #BB0000;">NA</span>       Start Date             3 start_date   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 32 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 37 × 5</span></span></span>
+<span><span class="co">#&gt;   header_1      header_2 combined_header position variable_name</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Respondent ID <span style="color: #BB0000;">NA</span>       Respondent ID          1 respondent_id</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Collector ID  <span style="color: #BB0000;">NA</span>       Collector ID           2 collector_id </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Start Date    <span style="color: #BB0000;">NA</span>       Start Date             3 start_date   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 32 more rows</span></span></span>
 <span></span>
 <span><span class="co"># Step 2. Edit the codebook: </span></span>
 <span><span class="co"># Set up sequential naming convections for matrix-style questions with shared likert scale response options:</span></span>
@@ -259,39 +281,39 @@ to rename the variables when reading in the data with
 <span>        <span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="va">codebook_post</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 37 × 5</span></span></span>
-<span><span class="co">##   header_1      header_2 combined_header position variable_name</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> Respondent ID <span style="color: #BB0000;">NA</span>       Respondent ID          1 respondent_id</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> Collector ID  <span style="color: #BB0000;">NA</span>       Collector ID           2 collector_id </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> Start Date    <span style="color: #BB0000;">NA</span>       Start Date             3 start_date   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 32 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 37 × 5</span></span></span>
+<span><span class="co">#&gt;   header_1      header_2 combined_header position variable_name</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Respondent ID <span style="color: #BB0000;">NA</span>       Respondent ID          1 respondent_id</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Collector ID  <span style="color: #BB0000;">NA</span>       Collector ID           2 collector_id </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Start Date    <span style="color: #BB0000;">NA</span>       Start Date             3 start_date   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 32 more rows</span></span></span>
 <span><span class="co"># Write out the edited codebook to save for future use-</span></span>
 <span><span class="co"># Be sure to double check questions match new names before writing out:</span></span>
 <span><span class="co"># readr::write_csv(codebook_post, file = "{filepath-to-codebok}")</span></span>
 <span><span class="co"># 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook:</span></span>
 <span><span class="va">post_data</span> <span class="op">&lt;-</span> <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="../reference/readRenameData.html">readRenameData</a></span><span class="op">(</span><span class="va">post_data_fp</span>, codebook <span class="op">=</span> <span class="va">codebook_post</span><span class="op">)</span></span>
 <span><span class="va">post_data</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 100 × 37</span></span></span>
-<span><span class="co">##   respondent_id collector_id start_date end_date   ip_address      email_address</span></span>
-<span><span class="co">##           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001    431<span style="text-decoration: underline;">822</span>954 2024-06-05 2024-06-06 227.224.138.113 coraima59@me…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002    431<span style="text-decoration: underline;">822</span>954 2024-06-21 2024-06-22 110.241.132.50  mstamm@hermi…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003    431<span style="text-decoration: underline;">822</span>954 2024-06-14 2024-06-15 165.58.112.64   precious.fei…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>004    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 49.34.121.147   ines52@gmail…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>005    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 115.233.66.80   franz44@hotm…</span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 95 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 31 more variables: first_name &lt;chr&gt;, last_name &lt;chr&gt;, unique_id &lt;dbl&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   knowledge &lt;chr&gt;, research_1 &lt;chr&gt;, research_2 &lt;chr&gt;, research_3 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   research_4 &lt;chr&gt;, research_5 &lt;chr&gt;, research_6 &lt;chr&gt;, research_7 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   research_8 &lt;chr&gt;, ability_1 &lt;chr&gt;, ability_2 &lt;chr&gt;, ability_3 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ability_4 &lt;chr&gt;, ability_5 &lt;chr&gt;, ability_6 &lt;chr&gt;, ethics_1 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ethics_2 &lt;chr&gt;, ethics_3 &lt;chr&gt;, ethics_4 &lt;chr&gt;, ethics_5 &lt;chr&gt;, …</span></span></span></code></pre></div>
-<p>Add pre and post prefixes to all variables that will be merged,
-(i.e. the survey items that differ pre-post- the SM items and demos are
-identical):</p>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 37</span></span></span>
+<span><span class="co">#&gt;   respondent_id collector_id start_date end_date   ip_address      email_address</span></span>
+<span><span class="co">#&gt;           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001    431<span style="text-decoration: underline;">822</span>954 2024-06-05 2024-06-06 227.224.138.113 coraima59@me…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002    431<span style="text-decoration: underline;">822</span>954 2024-06-21 2024-06-22 110.241.132.50  mstamm@hermi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003    431<span style="text-decoration: underline;">822</span>954 2024-06-14 2024-06-15 165.58.112.64   precious.fei…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>004    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 49.34.121.147   ines52@gmail…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>005    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 115.233.66.80   franz44@hotm…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 95 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 31 more variables: first_name &lt;chr&gt;, last_name &lt;chr&gt;, unique_id &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   knowledge &lt;chr&gt;, research_1 &lt;chr&gt;, research_2 &lt;chr&gt;, research_3 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   research_4 &lt;chr&gt;, research_5 &lt;chr&gt;, research_6 &lt;chr&gt;, research_7 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   research_8 &lt;chr&gt;, ability_1 &lt;chr&gt;, ability_2 &lt;chr&gt;, ability_3 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   ability_4 &lt;chr&gt;, ability_5 &lt;chr&gt;, ability_6 &lt;chr&gt;, ethics_1 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   ethics_2 &lt;chr&gt;, ethics_3 &lt;chr&gt;, ethics_4 &lt;chr&gt;, ethics_5 &lt;chr&gt;, …</span></span></span></code></pre></div>
+<p>Finally, it is important to add pre and post prefixes to all
+variables that will be merged, (i.e. the survey items that differ
+pre-post- the SM items and demos are identical):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pre data:</span></span>
 <span><span class="va">pre_data</span> <span class="op">&lt;-</span> <span class="va">pre_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename_with</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"pre_"</span>, <span class="va">.</span><span class="op">)</span>, .cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">knowledge</span><span class="op">:</span><span class="va">ethics_5</span><span class="op">)</span><span class="op">)</span></span>
@@ -299,28 +321,38 @@ identical):</p>
 <span><span class="va">post_data</span> <span class="op">&lt;-</span> <span class="va">post_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename_with</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"post_"</span>, <span class="va">.</span><span class="op">)</span>, .cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">knowledge</span><span class="op">:</span><span class="va">ethics_5_oe</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="merge-pre-post-data">Merge pre-post data:<a class="anchor" aria-label="anchor" href="#merge-pre-post-data"></a>
+<h3 id="merging-data">Merging Data<a class="anchor" aria-label="anchor" href="#merging-data"></a>
 </h3>
+<p>Merge pre-post data by joining on all the variables that are shared
+in common.</p>
+<p>The <code>dplyr</code> package has many <a href="https://dplyr.tidyverse.org/articles/two-table.html" class="external-link">joining
+functions</a>, the most commonly use is <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">dplyr::left_join()</a></code>
+which keeps all the observations from the first table provided and
+merges all observations from the second that match.</p>
+<p>For most data analysis, we will want to use the post data as the
+primary table and merge all the pre data since most post surveys drop
+some participants, so we can run our analysis on complete data.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># left_join() will automatically join by all the shared columns, to silence the message in the future add the 'by = join_by()' as an arg:</span></span>
-<span><span class="va">sm_data</span> <span class="op">&lt;-</span> <span class="va">pre_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">post_data</span>, by <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html" class="external-link">join_by</a></span><span class="op">(</span><span class="va">respondent_id</span>, <span class="va">collector_id</span>, <span class="va">start_date</span>, <span class="va">end_date</span>, <span class="va">ip_address</span>, <span class="va">email_address</span>, </span>
+<code class="sourceCode R"><span><span class="co"># left_join() will automatically join by all the shared columns, be sure to include all shared variables that should be identical pre-post to the 'by = join_by()' as an arg</span></span>
+<span><span class="co"># (otherwise you will get a message about additional variables to be joined by):</span></span>
+<span><span class="va">sm_data</span> <span class="op">&lt;-</span> <span class="va">post_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">pre_data</span>, by <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html" class="external-link">join_by</a></span><span class="op">(</span><span class="va">respondent_id</span>, <span class="va">collector_id</span>, <span class="va">start_date</span>, <span class="va">end_date</span>, <span class="va">ip_address</span>, <span class="va">email_address</span>, </span>
 <span>                                                                        <span class="va">first_name</span>, <span class="va">last_name</span>, <span class="va">unique_id</span>, <span class="va">gender</span>, <span class="va">ethnicity</span>, <span class="va">first_gen</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sm_data</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 100 × 57</span></span></span>
-<span><span class="co">##   respondent_id collector_id start_date end_date   ip_address      email_address</span></span>
-<span><span class="co">##           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001    431<span style="text-decoration: underline;">822</span>954 2024-06-05 2024-06-06 227.224.138.113 coraima59@me…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002    431<span style="text-decoration: underline;">822</span>954 2024-06-21 2024-06-22 110.241.132.50  mstamm@hermi…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003    431<span style="text-decoration: underline;">822</span>954 2024-06-14 2024-06-15 165.58.112.64   precious.fei…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>004    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 49.34.121.147   ines52@gmail…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>005    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 115.233.66.80   franz44@hotm…</span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 95 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 51 more variables: first_name &lt;chr&gt;, last_name &lt;chr&gt;, unique_id &lt;dbl&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_knowledge &lt;chr&gt;, pre_research_1 &lt;chr&gt;, pre_research_2 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_research_3 &lt;chr&gt;, pre_research_4 &lt;chr&gt;, pre_research_5 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_research_6 &lt;chr&gt;, pre_research_7 &lt;chr&gt;, pre_research_8 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_ability_1 &lt;chr&gt;, pre_ability_2 &lt;chr&gt;, pre_ability_3 &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_ability_4 &lt;chr&gt;, pre_ability_5 &lt;chr&gt;, pre_ability_6 &lt;chr&gt;, …</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 57</span></span></span>
+<span><span class="co">#&gt;   respondent_id collector_id start_date end_date   ip_address      email_address</span></span>
+<span><span class="co">#&gt;           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001    431<span style="text-decoration: underline;">822</span>954 2024-06-05 2024-06-06 227.224.138.113 coraima59@me…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002    431<span style="text-decoration: underline;">822</span>954 2024-06-21 2024-06-22 110.241.132.50  mstamm@hermi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003    431<span style="text-decoration: underline;">822</span>954 2024-06-14 2024-06-15 165.58.112.64   precious.fei…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>004    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 49.34.121.147   ines52@gmail…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>005    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 115.233.66.80   franz44@hotm…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 95 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 51 more variables: first_name &lt;chr&gt;, last_name &lt;chr&gt;, unique_id &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_knowledge &lt;chr&gt;, post_research_1 &lt;chr&gt;, post_research_2 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_research_3 &lt;chr&gt;, post_research_4 &lt;chr&gt;, post_research_5 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_research_6 &lt;chr&gt;, post_research_7 &lt;chr&gt;, post_research_8 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_ability_1 &lt;chr&gt;, post_ability_2 &lt;chr&gt;, post_ability_3 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_ability_4 &lt;chr&gt;, post_ability_5 &lt;chr&gt;, post_ability_6 &lt;chr&gt;, …</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="data-cleaning">Data Cleaning<a class="anchor" aria-label="anchor" href="#data-cleaning"></a>
@@ -330,6 +362,8 @@ identical):</p>
 demographics.</p></li>
 <li><p>Create numeric variables from the factor variables for use with
 statistical tests later on.</p></li>
+<li><p>If applicable, drop all “Missing”/<code>NA</code>
+observations.</p></li>
 </ul>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Knowledge scale</span></span>
@@ -365,21 +399,21 @@ statistical tests later on.</p></li>
 <span>                                     first_gen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">first_gen</span>, levels <span class="op">=</span> <span class="va">first_gen_levels</span><span class="op">)</span>,</span>
 <span>                                     <span class="op">)</span></span>
 <span><span class="va">sm_data</span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 100 × 97</span></span></span>
-<span><span class="co">##   respondent_id collector_id start_date end_date   ip_address      email_address</span></span>
-<span><span class="co">##           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001    431<span style="text-decoration: underline;">822</span>954 2024-06-05 2024-06-06 227.224.138.113 coraima59@me…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002    431<span style="text-decoration: underline;">822</span>954 2024-06-21 2024-06-22 110.241.132.50  mstamm@hermi…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003    431<span style="text-decoration: underline;">822</span>954 2024-06-14 2024-06-15 165.58.112.64   precious.fei…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>004    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 49.34.121.147   ines52@gmail…</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>005    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 115.233.66.80   franz44@hotm…</span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 95 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 91 more variables: first_name &lt;chr&gt;, last_name &lt;chr&gt;, unique_id &lt;dbl&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_knowledge &lt;fct&gt;, pre_research_1 &lt;fct&gt;, pre_research_2 &lt;fct&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_research_3 &lt;fct&gt;, pre_research_4 &lt;fct&gt;, pre_research_5 &lt;fct&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_research_6 &lt;fct&gt;, pre_research_7 &lt;fct&gt;, pre_research_8 &lt;fct&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_ability_1 &lt;fct&gt;, pre_ability_2 &lt;fct&gt;, pre_ability_3 &lt;fct&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   pre_ability_4 &lt;fct&gt;, pre_ability_5 &lt;fct&gt;, pre_ability_6 &lt;fct&gt;, …</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 97</span></span></span>
+<span><span class="co">#&gt;   respondent_id collector_id start_date end_date   ip_address      email_address</span></span>
+<span><span class="co">#&gt;           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001    431<span style="text-decoration: underline;">822</span>954 2024-06-05 2024-06-06 227.224.138.113 coraima59@me…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002    431<span style="text-decoration: underline;">822</span>954 2024-06-21 2024-06-22 110.241.132.50  mstamm@hermi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003    431<span style="text-decoration: underline;">822</span>954 2024-06-14 2024-06-15 165.58.112.64   precious.fei…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>004    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 49.34.121.147   ines52@gmail…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>005    431<span style="text-decoration: underline;">822</span>954 2024-06-15 2024-06-16 115.233.66.80   franz44@hotm…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 95 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 91 more variables: first_name &lt;chr&gt;, last_name &lt;chr&gt;, unique_id &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_knowledge &lt;fct&gt;, post_research_1 &lt;fct&gt;, post_research_2 &lt;fct&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_research_3 &lt;fct&gt;, post_research_4 &lt;fct&gt;, post_research_5 &lt;fct&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_research_6 &lt;fct&gt;, post_research_7 &lt;fct&gt;, post_research_8 &lt;fct&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_ability_1 &lt;fct&gt;, post_ability_2 &lt;fct&gt;, post_ability_3 &lt;fct&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   post_ability_4 &lt;fct&gt;, post_ability_5 &lt;fct&gt;, post_ability_6 &lt;fct&gt;, …</span></span></span></code></pre></div>
 <p>The data cleaned in this vignette will be used as the example data in
 the vignettes <code>Data analysis and Statistical Inference</code> and
 <code>Data Visualization</code> to further showcase all the functions
