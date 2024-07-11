@@ -87,7 +87,7 @@
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>The goal of <code>blackstone</code> is to make data manipulation, analysis, and visualization easier and faster for Blackstone Research and Evaluation.</p>
-<p><code>blackstone</code> is used to create visuals with Blackstone Research and Evaluation branding and as well as common data cleaning, manipulation and analysis tasks for everyone at Blackstone Research and Evaluation.</p>
+<p><code>blackstone</code> is used to create visuals with Blackstone Research and Evaluation branding and as well as common data cleaning, manipulation, and analysis tasks for everyone at Blackstone Research and Evaluation.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -96,11 +96,12 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"zwcrowley/blackstone"</span><span class="op">)</span></span></code></pre></div>
-<p>On the initial installation you will also have to install and import fonts from the <a href="https://github.com/wch/extrafont" class="external-link"><code>extrafont</code></a> package:</p>
+<p>On the initial installation (or after upgrading R) you will also have to install and import fonts from the <a href="https://github.com/wch/extrafont" class="external-link"><code>extrafont</code></a> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("extrafont")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wch/extrafont" class="external-link">extrafont</a></span><span class="op">)</span></span>
-<span><span class="co"># Import fonts to get "Arial", this only has to be done one time, then `blackstone` package will use the code below to load the fonts automatically </span></span>
+<span><span class="co"># Import fonts to get "Arial", this only has to be done one time, then</span></span>
+<span><span class="co"># `blackstone` package will use the code below to load the fonts automatically </span></span>
 <span><span class="co"># for the functions that require that step:</span></span>
 <span><span class="fu">extrafont</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/extrafont/man/font_import.html" class="external-link">font_import</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Load all fonts:</span></span>
@@ -125,16 +126,21 @@
 <span>  pre_Research <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>  post_Research <span class="op">=</span> <span class="va">pre_Research</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co"># Set up the named vector to pass to scale_labels, follow this pattern- c("{new label}" = "{original variable name}"):</span></span>
-<span><span class="va">named_levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span> <span class="op">=</span> <span class="st">"1"</span>, <span class="st">"Slight"</span> <span class="op">=</span> <span class="st">"2"</span>, <span class="st">"Moderate"</span> <span class="op">=</span> <span class="st">"3"</span>, <span class="st">"Good"</span> <span class="op">=</span> <span class="st">"4"</span>, <span class="st">"Extensive"</span> <span class="op">=</span> <span class="st">"5"</span><span class="op">)</span></span>
-<span><span class="co"># Recode numeric variables to factors using `recodeCat()` and select the factor variables:</span></span>
-<span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, scale_labels <span class="op">=</span> <span class="va">named_levels_min_ext</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
-<span>                <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># Set up the named vector to pass to scale_labels, </span></span>
+<span><span class="co"># follow this pattern- c("{new label}" = "{original variable name}"):</span></span>
+<span><span class="va">named_levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Minimal"</span> <span class="op">=</span> <span class="st">"1"</span>, <span class="st">"Slight"</span> <span class="op">=</span> <span class="st">"2"</span>, <span class="st">"Moderate"</span> <span class="op">=</span> <span class="st">"3"</span>, </span>
+<span>                          <span class="st">"Good"</span> <span class="op">=</span> <span class="st">"4"</span>, <span class="st">"Extensive"</span> <span class="op">=</span> <span class="st">"5"</span><span class="op">)</span></span>
+<span><span class="co"># Recode numeric variables to factors using `recodeCat()` and </span></span>
+<span><span class="co"># select the factor variables:</span></span>
+<span><span class="va">cat_items</span> <span class="op">&lt;-</span> <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="reference/recodeCat.html">recodeCat</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">items</span>, </span>
+<span>                                   scale_labels <span class="op">=</span> <span class="va">named_levels_min_ext</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>             <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html" class="external-link">where</a></span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># `levels_min_ext` as just the names from `named_levels_min_ext`:</span></span>
 <span><span class="va">levels_min_ext</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">named_levels_min_ext</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Question labels as a named vector with the naming structure like this- c("{new label}" = "{original variable name}"):</span></span>
+<span><span class="co"># Question labels as a named vector with the naming structure like this:</span></span>
+<span><span class="co">#  c("{new label}" = "{original variable name}"):</span></span>
 <span><span class="va">question_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Publish a lot of high quality papers"</span> <span class="op">=</span>  <span class="st">"Publish"</span>,</span>
 <span>                     <span class="st">"Write a lot of research papers"</span> <span class="op">=</span> <span class="st">"Write"</span>,</span>
 <span>                     <span class="st">"Research in a lab with faculty"</span> <span class="op">=</span> <span class="st">"Research"</span>,</span>
@@ -144,8 +150,9 @@
 <span><span class="co"># With new labels and order taken from `question_labels` argument, each </span></span>
 <span><span class="co"># item has it's own sample size in the label (overall_n = FALSE):</span></span>
 <span><span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="reference/stackedBarChart.html">stackedBarChart</a></span><span class="op">(</span></span>
-<span>   df <span class="op">=</span> <span class="va">cat_items</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, overall_n <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>   question_labels <span class="op">=</span> <span class="va">question_labels</span>, question_order <span class="op">=</span> <span class="cn">TRUE</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>   df <span class="op">=</span> <span class="va">cat_items</span>, pre_post <span class="op">=</span> <span class="cn">TRUE</span>, scale_labels <span class="op">=</span> <span class="va">levels_min_ext</span>, </span>
+<span>   overall_n <span class="op">=</span> <span class="cn">FALSE</span>, question_labels <span class="op">=</span> <span class="va">question_labels</span>, </span>
+<span>   question_order <span class="op">=</span> <span class="cn">TRUE</span>, percent_label <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
 <p>See vignettes for more examples of all the functions this package and how they work.</p>

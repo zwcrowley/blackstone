@@ -27,7 +27,7 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 The goal of `blackstone` is to make data manipulation, analysis, and visualization easier and faster for Blackstone Research and Evaluation.
 
 `blackstone` is used to create visuals with Blackstone Research and Evaluation branding and as well as common data cleaning, 
-manipulation and analysis tasks for everyone at Blackstone Research and Evaluation.
+manipulation, and analysis tasks for everyone at Blackstone Research and Evaluation.
 
 ## Installation
 
@@ -38,12 +38,13 @@ You can install the development version of `blackstone` from [GitHub](https://gi
 pak::pak("zwcrowley/blackstone")
 ```
 
-On the initial installation you will also have to install and import fonts from the [`extrafont`](https://github.com/wch/extrafont) package:
+On the initial installation (or after upgrading R) you will also have to install and import fonts from the [`extrafont`](https://github.com/wch/extrafont) package:
 
 ``` {r, eval = FALSE}
 # install.packages("extrafont")
 library(extrafont)
-# Import fonts to get "Arial", this only has to be done one time, then `blackstone` package will use the code below to load the fonts automatically 
+# Import fonts to get "Arial", this only has to be done one time, then
+# `blackstone` package will use the code below to load the fonts automatically 
 # for the functions that require that step:
 extrafont::font_import()
 # Load all fonts:
@@ -70,16 +71,21 @@ items <- dplyr::tibble(
   pre_Research = c(1, 1, 2, 2, 3, 3, 4, 4, 4),
   post_Research = pre_Research + 1
 )
-# Set up the named vector to pass to scale_labels, follow this pattern- c("{new label}" = "{original variable name}"):
-named_levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", "Good" = "4", "Extensive" = "5")
-# Recode numeric variables to factors using `recodeCat()` and select the factor variables:
-cat_items <- blackstone::recodeCat(df = items, scale_labels = named_levels_min_ext) %>% 
-                dplyr::select(dplyr::where(is.factor))
+# Set up the named vector to pass to scale_labels, 
+# follow this pattern- c("{new label}" = "{original variable name}"):
+named_levels_min_ext <- c("Minimal" = "1", "Slight" = "2", "Moderate" = "3", 
+                          "Good" = "4", "Extensive" = "5")
+# Recode numeric variables to factors using `recodeCat()` and 
+# select the factor variables:
+cat_items <- blackstone::recodeCat(df = items, 
+                                   scale_labels = named_levels_min_ext) %>% 
+             dplyr::select(dplyr::where(is.factor))
 
 # `levels_min_ext` as just the names from `named_levels_min_ext`:
 levels_min_ext <- names(named_levels_min_ext)
 
-# Question labels as a named vector with the naming structure like this- c("{new label}" = "{original variable name}"):
+# Question labels as a named vector with the naming structure like this:
+#  c("{new label}" = "{original variable name}"):
 question_labels <- c("Publish a lot of high quality papers" =  "Publish",
                      "Write a lot of research papers" = "Write",
                      "Research in a lab with faculty" = "Research",
@@ -89,8 +95,9 @@ question_labels <- c("Publish a lot of high quality papers" =  "Publish",
 # With new labels and order taken from `question_labels` argument, each 
 # item has it's own sample size in the label (overall_n = FALSE):
 blackstone::stackedBarChart(
-   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext, overall_n = FALSE,
-   question_labels = question_labels, question_order = TRUE, percent_label = TRUE
+   df = cat_items, pre_post = TRUE, scale_labels = levels_min_ext, 
+   overall_n = FALSE, question_labels = question_labels, 
+   question_order = TRUE, percent_label = TRUE
 )
 
 ```
