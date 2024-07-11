@@ -18,9 +18,23 @@ options(scipen = 999, digits = 4,
         tibble.print_min = 5, tibble.print_max = 5)
 # Set seed to reproduce data:
 set.seed(424629)
+
+# # Install packages: (if first time running this)
+# # install.packages("pak")
+# pak::pak("zwcrowley/blackstone")
+# 
+# # install.packages("extrafont")
+# library(extrafont)
+# # Import fonts to get "Arial", this only has to be done one time, then
+# # `blackstone` package will use the code below to load the fonts automatically
+# # for the functions that require that step:
+# extrafont::font_import()
+# # Load all fonts:
+# extrafont::loadfonts("all", quiet = TRUE)
+
 # Load Libraries:
 library(readr) # Importing data
-library(rstatix) # pipe-friendly stastical tests
+library(rstatix) # pipe-friendly statistical tests
 library(ggpubr) # ggplot for statistical analysis
 library(tidyselect) # tidyverse data selection
 library(tidyr) # tidyverse tidy data manipulation
@@ -194,8 +208,10 @@ our analysis on complete data.
 ```{r}
 # left_join() will automatically join by all the shared columns, be sure to include all shared variables that should be identical pre-post to the 'by = join_by()' as an arg
 # (otherwise you will get a message about additional variables to be joined by):
-sm_data <- post_data %>% dplyr::left_join(pre_data, by = dplyr::join_by(respondent_id, collector_id, start_date, end_date, ip_address, email_address, 
-                                                                        first_name, last_name, unique_id, gender, ethnicity, first_gen))
+sm_data <- post_data %>% dplyr::left_join(pre_data, by = dplyr::join_by(respondent_id, collector_id, 
+                                                                        start_date,end_date,ip_address,email_address, 
+                                                                        first_name, last_name, unique_id, gender, ethnicity, 
+                                                                        first_gen))
 sm_data
 ```
 
@@ -224,7 +240,7 @@ ethnicity_levels <- c("White (Non-Hispanic/Latino)", "Asian", "Black",  "Hispani
 first_gen_levels <- c("Yes", "No", "I'm not sure")
 
 # Use mutate() for convert each item in each scale to a factor with vectors above, across() will perform a function for items selected using contains() or can be selected 
-# by variables names individually using a character vector: _knowledge or use c("pre_knowledg","post_knowledge")
+# by variables names individually using a character vector: _knowledge or use c("pre_knowledge","post_knowledge")
 # Also create new numeric variables for all the likert scale items and use the suffix '_num' to denote numeric:
 sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowledge"), ~ factor(., levels = levels_knowledge)), # match each name pattern to select to each factor level
                                      dplyr::across(tidyselect::contains("_knowledge"), as.numeric, .names = "{.col}_num"), # create new numeric items for all knowledge items
