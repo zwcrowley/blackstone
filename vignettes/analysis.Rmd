@@ -87,7 +87,7 @@ sm_data
 ```
 
 
-## Likert Scale Table:
+## Likert Scale Table
 
 The most common task is creating frequency tables of counts and percentages for likert scale items, `blackstone` has the `likertTable()` for that:
 
@@ -98,9 +98,9 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
                 blackstone::likertTable(., scale_labels = levels_confidence)
 ```
 
-#### Using Function Programming to Speed Up Analysis
+#### Using Functional Programming to Speed Up Analysis
 
-Here is one approach to use function programming from the `{purrr}` package create many frequency tables at once:
+Here is one approach to use functional programming from the `{purrr}` package create many frequency tables at once:
 
 ```{r}
 # Another way to make a list of many freq_tables to print out with other data analysis later on, 
@@ -138,7 +138,7 @@ freq_tables[["Ethics Items"]]
 
 ```
 
-## Grouped Demograpic Table:
+## Grouped Demograpic Table
 
 `blackstone` contains a function to create frequency tables for demographics (combined demographics table) that can also be grouped by a variable, like role or cohort as well: `groupedTable()`.
 
@@ -157,9 +157,9 @@ sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the demogra
 
 In this section, we will run simple statistical tests using the pipe-friendly functions contained in the `{rstatix}` package.
 
-## Single pre-post items:
+## Single Pre-Post Items
 
-### Running normality test, then t-test or Wilcoxon test:
+### Running Normality Tests, then T-test or Wilcoxon test:
 
 Since a large number of our surveys have a sample size smaller than 30, it is important to check the normality assumption before running any 
 statistical tests. If the data is distributed normally we can use T-tests (parametric tests) for simple hypothesis testing of pre-post items, to see if any 
@@ -251,6 +251,8 @@ sm_data %>% rstatix::shapiro_test(diff_research) # not significant, data likely 
 ```
 
 Data is normally distributed for the research composite items (since the p-values is > 0.05)- use a T-test.
+
+#### T-test of Composite Scales
 
 ```{r}
 # Either use a pipe-friendly version of wilcox_test from `rstatix`, need to covert to long form and have `timing` as a variable:

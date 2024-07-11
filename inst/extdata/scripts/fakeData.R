@@ -3,7 +3,6 @@
 
 
 # Load libraries:
-library(here)
 library(scales)
 library(readxl)
 library(writexl)
@@ -84,6 +83,6 @@ data <- dplyr::tibble(
 # Write out fake data set "data" to .xlsx excel file in new directory called "extdata", and a .csv file with the same name and location:
 # write_xlsx(data, "extdata/fake_data.xlsx")
 # .csv file:
-write_csv(data, "inst/extdata/fake_data.csv")
+write_csv("inst/extdata/fake_data_alt.csv")
 
 

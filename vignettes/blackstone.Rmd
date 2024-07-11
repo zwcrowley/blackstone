@@ -168,7 +168,7 @@ sm_data
 ```
 
 
-### Likert Scale Table:
+### Likert Scale Table
 
 The most common task is creating frequency tables of counts and percentages for likert scale items, `blackstone` has the `likertTable()` for that:
 
@@ -179,7 +179,7 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
                 blackstone::likertTable(., scale_labels = levels_confidence)
 ```
 
-### Grouped Demograpic table:
+### Grouped Demograpic table
 
 `blackstone` contains a function to create frequency tables for demographics that can be grouped by a variable like role or cohort as well: [`groupedTable()`].
 
@@ -195,9 +195,9 @@ sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the demogra
 ```
 
 
-### Statistical Inference- T-test or Wilcoxon test
+### Statistical Inference: T-test or Wilcoxon test
 
-#### Running normality test on Single pre-post items:
+#### Running Normality Test on Single Pre-Post Items
 
 ```{r}
 # Use a pipe-friendly version of `shapiro_test()` from `rstatix`, need to covert create a differnce score of post_knowledge_num - pre_knowledge_num named `knowledge_diff`:
