@@ -105,7 +105,7 @@ provided with <code>blackstone</code>, this is a fake dataset of a pre
 (baseline) survey. There are three steps to this process:</p>
 <ol style="list-style-type: decimal">
 <li>Create a codebook.</li>
-<li>Edit the codebook to create meaningful variable names.</li>
+<li>Edit and save the codebook to create meaningful variable names.</li>
 <li>Read in the data and rename the variables with the codebook.</li>
 </ol>
 </div>
@@ -143,7 +143,7 @@ meaningful names.</p>
 variables in the SurveyMonkey data.</p>
 </div>
 <div class="section level4">
-<h4 id="editing-the-codebook-to-create-meaningful-variable-names">2. Editing the codebook to create meaningful variable names<a class="anchor" aria-label="anchor" href="#editing-the-codebook-to-create-meaningful-variable-names"></a>
+<h4 id="editing-and-saving-the-codebook">2. Editing and Saving the Codebook<a class="anchor" aria-label="anchor" href="#editing-and-saving-the-codebook"></a>
 </h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Step 2. Edit the codebook: </span></span>
@@ -183,12 +183,13 @@ variables in the SurveyMonkey data.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> End Date      <span style="color: #BB0000;">NA</span>       End Date               4 end_date     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> IP Address    <span style="color: #BB0000;">NA</span>       IP Address             5 ip_address   </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 27 more rows</span></span></span>
+<span></span>
 <span><span class="co"># Write out the edited codebook to save for future use-</span></span>
 <span><span class="co"># Be sure to double check questions match new names before writing out:</span></span>
 <span><span class="co"># readr::write_csv(codebook_pre, file = "{filepath-to-codebok}")</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="import-the-data-and-rename-the-variables-with-the-codebook-">3. Import the data and rename the variables with the codebook.<a class="anchor" aria-label="anchor" href="#import-the-data-and-rename-the-variables-with-the-codebook-"></a>
+<h4 id="import-the-data-and-rename-the-variables-with-the-codebook">3. Import the Data and Rename the Variables with the Codebook<a class="anchor" aria-label="anchor" href="#import-the-data-and-rename-the-variables-with-the-codebook"></a>
 </h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook:</span></span>
@@ -224,14 +225,14 @@ the codebook column <code>variable_name</code>:</p>
 </div>
 </div>
 <div class="section level3">
-<h3 id="post-data">Post data:<a class="anchor" aria-label="anchor" href="#post-data"></a>
+<h3 id="post-survey-data">Post Survey Data<a class="anchor" aria-label="anchor" href="#post-survey-data"></a>
 </h3>
 <ul>
-<li>Do that same process over again with the post data, if the variables
-are all the same you can use the same codebook, for this example there
-are additional post variables so a new codebook will need to be created
-to rename the variables when reading in the data with
-<code><a href="../reference/readRenameData.html">readRenameData()</a></code>.</li>
+<li><p>Do that same process over again with the post data, if the
+variables are all the same you can use the same codebook.</p></li>
+<li><p>For this example there are additional post variables so a new
+codebook will need to be created to rename the variables when reading in
+the data with <code><a href="../reference/readRenameData.html">readRenameData()</a></code>.</p></li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># File path for pre example data:</span></span>
@@ -311,9 +312,10 @@ to rename the variables when reading in the data with
 <span><span class="co">#&gt; <span style="color: #949494;">#   research_8 &lt;chr&gt;, ability_1 &lt;chr&gt;, ability_2 &lt;chr&gt;, ability_3 &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ability_4 &lt;chr&gt;, ability_5 &lt;chr&gt;, ability_6 &lt;chr&gt;, ethics_1 &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ethics_2 &lt;chr&gt;, ethics_3 &lt;chr&gt;, ethics_4 &lt;chr&gt;, ethics_5 &lt;chr&gt;, …</span></span></span></code></pre></div>
-<p>Finally, it is important to add pre and post prefixes to all
-variables that will be merged, (i.e. the survey items that differ
-pre-post- the SM items and demos are identical):</p>
+<p>Finally, it is important to add <code>pre_</code> and
+<code>post_</code> prefixes to all unique variables before merging the
+datasets, (i.e. the survey items that differ pre-post- the SM items and
+demos are identical):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pre data:</span></span>
 <span><span class="va">pre_data</span> <span class="op">&lt;-</span> <span class="va">pre_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename_with</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"pre_"</span>, <span class="va">.</span><span class="op">)</span>, .cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">knowledge</span><span class="op">:</span><span class="va">ethics_5</span><span class="op">)</span><span class="op">)</span></span>
@@ -325,7 +327,7 @@ pre-post- the SM items and demos are identical):</p>
 </h3>
 <p>Merge pre-post data by joining on all the variables that are shared
 in common.</p>
-<p>The <code>dplyr</code> package has many <a href="https://dplyr.tidyverse.org/articles/two-table.html" class="external-link">joining
+<p>The <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> package has many <a href="https://dplyr.tidyverse.org/articles/two-table.html" class="external-link">joining
 functions</a>, the most commonly use is <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">dplyr::left_join()</a></code>
 which keeps all the observations from the first table provided and
 merges all observations from the second that match.</p>
@@ -415,9 +417,10 @@ observations.</p></li>
 <span><span class="co">#&gt; <span style="color: #949494;">#   post_ability_1 &lt;fct&gt;, post_ability_2 &lt;fct&gt;, post_ability_3 &lt;fct&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   post_ability_4 &lt;fct&gt;, post_ability_5 &lt;fct&gt;, post_ability_6 &lt;fct&gt;, …</span></span></span></code></pre></div>
 <p>The data cleaned in this vignette will be used as the example data in
-the vignettes <code>Data analysis and Statistical Inference</code> and
-<code>Data Visualization</code> to further showcase all the functions
-contained in <code>blackstone</code>.</p>
+the vignettes <a href="analysis.html"><code>Data analysis and Statistical Inference</code></a>
+and <a href="data_visualization.html"><code>Data Visualization</code></a> to
+further showcase all the functions contained in
+<code>blackstone</code>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
