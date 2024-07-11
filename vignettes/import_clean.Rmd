@@ -54,7 +54,7 @@ Here is how to import data from SurveyMonkey using example data provided with `b
 There are three steps to this process:
 
   1. Create a codebook.
-  2. Edit the codebook to create meaningful variable names.
+  2. Edit and save the codebook to create meaningful variable names.
   3. Read in the data and rename the variables with the codebook.
 
 ## Pre Survey Data
@@ -68,6 +68,7 @@ pre_data_fp <- blackstone::blackstoneExample("sm_data_pre.csv")
 codebook_pre <- blackstone::createCodebook(pre_data_fp)
 codebook_pre
 ```
+
 For this codebook, the first column `header_1` is the first header from the SurveyMonkey data, the second column `header_2` is the second header,
 the third column `combined_header` is the combination of the two headers,
 `position` is the column number position for each `combined_header`, and `variable_name` is a cleaned up version for `combined_header` and
@@ -75,7 +76,7 @@ will be the column to edit to change the column names later on to shorter and mo
 
 `variable_name` will be the column that renames all the variables in the SurveyMonkey data.
 
-### 2. Editing the codebook to create meaningful variable names
+### 2. Editing and Saving the Codebook
 
 ```{r edit_codebook}
 # Step 2. Edit the codebook: 
@@ -106,12 +107,13 @@ codebook_pre <- codebook_pre %>% dplyr::mutate(
         )
     )
 codebook_pre
+
 # Write out the edited codebook to save for future use-
 # Be sure to double check questions match new names before writing out:
 # readr::write_csv(codebook_pre, file = "{filepath-to-codebok}")
 ```
 
-### 3. Import the data and rename the variables with the codebook.
+### 3. Import the Data and Rename the Variables with the Codebook
 
 ```{r import}
 # 3. Read in the data and rename the vars using readRenameData(), passing the file path and the edited codebook:
@@ -125,9 +127,11 @@ The SurveyMonkey example data is now imported with names taken from the codebook
 names(pre_data)
 ```
 
-## Post data:
+## Post Survey Data
 
-- Do that same process over again with the post data, if the variables are all the same you can use the same codebook, for this example there are additional post variables so a new codebook will need to be created to rename the variables when reading in the data with `readRenameData()`.
+- Do that same process over again with the post data, if the variables are all the same you can use the same codebook. 
+
+- For this example there are additional post variables so a new codebook will need to be created to rename the variables when reading in the data with `readRenameData()`.
 
 ```{r import_post_data}
 # File path for pre example data:
@@ -176,7 +180,7 @@ post_data <- blackstone::readRenameData(post_data_fp, codebook = codebook_post)
 post_data
 ```
 
-Finally, it is important to add pre and post prefixes to all variables that will be merged, (i.e. the survey items that differ pre-post- the SM items and demos are identical):
+Finally, it is important to add `pre_` and `post_` prefixes to all unique variables before merging the datasets, (i.e. the survey items that differ pre-post- the SM items and demos are identical):
 
 ```{r}
 # Pre data:
@@ -190,11 +194,7 @@ post_data <- post_data %>% dplyr::rename_with(~ paste0("post_", .), .cols = c(kn
 
 Merge pre-post data by joining on all the variables that are shared in common. 
 
-```{r, include=FALSE}
-# TODO add link to R package below for `dplyr`
-```
-
-The `dplyr` package has many [joining functions](https://dplyr.tidyverse.org/articles/two-table.html), the most commonly use is `dplyr::left_join()`
+The `{dplyr}` package has many [joining functions](https://dplyr.tidyverse.org/articles/two-table.html), the most commonly use is `dplyr::left_join()`
 which keeps all the observations from the first table provided and merges all observations from the second that match.
 
 For most data analysis, we will want to use the post data as the primary table and merge all the pre data since most post surveys drop some participants, so we can run 
@@ -252,9 +252,6 @@ sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowle
 sm_data
 ```
 
-```{r, include=FALSE}
-# TODO add links to vignettes below to: 'vignette/analysis.Rmd' and 'vignette/data_visualization.Rmd'
-```
 
-The data cleaned in this vignette will be used as the example data in the vignettes `Data analysis and Statistical Inference` and `Data Visualization` 
-to further showcase all the functions contained in `blackstone`.
+The data cleaned in this vignette will be used as the example data in the vignettes [`Data analysis and Statistical Inference`](analysis.html)
+and [`Data Visualization`](data_visualization.html) to further showcase all the functions contained in `blackstone`.

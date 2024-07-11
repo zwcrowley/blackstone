@@ -120,11 +120,7 @@ The SurveyMonkey example data is now imported with names taken from the codebook
 names(pre_data)
 ```
 
-```{r, include=FALSE}
-# TODO add link to vignette below to 'vignette/import_clean.Rmd'
-```
-
-The vignette `Importing and Cleaning Data` goes into deeper detail with example data on how to use `blackstone` to import and clean data.
+The vignette [`Importing and Cleaning Data`](import_clean.html) goes into deeper detail with example data on how to use `blackstone` to import and clean data.
 
 
 ## Data Analysis and Statistical Inference
@@ -223,11 +219,8 @@ sm_data %>% dplyr::select(tidyselect::contains("_knowledge") & tidyselect::conta
 
 Wilcoxon test is significant, there is a significant difference in pre and post scores of knowledge scores.
 
-```{r, include=FALSE}
-# TODO add link to vignette below to 'vignette/analysis.Rmd'
-```
 
-The vignette `Data analysis and Statistical Inference` goes into deeper detail on how to use `blackstone` to perform more analysis and statistical tests on example data.
+The vignette [`Data analysis and Statistical Inference`](analysis.html) goes into deeper detail on how to use `blackstone` to perform more analysis and statistical tests on example data.
 
 ## Data Visualization
 
@@ -239,16 +232,13 @@ The blue sequential palette should be used for all likert scales that have one c
 
 The blue-red diverging color palette should be used if the items have a likert scale that is folded or runs from a negative to positive valence like this: `r levels_agree5` 
 
-```{r, include=FALSE}
-# TODO add link to vignette below to 'vignette/data_visualization.Rmd'
-```
-
-This introduction will only show how to create a stacked bar chart, see the vignette `Data Visualization` for a full explanation of all the data visualization functions in `blackstone`.
+This introduction will only show how to create a stacked bar chart, see the vignette [`Data Visualization`](data_visualization.html) for a full explanation 
+of all the data visualization functions in `blackstone`.
 
 ### Stacked Bar Charts
 
 The most common visual that is used with reporting at Blackstone Research and Evaluation is a stacked bar chart, `blackstone` has a function to that makes creating these charts
-fast and easy: [`stackedBarChart()`].
+fast and easy: `stackedBarChart()`.
 
 `stackedBarChart()` takes in a [tibble](https://tibble.tidyverse.org/) of factor/character variables to turn into a stacked bar chart. The other requirement is a character vector of 
 scale labels for the likert scale that makes up the items in the tibble (same as the one use to set them up as factors in the data cleaning section). 
@@ -267,9 +257,6 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 ```
 
-```{r, include=FALSE}
-# TODO add link to vignette below to 'vignette/data_visualization.Rmd'
-```
 
-The vignette `Data Visualization` goes into deeper detail on how to use `blackstone` to create data visualizations with example data .
+The vignette [`Data Visualization`](data_visualization.html) goes into deeper detail on how to use `blackstone` to create data visualizations with example data .
 

@@ -44,11 +44,7 @@ library(blackstone)
 
 ### Read in Example Data
 
-```{r, include=FALSE}
-# TODO add link to vignette below to: 'vignette/import_clean.Rmd'
-```
-
-First, read in the data that is merged and cleaned in the vignette `Importing and Cleaning Data`:
+First, read in the data that is merged and cleaned in the vignette [`Importing and Cleaning Data`](import_clean.html):
 
 ```{r}
 # Read in clean SM data:
@@ -104,11 +100,7 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 #### Using Function Programming to Speed Up Analysis
 
-```{r, include=FALSE}
-# TODO add link to R package below for `purrr`
-```
-
-Here is one approach to use function programming from the `purrr` package create many frequency tables at once:
+Here is one approach to use function programming from the `{purrr}` package create many frequency tables at once:
 
 ```{r}
 # Another way to make a list of many freq_tables to print out with other data analysis later on, 
@@ -163,11 +155,7 @@ sm_data %>% dplyr::select(gender, ethnicity, first_gen) %>% # select the demogra
 
 ## Statistical Inference: T-test or Wilcoxon test
 
-```{r, include=FALSE}
-# TODO add link to R package below for `rstatix`
-```
-
-In this section, we will run simple statistical tests using the pipe-friendly functions contained in the `rstatix` package.
+In this section, we will run simple statistical tests using the pipe-friendly functions contained in the `{rstatix}` package.
 
 ## Single pre-post items:
 
@@ -277,8 +265,4 @@ t.test(sm_data[["post_research_mean"]], sm_data[["pre_research_mean"]],  paired 
 
 T-test is significant, there is a mean difference in pre and post scores of `r research_t_test[["estimate"]]`.
 
-```{r, include=FALSE}
-# TODO add link to vignettes below to: 'vignette/data_visualization.Rmd'
-```
-
-The vignette `Data Visualization` will explain how to create visuals using `blackstone` with the example data analyzed in this vignette.
+The vignette [`Data Visualization`](data_visualization.html) will explain how to create visuals using `blackstone` with the example data analyzed in this vignette.
