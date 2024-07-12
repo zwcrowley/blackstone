@@ -56,11 +56,32 @@ file_copy(path = path(extdata_fp, "sm_data_clean.csv"), new_path = path(data_fp,
 dir_create(path(data_analysis_fp, "Year 3 (2023-2024)", "analysis")) # Data Analysis Year 3
 # This is where I will create an R project
 
+## Creating analysis.Rproj file:
+file_create(path(data_analysis_fp, "Year 3 (2023-2024)", "analysis", "analysis.Rproj"))
+
+# Writing out all options for "analysis.Rproj"
+# Set up text to add to "analysis.Rproj":
+r_proj_text <- c("Version: 1.0",
+                 "",
+                 "RestoreWorkspace: Default",
+                 "SaveWorkspace: Default",
+                 "AlwaysSaveHistory: Default",
+                 "",
+                 "EnableCodeIndexing: Yes",
+                 "UseSpacesForTab: Yes",
+                 "NumSpacesForTab: 4",
+                 "Encoding: UTF-8",
+                 "",
+                 "RnwWeave: Sweave",
+                 "LaTeX: pdfLaTeX",
+                 "",
+                 "AutoAppendNewline: Yes",
+                 "StripTrailingWhitespace: Yes")
+# Write out `r_proj_text` into "analysis.Rproj":
+readr::write_lines(x = r_proj_text, path(data_analysis_fp, "Year 3 (2023-2024)", "analysis", "analysis.Rproj"))
+
 # Create an .Rmd file in the analysis folder
 file_create(path(data_analysis_fp, "Year 3 (2023-2024)", "analysis", "report.Rmd"))
-
-# Create an R project in the Year 3 (2023-2024)/analysis folder:
-usethis::create_project(path = path(data_analysis_fp, "Year 3 (2023-2024)", "analysis"), open = FALSE) # do not open R project
 
 # Return directory tree for demo project folder
 fs::dir_tree(demo_proj_fp)
