@@ -32,21 +32,22 @@ The main goal of `blackstone` is to make the process of coding in `R` as efficie
 In order to reach this goal, `blackstone` leverages established `R` packages and the [tidyverse](https://www.tidyverse.org/) family of `R` packages in particular. 
 These packages use the system of "tidy data" to make data manipulation and analysis in `R` consistent and well organized, `blackstone` also strives to follow this philosophy. 
 
-The vignettes provided with `blackstone` will go into greater detail as to how to use `blackstone` alongside these other packages.
+The vignettes provided with `blackstone` will go into greater detail as to how to use `blackstone` alongside these other packages. 
+The [`Setup and R Projects`](setup_projects.html) vignette will show you how to set up an `R` project as well as other standard workflow setups. 
+
 This document introduces you to `blackstone` and how it fits into the basic workflow of data analysis and visualization at Blackstone Research and Evaluation.
 
 ## Overview of Data Workflow
 
-* Import and clean data from survey provider.
+* Import and clean data from survey provider: `vignette("import_clean")`. 
 
-* Simple data analysis and statistical inference.
+* Simple data analysis and statistical inference: `vignette("analysis")`.
 
-* Data visualization and output for report writing.
+* Data visualization and output for report writing: `vignette("data_visualization")`.
 
 ## Importing data from SurveyMonkey
 
-Our current survey provider is [SurveyMonkey](https://www.surveymonkey.com/?ut_source=homepage&ut_source3=header), `blackstone` contains several functions that makes the process of 
-reading SurveyMonkey data into `R` a more manageable process and creates a codebook for the data along the way.
+Our current survey provider is [SurveyMonkey](https://www.surveymonkey.com/?ut_source=homepage&ut_source3=header), `blackstone` contains several functions that makes the process of reading SurveyMonkey data into `R` a more manageable process and creates a codebook for the data along the way.
 
 SurveyMonkey exports data with two header rows, which does not work with `R`, where tibbles and dataframes can only have one row of names.
 
@@ -258,5 +259,5 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 ```
 
 
-The vignette [`Data Visualization`](data_visualization.html) goes into deeper detail on how to use `blackstone` to create data visualizations with example data .
+The vignette [`Data Visualization`](data_visualization.html) goes into deeper detail on how to use `blackstone` to create data visualizations with example data.
 

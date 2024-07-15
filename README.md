@@ -46,8 +46,8 @@ extrafont::loadfonts("all", quiet = TRUE)
 
 ## Usage
 
-Here is just one use for `blackstone` that creates a stacked bar chart
-of pre-post data:
+Here is one use for `blackstone` that creates a stacked bar chart of
+pre-post data:
 
 ``` r
 library(blackstone)
