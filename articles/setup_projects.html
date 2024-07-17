@@ -78,59 +78,137 @@ using <code>R</code> and <code>RStudio</code> for Blackstone Research
 and Evaluation (<strong><code>BRE</code></strong>).</p>
 <p>This will include:</p>
 <ul>
+<li><p>A brief introduction to <code>R</code> and
+<code>RStudio</code></p></li>
+<li><p>A discussion of shared workflow and file management at
+<strong><code>BRE</code></strong>.</p></li>
 <li><p>Setting up basic global options in <code>RStudio</code>.</p></li>
-<li><p>Creating and using RStudio Projects.</p></li>
-<li><p>Using the <code>here</code> package to build file paths using
-<code>.Rproj</code> files.</p></li>
+<li><p>Creating and using <strong><code>RStudio</code>
+Projects</strong>.</p></li>
+<li><p>Using the <code>here</code> package to build relative file paths
+using <code>.Rproj</code> files.</p></li>
 </ul>
+<div class="section level2">
+<h2 id="introduction-and-installation-of-r-and-rstudio">Introduction and Installation of <code>R</code> and
+<code>RStudio</code><a class="anchor" aria-label="anchor" href="#introduction-and-installation-of-r-and-rstudio"></a>
+</h2>
+<p><a href="https://posit.co/products/open-source/rstudio/" class="external-link"><code>RStudio</code></a>
+is an integrated development environment (IDE) that is designed to run
+<a href="https://www.r-project.org/" class="external-link"><code>R</code></a>, an open-source
+programming language for statistical computing and graphics. Both
+<code>R</code> and <code>RStudio</code> should be kept up to date, the
+most current release for each can be found at the respective links here:
+<a href="https://cran.rstudio.com/" class="external-link">“Install <code>R</code>”</a> and <a href="https://posit.co/download/rstudio-desktop/" class="external-link">“Install
+<code>RStudio</code>”</a>.</p>
+</div>
 <div class="section level2">
 <h2 id="shared-workflow">Shared Workflow<a class="anchor" aria-label="anchor" href="#shared-workflow"></a>
 </h2>
-<p><a href="https://posit.co/download/rstudio-desktop/" class="external-link"><code>RStudio</code></a>
-is an integrated development environment (IDE) that is designed to run
-<a href="https://www.r-project.org/" class="external-link"><code>R</code></a>, a programming
-language. At Blackstone Research and Evaluation, we will strive to
-utilize best practices with data science and that starts with
-implementing a shared workflow. in order to make all of our work
-reproducible across all projects.</p>
-<p>Any work product (Rmarkdown or <code>R</code> script) should be saved
-to the correct Blackstone Google Drive project folder. Anyone at
-<strong><code>BRE</code></strong> should be able to open the Rmarkdown
-(Rmd) or <code>R</code> script and run it on their own local machine to
-reproduce the results. In order to achieve this, we must use the same
-standard workflow and setup in <code>RStudio</code>.</p>
+<p>At Blackstone Research and Evaluation, we will strive to utilize best
+practices with data science and that starts with implementing a shared
+workflow in order to make all of our work reproducible across all of our
+projects.</p>
+<p>A shared workflow will ensure that anyone at
+<strong><code>BRE</code></strong> will be able to open any work product
+(Rmarkdown files ‘.Rmd’ or <code>R</code> scripts ‘.R’) and run it on
+their own local machine to reproduce the exact same results as the
+original author. This ‘code as truth’ approach reduces confusion and
+saves time since <code>R</code> is doing the work once the code is
+produced and it will be unnecessary to spend a lot of time pointing and
+clicking to save files or create figures in other applications.</p>
+<p>In order to achieve this, we must use the same standard workflow,
+file management, and setup in <code>RStudio</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="file-management">File Management<a class="anchor" aria-label="anchor" href="#file-management"></a>
+</h2>
+<p>All work products (Rmarkdown files ‘.Rmd’ or <code>R</code> scripts
+‘.R’) created in the course of completing a data analysis task,
+including any data cleaning and transformation, should be saved to the
+correct Blackstone Google Drive project folder.</p>
+<p>Our project folders in the Blackstone Google Drive have a standard
+folder structure, which looks something like this:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The &lt;code&gt;blackstone&lt;/code&gt; package contains a folder
+structure to emulate a standard Blackstone project folder, I had to
+change the naming conventions slightly to include it so the folder names
+are a bit different.&lt;/p&gt;"><sup>1</sup></a></p>
+<pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/home/runner/work/_temp/Library/blackstone/2429_DEMO</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Archive</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Phase1_Sales_Finance</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Phase2_Evaluation</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Client_Meeting_Notes</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Concept_Data_Analysis_Guide</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Data</span></span></span>
+<span><span class="co">#&gt; │   │   ├── <span style="color: #0000BB; font-weight: bold;">Year1_(2020-2021)</span></span></span>
+<span><span class="co">#&gt; │   │   ├── <span style="color: #0000BB; font-weight: bold;">Year2_(2021-2022)</span></span></span>
+<span><span class="co">#&gt; │   │   ├── <span style="color: #0000BB; font-weight: bold;">Year3_(2022-2023)</span></span></span>
+<span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">Year4_(2023-2024)</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Data_Analysis</span></span></span>
+<span><span class="co">#&gt; │   │   ├── <span style="color: #0000BB; font-weight: bold;">Year1_(2020-2021)</span></span></span>
+<span><span class="co">#&gt; │   │   ├── <span style="color: #0000BB; font-weight: bold;">Year2_(2021-2022)</span></span></span>
+<span><span class="co">#&gt; │   │   ├── <span style="color: #0000BB; font-weight: bold;">Year3_(2022-2023)</span></span></span>
+<span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">Year4_(2023-2024)</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Instruments</span></span></span>
+<span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">Logic_Model</span></span></span>
+<span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">Phase3_Reporting</span></span></span></code></pre>
+<p>All raw survey data files should be kept in the correct project year
+folder in the <code>Phase 2 - Evaluation/Data</code> folder. So if you
+have survey data from ‘Year 4 (2023-2024)’ of a project it should be
+save in <code>Phase 2 - Evaluation/Data/Year 4 (2023-2024)</code>. Using
+subfolders at the project year level will help to organize data from pre
+and post surveys, or multiple surveys with different topics for a given
+year.</p>
+<p>All data analysis files should be kept in the correct project year
+folder in the <code>Phase 2 - Evaluation/Data Analysis</code>
+folder.</p>
+<p>Later, we will go over how to use <strong><code>RStudio</code>
+Projects</strong> to create a subfolder in the correct project year
+folder in <code>Phase 2 - Evaluation/Data Analysis</code> folder to
+organize these files and how to run all analyses in the Google Drive
+folder by importing data from the <code>Phase 2 - Evaluation/Data</code>
+subfolders. First, lets turn to some basic setup for
+<code>RStudio</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="rstudio-setup">
 <code>RStudio</code> Setup<a class="anchor" aria-label="anchor" href="#rstudio-setup"></a>
 </h2>
+<p>Our workflow for data analysis at <strong><code>BRE</code></strong>
+should center around producing <code>R</code> code that is reproducible
+for anyone. We need to all maintain <code>RStudio</code> settings which
+help to facilitate that process.</p>
 <p>The first step is to make sure that each new <code>R</code> session
 is a blank slate and nothing that we have done previously carries over
 to our current work.</p>
 <p>There are two ways to do this:</p>
 <ol style="list-style-type: decimal">
-<li><p>Either run <code>usethis::use_blank_slate()</code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;If the &lt;code&gt;usethis&lt;/code&gt; package is not installed,
-install it with: &lt;code&gt;install.packages("usethis")&lt;/code&gt;&lt;/p&gt;'><sup>1</sup></a> or</p></li>
-<li><p>In <code>RStudio</code>, go to the top menu bar and select
+<li>Either run <code>usethis::use_blank_slate()</code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;If the &lt;code&gt;usethis&lt;/code&gt; package is not installed,
+install it with: &lt;code&gt;install.packages("usethis")&lt;/code&gt;&lt;/p&gt;'><sup>2</sup></a> or</li>
+</ol>
+<ol start="2" style="list-style-type: decimal">
+<li>In <code>RStudio</code>, go to the top menu bar and select
 ‘<strong>Tools</strong>’, then ‘<strong>Global Options</strong>’,
 ‘<strong>General</strong>’ settings and make sure the
 ‘<strong>Workspace</strong>’ section (in the blue box) matches the
-options in figure 1 below:</p></li>
+options in figure 1 below:</li>
 </ol>
 <div class="figure">
 <img src="img/r_global_options.png" alt="Figure 1: RStudio Global Options" width="100%"><p class="caption">
 Figure 1: RStudio Global Options
 </p>
 </div>
-<p>This will ensure that each new <code>R</code> session is a blank
-slate.</p>
+<p>This will ensure that each new <code>R</code> session starts with any
+empty global environment (no data or variables from a previous
+session).</p>
 <p>Also, it is important to routinely restart your <code>R</code>
 session and re-run your code to make sure that everything in code
 produces the expected results, figures, and outputs. This can be done by
-in <code>RStudio</code> by selecting ‘<strong>Session</strong>’ in to
-the top menu bar clicking on ‘<strong>Restart R</strong>’ (Windows
-keyboard shortcut: Ctrl+Shift+F10, Mac: Shift+Command+0). This will
-clear your global environment and unload all R packages.</p>
+in <code>RStudio</code> by first saving your current work in the
+Rmarkdown file(s) (.Rmd) or <code>R</code> script(s) (.R) file, and then
+by selecting ‘<strong>Session</strong>’ in to the top menu bar, clicking
+on ‘<strong>Restart R</strong>’.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;‘&lt;strong&gt;Restart R&lt;/strong&gt;’ keyboard shortcuts are for
+&lt;strong&gt;Windows&lt;/strong&gt;: &lt;code&gt;Ctrl+Shift+F10&lt;/code&gt; or for
+&lt;strong&gt;Mac&lt;/strong&gt;: &lt;code&gt;Shift+Command+0&lt;/code&gt;&lt;/p&gt;"><sup>3</sup></a> This will clear your global environment and
+unload all R packages.</p>
 <p>Re-run your code to ensure it includes everything necessary to
 complete the assigned data tasks.</p>
 </div>
@@ -143,7 +221,7 @@ complete the assigned data tasks.</p>
 <p>In order to have a shared workflow, we have to have a standard way to
 set up and organize all of files necessary for project work at
 <strong><code>BRE</code></strong>.</p>
-<p><code>RStudio</code> supports this with <strong>RStudio
+<p><code>RStudio</code> supports this with <strong><code>RStudio</code>
 Projects</strong>. An <a href="https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects" class="external-link"><strong><code>RStudio</code>
 Project</strong></a> allows the user to launch <code>RStudio</code> with
 its associated folder designated as the current working directory.
@@ -198,50 +276,107 @@ Figure 4.2: New Project Wizard- Project Type
 </div>
 <p>On the third page ‘<strong>Create New Project</strong>’, check the
 box for ‘<strong>Open in new session</strong>’ in lower-left corner, set
-the ‘<strong>Directory name</strong>’ to
-<code>analysis_{Your Initials}</code>, In ‘<strong>Create project as
-subdirectory of</strong>’. click ‘<strong>Browse…</strong>’, then
-navigate to the correct project folder(as shown below in the next figure
-4.4).</p>
+the ‘<strong>Directory name</strong>’ to ‘analysis_{Your Initials}’, In
+‘<strong>Create project as subdirectory of</strong>’. click
+‘<strong>Browse…</strong>’, then navigate to the correct project folder:
+shown below in the next figure 4.4.</p>
 <div class="figure">
-<img src="img/new_proj_03_dir.png" alt="Figure 4.3: New Project Wizard- Create New Project" width="100%"><p class="caption">
-Figure 4.3: New Project Wizard- Create New Project
+<img src="img/new_proj_03_dir.png" alt="Figure 4.3: New Project Wizard- Name and Set Parent Folder" width="100%"><p class="caption">
+Figure 4.3: New Project Wizard- Name and Set Parent Folder
 </p>
 </div>
-<p>If hypothetically, you were tasked with a data analysis for the
-second year of a project for 2023-2024, you would go set the parent
-folder (where the new project folder will be created) to
-<code>Phase 2 - Evaluation/Data Analysis/Year 2 (2023-2024)</code>.
-After you click on ‘<strong>Browse…</strong>’ next to ‘<strong>Create
+<p>If hypothetically, you were tasked with a data analysis for Year 4
+(2023-2024) of a project, you would go set the parent folder (where the
+new project folder will be created) to
+<code>Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)</code>.</p>
+<p>After you click on ‘<strong>Browse…</strong>’ next to ‘<strong>Create
 project as subdirectory of</strong>’: navigate to the project folder in
 the Google Drive then go to the evaluation folder- ‘<strong>Phase 2 -
 Evaluation</strong>’, then the ‘<strong>Data Analysis</strong>’ then
-‘<strong>Year 2 (2023-2024)</strong>’ and click
+‘<strong>Year 4 (2023-2024)</strong>’ and click
 ‘<strong>Open</strong>’</p>
 <div class="figure">
 <img src="img/new_proj_04_browse.png" alt="Figure 4.4: Browse to Correct Project Folder" width="100%"><p class="caption">
 Figure 4.4: Browse to Correct Project Folder
 </p>
 </div>
-<p>Finally, after setting the parent folder and if you are back on the
-third page ‘<strong>Create New Project</strong>’, have completed the
-above steps and the settings should look like figure 4.3 and you can
-proceed to click ‘<strong>Create Project</strong>’ in the lower-right
-corner.</p>
+<p>Finally, after setting the correct parent folder, you will be back on
+the third page ‘<strong>Create New Project</strong>’.</p>
+<p>If you have completed the above steps, the settings should resemble
+figure 4.5 below and you can proceed to click ‘<strong>Create
+Project</strong>’ in the lower-right corner. This will launch the new
+Project named ‘analysis_{Your Initials}’</p>
+<div class="figure">
+<img src="img/new_proj_05_create.png" alt="Figure 4.5: New Project Wizard- Create New Project" width="100%"><p class="caption">
+Figure 4.5: New Project Wizard- Create New Project
+</p>
+</div>
+<p>Now that we have an <strong>RStudio Project</strong> we can use it to
+save all of the files necessary for a data analysis task inside its
+folder.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="managing-file-paths-with-the-here-package">Managing File Paths with the <code>here</code> Package<a class="anchor" aria-label="anchor" href="#managing-file-paths-with-the-here-package"></a>
 </h2>
+<p>Lets say we were tasked with the data analysis of a hypothetical
+Blackstone project for its fourth year
+(<code>Year 4 (2023-2024)</code>).</p>
+<p>We have completed the above steps to create an <strong>RStudio
+Project</strong> in the
+<code>Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)</code>
+folder which we named ‘analysis’ as shown in the directory tree below,
+there is a subfolder of
+<code>Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)</code> named
+analysis with an <strong>RStudio Project</strong> file named
+<code>analysis.Rproj</code>.</p>
+<pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Client_Meeting_Notes</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Concept_Data_Analysis_Guide</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Data</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year1_(2020-2021)</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year2_(2021-2022)</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year3_(2022-2023)</span></span></span>
+<span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">Year4_(2023-2024)</span></span></span>
+<span><span class="co">#&gt; │       ├── <span style="color: #0000BB; font-weight: bold;">clean_data</span></span></span>
+<span><span class="co">#&gt; │       │   └── sm_data_clean.csv</span></span>
+<span><span class="co">#&gt; │       ├── <span style="color: #0000BB; font-weight: bold;">post_data</span></span></span>
+<span><span class="co">#&gt; │       │   └── sm_data_post.csv</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">pre_data</span></span></span>
+<span><span class="co">#&gt; │           └── sm_data_pre.csv</span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Data_Analysis</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year1_(2020-2021)</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year2_(2021-2022)</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year3_(2022-2023)</span></span></span>
+<span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">Year4_(2023-2024)</span></span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">analysis</span></span></span>
+<span><span class="co">#&gt; │           ├── analysis.Rproj</span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #00BB00;">report.Rmd</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Instruments</span></span></span>
+<span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">Logic_Model</span></span></span></code></pre>
+<p>To launch the <strong><code>RStudio</code> Project</strong> we can
+either go to the top menu bar in <code>RStudio</code>, click
+‘<strong>File</strong>’, ‘<strong>Open Project…</strong>’ and navigate
+to the <code>analysis.Rproj</code> and click ‘<strong>Open</strong>’ or
+go to your operating system’s File Finder/Explorer navigate to the
+<code>analysis.Rproj</code> and double-click it.</p>
+<p>To confirm which <strong><code>RStudio</code> Project</strong> is
+open in your current <code>RStudio</code> instance go to the top-left
+corner of <code>RStudio</code>.</p>
+<div class="figure">
+<img src="img/current_proj.png" alt="Figure 5: Current RStudio Project" width="100%"><p class="caption">
+Figure 5: Current RStudio Project
+</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="additional-resources-for-r-rstudio-project-workflows">Additional Resources for <code>R</code>, <code>RStudio</code>,
 Project Workflows<a class="anchor" aria-label="anchor" href="#additional-resources-for-r-rstudio-project-workflows"></a>
 </h2>
 <ul>
-<li><p>R for data science by Hadley Wickham: <a href="https://r4ds.hadley.nz/workflow-scripts.html#projects" class="external-link">“Workflow:
-6.2 Projects”</a> chapter</p></li>
-<li><p>What They Forgot to Teach You About R: <a href="https://rstats.wtf/projects.html" class="external-link">“3 Project-oriented
+<li><p><em>R for data science</em>: <a href="https://r4ds.hadley.nz/workflow-scripts.html#projects" class="external-link">“Workflow:
+6.2 Projects”</a> chapter by Hadley Wickham</p></li>
+<li><p><em>What They Forgot to Teach You About R</em>: <a href="https://rstats.wtf/projects.html" class="external-link">“3 Project-oriented
 workflow”</a> chapter by Jenny Bryan, Jim Hester, Shannon Pileggi, and
 E. David Aja</p></li>
 <li><p><a href="https://www.tidyverse.org/blog/2017/12/workflow-vs-script/" class="external-link">“Project-oriented
