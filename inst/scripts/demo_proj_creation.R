@@ -81,10 +81,10 @@ dir_create(path(data_fp, "03_(2023-2024)", data_year3_subfolder_names)) # Data Y
 extdata_fp <- fs::path("inst/extdata")
 
 # Copy example data files to respective folders
-file_exists(path(extdata_fp, "sm_data_pre.csv"))
-file_copy(path = path(extdata_fp, "sm_data_pre.csv"), new_path = path(data_fp, "03_(2023-2024)", "Pre_Survey_Data"), overwrite = TRUE)
+# file_exists(path(extdata_fp, "sm_data_pre.csv"))
+file_copy(path = path(extdata_fp, "sm_data_pre.csv"), new_path = path(data_fp, "03_(2023-2024)", "pre_data"), overwrite = TRUE)
 # file_exists(path(extdata_fp, "sm_data_post.csv"))
-file_copy(path = path(extdata_fp, "sm_data_post.csv"), new_path = path(data_fp, "03_(2023-2024)", "Post_Survey_Data"), overwrite = TRUE)
+file_copy(path = path(extdata_fp, "sm_data_post.csv"), new_path = path(data_fp, "03_(2023-2024)", "post_data"), overwrite = TRUE)
 # file_exists(path(extdata_fp, "sm_data_clean.csv"))
 file_copy(path = path(extdata_fp, "sm_data_clean.csv"), new_path = path(data_fp, "03_(2023-2024)", "clean_data"), overwrite = TRUE)
 

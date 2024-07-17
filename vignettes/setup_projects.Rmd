@@ -3,8 +3,11 @@ title: "Setup and RStudio Projects"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Setup and RStudio Projects}
+  %\VignetteSuggests{knitr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+resource_files:
+  - vignettes/img
 ---
 
 ```{r setup,  echo = FALSE, message = FALSE, include = FALSE}
@@ -23,6 +26,15 @@ options(scipen = 999, digits = 4, # Prevents sci notation and sets the output of
 set.seed(424629) # set reproducible seed
 # Set up filepath to "demo project" folder:
 demo_proj_fp <- fs::path_package("2429_DEMO-PROJ", package = "blackstone")
+
+# resource_files:
+#   - img/r_global_options.png
+#   - img/file_browser.png
+#   - img/console_wd.png
+#   - img/new_proj_01.png
+#   - img/new_proj_02_type.png
+#   - img/new_proj_03_dir.png
+#   - img/new_proj_04_browse.png
 ```
 
 This vignette will go over best practices and standard workflows for using `R` and `RStudio` for Blackstone Research and Evaluation (**`BRE`**). 
