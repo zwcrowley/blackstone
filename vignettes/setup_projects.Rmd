@@ -25,41 +25,66 @@ options(scipen = 999, digits = 4, # Prevents sci notation and sets the output of
 # library(blackstone) # load Blackstone R package
 set.seed(424629) # set reproducible seed
 # Set up filepath to "demo project" folder:
-demo_proj_fp <- fs::path_package("2429_DEMO-PROJ", package = "blackstone")
+demo_proj_fp <- fs::path_package("2429_DEMO", package = "blackstone")
 
-# resource_files:
-#   - img/r_global_options.png
-#   - img/file_browser.png
-#   - img/console_wd.png
-#   - img/new_proj_01.png
-#   - img/new_proj_02_type.png
-#   - img/new_proj_03_dir.png
-#   - img/new_proj_04_browse.png
 ```
 
-This vignette will go over best practices and standard workflows for using `R` and `RStudio` for Blackstone Research and Evaluation (**`BRE`**). 
+This vignette will go over best practices and standard workflows for using `R` and `RStudio` for Blackstone Research and Evaluation (**`BRE`**).
 
 This will include:
 
+- A brief introduction to `R` and `RStudio`
+
+- A discussion of shared workflow and file management at **`BRE`**.
+
 - Setting up basic global options in `RStudio`.
 
-- Creating and using RStudio Projects.
+- Creating and using **`RStudio` Projects**.
 
-- Using the `here` package to build file paths using `.Rproj` files.
+- Using the `here` package to build relative file paths using `.Rproj` files.
+
+## Introduction and Installation of `R` and `RStudio`
+
+[`RStudio`](https://posit.co/products/open-source/rstudio/) is an integrated development environment (IDE) that is designed to run [`R`](https://www.r-project.org/), an open-source programming language for statistical computing and graphics. Both `R` and `RStudio` should be kept up to date, the most current release for each can be found at the respective links here: ["Install `R`"](https://cran.rstudio.com/) and ["Install `RStudio`"](https://posit.co/download/rstudio-desktop/).
 
 ## Shared Workflow
 
-[`RStudio`](https://posit.co/download/rstudio-desktop/) is an integrated development environment (IDE) that is designed to run [`R`](https://www.r-project.org/), a  programming language. At Blackstone Research and Evaluation, we will strive to utilize best practices with data science and that starts with implementing a shared workflow. in order to make all of our work reproducible across all projects.
+At Blackstone Research and Evaluation, we will strive to utilize best practices with data science and that starts with implementing a shared workflow in order to make all of our work reproducible across all of our projects. 
 
-Any work product (Rmarkdown or `R` script) should be saved to the correct Blackstone Google Drive project folder. Anyone at **`BRE`** should be able to open the Rmarkdown (Rmd) or `R` script and run it on their own local machine to reproduce the results. In order to achieve this, we must use the same standard workflow and setup in `RStudio`.
+A shared workflow will ensure that anyone at **`BRE`** will be able to open any work product (Rmarkdown files '.Rmd' or `R` scripts '.R') and run it on their own local machine to reproduce the exact same results as the original author. This 'code as truth' approach reduces confusion and saves time since `R` is doing the work once the code is produced and it will be unnecessary to spend a lot of time pointing and clicking to save files or create figures in other applications.
+
+In order to achieve this, we must use the same standard workflow, file management, and setup in `RStudio`.
+
+## File Management
+
+All work products (Rmarkdown files '.Rmd' or `R` scripts '.R') created in the course of completing a data analysis task, including any data cleaning and transformation, should be saved to the correct Blackstone Google Drive project folder. 
+
+Our project folders in the Blackstone Google Drive have a standard folder structure, which looks something like this:[^demo]
+
+[^demo]: The `blackstone` package contains a folder structure to emulate a standard Blackstone project folder, I had to change the naming conventions slightly to include it so the folder names are a bit different.
+
+```{r , echo = FALSE}
+# Only directories:
+fs::dir_tree(demo_proj_fp, type = "directory", recurse = 2)
+```
+
+All raw survey data files should be kept in the correct project year folder in the `Phase 2 - Evaluation/Data` folder. So if you have survey data from 'Year 4 (2023-2024)' of a project it should be save in `Phase 2 - Evaluation/Data/Year 4 (2023-2024)`. Using subfolders at the project year level will help to organize data from pre and post surveys, or multiple surveys with different topics for a given year.
+
+All data analysis files should be kept in the correct project year folder in the `Phase 2 - Evaluation/Data Analysis` folder. 
+
+Later, we will go over how to use **`RStudio` Projects** to create a subfolder in the correct project year folder in `Phase 2 - Evaluation/Data Analysis` folder to organize these files and how to run all analyses in the Google Drive folder by importing data from the `Phase 2 - Evaluation/Data` subfolders. First, lets turn to some basic setup for `RStudio`.
 
 ## `RStudio` Setup
+
+Our workflow for data analysis at **`BRE`** should center around producing `R` code that is reproducible for anyone. We need to all maintain `RStudio` settings which help to facilitate that process.
 
 The first step is to make sure that each new `R` session is a blank slate and nothing that we have done previously carries over to our current work.
 
 There are two ways to do this: 
 
-1. Either run `usethis::use_blank_slate()`^[If the `usethis` package is not installed, install it with: `install.packages("usethis")`] or 
+1. Either run `usethis::use_blank_slate()`[^usethis] or
+
+[^usethis]: If the `usethis` package is not installed, install it with: `install.packages("usethis")`
 
 2. In `RStudio`, go to the top menu bar and select '**Tools**', then '**Global Options**', '**General**' settings and make sure the '**Workspace**' section (in the blue box) matches the options in figure 1 below: 
 
@@ -67,10 +92,12 @@ There are two ways to do this:
 knitr::include_graphics("img/r_global_options.png")
 ```
 
-This will ensure that each new `R` session is a blank slate. 
+This will ensure that each new `R` session starts with any empty global environment (no data or variables from a previous session). 
 
 Also, it is important to routinely restart your `R` session and re-run your code to make sure that everything in code produces the expected results, figures, and outputs.
-This can be done by in `RStudio` by selecting '**Session**' in to the top menu bar clicking on '**Restart R**' (Windows keyboard shortcut: Ctrl+Shift+F10, Mac: Shift+Command+0). This will clear your global environment and unload all R packages.
+This can be done by in `RStudio` by first saving your current work in the Rmarkdown file(s) (.Rmd) or `R` script(s) (.R) file, and then by selecting '**Session**' in to the top menu bar, clicking on '**Restart R**'.[^restart_r] This will clear your global environment and unload all R packages.
+
+[^restart_r]: '**Restart R**' keyboard shortcuts are for **Windows**: `Ctrl+Shift+F10` or for **Mac**: `Shift+Command+0`
 
 Re-run your code to ensure it includes everything necessary to complete the assigned data tasks.
 
@@ -80,7 +107,7 @@ Re-run your code to ensure it includes everything necessary to complete the assi
 
 In order to have a shared workflow, we have to have a standard way to set up and organize all of files necessary for project work at **`BRE`**. 
 
-`RStudio` supports this with **RStudio Projects**. An [**`RStudio` Project**](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects) allows the user to launch `RStudio` with its associated folder designated as the current working directory. Designating a new or existing folder as an **`RStudio` Project** creates a new file in that folder with the extension `.Rproj`, this file saves the settings for the Project, among other things. In the next section, we will go over how to use this file to set up relative file paths using the designated Project folder as the root directory.
+`RStudio` supports this with **`RStudio` Projects**. An [**`RStudio` Project**](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects) allows the user to launch `RStudio` with its associated folder designated as the current working directory. Designating a new or existing folder as an **`RStudio` Project** creates a new file in that folder with the extension `.Rproj`, this file saves the settings for the Project, among other things. In the next section, we will go over how to use this file to set up relative file paths using the designated Project folder as the root directory.
 
 Double-clicking on the `.Rproj`, will launch a fresh `RStudio` instance with a new `R` process that has the working directory set to the parent folder. This allows the user to easily switch between projects and not have to worry about setting the working directory or starting a new `R` process/clean global environment. Multiple instances of `RStudio` can also be opened to different **Projects** at the same time. 
 
@@ -112,31 +139,57 @@ On the second page '**Project Type**', Select '**New Project**':
 knitr::include_graphics("img/new_proj_02_type.png")
 ```
 
-On the third page '**Create New Project**', check the box for '**Open in new session**' in lower-left corner, set the '**Directory name**' to `analysis_{Your Initials}`,
-In '**Create project as subdirectory of**'. click '**Browse...**', then navigate to the correct project folder(as shown below in the next figure 4.4).
+On the third page '**Create New Project**', check the box for '**Open in new session**' in lower-left corner, set the '**Directory name**' to 'analysis_{Your Initials}',
+In '**Create project as subdirectory of**'. click '**Browse...**', then navigate to the correct project folder: shown below in the next figure 4.4.
 
 
-```{r new_proj_03, fig.cap = "Figure 4.3: New Project Wizard- Create New Project", echo = FALSE}
+```{r new_proj_03, fig.cap = "Figure 4.3: New Project Wizard- Name and Set Parent Folder", echo = FALSE}
 knitr::include_graphics("img/new_proj_03_dir.png")
 ```
 
-If hypothetically, you were tasked with a data analysis for the second year of a project for 2023-2024, you would go set the parent folder (where the new project folder will be created) to `Phase 2 - Evaluation/Data Analysis/Year 2 (2023-2024)`. 
-After you click on '**Browse...**' next to '**Create project as subdirectory of**': navigate to the project folder in the Google Drive then go to the evaluation folder- '**Phase 2 - Evaluation**', then the '**Data Analysis**' then '**Year 2 (2023-2024)**' and click '**Open**'
+If hypothetically, you were tasked with a data analysis for Year 4 (2023-2024) of a project, you would go set the parent folder (where the new project folder will be created) to `Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)`. 
+
+After you click on '**Browse...**' next to '**Create project as subdirectory of**': navigate to the project folder in the Google Drive then go to the evaluation folder- '**Phase 2 - Evaluation**', then the '**Data Analysis**' then '**Year 4 (2023-2024)**' and click '**Open**'
 
 ```{r new_proj_04, fig.cap = "Figure 4.4: Browse to Correct Project Folder", echo = FALSE}
 knitr::include_graphics("img/new_proj_04_browse.png")
 ```
 
-Finally, after setting the parent folder and if you are back on the third page '**Create New Project**', have completed the above steps and the settings should look like figure 4.3 and you can proceed to click '**Create Project**' in the lower-right corner.
+Finally, after setting the correct parent folder, you will be back on the third page '**Create New Project**'. 
+
+If you have completed the above steps, the settings should resemble figure 4.5 below and you can proceed to click '**Create Project**' in the lower-right corner. This will launch the new Project named 'analysis_{Your Initials}'
+
+```{r new_proj_05, fig.cap = "Figure 4.5: New Project Wizard- Create New Project", echo = FALSE}
+knitr::include_graphics("img/new_proj_05_create.png")
+```
+
+Now that we have an **RStudio Project** we can use it to save all of the files necessary for a data analysis task inside its folder.
 
 ## Managing File Paths with the `here` Package
+
+Lets say we were tasked with the data analysis of a hypothetical Blackstone project for its fourth year (`Year 4 (2023-2024)`). 
+
+We have completed the above steps to create an **RStudio Project** in the `Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)` folder which we named 'analysis' as shown in the directory tree below, there is a subfolder of `Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)` named analysis with an **RStudio Project** file named `analysis.Rproj`. 
+
+```{r, echo = FALSE}
+# Only folders and files without an .txt extension :
+fs::dir_tree(fs::path(demo_proj_fp, "Phase2_Evaluation"), glob = "*.txt", invert = TRUE)
+```
+
+To launch the **`RStudio` Project** we can either go to the top menu bar in `RStudio`, click '**File**', '**Open Project...**' and navigate to the `analysis.Rproj` and click '**Open**' or go to your operating system's File Finder/Explorer navigate to the `analysis.Rproj` and double-click it.
+
+To confirm which **`RStudio` Project** is open in your current `RStudio` instance go to the top-left corner of `RStudio`.
+
+```{r current_proj, fig.cap = "Figure 5: Current RStudio Project", echo = FALSE}
+knitr::include_graphics("img/current_proj.png")
+```
 
 
 ## Additional Resources for `R`, `RStudio`, Project Workflows
 
-- R for data science by Hadley Wickham: ["Workflow: 6.2 Projects"](https://r4ds.hadley.nz/workflow-scripts.html#projects) chapter
+- *R for data science*: ["Workflow: 6.2 Projects"](https://r4ds.hadley.nz/workflow-scripts.html#projects) chapter by Hadley Wickham
 
-- What They Forgot to Teach You About R: ["3  Project-oriented workflow"](https://rstats.wtf/projects.html) chapter by Jenny Bryan, Jim Hester, Shannon Pileggi, and E. David Aja
+- *What They Forgot to Teach You About R*: ["3  Project-oriented workflow"](https://rstats.wtf/projects.html) chapter by Jenny Bryan, Jim Hester, Shannon Pileggi, and E. David Aja
 
 - ["Project-oriented workflow"](https://www.tidyverse.org/blog/2017/12/workflow-vs-script/) Tidyverse Blog Post by Jenny Bryan
 

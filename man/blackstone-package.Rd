@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-The goal of `blackstone` is to make data manipulation, analysis, and visualization easier and faster for Blackstone Research and Evaluation. `blackstone` contains functions to create visuals with Blackstone Research and Evaluation branding and as well as common data cleaning, manipulation and analysis tasks for everyone at Blackstone Research and Evaluation.
+The goal of `blackstone` is to make data manipulation, analysis, and visualization easier and faster for Blackstone Research and Evaluation. `blackstone` contains functions to create visuals with Blackstone Research and Evaluation branding and as well as common data cleaning, manipulation, and analysis tasks for everyone at Blackstone Research and Evaluation.
 }
 \seealso{
 Useful links:
