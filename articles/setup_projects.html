@@ -376,12 +376,27 @@ shortcut IDs). This also creates an issue if we want to navigate to the
 <code>Data</code> folder in our code to import data for analysis. How do
 we write out a file path that is stable over time and for different
 users?</p>
+<div class="section level3">
+<h3 id="introduction-to-the-here-package">Introduction to the <code>here</code> Package<a class="anchor" aria-label="anchor" href="#introduction-to-the-here-package"></a>
+</h3>
 <p>The <a href="https://here.r-lib.org/index.html" class="external-link"><code>here</code></a>
 package solves this issue by using <strong><code>RStudio</code>
 Project</strong> files (<code>.Rproj</code>) to create relative file
-paths. In our current example the <em>project root</em> directory is the
+paths. In <code>R</code> anytime we set the working directory (either by
+using <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code> or by opening an <strong><code>RStudio</code>
+Project</strong>), we can reference file paths using paths relative to
+the working directory. But if that file path changes, either by moving
+folders or by the code running on different machines</p>
+<p>The <code>here</code> packages provides a way to always reference the
+location of a specified <strong><code>RStudio</code> Project</strong>
+files (<code>.Rproj</code>) as the <em>root</em> directory for relative
+file paths, even if the working directory is switched to a subfolder of
+an <strong><code>RStudio</code> Project</strong> folder (which is the
+case when knitting an .Rmd file).</p>
+<p>In our current example the <em>project root</em> directory is the
 <code>analysis</code> folder. The <code>here</code> package has two
 simple functions which allow us build reproducible file paths.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="additional-resources-for-r-rstudio-project-workflows">Additional Resources for <code>R</code>, <code>RStudio</code>,
