@@ -14,8 +14,6 @@ resource_files:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  warning = FALSE, 
-  message = FALSE, 
   fig.width = 9,
   fig.height = 8,
   out.width = "100%"
@@ -57,7 +55,9 @@ In order to achieve this, we must use the same standard workflow, file managemen
 
 ## File Management
 
-All work products (Rmarkdown files '.Rmd' or `R` scripts '.R') created in the course of completing a data analysis task, including any data cleaning and transformation, should be saved to the correct Blackstone Google Drive project folder. 
+All work products (Rmarkdown files '.Rmd' or `R` scripts '.R') created in the course of completing a data analysis task, including any data cleaning and transformation, should be saved to the correct Blackstone Google Drive project folder.[^drive]
+
+[^drive]: The Blackstone Google Drive project folder is called "The Mark Client Projects".
 
 Our project folders in the Blackstone Google Drive have a standard folder structure, which looks something like this:[^demo]
 
@@ -105,7 +105,9 @@ Re-run your code to ensure it includes everything necessary to complete the assi
 
 ### Introduction to RStudio Projects
 
-In order to have a shared workflow, we have to have a standard way to set up and organize all of files necessary for project work at **`BRE`**. We also need a way to set the working directory for each `R` session that is reproducible across different users. Using `setwd()` in code will work for the original author, but subsequent users will have to change this file path. 
+In order to have a shared workflow, we have to have a standard way to set up and organize all of files necessary for project work at **`BRE`**. We also need a way to set the working directory[^wd] for each `R` session that is reproducible across different users. Using `setwd()` in code will work for the original author, but subsequent users will have to change this file path. 
+
+[^wd]: The terms "folder" and "directory" are used interchangeably here. The term "working directory" is specific to how `R` works with folders on your local machine. `R` uses the working directory as the starting point to building relative paths to other folders on your machine.
 
 `RStudio` supports this with **`RStudio` Projects**. An [**`RStudio` Project**](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects) allows the user to launch `RStudio` with its associated folder designated as the current working directory. Designating a new or existing folder as an **`RStudio` Project** creates a new file in that folder with the extension `.Rproj`, this file saves the settings for the Project, among other things. In the next section, we will go over how to use this file to set up relative file paths using the designated Project folder as the root directory.
 
@@ -197,9 +199,60 @@ The [`here`](https://here.r-lib.org/index.html) package solves this issue by usi
 
 The `here` packages provides a way to always reference the location of a specified **`RStudio` Project** files (`.Rproj`) as the *root* directory for relative file paths, even if the working directory is switched to a subfolder of an **`RStudio` Project** folder (which is the case when knitting an .Rmd file).
 
-In our current example the *project root* directory is the `analysis` folder. The `here` package has two simple functions which allow us build reproducible file paths.
+The `here` package has two simple functions which allow us build reproducible file paths.
 
+### Using the `here` Package
 
+If the `here` package is not installed, install it with: `install.packages("here")`
+
+The first step is to set the current location of the file you are working in using `here::i_am()`[^attaching_here] with a relative path to the project root directory. This has to be done at the beginning of an `R` script ('.R') or first code chunk in an Rmarkdown file ('.Rmd').
+
+[^attaching_here]: Since the `here` package is not yet called by 
+
+If we were working in the file `report.Rmd` contained inside the `analysis` folder that would look like this:
+
+```{r, include = FALSE}
+analysis_fp <- fs::path(demo_proj_fp, "Phase2_Evaluation", "Data_Analysis", "Year4_(2023-2024)", "analysis") # set up analysis file path
+knitr::opts_knit$set(root.dir = analysis_fp) # set up analysis file path as knitr root directory 
+```
+
+```{r}
+here::i_am("report.Rmd")
+```
+
+`here::i_am()` returns the project root directory. Since the file `report.Rmd` is contained alongside the `analysis.Rproj` file inside the `analysis` folder, the call above returns the file path to the `analysis` folder.
+
+Once we have called `here::i_am()`, we can then load the `here` package and use the `here()` to again return the project root folder. 
+
+```{r}
+library(here)
+here()
+```
+
+To be clear, the `here()` function differs from just returning the current working directory. In fact, if you change the working directory and `here()` will still return the project root directory set by the initial call to `here::i_am()`. 
+
+### Relative File Paths with `here()`
+
+Now, we can use `here()` to build relative paths to read and write data.
+
+Returning to the original example evaluation folder, if we want to read in data from the `Data/Year 4 (2023-2024)` folder to run analyses in the `report.Rmd` we can set up a series of file paths using `here()`.
+
+```{r eval_dir_2, echo = FALSE}
+# Only folders and files without an .txt extension :
+fs::dir_tree(fs::path(demo_proj_fp, "Phase2_Evaluation"), glob = "*.txt", invert = TRUE)
+```
+
+```{r}
+# Setting up file path the the Data folder for Year 4:
+data_year4_fp <- here("../../../Data/Year4_(2023-2024)")
+data_year4_fp
+```
+
+We can re-use that file path to build the rest of the path needed to read in the clean data from Year 4:
+
+```{r}
+readr::read_csv(file = here(data_year4_fp, "clean_data", "sm_data_clean.csv"), show_col_types = FALSE, n_max = 3, col_select = c(1,6:12))
+```
 
 
 ## Additional Resources for `R`, `RStudio`, Project Workflows

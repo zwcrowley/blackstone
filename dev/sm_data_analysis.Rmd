@@ -9,8 +9,10 @@ knitr::opts_chunk[["set"]](
     collapse = TRUE,
     warning = FALSE, 
     message = FALSE, 
-    fig.width = 9,
-    fig.height = 8,
+    # fig.width = 9,
+    # fig.height = 8,
+    fig.width = 7,
+    fig.height = 6,
     out.width = "100%"
     )
 # Prevents sci notation and sets the output of decimals to 4 (0.0000):
@@ -558,7 +560,7 @@ names(research_question_labels) <- c("Research relevant background literature", 
 # select variables and pass them to `stackedBarChart()` along with scale_labels, set pre_post to FALSE (default),
 #  also pass research_question_labels to `question_labels` and set `question_order` to TRUE.
 sm_data %>% dplyr::select(tidyselect::contains("post_research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
-    blackstone::stackedBarChart(., scale_labels = levels_confidence, question_labels = research_question_labels, question_order = TRUE)
+    blackstone::stackedBarChart(., scale_labels = levels_confidence, question_labels = research_question_labels, question_order = TRUE, pre_post = FALSE)
 ```
 
 ## Diverging Stacked Bar Charts
@@ -750,7 +752,7 @@ sm_data %>% dplyr::select(gender, tidyselect::contains("research_") & tidyselect
 
 Here is one approach to use functional programming from the `{purrr}` package create many stacked bar charts at once:
 
-Let's say we need to create pre-post stacked bar charts for the 3 composite scales of: "Research Items", "Ability Items" and "Ethics Items". We can setup use the `purrr::pmap()` to iterate over a `tibble` that contains all the arguments for each of these composite scales. For all the charts, we will pass on new labels for each item and take the new order from that. The "Ethics Items" will have the diverging blue-red color palette and the other two scales the sequential blue palette.
+Let's say we need to create pre-post stacked bar charts for the 3 composite scales of: "Research Items", "Ability Items" and "Ethics Items". We can setup use the `purrr::pmap()` to iterate over a `tibble` that contains all the arguments for each of these composite scales. For all the charts, we will pass on new labels for each item and take the new order from that. The "Ethics Items" will have the diverging blue-red color palette and the other two scales the sequential blue palette
 
 ```{r}
 # Using pmap() to do multiple stackedBarChart() at once:
