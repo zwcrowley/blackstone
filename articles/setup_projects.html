@@ -130,7 +130,8 @@ correct Blackstone Google Drive project folder.</p>
 folder structure, which looks something like this:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The &lt;code&gt;blackstone&lt;/code&gt; package contains a folder
 structure to emulate a standard Blackstone project folder, I had to
 change the naming conventions slightly to include it so the folder names
-are a bit different.&lt;/p&gt;"><sup>1</sup></a></p>
+are a bit different. All spaces are switched to ’_’ and I removed ‘and’
+in some folder titles.&lt;/p&gt;"><sup>1</sup></a></p>
 <pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/home/runner/work/_temp/Library/blackstone/2429_DEMO</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Archive</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Phase1_Sales_Finance</span></span></span>
@@ -220,7 +221,11 @@ complete the assigned data tasks.</p>
 </h3>
 <p>In order to have a shared workflow, we have to have a standard way to
 set up and organize all of files necessary for project work at
-<strong><code>BRE</code></strong>.</p>
+<strong><code>BRE</code></strong>. We also need a way to set the working
+directory for each <code>R</code> session that is reproducible across
+different users. Using <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code> in code will work for the
+original author, but subsequent users will have to change this file
+path.</p>
 <p><code>RStudio</code> supports this with <strong><code>RStudio</code>
 Projects</strong>. An <a href="https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects" class="external-link"><strong><code>RStudio</code>
 Project</strong></a> allows the user to launch <code>RStudio</code> with
@@ -313,47 +318,35 @@ Figure 4.5: New Project Wizard- Create New Project
 </div>
 <p>Now that we have an <strong>RStudio Project</strong> we can use it to
 save all of the files necessary for a data analysis task inside its
-folder.</p>
+folder and we don’t have to worry about using <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code> to
+manage the working directory.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="managing-file-paths-with-the-here-package">Managing File Paths with the <code>here</code> Package<a class="anchor" aria-label="anchor" href="#managing-file-paths-with-the-here-package"></a>
 </h2>
-<p>Lets say we were tasked with the data analysis of a hypothetical
-Blackstone project for its fourth year
-(<code>Year 4 (2023-2024)</code>).</p>
+<p>In order to highlight another advantage for working in an
+<strong>RStudio Project</strong>, let’s say we were tasked with the data
+analysis of a hypothetical Blackstone project. The project folder named
+<code>2429_DEMO</code> in the Blackstone Google Drive and the analysis
+is for its fourth year (<code>Year 4 (2023-2024)</code>).</p>
 <p>We have completed the above steps to create an <strong>RStudio
 Project</strong> in the
 <code>Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)</code>
 folder which we named ‘analysis’ as shown in the directory tree below,
 there is a subfolder of
 <code>Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)</code> named
-analysis with an <strong>RStudio Project</strong> file named
-<code>analysis.Rproj</code>.</p>
-<pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation</span></span></span>
-<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Client_Meeting_Notes</span></span></span>
-<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Concept_Data_Analysis_Guide</span></span></span>
-<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Data</span></span></span>
-<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year1_(2020-2021)</span></span></span>
-<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year2_(2021-2022)</span></span></span>
-<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year3_(2022-2023)</span></span></span>
-<span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">Year4_(2023-2024)</span></span></span>
-<span><span class="co">#&gt; │       ├── <span style="color: #0000BB; font-weight: bold;">clean_data</span></span></span>
-<span><span class="co">#&gt; │       │   └── sm_data_clean.csv</span></span>
-<span><span class="co">#&gt; │       ├── <span style="color: #0000BB; font-weight: bold;">post_data</span></span></span>
-<span><span class="co">#&gt; │       │   └── sm_data_post.csv</span></span>
-<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">pre_data</span></span></span>
-<span><span class="co">#&gt; │           └── sm_data_pre.csv</span></span>
-<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Data_Analysis</span></span></span>
-<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year1_(2020-2021)</span></span></span>
-<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year2_(2021-2022)</span></span></span>
-<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">Year3_(2022-2023)</span></span></span>
-<span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">Year4_(2023-2024)</span></span></span>
-<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">analysis</span></span></span>
-<span><span class="co">#&gt; │           ├── analysis.Rproj</span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #00BB00;">report.Rmd</span></span></span>
-<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Instruments</span></span></span>
-<span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">Logic_Model</span></span></span></code></pre>
+‘analysis’ with an <strong>RStudio Project</strong> file named
+<code>analysis.Rproj</code>. We have also created an Rmarkdown file in
+the same folder called <code>report.Rmd</code>.</p>
+<pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Year1_(2020-2021)</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Year2_(2021-2022)</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Year3_(2022-2023)</span></span></span>
+<span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">Year4_(2023-2024)</span></span></span>
+<span><span class="co">#&gt;     └── <span style="color: #0000BB; font-weight: bold;">analysis</span></span></span>
+<span><span class="co">#&gt;         ├── analysis.Rproj</span></span>
+<span><span class="co">#&gt;         └── <span style="color: #00BB00;">report.Rmd</span></span></span></code></pre>
 <p>To launch the <strong><code>RStudio</code> Project</strong> we can
 either go to the top menu bar in <code>RStudio</code>, click
 ‘<strong>File</strong>’, ‘<strong>Open Project…</strong>’ and navigate
@@ -361,13 +354,34 @@ to the <code>analysis.Rproj</code> and click ‘<strong>Open</strong>’ or
 go to your operating system’s File Finder/Explorer navigate to the
 <code>analysis.Rproj</code> and double-click it.</p>
 <p>To confirm which <strong><code>RStudio</code> Project</strong> is
-open in your current <code>RStudio</code> instance go to the top-left
+open in your current <code>RStudio</code> instance go to the top-right
 corner of <code>RStudio</code>.</p>
 <div class="figure">
-<img src="img/current_proj.png" alt="Figure 5: Current RStudio Project" width="100%"><p class="caption">
-Figure 5: Current RStudio Project
+<img src="img/current_proj.png" alt="Figure 5: Current RStudio Project (top-right corner of IDE)" width="100%"><p class="caption">
+Figure 5: Current RStudio Project (top-right corner of IDE)
 </p>
 </div>
+<p>If you click on the current <strong><code>RStudio</code>
+Project</strong> shown above, a drop-down menu gives you options to
+switch between <strong>Projects</strong> or open new
+<code>RStudio</code> instances to run multiple projects at once.</p>
+<p>Now, if we have opened the <strong><code>RStudio</code>
+Project</strong> file <code>analysis.Rproj</code> our working directory
+will be set to the analysis <code>folder</code> with this file path:
+<code>/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/analysis</code></p>
+<p>But that is the file path on <em>my</em> local machine, it would
+differ based on the location of the <code>2429_DEMO</code> folder
+because how your Google Drive Desktop is set up (different user names or
+shortcut IDs). This also creates an issue if we want to navigate to the
+<code>Data</code> folder in our code to import data for analysis. How do
+we write out a file path that is stable over time and for different
+users?</p>
+<p>The <a href="https://here.r-lib.org/index.html" class="external-link"><code>here</code></a>
+package solves this issue by using <strong><code>RStudio</code>
+Project</strong> files (<code>.Rproj</code>) to create relative file
+paths. In our current example the <em>project root</em> directory is the
+<code>analysis</code> folder. The <code>here</code> package has two
+simple functions which allow us build reproducible file paths.</p>
 </div>
 <div class="section level2">
 <h2 id="additional-resources-for-r-rstudio-project-workflows">Additional Resources for <code>R</code>, <code>RStudio</code>,

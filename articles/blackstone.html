@@ -305,161 +305,161 @@ percentages for likert scale items, <code>blackstone</code> has the
 <span><span class="va">sm_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"research_"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu">tidyselect</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"_num"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu">where</span><span class="op">(</span><span class="va">is.factor</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>                <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="../reference/likertTable.html">likertTable</a></span><span class="op">(</span><span class="va">.</span>, scale_labels <span class="op">=</span> <span class="va">levels_confidence</span><span class="op">)</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-81d023ec{}.cl-81c95c1a{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-81c95c24{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:italic;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-81c95c25{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-81cbfd8a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-81cbfd94{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-81cc1432{width:1.216in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc143c{width:0.849in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc143d{width:0.941in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc1446{width:0.903in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc1450{width:0.494in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc1451{width:1.216in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc1452{width:0.849in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc145a{width:0.941in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc145b{width:0.903in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc1464{width:0.494in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc1465{width:1.216in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc1466{width:0.849in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc146e{width:0.941in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc146f{width:0.903in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81cc1470{width:0.494in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-81d023ec">
+<style>.cl-03b1ec60{}.cl-03ab5b02{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-03ab5b0c{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:italic;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-03ab5b16{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-03ade02a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-03ade034{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-03adf614{width:1.216in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf61e{width:0.849in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf61f{width:0.941in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf620{width:0.903in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf628{width:0.494in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf629{width:1.216in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf62a{width:0.849in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf632{width:0.941in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf633{width:0.903in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf63c{width:0.494in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf63d{width:1.216in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf63e{width:0.849in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf646{width:0.941in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf647{width:0.903in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03adf648{width:0.494in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-03b1ec60">
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-81cc1432"><p class="cl-81cbfd8a"><span class="cl-81c95c1a">Question</span></p></th>
-<th class="cl-81cc143c"><p class="cl-81cbfd94"><span class="cl-81c95c1a">Not at all</span><br><span class="cl-81c95c1a">confident</span></p></th>
-<th class="cl-81cc143c"><p class="cl-81cbfd94"><span class="cl-81c95c1a">Slightly</span><br><span class="cl-81c95c1a">confident</span></p></th>
-<th class="cl-81cc143d"><p class="cl-81cbfd94"><span class="cl-81c95c1a">Somewhat</span><br><span class="cl-81c95c1a">confident</span></p></th>
-<th class="cl-81cc143c"><p class="cl-81cbfd94"><span class="cl-81c95c1a">Very</span><br><span class="cl-81c95c1a">confident</span></p></th>
-<th class="cl-81cc1446"><p class="cl-81cbfd94"><span class="cl-81c95c1a">Extremely</span><br><span class="cl-81c95c1a">confident</span></p></th>
-<th class="cl-81cc1450"><p class="cl-81cbfd94"><span class="cl-81c95c24">n</span></p></th>
+<th class="cl-03adf614"><p class="cl-03ade02a"><span class="cl-03ab5b02">Question</span></p></th>
+<th class="cl-03adf61e"><p class="cl-03ade034"><span class="cl-03ab5b02">Not at all</span><br><span class="cl-03ab5b02">confident</span></p></th>
+<th class="cl-03adf61e"><p class="cl-03ade034"><span class="cl-03ab5b02">Slightly</span><br><span class="cl-03ab5b02">confident</span></p></th>
+<th class="cl-03adf61f"><p class="cl-03ade034"><span class="cl-03ab5b02">Somewhat</span><br><span class="cl-03ab5b02">confident</span></p></th>
+<th class="cl-03adf61e"><p class="cl-03ade034"><span class="cl-03ab5b02">Very</span><br><span class="cl-03ab5b02">confident</span></p></th>
+<th class="cl-03adf620"><p class="cl-03ade034"><span class="cl-03ab5b02">Extremely</span><br><span class="cl-03ab5b02">confident</span></p></th>
+<th class="cl-03adf628"><p class="cl-03ade034"><span class="cl-03ab5b0c">n</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1451"><p class="cl-81cbfd8a"><span class="cl-81c95c25">pre_research_1</span></p></td>
-<td class="cl-81cc1452"><p class="cl-81cbfd94"><span class="cl-81c95c25">10 (10%)</span></p></td>
-<td class="cl-81cc1452"><p class="cl-81cbfd94"><span class="cl-81c95c25">8 (8%)</span></p></td>
-<td class="cl-81cc145a"><p class="cl-81cbfd94"><span class="cl-81c95c25">41 (41%)</span></p></td>
-<td class="cl-81cc1452"><p class="cl-81cbfd94"><span class="cl-81c95c25">27 (27%)</span></p></td>
-<td class="cl-81cc145b"><p class="cl-81cbfd94"><span class="cl-81c95c25">14 (14%)</span></p></td>
-<td class="cl-81cc1464"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf629"><p class="cl-03ade02a"><span class="cl-03ab5b16">pre_research_1</span></p></td>
+<td class="cl-03adf62a"><p class="cl-03ade034"><span class="cl-03ab5b16">10 (10%)</span></p></td>
+<td class="cl-03adf62a"><p class="cl-03ade034"><span class="cl-03ab5b16">8 (8%)</span></p></td>
+<td class="cl-03adf632"><p class="cl-03ade034"><span class="cl-03ab5b16">41 (41%)</span></p></td>
+<td class="cl-03adf62a"><p class="cl-03ade034"><span class="cl-03ab5b16">27 (27%)</span></p></td>
+<td class="cl-03adf633"><p class="cl-03ade034"><span class="cl-03ab5b16">14 (14%)</span></p></td>
+<td class="cl-03adf63c"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">pre_research_2</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">56 (56%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">19 (19%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">8 (8%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">9 (9%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">8 (8%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">pre_research_2</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">56 (56%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">19 (19%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">8 (8%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">9 (9%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">8 (8%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">pre_research_3</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">32 (32%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">23 (23%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">15 (15%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">20 (20%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">10 (10%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">pre_research_3</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">32 (32%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">23 (23%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">15 (15%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">20 (20%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">10 (10%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">pre_research_4</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">9 (9%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">24 (24%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">32 (32%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">24 (24%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">11 (11%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">pre_research_4</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">9 (9%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">24 (24%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">32 (32%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">24 (24%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">11 (11%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">pre_research_5</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">40 (40%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">18 (18%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">21 (21%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">13 (13%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">8 (8%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">pre_research_5</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">40 (40%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">18 (18%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">21 (21%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">13 (13%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">8 (8%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">pre_research_6</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">17 (17%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">25 (25%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">25 (25%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">16 (16%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">17 (17%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">pre_research_6</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">17 (17%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">25 (25%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">25 (25%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">16 (16%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">17 (17%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">pre_research_7</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">59 (59%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">13 (13%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">11 (11%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">10 (10%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">7 (7%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">pre_research_7</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">59 (59%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">13 (13%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">11 (11%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">10 (10%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">7 (7%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">pre_research_8</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">21 (21%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">19 (19%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">23 (23%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">19 (19%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">18 (18%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">pre_research_8</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">21 (21%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">19 (19%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">23 (23%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">19 (19%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">18 (18%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">post_research_1</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">2 (2%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">26 (26%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">23 (23%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">25 (25%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">24 (24%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">post_research_1</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">2 (2%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">26 (26%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">23 (23%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">25 (25%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">24 (24%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">post_research_2</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">12 (12%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">14 (14%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">12 (12%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">14 (14%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">48 (48%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">post_research_2</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">12 (12%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">14 (14%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">12 (12%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">14 (14%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">48 (48%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">post_research_3</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">8 (8%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">22 (22%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">21 (21%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">23 (23%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">26 (26%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">post_research_3</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">8 (8%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">22 (22%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">21 (21%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">23 (23%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">26 (26%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">post_research_4</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">2 (2%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">24 (24%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">25 (25%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">19 (19%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">30 (30%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">post_research_4</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">2 (2%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">24 (24%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">25 (25%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">19 (19%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">30 (30%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">post_research_5</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">14 (14%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">19 (19%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">19 (19%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">19 (19%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">29 (29%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">post_research_5</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">14 (14%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">19 (19%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">19 (19%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">19 (19%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">29 (29%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">post_research_6</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">5 (5%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">3 (3%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">24 (24%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">28 (28%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">40 (40%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">post_research_6</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">5 (5%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">3 (3%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">24 (24%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">28 (28%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">40 (40%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">post_research_7</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">11 (11%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">10 (10%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">14 (14%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">17 (17%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">48 (48%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">post_research_7</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">11 (11%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">10 (10%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">14 (14%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">17 (17%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">48 (48%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-81cc1465"><p class="cl-81cbfd8a"><span class="cl-81c95c25">post_research_8</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">4 (4%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">7 (7%)</span></p></td>
-<td class="cl-81cc146e"><p class="cl-81cbfd94"><span class="cl-81c95c25">23 (23%)</span></p></td>
-<td class="cl-81cc1466"><p class="cl-81cbfd94"><span class="cl-81c95c25">23 (23%)</span></p></td>
-<td class="cl-81cc146f"><p class="cl-81cbfd94"><span class="cl-81c95c25">43 (43%)</span></p></td>
-<td class="cl-81cc1470"><p class="cl-81cbfd94"><span class="cl-81c95c25">100</span></p></td>
+<td class="cl-03adf63d"><p class="cl-03ade02a"><span class="cl-03ab5b16">post_research_8</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">4 (4%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">7 (7%)</span></p></td>
+<td class="cl-03adf646"><p class="cl-03ade034"><span class="cl-03ab5b16">23 (23%)</span></p></td>
+<td class="cl-03adf63e"><p class="cl-03ade034"><span class="cl-03ab5b16">23 (23%)</span></p></td>
+<td class="cl-03adf647"><p class="cl-03ade034"><span class="cl-03ab5b16">43 (43%)</span></p></td>
+<td class="cl-03adf648"><p class="cl-03ade034"><span class="cl-03ab5b16">100</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -481,101 +481,101 @@ cohort as well: [<code><a href="../reference/groupedTable.html">groupedTable()</
 <span><span class="va">sm_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">gender</span>, <span class="va">ethnicity</span>, <span class="va">first_gen</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># select the demographic vars</span></span>
 <span>                 <span class="fu">blackstone</span><span class="fu">::</span><span class="fu"><a href="../reference/groupedTable.html">groupedTable</a></span><span class="op">(</span>question_labels <span class="op">=</span> <span class="va">demos_labels</span><span class="op">)</span> <span class="co"># pass the new labels for the 'Question' column.</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-82115a7e{}.cl-820ab67e{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-820ab688{font-family:'Arial';font-size:6pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;position: relative;bottom:3pt;}.cl-820ab692{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-820ab69c{font-family:'Arial';font-size:6.6pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;position: relative;bottom:3.3pt;}.cl-820ab69d{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-820d1aae{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-820d1ab8{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-820d2c24{width:1.188in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c2e{width:2.536in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c38{width:0.792in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c39{width:1.188in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c42{width:2.536in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c4c{width:0.792in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c4d{width:1.188in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c56{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c57{width:0.792in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c58{width:1.188in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c60{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c61{width:0.792in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c62{width:1.188in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c63{width:2.536in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c6a{width:0.792in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c6b{width:1.188in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c6c{width:2.536in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c74{width:0.792in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c75{width:1.188in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c7e{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-820d2c7f{width:0.792in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-82115a7e">
+<style>.cl-03f1fbfc{}.cl-03eb8574{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-03eb8588{font-family:'Arial';font-size:6pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;position: relative;bottom:3pt;}.cl-03eb8589{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-03eb858a{font-family:'Arial';font-size:6.6pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;position: relative;bottom:3.3pt;}.cl-03eb8592{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-03ede3aa{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-03ede3be{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-03edf520{width:1.188in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf52a{width:2.536in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf52b{width:0.792in;background-color:rgba(44, 44, 79, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf534{width:1.188in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf535{width:2.536in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf53e{width:0.792in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf53f{width:1.188in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf540{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf548{width:0.792in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf549{width:1.188in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf54a{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf552{width:0.792in;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf553{width:1.188in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf554{width:2.536in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf555{width:0.792in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf55c{width:1.188in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf566{width:2.536in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf567{width:0.792in;background-color:rgba(246, 246, 246, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(190, 190, 190, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf568{width:1.188in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf570{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-03edf571{width:0.792in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-03f1fbfc">
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-820d2c24"><p class="cl-820d1aae"><span class="cl-820ab67e">Question</span></p></th>
-<th class="cl-820d2c2e"><p class="cl-820d1aae"><span class="cl-820ab67e">Response</span></p></th>
-<th class="cl-820d2c38"><p class="cl-820d1ab8"><span class="cl-820ab67e">n = 100</span><span class="cl-820ab688">1</span></p></th>
+<th class="cl-03edf520"><p class="cl-03ede3aa"><span class="cl-03eb8574">Question</span></p></th>
+<th class="cl-03edf52a"><p class="cl-03ede3aa"><span class="cl-03eb8574">Response</span></p></th>
+<th class="cl-03edf52b"><p class="cl-03ede3be"><span class="cl-03eb8574">n = 100</span><span class="cl-03eb8588">1</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c39"><p class="cl-820d1aae"><span class="cl-820ab692">Gender</span></p></td>
-<td class="cl-820d2c42"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c4c"><p class="cl-820d1ab8"><span class="cl-820ab692"></span></p></td>
+<td class="cl-03edf534"><p class="cl-03ede3aa"><span class="cl-03eb8589">Gender</span></p></td>
+<td class="cl-03edf535"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf53e"><p class="cl-03ede3be"><span class="cl-03eb8589"></span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">Female</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">47 (47%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">Female</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">47 (47%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">Male</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">50 (50%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">Male</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">50 (50%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c58"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c60"><p class="cl-820d1aae"><span class="cl-820ab692">Non-binary</span></p></td>
-<td class="cl-820d2c61"><p class="cl-820d1ab8"><span class="cl-820ab692">2 (2%)</span></p></td>
+<td class="cl-03edf549"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf54a"><p class="cl-03ede3aa"><span class="cl-03eb8589">Non-binary</span></p></td>
+<td class="cl-03edf552"><p class="cl-03ede3be"><span class="cl-03eb8589">2 (2%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c58"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c60"><p class="cl-820d1aae"><span class="cl-820ab692">Do not wish to specify</span></p></td>
-<td class="cl-820d2c61"><p class="cl-820d1ab8"><span class="cl-820ab692">1 (1%)</span></p></td>
+<td class="cl-03edf549"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf54a"><p class="cl-03ede3aa"><span class="cl-03eb8589">Do not wish to specify</span></p></td>
+<td class="cl-03edf552"><p class="cl-03ede3be"><span class="cl-03eb8589">1 (1%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c62"><p class="cl-820d1aae"><span class="cl-820ab692">Race/Ethnicity</span></p></td>
-<td class="cl-820d2c63"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c6a"><p class="cl-820d1ab8"><span class="cl-820ab692"></span></p></td>
+<td class="cl-03edf553"><p class="cl-03ede3aa"><span class="cl-03eb8589">Race/Ethnicity</span></p></td>
+<td class="cl-03edf554"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf555"><p class="cl-03ede3be"><span class="cl-03eb8589"></span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c58"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c60"><p class="cl-820d1aae"><span class="cl-820ab692">White (Non-Hispanic/Latino)</span></p></td>
-<td class="cl-820d2c61"><p class="cl-820d1ab8"><span class="cl-820ab692">36 (36%)</span></p></td>
+<td class="cl-03edf549"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf54a"><p class="cl-03ede3aa"><span class="cl-03eb8589">White (Non-Hispanic/Latino)</span></p></td>
+<td class="cl-03edf552"><p class="cl-03ede3be"><span class="cl-03eb8589">36 (36%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">Asian</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">23 (23%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">Asian</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">23 (23%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">Black</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">7 (7%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">Black</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">7 (7%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c58"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c60"><p class="cl-820d1aae"><span class="cl-820ab692">Hispanic or Latino</span></p></td>
-<td class="cl-820d2c61"><p class="cl-820d1ab8"><span class="cl-820ab692">18 (18%)</span></p></td>
+<td class="cl-03edf549"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf54a"><p class="cl-03ede3aa"><span class="cl-03eb8589">Hispanic or Latino</span></p></td>
+<td class="cl-03edf552"><p class="cl-03ede3be"><span class="cl-03eb8589">18 (18%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">American Indian or Alaskan Native</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">5 (5%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">American Indian or Alaskan Native</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">5 (5%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">Native Hawaiian or other Pacific Islander</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">7 (7%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">Native Hawaiian or other Pacific Islander</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">7 (7%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c58"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c60"><p class="cl-820d1aae"><span class="cl-820ab692">Do not wish to specify</span></p></td>
-<td class="cl-820d2c61"><p class="cl-820d1ab8"><span class="cl-820ab692">4 (4%)</span></p></td>
+<td class="cl-03edf549"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf54a"><p class="cl-03ede3aa"><span class="cl-03eb8589">Do not wish to specify</span></p></td>
+<td class="cl-03edf552"><p class="cl-03ede3be"><span class="cl-03eb8589">4 (4%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c6b"><p class="cl-820d1aae"><span class="cl-820ab692">First-Generation</span><br><span class="cl-820ab692">College Student</span></p></td>
-<td class="cl-820d2c6c"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c74"><p class="cl-820d1ab8"><span class="cl-820ab692"></span></p></td>
+<td class="cl-03edf55c"><p class="cl-03ede3aa"><span class="cl-03eb8589">First-Generation</span><br><span class="cl-03eb8589">College Student</span></p></td>
+<td class="cl-03edf566"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf567"><p class="cl-03ede3be"><span class="cl-03eb8589"></span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">Yes</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">59 (59%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">Yes</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">59 (59%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">No</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">39 (39%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">No</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">39 (39%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-820d2c4d"><p class="cl-820d1aae"><span class="cl-820ab692"></span></p></td>
-<td class="cl-820d2c56"><p class="cl-820d1aae"><span class="cl-820ab692">I'm not sure</span></p></td>
-<td class="cl-820d2c57"><p class="cl-820d1ab8"><span class="cl-820ab692">2 (2%)</span></p></td>
+<td class="cl-03edf53f"><p class="cl-03ede3aa"><span class="cl-03eb8589"></span></p></td>
+<td class="cl-03edf540"><p class="cl-03ede3aa"><span class="cl-03eb8589">I'm not sure</span></p></td>
+<td class="cl-03edf548"><p class="cl-03ede3be"><span class="cl-03eb8589">2 (2%)</span></p></td>
 </tr>
 </tbody>
-<tfoot><tr style="overflow-wrap:break-word;"><td colspan="3" class="cl-820d2c75"><p class="cl-820d1aae"><span class="cl-820ab69c">1</span><span class="cl-820ab69d">n (%)</span></p></td></tr></tfoot>
+<tfoot><tr style="overflow-wrap:break-word;"><td colspan="3" class="cl-03edf568"><p class="cl-03ede3aa"><span class="cl-03eb858a">1</span><span class="cl-03eb8592">n (%)</span></p></td></tr></tfoot>
 </table>
 </div>
 </div>
