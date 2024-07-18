@@ -191,7 +191,13 @@ Now, if we have opened the **`RStudio` Project** file `analysis.Rproj` our worki
 
 But that is the file path on *my* local machine, it would differ based on the location of the `2429_DEMO` folder because how your Google Drive Desktop is set up (different user names or shortcut IDs). This also creates an issue if we want to navigate to the `Data` folder in our code to import data for analysis. How do we write out a file path that is stable over time and for different users?
 
-The [`here`](https://here.r-lib.org/index.html) package solves this issue by using **`RStudio` Project** files (`.Rproj`) to create relative file paths. In our current example the *project root* directory is the `analysis` folder. The `here` package has two simple functions which allow us build reproducible file paths.
+### Introduction to the `here` Package
+
+The [`here`](https://here.r-lib.org/index.html) package solves this issue by using **`RStudio` Project** files (`.Rproj`) to create relative file paths. In `R` anytime we set the working directory (either by using `setwd()` or by opening an **`RStudio` Project**), we can reference file paths using paths relative to the working directory. But if that file path changes, either by moving folders or by the code running on different machines
+
+The `here` packages provides a way to always reference the location of a specified **`RStudio` Project** files (`.Rproj`) as the *root* directory for relative file paths, even if the working directory is switched to a subfolder of an **`RStudio` Project** folder (which is the case when knitting an .Rmd file).
+
+In our current example the *project root* directory is the `analysis` folder. The `here` package has two simple functions which allow us build reproducible file paths.
 
 
 

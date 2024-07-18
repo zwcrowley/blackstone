@@ -746,3 +746,62 @@ sm_data %>% dplyr::select(gender, tidyselect::contains("research_") & tidyselect
 
 - End vignette: `Data Visualization` name file: 'data_visualization.Rmd'
 
+#### Data Visualization with Functional Programming 
+
+Here is one approach to use functional programming from the `{purrr}` package create many stacked bar charts at once:
+
+Let's say we need to create pre-post stacked bar charts for the 3 composite scales of: "Research Items", "Ability Items" and "Ethics Items". We can setup use the `purrr::pmap()` to iterate over a `tibble` that contains all the arguments for each of these composite scales. For all the charts, we will pass on new labels for each item and take the new order from that. The "Ethics Items" will have the diverging blue-red color palette and the other two scales the sequential blue palette.
+
+```{r}
+# Using pmap() to do multiple stackedBarChart() at once:
+# Set up tibbles of each set of scales that contain all pre and post data:
+# research:
+research_df <- sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor))
+# ability:
+ability_df <- sm_data %>% dplyr::select(tidyselect::contains("ability_") & !tidyselect::contains("_num") & where(is.factor))
+# ethics:
+ethics_df <- sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contains("_oe") & !tidyselect::contains("_num") & where(is.factor)) 
+
+## Set up question labels as named vectors where the names are new labels and the values are the item names withour prefixes
+# Here I will use paste0 to create 8 research items like they appear without prefixes:
+research_question_labels <- paste0(paste0("research_", 1:8))
+# Set new labels as names of `research_question_labels`
+names(research_question_labels) <- c("Research relevant background literature", "Identify a scientific problem", 
+                                     "Develop testable and realistic research questions", "Develop a falsifiable hypothesis", 
+                                     "Conduct quantitative data analysis", "Design an experiment/Create a research design", 
+                                     "Interpret findings and making recommendations", "Scientific or technical writing")
+# Repeat for `ability` and `ethics` items:
+# `ability` values for question labels:
+ability_question_labels <- paste0(paste0("ability_", 1:6))
+# Set new labels as names of `ability_question_labels`
+names(ability_question_labels) <- c("Judge the value of new information or evidence presented to me", 
+                                    "Approach complex issues in a variety of ways", "Weigh both sides of an argument",
+                                    "Identify analogies between theories", "Eliminate extraneous variables when designing experiments", 
+                                    "Rephrase the arguments of others in my own words")
+# `ethics` values for question labels:
+ethics_question_labels <- paste0(paste0("ethics_", 1:5))
+# Set new labels as names of `ethics_question_labels`
+names(ethics_question_labels) <- c("I understand the different aspects of ethical research", "I am able to adhere to ethics in research", 
+                                   "I know where to find resources on ethical research conduct",
+                                   "I am knowledgeable in ethical research conduct", "I can conduct ethical research")
+
+# set up tibble with the columns as the args to pass to likertTable(), each row of the column `df` is the tibble of items and 
+# each row of `scale_labels` is the vector of likert scale labels, :
+sb_params <- tibble::tribble(
+  ~df,           ~scale_labels,     ~fill_colors, ~pre_post, ~question_labels,      ~question_order, # name of columns (match the arguments of function in `purrr::pmap()`)
+   research_df,   levels_confidence, "seq",        TRUE,      research_question_labels, TRUE,
+   ability_df,    levels_min_ext,    "seq",        TRUE,      ability_question_labels,  TRUE,
+   ethics_df,     levels_agree5,     "div",        TRUE,      ethics_question_labels,   TRUE
+)
+# Create a named list of stacked bar charts by using `purrr::pmap()` which takes in a tibble where each column is an argument that is passed to the function, and 
+# each row is contains the inputs for a single output, so here each row will be one frequency table that is return to a list and named for easy retrieval later on:
+sb_charts <- sb_params %>% purrr::pmap(blackstone::stackedBarChart) %>% 
+                purrr::set_names(., c("Research Items", "Ability Items", "Ethics Items"))
+
+# Can select the list by position or by name:
+# sb_charts[[1]] # by list position
+sb_charts[["Research Items"]] # by name
+sb_charts[["Ability Items"]]
+sb_charts[["Ethics Items"]]
+
+```
