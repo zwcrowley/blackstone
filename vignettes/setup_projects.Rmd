@@ -61,9 +61,9 @@ All work products (Rmarkdown files '.Rmd' or `R` scripts '.R') created in the co
 
 Our project folders in the Blackstone Google Drive have a standard folder structure, which looks something like this:[^demo]
 
-[^demo]: The `blackstone` package contains a folder structure to emulate a standard Blackstone project folder, I had to change the naming conventions slightly to include it so the folder names are a bit different.
+[^demo]: The `blackstone` package contains a folder structure to emulate a standard Blackstone project folder, I had to change the naming conventions slightly to include it so the folder names are a bit different. All spaces are switched to '_' and I removed 'and' in some folder titles.
 
-```{r , echo = FALSE}
+```{r folders_demo, echo = FALSE}
 # Only directories:
 fs::dir_tree(demo_proj_fp, type = "directory", recurse = 2)
 ```
@@ -105,7 +105,7 @@ Re-run your code to ensure it includes everything necessary to complete the assi
 
 ### Introduction to RStudio Projects
 
-In order to have a shared workflow, we have to have a standard way to set up and organize all of files necessary for project work at **`BRE`**. 
+In order to have a shared workflow, we have to have a standard way to set up and organize all of files necessary for project work at **`BRE`**. We also need a way to set the working directory for each `R` session that is reproducible across different users. Using `setwd()` in code will work for the original author, but subsequent users will have to change this file path. 
 
 `RStudio` supports this with **`RStudio` Projects**. An [**`RStudio` Project**](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects) allows the user to launch `RStudio` with its associated folder designated as the current working directory. Designating a new or existing folder as an **`RStudio` Project** creates a new file in that folder with the extension `.Rproj`, this file saves the settings for the Project, among other things. In the next section, we will go over how to use this file to set up relative file paths using the designated Project folder as the root directory.
 
@@ -163,26 +163,37 @@ If you have completed the above steps, the settings should resemble figure 4.5 b
 knitr::include_graphics("img/new_proj_05_create.png")
 ```
 
-Now that we have an **RStudio Project** we can use it to save all of the files necessary for a data analysis task inside its folder.
+Now that we have an **RStudio Project** we can use it to save all of the files necessary for a data analysis task inside its folder and we don't have to worry about using `setwd()` to manage the working directory. 
 
 ## Managing File Paths with the `here` Package
 
-Lets say we were tasked with the data analysis of a hypothetical Blackstone project for its fourth year (`Year 4 (2023-2024)`). 
+In order to highlight another advantage for working in an **RStudio Project**, let's say we were tasked with the data analysis of a hypothetical Blackstone project. The project folder named `2429_DEMO` in the Blackstone Google Drive and the analysis is for its fourth year (`Year 4 (2023-2024)`). 
 
-We have completed the above steps to create an **RStudio Project** in the `Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)` folder which we named 'analysis' as shown in the directory tree below, there is a subfolder of `Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)` named analysis with an **RStudio Project** file named `analysis.Rproj`. 
+We have completed the above steps to create an **RStudio Project** in the `Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)` folder which we named 'analysis' as shown in the directory tree below, there is a subfolder of `Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)` named 'analysis' with an **RStudio Project** file named `analysis.Rproj`. We have also created an Rmarkdown file in the same folder called `report.Rmd`.
 
-```{r, echo = FALSE}
+```{r demo_analysis_dir, echo = FALSE}
 # Only folders and files without an .txt extension :
-fs::dir_tree(fs::path(demo_proj_fp, "Phase2_Evaluation"), glob = "*.txt", invert = TRUE)
+fs::dir_tree(fs::path(demo_proj_fp, "Phase2_Evaluation", "Data_Analysis"), glob = "*.txt", invert = TRUE)
 ```
+
 
 To launch the **`RStudio` Project** we can either go to the top menu bar in `RStudio`, click '**File**', '**Open Project...**' and navigate to the `analysis.Rproj` and click '**Open**' or go to your operating system's File Finder/Explorer navigate to the `analysis.Rproj` and double-click it.
 
-To confirm which **`RStudio` Project** is open in your current `RStudio` instance go to the top-left corner of `RStudio`.
+To confirm which **`RStudio` Project** is open in your current `RStudio` instance go to the top-right corner of `RStudio`.
 
-```{r current_proj, fig.cap = "Figure 5: Current RStudio Project", echo = FALSE}
+```{r current_proj, fig.cap = "Figure 5: Current RStudio Project (top-right corner of IDE)", echo = FALSE}
 knitr::include_graphics("img/current_proj.png")
 ```
+
+If you click on the current **`RStudio` Project** shown above, a drop-down menu gives you options to switch between **Projects** or open new `RStudio` instances to run multiple projects at once.
+
+Now, if we have opened the **`RStudio` Project** file `analysis.Rproj` our working directory will be set to the analysis `folder` with this file path: ``r fs::path(demo_proj_fp, "Phase2_Evaluation", "Data_Analysis", "analysis")``
+
+But that is the file path on *my* local machine, it would differ based on the location of the `2429_DEMO` folder because how your Google Drive Desktop is set up (different user names or shortcut IDs). This also creates an issue if we want to navigate to the `Data` folder in our code to import data for analysis. How do we write out a file path that is stable over time and for different users?
+
+The [`here`](https://here.r-lib.org/index.html) package solves this issue by using **`RStudio` Project** files (`.Rproj`) to create relative file paths. In our current example the *project root* directory is the `analysis` folder. The `here` package has two simple functions which allow us build reproducible file paths.
+
+
 
 
 ## Additional Resources for `R`, `RStudio`, Project Workflows
