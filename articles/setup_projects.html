@@ -362,7 +362,7 @@ go to your operating system’s File Finder/Explorer navigate to the
 open in your current <code>RStudio</code> instance go to the top-right
 corner of <code>RStudio</code>.</p>
 <div class="figure">
-<img src="img/current_proj.png" alt="Figure 5: Current RStudio Project (top-right corner of IDE)" width="100%"><p class="caption">
+<img src="img/current_proj.png" alt="Image of RStudio top-right corner of IDE with arrow pointing out the display of the RStudio project that is currently open." width="100%"><p class="caption">
 Figure 5: Current RStudio Project (top-right corner of IDE)
 </p>
 </div>
@@ -438,11 +438,11 @@ root directory set by the initial call to <code><a href="https://here.r-lib.org/
 <h3 id="relative-file-paths-with-here">Relative File Paths with <code>here()</code><a class="anchor" aria-label="anchor" href="#relative-file-paths-with-here"></a>
 </h3>
 <p>Now, we can use <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code> to build relative paths to read
-and write data.</p>
-<p>Returning to the original example evaluation folder, if we want to
-read in data from the <code>Data/Year 4 (2023-2024)</code> folder to run
-analyses in the <code>report.Rmd</code> we can set up a series of file
-paths using <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code>.</p>
+and write data. This works by including the folder and file destination
+inside the function, either as a single string or separated by commas.
+If we wanted to build a path to the <code>Data</code> folder in our
+example project folder, let’s see how that would work.</p>
+<p>First, it is helpful to review the folder structure:</p>
 <pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Client_Meeting_Notes</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Concept_Data_Analysis_Guide</span></span></span>
@@ -467,15 +467,38 @@ paths using <code><a href="https://here.r-lib.org//reference/here.html" class="e
 <span><span class="co">#&gt; │           └── <span style="color: #00BB00;">report.Rmd</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">Instruments</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">Logic_Model</span></span></span></code></pre>
+<p>In order to build a path from the
+<code>Phase2_EvaluationData_Analysis/Year4_(2023-2024)/analysis</code>
+(which is out top-level project directory) to the
+<code>Phase2_Evaluation/Data</code> folder, we need to go “up” three
+levels which is done with file paths using “..” like this:
+<code>../../../</code>, using <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code> this looks like:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Setting up file path the the Data folder for Year 4:</span></span>
-<span><span class="va">data_year4_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"../../../Data/Year4_(2023-2024)"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Setting up file path to the Data folder for Year 4:</span></span>
+<span><span class="va">data_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"../../../Data"</span><span class="op">)</span> <span class="co"># or can be written as: here("..", ".." ,".." ,"Data")</span></span>
+<span><span class="va">data_fp</span></span>
+<span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/../../../Data"</span></span></code></pre></div>
+<p>This path can be added to other file paths to complete the desired
+path to any number of files within the <code>Data</code> folder.</p>
+<p>Returning to the original example evaluation folder, if we want to
+read in data from the <code>Data/Year 4 (2023-2024)</code> folder to run
+analyses in the <code>report.Rmd</code> we can set up a series of file
+paths using <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Setting up file path to the Data folder for Year 4:</span></span>
+<span><span class="va">data_year4_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="va">data_fp</span>, <span class="st">"Year4_(2023-2024)"</span><span class="op">)</span> <span class="co"># or can be written as: here("..", ".." ,".." ,"Data", "Year4_(2023-2024)")</span></span>
 <span><span class="va">data_year4_fp</span></span>
 <span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/../../../Data/Year4_(2023-2024)"</span></span></code></pre></div>
 <p>We can re-use that file path to build the rest of the path needed to
 read in the clean data from Year 4:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="va">data_year4_fp</span>, <span class="st">"clean_data"</span>, <span class="st">"sm_data_clean.csv"</span><span class="op">)</span>, show_col_types <span class="op">=</span> <span class="cn">FALSE</span>, n_max <span class="op">=</span> <span class="fl">3</span>, col_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># File path to clean data from Year 4 named: "sm_data_clean.csv"</span></span>
+<span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="va">data_year4_fp</span>, <span class="st">"clean_data"</span>, <span class="st">"sm_data_clean.csv"</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/../../../Data/Year4_(2023-2024)/clean_data/sm_data_clean.csv"</span></span>
+<span><span class="co"># or can be written as: here("..", ".." ,".." ,"Data", "Year4_(2023-2024)", "clean_data", "sm_data_clean.csv")</span></span>
+<span></span>
+<span><span class="co"># Reading in the clean data from Year 4 named: "sm_data_clean.csv"</span></span>
+<span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="va">data_year4_fp</span>, <span class="st">"clean_data"</span>, <span class="st">"sm_data_clean.csv"</span><span class="op">)</span>, show_col_types <span class="op">=</span> <span class="cn">FALSE</span>, n_max <span class="op">=</span> <span class="fl">3</span>, col_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
 <span><span class="co">#&gt;   respondent_id email_address       first_name last_name unique_id pre_knowledge</span></span>
 <span><span class="co">#&gt;           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
