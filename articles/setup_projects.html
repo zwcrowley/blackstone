@@ -67,7 +67,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Setup and RStudio Projects</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/zwcrowley/blackstone/blob/main/vignettes/setup_projects.Rmd" class="external-link"><code>vignettes/setup_projects.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/zwcrowley/blackstone/blob/main/vignettes/articles/setup_projects.Rmd" class="external-link"><code>vignettes/articles/setup_projects.Rmd</code></a></small>
       <div class="d-none name"><code>setup_projects.Rmd</code></div>
     </div>
 
@@ -194,7 +194,7 @@ install it with: &lt;code&gt;install.packages("usethis")&lt;/code&gt;&lt;/p&gt;'
 options in figure 1 below:</li>
 </ol>
 <div class="figure">
-<img src="img/r_global_options.png" alt="Figure 1: RStudio Global Options" width="100%"><p class="caption">
+<img src="r_global_options.png" alt="Figure 1: RStudio Global Options" width="100%"><p class="caption">
 Figure 1: RStudio Global Options
 </p>
 </div>
@@ -251,14 +251,14 @@ opened to different <strong>Projects</strong> at the same time.</p>
 The file browser in each the <code>RStudio</code> instance will show the
 current working directory, see figure 2:
 <div class="figure">
-<img src="img/file_browser.png" alt="Figure 2: RStudio File Browser" width="100%"><p class="caption">
+<img src="file_browser.png" alt="Figure 2: RStudio File Browser" width="100%"><p class="caption">
 Figure 2: RStudio File Browser
 </p>
 </div>
 <p>It is also shown just above the <strong><code>R</code>
 Console</strong> as shown in figure 3:</p>
 <div class="figure">
-<img src="img/console_wd.png" alt="Figure 3: RStudio Console Working Directory" width="100%"><p class="caption">
+<img src="console_wd.png" alt="Figure 3: RStudio Console Working Directory" width="100%"><p class="caption">
 Figure 3: RStudio Console Working Directory
 </p>
 </div>
@@ -273,14 +273,14 @@ Wizard</strong>’.</p>
 <p>On the first page ‘<strong>Create Project</strong>’, Select
 ‘<strong>New Directory</strong>’:</p>
 <div class="figure">
-<img src="img/new_proj_01.png" alt="Figure 4.1: New Project Wizard- Create Project" width="100%"><p class="caption">
+<img src="new_proj_01.png" alt="Figure 4.1: New Project Wizard- Create Project" width="100%"><p class="caption">
 Figure 4.1: New Project Wizard- Create Project
 </p>
 </div>
 <p>On the second page ‘<strong>Project Type</strong>’, Select
 ‘<strong>New Project</strong>’:</p>
 <div class="figure">
-<img src="img/new_proj_02_type.png" alt="Figure 4.2: New Project Wizard- Project Type" width="100%"><p class="caption">
+<img src="new_proj_02_type.png" alt="Figure 4.2: New Project Wizard- Project Type" width="100%"><p class="caption">
 Figure 4.2: New Project Wizard- Project Type
 </p>
 </div>
@@ -291,7 +291,7 @@ the ‘<strong>Directory name</strong>’ to ‘analysis_{Your Initials}’, In
 ‘<strong>Browse…</strong>’, then navigate to the correct project folder:
 shown below in the next figure 4.4.</p>
 <div class="figure">
-<img src="img/new_proj_03_dir.png" alt="Figure 4.3: New Project Wizard- Name and Set Parent Folder" width="100%"><p class="caption">
+<img src="new_proj_03_dir.png" alt="Figure 4.3: New Project Wizard- Name and Set Parent Folder" width="100%"><p class="caption">
 Figure 4.3: New Project Wizard- Name and Set Parent Folder
 </p>
 </div>
@@ -306,7 +306,7 @@ Evaluation</strong>’, then the ‘<strong>Data Analysis</strong>’ then
 ‘<strong>Year 4 (2023-2024)</strong>’ and click
 ‘<strong>Open</strong>’</p>
 <div class="figure">
-<img src="img/new_proj_04_browse.png" alt="Figure 4.4: Browse to Correct Project Folder" width="100%"><p class="caption">
+<img src="new_proj_04_browse.png" alt="Figure 4.4: Browse to Correct Project Folder" width="100%"><p class="caption">
 Figure 4.4: Browse to Correct Project Folder
 </p>
 </div>
@@ -317,7 +317,7 @@ figure 4.5 below and you can proceed to click ‘<strong>Create
 Project</strong>’ in the lower-right corner. This will launch the new
 Project named ‘analysis_{Your Initials}’</p>
 <div class="figure">
-<img src="img/new_proj_05_create.png" alt="Figure 4.5: New Project Wizard- Create New Project" width="100%"><p class="caption">
+<img src="new_proj_05_create.png" alt="Figure 4.5: New Project Wizard- Create New Project" width="100%"><p class="caption">
 Figure 4.5: New Project Wizard- Create New Project
 </p>
 </div>
@@ -362,7 +362,7 @@ go to your operating system’s File Finder/Explorer navigate to the
 open in your current <code>RStudio</code> instance go to the top-right
 corner of <code>RStudio</code>.</p>
 <div class="figure">
-<img src="img/current_proj.png" alt="Image of RStudio top-right corner of IDE with arrow pointing out the display of the RStudio project that is currently open." width="100%"><p class="caption">
+<img src="current_proj.png" alt="Image of RStudio top-right corner of IDE with arrow pointing out the display of the RStudio project that is currently open." width="100%"><p class="caption">
 Figure 5: Current RStudio Project (top-right corner of IDE)
 </p>
 </div>
@@ -384,11 +384,11 @@ users?</p>
 <div class="section level3">
 <h3 id="introduction-to-the-here-package">Introduction to the <code>here</code> Package<a class="anchor" aria-label="anchor" href="#introduction-to-the-here-package"></a>
 </h3>
-<p>The <a href="https://here.r-lib.org/index.html" class="external-link"><code>here</code></a>
-package solves this issue by using <strong><code>RStudio</code>
-Project</strong> files (<code>.Rproj</code>) to create relative file
-paths. In <code>R</code> anytime we set the working directory (either by
-using <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code> or by opening an <strong><code>RStudio</code>
+<p>The <a href="https://here.r-lib.org" class="external-link"><code>here</code></a> package
+solves this issue by using <strong><code>RStudio</code> Project</strong>
+files (<code>.Rproj</code>) to create relative file paths. In
+<code>R</code> anytime we set the working directory (either by using
+<code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code> or by opening an <strong><code>RStudio</code>
 Project</strong>), we can reference file paths using paths relative to
 the working directory. But if that file path changes, either by moving
 folders or by the code running on different machines</p>
@@ -509,8 +509,8 @@ read in the clean data from Year 4:</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="additional-resources-for-r-rstudio-project-workflows">Additional Resources for <code>R</code>, <code>RStudio</code>,
-Project Workflows<a class="anchor" aria-label="anchor" href="#additional-resources-for-r-rstudio-project-workflows"></a>
+<h2 id="additional-resources-for-r-rstudio-and-project-workflows">Additional Resources for <code>R</code>, <code>RStudio</code>, and
+Project Workflows<a class="anchor" aria-label="anchor" href="#additional-resources-for-r-rstudio-and-project-workflows"></a>
 </h2>
 <ul>
 <li><p><em>R for data science</em>: <a href="https://r4ds.hadley.nz/workflow-scripts.html#projects" class="external-link">“Workflow:
