@@ -183,7 +183,13 @@ To launch the **`RStudio` Project** we can either go to the top menu bar in `RSt
 
 To confirm which **`RStudio` Project** is open in your current `RStudio` instance go to the top-right corner of `RStudio`.
 
-```{r current_proj, fig.cap = "Figure 5: Current RStudio Project (top-right corner of IDE)", echo = FALSE}
+```{r current_proj}
+#| echo: FALSE
+#| fig.cap: >
+#|  Figure 5: Current RStudio Project (top-right corner of IDE)
+#| fig.alt: >
+#|   Image of RStudio top-right corner of IDE with arrow pointing out 
+#|   the display of the RStudio project that is currently open. 
 knitr::include_graphics("img/current_proj.png")
 ```
 
@@ -233,24 +239,41 @@ To be clear, the `here()` function differs from just returning the current worki
 
 ### Relative File Paths with `here()`
 
-Now, we can use `here()` to build relative paths to read and write data.
+Now, we can use `here()` to build relative paths to read and write data. This works by including the folder and file destination inside the function, either as a single string or separated by commas. If we wanted to build a path to the `Data` folder in our example project folder, let's see how that would work. 
 
-Returning to the original example evaluation folder, if we want to read in data from the `Data/Year 4 (2023-2024)` folder to run analyses in the `report.Rmd` we can set up a series of file paths using `here()`.
+First, it is helpful to review the folder structure:
 
 ```{r eval_dir_2, echo = FALSE}
 # Only folders and files without an .txt extension :
 fs::dir_tree(fs::path(demo_proj_fp, "Phase2_Evaluation"), glob = "*.txt", invert = TRUE)
 ```
 
-```{r}
-# Setting up file path the the Data folder for Year 4:
-data_year4_fp <- here("../../../Data/Year4_(2023-2024)")
+In order to build a path from the `Phase2_EvaluationData_Analysis/Year4_(2023-2024)/analysis` (which is out top-level project directory) to the `Phase2_Evaluation/Data` folder, we need to go "up" three levels which is done with file paths using ".." like this: `../../../`, using `here()` this looks like:
+
+```{r data_fp}
+# Setting up file path to the Data folder for Year 4:
+data_fp <- here("../../../Data") # or can be written as: here("..", ".." ,".." ,"Data")
+data_fp
+```
+
+This path can be added to other file paths to complete the desired path to any number of files within the `Data` folder.
+
+Returning to the original example evaluation folder, if we want to read in data from the `Data/Year 4 (2023-2024)` folder to run analyses in the `report.Rmd` we can set up a series of file paths using `here()`.
+
+```{r year_four_fp}
+# Setting up file path to the Data folder for Year 4:
+data_year4_fp <- here(data_fp, "Year4_(2023-2024)") # or can be written as: here("..", ".." ,".." ,"Data", "Year4_(2023-2024)")
 data_year4_fp
 ```
 
 We can re-use that file path to build the rest of the path needed to read in the clean data from Year 4:
 
-```{r}
+```{r read_clean_data}
+# File path to clean data from Year 4 named: "sm_data_clean.csv"
+here(data_year4_fp, "clean_data", "sm_data_clean.csv") 
+# or can be written as: here("..", ".." ,".." ,"Data", "Year4_(2023-2024)", "clean_data", "sm_data_clean.csv")
+
+# Reading in the clean data from Year 4 named: "sm_data_clean.csv"
 readr::read_csv(file = here(data_year4_fp, "clean_data", "sm_data_clean.csv"), show_col_types = FALSE, n_max = 3, col_select = c(1,6:12))
 ```
 

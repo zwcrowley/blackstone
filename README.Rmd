@@ -13,7 +13,8 @@ knitr::opts_chunk$set(
   fig.height = 8,
   out.width = "100%"
 )
-options(tibble.print_min = 5, tibble.print_max = 5)
+options(scipen = 999, digits = 4, # Prevents sci notation and sets the output of decimals to 4 (0.0000):::
+        tibble.print_min = 5, tibble.print_max = 5)
 ```
 
 # blackstone <a href="https://zwcrowley.github.io/blackstone/"><img src="man/figures/logo.png" align="right" height="139" alt="blackstone website" /></a>
@@ -56,7 +57,13 @@ extrafont::loadfonts("all", quiet = TRUE)
 
 Here is one use for `blackstone` that creates a stacked bar chart of pre-post data:
 
-```{r, message = FALSE}
+```{r sb_chart}
+#| message: FALSE
+#| fig.cap: >
+#|  Stacked Bar Chart of Pre-Post Data
+#| fig.alt: >
+#|   Example of using `blackstone` to create a stacked bar chart with `blackstone::stackedBarChart()`.
+
 library(blackstone)
 # Example pre-post data:
 items <- dplyr::tibble(

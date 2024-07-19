@@ -45,7 +45,7 @@ library(blackstone)
 
 First, read in the data that is merged and cleaned in the vignette [`Importing and Cleaning Data`](import_clean.html):
 
-```{r}
+```{r import}
 # Read in clean SM data:
 sm_data <- readr::read_csv(blackstone::blackstoneExample("sm_data_clean.csv"), show_col_types = FALSE)
 
@@ -109,7 +109,10 @@ scale labels for the likert scale that makes up the items in the tibble (same as
 
 - By default, `stackedBarChart()` uses the blue sequential palette to color the bars and sorts the items by the ones with the highest post items with the highest counts/percentages.
 
-```{r}
+```{r sb_chart_1}
+#| fig.alt: >
+#|   Example of using `blackstone` to create a pre-post stacked bar chart with `blackstone::stackedBarChart()` with default arguments. 
+
 # Research Items scale:
 levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
 
@@ -121,7 +124,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 #### Pre-post Stacked Bar Chart with Individual Item *n* and Counts
 
-```{r}
+```{r sb_chart_2}
+#| fig.alt: >
+#|   Example of how to create a pre-post stacked bar chart with `stackedBarChart()` with individual item counts and labels of counts on bars. 
+
 # Select variables and pass them to `stackedBarChart()` along with scale_labels, change the arguements `percent_label` and `overall_n` both to FALSE:
 sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
     blackstone::stackedBarChart(., scale_labels = levels_confidence, pre_post = TRUE, percent_label = FALSE, overall_n = FALSE)
@@ -129,7 +135,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 #### Pre-post Stacked Bar Chart with Blue-Red Diverging Color Palette
 
-```{r}
+```{r sb_chart_3}
+#| fig.alt: >
+#|   Example of how to create a pre-post stacked bar chart with `stackedBarChart()` with the Blue-Red Diverging Color Palette and defaults. 
+
 ## Ethics Items scale:
 levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
 
@@ -142,7 +151,10 @@ sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contain
 
 #### Pre-post Stacked Bar Chart with New Question Labels and Order:
 
-```{r}
+```{r sb_chart_4}
+#| fig.alt: >
+#|   Example of how to create a pre-post stacked bar chart with `stackedBarChart()` with New Question Labels and Order. 
+
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"), where the 
 # names are the new question labels and the old names are the values without pre or post prefixes:
@@ -161,7 +173,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 #### Single time point Stacked Bar Chart with New Question Labels and Order
 
-```{r}
+```{r sb_chart_5}
+#| fig.alt: >
+#|   Example of how to create a single time point stacked bar chart with `stackedBarChart()` with New Question Labels and Order. 
+
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"), where the 
 # names are the new question labels and the old names are the values without pre or post prefixes:
@@ -192,7 +207,10 @@ The diverging bar charts created using `divBarChart()`, diverge just after the m
 
 - By default, `divBarChart()` uses the blue sequential palette to color the bars and sorts the items by the ones with the highest post items with the highest counts/percentages.
 
-```{r}
+```{r div_chart_1}
+#| fig.alt: >
+#|   Example of using `blackstone` to create a pre-post diverging stacked bar chart with `blackstone::divBarChart()` with default arguments. 
+
 # Research Items scale:
 levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
 
@@ -204,7 +222,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 #### Pre-post Diverging Bar Chart with Individual Item *n* and Counts
 
-```{r}
+```{r div_chart_2}
+#| fig.alt: >
+#|   Example of how to create a pre-post diverging stacked bar chart with `divBarChart()` with individual item counts and labels of counts on bars. 
+
 # Select variables and pass them to `divBarChart()` along with scale_labels, change the arguements `percent_label` and `overall_n` both to FALSE:
 sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% # select the factor variables for the research items
     blackstone::divBarChart(., scale_labels = levels_confidence, pre_post = TRUE, percent_label = FALSE, overall_n = FALSE)
@@ -212,7 +233,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 #### Pre-post Diverging Bar Chart with Blue-Red Diverging Color Palette
 
-```{r}
+```{r div_chart_3}
+#| fig.alt: >
+#|   Example of how to create a pre-post diverging stacked bar chart with `divBarChart()` with Blue-Red Diverging Color Palette. 
+
 ## Ethics Items scale:
 levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree", "Agree", "Strongly agree")
 
@@ -225,7 +249,10 @@ sm_data %>% dplyr::select(tidyselect::contains("ethics_") & !tidyselect::contain
 
 #### Pre-post Stacked Bar Chart with New Question Labels and Order
 
-```{r}
+```{r div_chart_4}
+#| fig.alt: >
+#|   Example of how to create a pre-post diverging stacked bar chart with `divBarChart()` with New Question Labels and Order. 
+
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"), where the 
 # names are the new question labels and the old names are the values without pre or post prefixes:
@@ -244,7 +271,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 #### Single time point Stacked Bar Chart with New Question Labels and Order
 
-```{r}
+```{r div_chart_5}
+#| fig.alt: >
+#|   Example of how to create a single time point diverging stacked bar chart with `divBarChart()` with New Question Labels and Order. 
+
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"), where the 
 # names are the new question labels and the old names are the values without pre or post prefixes:
@@ -276,7 +306,10 @@ that makes up the items in the tibble. The rest of the arguments for the two arr
 
 - By default, `arrowChart()` sorts the items/arrows by the ones with the highest post average on down and the arrows are the dark blue color hex code `r blackstoneColors[["dark_blue"]]`.
 
-```{r}
+```{r arrow_chart_1}
+#| fig.alt: >
+#|   Example of how to create an arrow chart using numeric data for single items with `arrowChart()` set to default arguments. 
+
 # Research Items scale:
 levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
 
@@ -287,7 +320,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & tidyselect::contai
 
 #### Arrow Chart with Individual Item *n*
 
-```{r}
+```{r arrow_chart_2}
+#| fig.alt: >
+#|   Example of how to create an arrow chart single items with `arrowChart()` with individual item counts next to labels. 
+
 # Select variables and pass them to `divBarChart()` along with scale_labels, change the arguement `overall_n` both to FALSE:
 sm_data %>% dplyr::select(tidyselect::contains("research_") & tidyselect::contains("_num") & where(is.numeric)) %>% # select the numeric variables for the research items
     blackstone::arrowChart(., scale_labels = levels_confidence, overall_n = FALSE)
@@ -296,7 +332,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & tidyselect::contai
 
 #### Arrow Chart with New Question Labels and Order
 
-```{r}
+```{r arrow_chart_3}
+#| fig.alt: >
+#|   Example of how to create an arrow chart single items with `arrowChart()` New Question Labels and Order. 
+
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"), where the 
 # names are the new question labels and the old names are the values without pre or post prefixes:
@@ -325,7 +364,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & tidyselect::contai
 - `arrowChartGroup()` returns pre-post averages for each group passed to `group_levels` as well as an "Overall" which is the whole sample and will always be the color black, 
 also the order of `group_levels` will also determining the order of the arrows and legend.
 
-```{r}
+```{r arrowGroup_chart_1}
+#| fig.alt: >
+#|   Example of how to create an arrow chart using numeric data and grouping variable with `arrowChartGroup()` set to default arguments. 
+
 # Research Items scale:
 levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
 
@@ -336,7 +378,10 @@ sm_data %>% dplyr::select(gender, tidyselect::contains("research_") & tidyselect
 
 #### Arrow Chart with Individual Item *n*
 
-```{r}
+```{r arrowGroup_chart_2}
+#| fig.alt: >
+#|   Example of how to create an arrow chart using numeric data and grouping variable with `arrowChartGroup()` with individual item counts next to labels. 
+
 # Select variables and pass them to `divBarChart()` along with scale_labels, change the argument `overall_n` both to FALSE:
 sm_data %>% dplyr::select(gender, tidyselect::contains("research_") & tidyselect::contains("_num") & where(is.numeric)) %>% # select the numeric variables for the research items
     blackstone::arrowChartGroup(., group = "gender", group_levels = gender_levels,scale_labels = levels_confidence, overall_n = FALSE)
@@ -345,7 +390,10 @@ sm_data %>% dplyr::select(gender, tidyselect::contains("research_") & tidyselect
 
 #### Arrow Chart with New Question Labels and Order
 
-```{r}
+```{r arrowGroup_chart_3}
+#| fig.alt: >
+#|   Example of how to create an arrow chart using numeric data and grouping variable with `arrowChartGroup()` with New Question Labels and Order.
+
 # Question labels as a named vector with the naming structure
 # like this: c("new label" = "original variable name"), where the 
 # names are the new question labels and the old names are the values without pre or post prefixes:

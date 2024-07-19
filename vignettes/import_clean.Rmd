@@ -200,7 +200,7 @@ which keeps all the observations from the first table provided and merges all ob
 For most data analysis, we will want to use the post data as the primary table and merge all the pre data since most post surveys drop some participants, so we can run 
 our analysis on complete data.
 
-```{r}
+```{r merge_data}
 # left_join() will automatically join by all the shared columns, be sure to include all shared variables that should be identical pre-post to the 'by = join_by()' as an arg
 # (otherwise you will get a message about additional variables to be joined by):
 sm_data <- post_data %>% dplyr::left_join(pre_data, by = dplyr::join_by(respondent_id, collector_id, start_date, end_date, ip_address, email_address, 
@@ -216,7 +216,7 @@ sm_data
 
 - If applicable, drop all "Missing"/`NA` observations.
 
-```{r}
+```{r data_cleaning}
 ## Knowledge scale
 levels_knowledge <- c("Not knowledgeable at all", "A little knowledgeable", "Somewhat knowledgeable", "Very knowledgeable", "Extremely knowledgeable")
 ## Research Items scale:

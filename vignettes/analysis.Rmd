@@ -91,7 +91,10 @@ sm_data
 
 The most common task is creating frequency tables of counts and percentages for likert scale items, `blackstone` has the `likertTable()` for that:
 
-```{r}
+```{r freq_table_1}
+#| fig.alt: >
+#|   Example of a frequency table made with `likertTable()`. 
+
 # Research items pre and post frequency table, with counts and percentages: use levels_confidence character vector
 # use likertTable to return frequency table, passing the scale_labels: (can also label the individual questions using the arg question_label)
 sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::contains("_num") & where(is.factor)) %>% 
@@ -102,7 +105,10 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 Here is one approach to use functional programming from the `{purrr}` package create many frequency tables at once:
 
-```{r}
+```{r freq_table_2}
+#| fig.alt: >
+#|   Example of using functional programming to create many frequency tables made with `likertTable()`
+
 # Another way to make a list of many freq_tables to print out with other data analysis later on, 
 # using pmap() to do multiple likertTable() at once:
 # Set up tibbles of each set of scales that contain all pre and post data:
@@ -142,7 +148,7 @@ freq_tables[["Ethics Items"]]
 
 `blackstone` contains a function to create frequency tables for demographics (combined demographics table) that can also be grouped by a variable, like role or cohort as well: `groupedTable()`.
 
-```{r demos table}
+```{r demos_table, fig.alt: "Example of using `groupedTable()` to make a grouped demographics table"}
 # Set up labels for variables
 # Labels for questions column of table, pass to question_labels argument:
 demos_labels <- c('Gender' = "gender",
@@ -173,7 +179,10 @@ Determining if data is distributed normally includes both visual and statistical
 
 The `ggpubr` package contains functions to create density and QQ plots to visually inspect if data is distributed normally.
 
-```{r}
+```{r norm_tests_know}
+#| fig.alt: >
+#|   How to make density and QQ plots to visually test if data is distributed normally.
+
 # First create a difference score for the pre and post items:
 sm_data <- sm_data %>% dplyr::mutate(knowledge_diff = post_knowledge_num - pre_knowledge_num)  # get difference of pre and post scores
 # Density plot:
@@ -237,7 +246,10 @@ sm_data <- sm_data %>% dplyr::rowwise() %>% # Get the mean for each individual b
 
 Run a visual inspection of the difference scores between pre and post mean of the research items:
 
-```{r}
+```{r norm_tests_scales}
+#| fig.alt: >
+#|   How to make density and QQ plots to visually test if data is distributed normally for composite scales.
+
 # Density plot:
 ggpubr::ggdensity(sm_data, "diff_research", fill = "lightgray")
 # QQ plot:

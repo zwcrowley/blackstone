@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup,  echo = FALSE, message = FALSE, include = FALSE}
+```{r setup, echo = FALSE, message = FALSE, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -184,7 +184,7 @@ sm_data %>% dplyr::select(tidyselect::contains("research_") & !tidyselect::conta
 
 `blackstone` contains a function to create frequency tables for demographics that can be grouped by a variable like role or cohort as well: [`groupedTable()`].
 
-```{r demos table}
+```{r demos_table}
 # Set up labels for variables
 # Labels for questions column of table, pass to question_labels argument:
 demos_labels <- c('Gender' = "gender",
@@ -248,7 +248,10 @@ scale labels for the likert scale that makes up the items in the tibble (same as
 
 - By default, `stackedBarChart()` uses the blue sequential palette to color the bars and sorts the items by the ones with the highest post items with the highest counts/percentages.
 
-```{r}
+```{r stacked_bar}
+#| fig.alt: >
+#|   Example of using `blackstone` to create a stacked bar chart with `blackstone::stackedBarChart()`. 
+
 # Research Items scale:
 levels_confidence <- c("Not at all confident", "Slightly confident", "Somewhat confident", "Very confident", "Extremely confident")
 
