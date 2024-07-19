@@ -1,13 +1,21 @@
 ---
 title: "Setup and RStudio Projects"
 output: rmarkdown::html_vignette
+resource_files:
+ - vignettes/console_wd.png
+ - vignettes/current_proj.png
+ - vignettes/file_browser.png
+ - vignettes/new_proj_01.png
+ - vignettes/new_proj_02_type.png
+ - vignettes/new_proj_03_dir.png
+ - vignettes/new_proj_04_browse.png
+ - vignettes/new_proj_05_create.png
+ - vignettes/r_global_options.png
 vignette: >
   %\VignetteIndexEntry{Setup and RStudio Projects}
   %\VignetteSuggests{knitr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-resource_files:
-  - vignettes/img
 ---
 
 ```{r setup,  echo = FALSE, message = FALSE, include = FALSE}
@@ -89,7 +97,10 @@ There are two ways to do this:
 2. In `RStudio`, go to the top menu bar and select '**Tools**', then '**Global Options**', '**General**' settings and make sure the '**Workspace**' section (in the blue box) matches the options in figure 1 below: 
 
 ```{r global_options, fig.cap = "Figure 1: RStudio Global Options", echo = FALSE}
-knitr::include_graphics("img/r_global_options.png")
+# knitr::include_graphics(
+#     "/Users/zcrowley/Library/CloudStorage/GoogleDrive-zcrowley@blackstoneevaluation.com/My Drive/r/packages/blackstone/vignettes/r_global_options.png"
+#     )
+knitr::include_graphics("r_global_options.png")
 ```
 
 This will ensure that each new `R` session starts with any empty global environment (no data or variables from a previous session). 
@@ -115,13 +126,13 @@ Double-clicking on the `.Rproj`, will launch a fresh `RStudio` instance with a n
 
 The file browser in each the `RStudio` instance will show the current working directory, see figure 2:
 ```{r file_browser_wd, fig.cap = "Figure 2: RStudio File Browser", echo = FALSE}
-knitr::include_graphics("img/file_browser.png")
+knitr::include_graphics("file_browser.png")
 ```
 
 It is also shown just above the **`R` Console** as shown in figure 3:
 
 ```{r console_wd, fig.cap = "Figure 3: RStudio Console Working Directory", echo = FALSE}
-knitr::include_graphics("img/console_wd.png")
+knitr::include_graphics("console_wd.png")
 ```
 
 
@@ -132,13 +143,13 @@ To create a new **RStudio Project**, go to the top menu bar and select '**File**
 On the first page '**Create Project**', Select '**New Directory**': 
 
 ```{r new_proj_01, fig.cap = "Figure 4.1: New Project Wizard- Create Project", echo = FALSE}
-knitr::include_graphics("img/new_proj_01.png")
+knitr::include_graphics("new_proj_01.png")
 ```
 
 On the second page '**Project Type**', Select '**New Project**': 
 
 ```{r new_proj_02, fig.cap = "Figure 4.2: New Project Wizard- Project Type", echo = FALSE}
-knitr::include_graphics("img/new_proj_02_type.png")
+knitr::include_graphics("new_proj_02_type.png")
 ```
 
 On the third page '**Create New Project**', check the box for '**Open in new session**' in lower-left corner, set the '**Directory name**' to 'analysis_{Your Initials}',
@@ -146,7 +157,7 @@ In '**Create project as subdirectory of**'. click '**Browse...**', then navigate
 
 
 ```{r new_proj_03, fig.cap = "Figure 4.3: New Project Wizard- Name and Set Parent Folder", echo = FALSE}
-knitr::include_graphics("img/new_proj_03_dir.png")
+knitr::include_graphics("new_proj_03_dir.png")
 ```
 
 If hypothetically, you were tasked with a data analysis for Year 4 (2023-2024) of a project, you would go set the parent folder (where the new project folder will be created) to `Phase 2 - Evaluation/Data Analysis/Year 4 (2023-2024)`. 
@@ -154,7 +165,7 @@ If hypothetically, you were tasked with a data analysis for Year 4 (2023-2024) o
 After you click on '**Browse...**' next to '**Create project as subdirectory of**': navigate to the project folder in the Google Drive then go to the evaluation folder- '**Phase 2 - Evaluation**', then the '**Data Analysis**' then '**Year 4 (2023-2024)**' and click '**Open**'
 
 ```{r new_proj_04, fig.cap = "Figure 4.4: Browse to Correct Project Folder", echo = FALSE}
-knitr::include_graphics("img/new_proj_04_browse.png")
+knitr::include_graphics("new_proj_04_browse.png")
 ```
 
 Finally, after setting the correct parent folder, you will be back on the third page '**Create New Project**'. 
@@ -162,7 +173,7 @@ Finally, after setting the correct parent folder, you will be back on the third 
 If you have completed the above steps, the settings should resemble figure 4.5 below and you can proceed to click '**Create Project**' in the lower-right corner. This will launch the new Project named 'analysis_{Your Initials}'
 
 ```{r new_proj_05, fig.cap = "Figure 4.5: New Project Wizard- Create New Project", echo = FALSE}
-knitr::include_graphics("img/new_proj_05_create.png")
+knitr::include_graphics("new_proj_05_create.png")
 ```
 
 Now that we have an **RStudio Project** we can use it to save all of the files necessary for a data analysis task inside its folder and we don't have to worry about using `setwd()` to manage the working directory. 
@@ -190,7 +201,7 @@ To confirm which **`RStudio` Project** is open in your current `RStudio` instanc
 #| fig.alt: >
 #|   Image of RStudio top-right corner of IDE with arrow pointing out 
 #|   the display of the RStudio project that is currently open. 
-knitr::include_graphics("img/current_proj.png")
+knitr::include_graphics("current_proj.png")
 ```
 
 If you click on the current **`RStudio` Project** shown above, a drop-down menu gives you options to switch between **Projects** or open new `RStudio` instances to run multiple projects at once.
@@ -201,7 +212,7 @@ But that is the file path on *my* local machine, it would differ based on the lo
 
 ### Introduction to the `here` Package
 
-The [`here`](https://here.r-lib.org/index.html) package solves this issue by using **`RStudio` Project** files (`.Rproj`) to create relative file paths. In `R` anytime we set the working directory (either by using `setwd()` or by opening an **`RStudio` Project**), we can reference file paths using paths relative to the working directory. But if that file path changes, either by moving folders or by the code running on different machines
+The [`here`](https://here.r-lib.org) package solves this issue by using **`RStudio` Project** files (`.Rproj`) to create relative file paths. In `R` anytime we set the working directory (either by using `setwd()` or by opening an **`RStudio` Project**), we can reference file paths using paths relative to the working directory. But if that file path changes, either by moving folders or by the code running on different machines
 
 The `here` packages provides a way to always reference the location of a specified **`RStudio` Project** files (`.Rproj`) as the *root* directory for relative file paths, even if the working directory is switched to a subfolder of an **`RStudio` Project** folder (which is the case when knitting an .Rmd file).
 
@@ -278,7 +289,7 @@ readr::read_csv(file = here(data_year4_fp, "clean_data", "sm_data_clean.csv"), s
 ```
 
 
-## Additional Resources for `R`, `RStudio`, Project Workflows
+## Additional Resources for `R`, `RStudio`, and Project Workflows
 
 - *R for data science*: ["Workflow: 6.2 Projects"](https://r4ds.hadley.nz/workflow-scripts.html#projects) chapter by Hadley Wickham
 
