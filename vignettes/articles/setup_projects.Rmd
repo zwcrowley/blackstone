@@ -27,7 +27,7 @@ demo_proj_fp <- fs::path_package("2429_DEMO", package = "blackstone")
 # in deployment, then set to articles/img:
 if (identical(rprojroot::find_rstudio_root_file(), "/Users/zcrowley/Library/CloudStorage/GoogleDrive-zcrowley@blackstoneevaluation.com/My Drive/r/packages/blackstone")) {
     img_fp <- fs::path_package("img", package = "blackstone")
-} else if (identical(rprojroot::find_rstudio_root_file(), "/home/runner/work/_temp/Library/blackstone")) {
+} else {
     img_fp <- fs::path("articles/img")
 }
 ```
@@ -94,6 +94,7 @@ There are two ways to do this:
 [^3]: If the `usethis` package is not installed, install it with: `install.packages("usethis")`
 
 ```{r global_options, fig.cap = "Figure 1: RStudio Global Options", echo = FALSE}
+# knitr::include_graphics(fs::path(img_fp, "r_global_options.png"))
 knitr::include_graphics(fs::path(img_fp, "r_global_options.png"))
 ```
 
