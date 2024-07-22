@@ -98,6 +98,7 @@ blackstone::stackedBarChart(
 
 <img src="man/figures/README-sb_chart-1.png" alt="Example of using `blackstone` to create a stacked bar chart with `blackstone::stackedBarChart()`." width="100%" />
 <p class="caption">
+
 Stacked Bar Chart of Pre-Post Data
 </p>
 

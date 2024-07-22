@@ -162,7 +162,7 @@ knitr::include_graphics(fs::path(img_fp, "new_proj_04_browse.png"))
 
 Finally, after setting the correct parent folder, you will be back on the third page '**Create New Project**'.
 
-If you have completed the above steps, the settings should resemble figure 4.5 below and you can proceed to click '**Create Project**' in the lower-right corner. This will launch the new Project named 'analysis\_{Your Initials}'
+If you have completed the above steps, the settings should resemble figure 4.5 below and you can proceed to click '**Create Project**' in the lower-right corner. This will launch the new Project named 'analysis_{Your Initials}'
 
 ```{r new_proj_05, fig.cap = "Figure 4.5: New Project Wizard- Create New Project", echo = FALSE}
 knitr::include_graphics(fs::path(img_fp, "new_proj_05_create.png"))
@@ -250,7 +250,9 @@ First, it is helpful to review the folder structure:
 fs::dir_tree(fs::path(demo_proj_fp, "Phase2_Evaluation"), glob = "*.txt", invert = TRUE)
 ```
 
-In order to build a path from the `Phase2_EvaluationData_Analysis/Year4_(2023-2024)/analysis` (which is out top-level project directory) to the `Phase2_Evaluation/Data` folder, we need to go "up" three levels which is done with file paths using ".." like this: `../../../`, using `here()` this looks like:
+In order to build a path from the `Phase2_EvaluationData_Analysis/Year4_(2023-2024)/analysis` (which is out top-level project directory) to the `Phase2_Evaluation/Data` folder, we need to go "up" three levels which is done with file paths using ".." like this: `../../../`
+
+Using `here()` we can build a relative path from the `analysis` to the `Data folder:
 
 ```{r data_fp}
 # Setting up file path to the Data folder for Year 4:
@@ -268,7 +270,9 @@ data_year4_fp <- here(data_fp, "Year4_(2023-2024)") # or can be written as: here
 data_year4_fp
 ```
 
-We can re-use that file path to build the rest of the path needed to read in the clean data from Year 4:
+We can re-use that file path to build the rest of the path needed to read in the clean data[^readr] from Year 4:
+
+[^readr]: The code below uses the `readr` package, if it is not installed, install it with: `install.packages("readr")`
 
 ```{r read_clean_data}
 # File path to clean data from Year 4 named: "sm_data_clean.csv"
@@ -281,7 +285,9 @@ readr::read_csv(file = here(data_year4_fp, "clean_data", "sm_data_clean.csv"), s
 
 ## Try Yourself
 
-Un-comment and run the code below to open the example project in a new `RStudio` instance and then open `report.Rmd` by copying the next line of code into the console in the new `RStudio` instance:
+Un-comment and run the code below to open the example project in a new `RStudio` instance and then open `report.Rmd` by copying the next line of code into the console in the new `RStudio` instance:[^rstudioapi]
+
+[^rstudioapi]: The code below uses the `rstudioapi` package, if it is not installed, install it with: `install.packages("rstudioapi")`
 
 ```{r try_it, eval=FALSE}
 # Code to open the example `analysis` `RStudio` Project (will launch in a new `RStudio` instance):

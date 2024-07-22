@@ -15,7 +15,7 @@ library(fs)
 inst_fp <- fs::path("inst")
 
 # Create the top-level directory for the fake demo project and name it: "2429_DEMO"
-dir_create(inst_fp, "2429_DEMO")
+dir_create(path(inst_fp, "2429_DEMO"))
 
 # Set up file path to "2429_DEMO":
 demo_proj_fp <- fs::path(inst_fp, "2429_DEMO")
@@ -96,6 +96,7 @@ file_copy(path = path(extdata_fp, "sm_data_clean.csv"), new_path = path(data_yea
 dir_create(path(data_analysis_year4_fp, "analysis")) # Data Analysis Year 3
 # This is where I will create an R project
 
+## Creating a new RStudio Project in the `analysis` folder:
 rstudioapi::initializeProject(path = fs::path(data_analysis_year4_fp, "analysis"))
 
 # ## Creating analysis.Rproj file:
@@ -125,7 +126,7 @@ rstudioapi::initializeProject(path = fs::path(data_analysis_year4_fp, "analysis"
 
 # Copy the .Rmd from `dev/demo_proj/report.Rmd` keep same name:
 file_copy(path = path("dev/demo_proj/report.Rmd"), new_path = path(data_analysis_year4_fp, "analysis"), overwrite = TRUE)
-file_create(path(data_analysis_year4_fp, "analysis", "report.Rmd"))
+# file_create(path(data_analysis_year4_fp, "analysis", "report.Rmd"))
 
 # Return directory tree for demo project folder
 fs::dir_tree(demo_proj_fp)

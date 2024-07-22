@@ -165,7 +165,7 @@ sm_data
 
 ## Write Out Clean Data
 
-Create a new directory for clean data in the Year 4 folder if it doesn't exist:
+Create a new directory for clean data in the Year 4 folder, if it doesn't exist:
 
 ```{r clean_dir}
 if (!fs::dir_exists(here(data_yr4_fp, "clean_data"))) {fs::dir_create(here(data_yr4_fp, "clean_data"))}
@@ -176,6 +176,5 @@ Write out clean data using `here()` to set up the file path and name the file to
 ```{r write_clean}
 readr::write_csv(sm_data, file = here(data_yr4_fp, "clean_data", "sm_data_clean.csv"))
 ```
-
 
 
