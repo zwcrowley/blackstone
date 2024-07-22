@@ -472,7 +472,9 @@ example project folder, let’s see how that would work.</p>
 (which is out top-level project directory) to the
 <code>Phase2_Evaluation/Data</code> folder, we need to go “up” three
 levels which is done with file paths using “..” like this:
-<code>../../../</code>, using <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code> this looks like:</p>
+<code>../../../</code></p>
+<p>Using <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code> we can build a relative path from the
+<code>analysis</code> to the `Data folder:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Setting up file path to the Data folder for Year 4:</span></span>
 <span><span class="va">data_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"../../../Data"</span><span class="op">)</span> <span class="co"># or can be written as: here("..", ".." ,".." ,"Data")</span></span>
@@ -490,7 +492,9 @@ paths using <code><a href="https://here.r-lib.org//reference/here.html" class="e
 <span><span class="va">data_year4_fp</span></span>
 <span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/../../../Data/Year4_(2023-2024)"</span></span></code></pre></div>
 <p>We can re-use that file path to build the rest of the path needed to
-read in the clean data from Year 4:</p>
+read in the clean data<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The code below uses the &lt;code&gt;readr&lt;/code&gt; package, if
+it is not installed, install it with:
+&lt;code&gt;install.packages("readr")&lt;/code&gt;&lt;/p&gt;'><sup>7</sup></a> from Year 4:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># File path to clean data from Year 4 named: "sm_data_clean.csv"</span></span>
 <span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="va">data_year4_fp</span>, <span class="st">"clean_data"</span>, <span class="st">"sm_data_clean.csv"</span><span class="op">)</span> </span>
@@ -514,7 +518,9 @@ read in the clean data from Year 4:</p>
 <p>Un-comment and run the code below to open the example project in a
 new <code>RStudio</code> instance and then open <code>report.Rmd</code>
 by copying the next line of code into the console in the new
-<code>RStudio</code> instance:</p>
+<code>RStudio</code> instance:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The code below uses the &lt;code&gt;rstudioapi&lt;/code&gt; package,
+if it is not installed, install it with:
+&lt;code&gt;install.packages("rstudioapi")&lt;/code&gt;&lt;/p&gt;'><sup>8</sup></a></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Code to open the example `analysis` `RStudio` Project (will launch in a new `RStudio` instance):</span></span>
 <span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu">openProject</span><span class="op">(</span>path <span class="op">=</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path_package.html" class="external-link">path_package</a></span><span class="op">(</span><span class="st">"2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/analysis.Rproj"</span>, package <span class="op">=</span> <span class="st">"blackstone"</span><span class="op">)</span>,</span>
