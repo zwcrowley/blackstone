@@ -262,12 +262,12 @@ Figure 3: RStudio Console Working Directory
 </div>
 </div>
 <div class="section level3">
-<h3 id="creating-an-rstudio-project">Creating an RStudio Project<a class="anchor" aria-label="anchor" href="#creating-an-rstudio-project"></a>
+<h3 id="creating-an-rstudio-project">Creating an <code>RStudio</code> Project<a class="anchor" aria-label="anchor" href="#creating-an-rstudio-project"></a>
 </h3>
-<p>To create a new <strong>RStudio Project</strong>, go to the top menu
-bar and select ‘<strong>File</strong>’, then click on ‘<strong>New
-Project…</strong>’, which will launch the ‘<strong>New Project
-Wizard</strong>’.</p>
+<p>To create a new <strong><code>RStudio</code> Project</strong>, go to
+the top menu bar and select ‘<strong>File</strong>’, then click on
+‘<strong>New Project…</strong>’, which will launch the ‘<strong>New
+Project Wizard</strong>’.</p>
 <p>On the first page ‘<strong>Create Project</strong>’, Select
 ‘<strong>New Directory</strong>’:</p>
 <div class="figure">
@@ -319,10 +319,36 @@ Project named ‘analysis_{Your Initials}’</p>
 Figure 4.5: New Project Wizard- Create New Project
 </p>
 </div>
+<p>Another way to create an <strong><code>RStudio</code>
+Project</strong> is by using the <code>rstudioapi</code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The code below uses the &lt;a href="https://rstudio.github.io/rstudioapi/" class="external-link"&gt;&lt;code&gt;rstudioapi&lt;/code&gt;
+package&lt;/a&gt;, if it is not installed, install it with:
+&lt;code&gt;install.packages("rstudioapi")&lt;/code&gt;, best practice is to
+&lt;em&gt;never&lt;/em&gt; load the package into memory (Do not run
+library(rstudioapi)), but to attach each function like:
+&lt;code&gt;package::function()&lt;/code&gt;&lt;/p&gt;'><sup>6</sup></a> package, which allows
+you to interact with RStudio with <code>R</code> code.</p>
+<p>The code below creates a new folder, then creates the
+<code>.Rproj</code> file with the same name, running the last line of
+code will open the new <strong><code>RStudio</code> Project</strong> in
+a new <code>RStudio</code> instance:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The code below uses the &lt;a href="https://fs.r-lib.org/" class="external-link"&gt;&lt;code&gt;fs&lt;/code&gt; package&lt;/a&gt; which helps
+with file management, if it is not installed, install it with:
+&lt;code&gt;install.packages("fs")&lt;/code&gt;&lt;/p&gt;'><sup>7</sup></a></p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># file path for new `analysis` folder:</span></span>
+<span><span class="va">analysis_fp</span> <span class="op">&lt;-</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path.html" class="external-link">path</a></span><span class="op">(</span><span class="st">"Phase 2 - Evaluation"</span>, <span class="st">"Data Analysis"</span>, <span class="st">"Year 4 (2023-2024)"</span>, <span class="st">"analysis"</span><span class="op">)</span></span>
+<span><span class="co"># Create a new folder named `analysis` in for "Data Analysis"/Year4_(2023-2024):</span></span>
+<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/create.html" class="external-link">dir_create</a></span><span class="op">(</span><span class="va">analysis_fp</span><span class="op">)</span> <span class="co"># Data Analysis Year 4</span></span>
+<span></span>
+<span><span class="co"># Creating a new RStudio Project in the `analysis` folder:</span></span>
+<span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu">initializeProject</span><span class="op">(</span>path <span class="op">=</span> <span class="va">analysis_fp</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Open the new project in a a new `RStudio` instance:</span></span>
+<span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu">openProject</span><span class="op">(</span>path <span class="op">=</span> <span class="va">analysis_fp</span>, newSession <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Now that we have an <strong>RStudio Project</strong> we can use it to
 save all of the files necessary for a data analysis task inside its
 folder and we don’t have to worry about using <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code> to
 manage the working directory.</p>
+<p>It is also</p>
 </div>
 </div>
 <div class="section level2">
@@ -408,13 +434,13 @@ build reproducible file paths.</p>
 <p>The first step is to set the current location of the file you are
 working in using <code><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">here::i_am()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This call must be done before loading the
 &lt;code&gt;here&lt;/code&gt; package so you must attach package to the function
-using two colons like this &lt;code&gt;package::function()&lt;/code&gt;.&lt;/p&gt;"><sup>6</sup></a> with a relative path
+using two colons like this &lt;code&gt;package::function()&lt;/code&gt;.&lt;/p&gt;"><sup>8</sup></a> with a relative path
 to the project root directory. This has to be done at the beginning of
 an <code>R</code> script (‘.R’) or first code chunk in an Rmarkdown file
 (‘.Rmd’).</p>
 <p>If we were working in the file <code>report.Rmd</code> contained
 inside the <code>analysis</code> folder that would look like this:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">i_am</a></span><span class="op">(</span><span class="st">"report.Rmd"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; here() starts at /home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis</span></span></code></pre></div>
 <p><code><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">here::i_am()</a></code> finds and returns the project root
@@ -425,7 +451,7 @@ folder, the call above returns the file path to the
 <p>Once we have called <code><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">here::i_am()</a></code>, we can then load the
 <code>here</code> package and use the <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code> to again
 return the project root folder.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/" class="external-link">here</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis"</span></span></code></pre></div>
@@ -475,7 +501,7 @@ levels which is done with file paths using “..” like this:
 <code>../../../</code></p>
 <p>Using <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code> we can build a relative path from the
 <code>analysis</code> to the `Data folder:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Setting up file path to the Data folder for Year 4:</span></span>
 <span><span class="va">data_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"../../../Data"</span><span class="op">)</span> <span class="co"># or can be written as: here("..", ".." ,".." ,"Data")</span></span>
 <span><span class="va">data_fp</span></span>
@@ -486,16 +512,16 @@ path to any number of files within the <code>Data</code> folder.</p>
 read in data from the <code>Data/Year 4 (2023-2024)</code> folder to run
 analyses in the <code>report.Rmd</code> we can set up a series of file
 paths using <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here()</a></code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Setting up file path to the Data folder for Year 4:</span></span>
 <span><span class="va">data_year4_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="va">data_fp</span>, <span class="st">"Year4_(2023-2024)"</span><span class="op">)</span> <span class="co"># or can be written as: here("..", ".." ,".." ,"Data", "Year4_(2023-2024)")</span></span>
 <span><span class="va">data_year4_fp</span></span>
 <span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/../../../Data/Year4_(2023-2024)"</span></span></code></pre></div>
 <p>We can re-use that file path to build the rest of the path needed to
-read in the clean data<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The code below uses the &lt;code&gt;readr&lt;/code&gt; package, if
+read in the clean data<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The code below uses the &lt;a href="https://readr.tidyverse.org/" class="external-link"&gt;&lt;code&gt;readr&lt;/code&gt; package&lt;/a&gt;, if
 it is not installed, install it with:
-&lt;code&gt;install.packages("readr")&lt;/code&gt;&lt;/p&gt;'><sup>7</sup></a> from Year 4:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+&lt;code&gt;install.packages("readr")&lt;/code&gt;&lt;/p&gt;'><sup>9</sup></a> from Year 4:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># File path to clean data from Year 4 named: "sm_data_clean.csv"</span></span>
 <span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="va">data_year4_fp</span>, <span class="st">"clean_data"</span>, <span class="st">"sm_data_clean.csv"</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/../../../Data/Year4_(2023-2024)/clean_data/sm_data_clean.csv"</span></span>
@@ -515,16 +541,26 @@ it is not installed, install it with:
 <div class="section level2">
 <h2 id="try-yourself">Try Yourself<a class="anchor" aria-label="anchor" href="#try-yourself"></a>
 </h2>
-<p>Un-comment and run the code below to open the example project in a
-new <code>RStudio</code> instance and then open <code>report.Rmd</code>
-by copying the next line of code into the console in the new
-<code>RStudio</code> instance:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The code below uses the &lt;code&gt;rstudioapi&lt;/code&gt; package,
-if it is not installed, install it with:
-&lt;code&gt;install.packages("rstudioapi")&lt;/code&gt;&lt;/p&gt;'><sup>8</sup></a></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>The <code>blackstone</code> R package installation comes with a full
+example project directory, with the <code>analysis</code> folder
+containing <code>analysis.Proj</code> and the <code>report.Rmd</code>.
+The final code chunk below allows you to easily access the files where
+ever they are installed on your local machine. Any edits you make to
+these files will be lost when you re-install/update the
+<code>blackstone</code> R package.</p>
+<p>Run the code below to open the example project in a new
+<code>RStudio</code> instance and then open <code>report.Rmd</code> by
+copying the next line of code into the console in the new
+<code>RStudio</code> instance:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The code below uses the &lt;a href="https://rstudio.github.io/rstudioapi/" class="external-link"&gt;&lt;code&gt;rstudioapi&lt;/code&gt;
+package&lt;/a&gt;, if it is not installed, install it with:
+&lt;code&gt;install.packages("rstudioapi")&lt;/code&gt;, best practice is to
+&lt;em&gt;never&lt;/em&gt; load the package into memory (Do not run
+library(rstudioapi)), but to attach each function like:
+&lt;code&gt;package::function()&lt;/code&gt;&lt;/p&gt;'><sup>10</sup></a></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Code to open the example `analysis` `RStudio` Project (will launch in a new `RStudio` instance):</span></span>
 <span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu">openProject</span><span class="op">(</span>path <span class="op">=</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path_package.html" class="external-link">path_package</a></span><span class="op">(</span><span class="st">"2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/analysis.Rproj"</span>, package <span class="op">=</span> <span class="st">"blackstone"</span><span class="op">)</span>,</span>
-<span>                        newSession <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>                        newSession <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Code to open "report.Rmd" (must be in the `analysis` `RStudio` Project):</span></span>
 <span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu">navigateToFile</span><span class="op">(</span></span>
