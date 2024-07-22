@@ -130,9 +130,9 @@ It is also shown just above the **`R` Console** as shown in figure 3:
 knitr::include_graphics(fs::path(img_fp, "console_wd.png"))
 ```
 
-### Creating an RStudio Project
+### Creating an `RStudio` Project
 
-To create a new **RStudio Project**, go to the top menu bar and select '**File**', then click on '**New Project...**', which will launch the '**New Project Wizard**'.
+To create a new **`RStudio` Project**, go to the top menu bar and select '**File**', then click on '**New Project...**', which will launch the '**New Project Wizard**'.
 
 On the first page '**Create Project**', Select '**New Directory**':
 
@@ -168,7 +168,31 @@ If you have completed the above steps, the settings should resemble figure 4.5 b
 knitr::include_graphics(fs::path(img_fp, "new_proj_05_create.png"))
 ```
 
+Another way to create an **`RStudio` Project** is by using the `rstudioapi`[^rstudioapi] package, which allows you to interact with RStudio with `R` code.
+
+[^rstudioapi]: The code below uses the [`rstudioapi` package](https://rstudio.github.io/rstudioapi/), if it is not installed, install it with: `install.packages("rstudioapi")`, best practice is to *never* load the package into memory (Do not run library(rstudioapi)), but to attach each function like: `package::function()`
+
+The code below creates a new folder, then creates the `.Rproj` file with the same name, running the last line of code will open the new **`RStudio` Project** in a new `RStudio` instance:[^fs]
+
+[^fs]: The code below uses the [`fs` package](https://fs.r-lib.org/) which helps with file management, if it is not installed, install it with: `install.packages("fs")`
+
+```{r code_new_proj, eval = FALSE}
+# file path for new `analysis` folder:
+analysis_fp <- fs::path("Phase 2 - Evaluation", "Data Analysis", "Year 4 (2023-2024)", "analysis")
+# Create a new folder named `analysis` in for "Data Analysis"/Year4_(2023-2024):
+fs::dir_create(analysis_fp) # Data Analysis Year 4
+
+# Creating a new RStudio Project in the `analysis` folder:
+rstudioapi::initializeProject(path = analysis_fp)
+
+# Open the new project in a a new `RStudio` instance:
+rstudioapi::openProject(path = analysis_fp, newSession = TRUE)
+```
+
+
 Now that we have an **RStudio Project** we can use it to save all of the files necessary for a data analysis task inside its folder and we don't have to worry about using `setwd()` to manage the working directory.
+
+It is also 
 
 ## Managing File Paths with the `here` Package
 
@@ -272,7 +296,7 @@ data_year4_fp
 
 We can re-use that file path to build the rest of the path needed to read in the clean data[^readr] from Year 4:
 
-[^readr]: The code below uses the `readr` package, if it is not installed, install it with: `install.packages("readr")`
+[^readr]: The code below uses the [`readr` package](https://readr.tidyverse.org/), if it is not installed, install it with: `install.packages("readr")`
 
 ```{r read_clean_data}
 # File path to clean data from Year 4 named: "sm_data_clean.csv"
@@ -285,14 +309,14 @@ readr::read_csv(file = here(data_year4_fp, "clean_data", "sm_data_clean.csv"), s
 
 ## Try Yourself
 
-Un-comment and run the code below to open the example project in a new `RStudio` instance and then open `report.Rmd` by copying the next line of code into the console in the new `RStudio` instance:[^rstudioapi]
+The `blackstone` R package installation comes with a full example project directory, with the `analysis` folder containing `analysis.Proj` and the `report.Rmd`. The final code chunk below allows you to easily access the files where ever they are installed on your local machine. Any edits you make to these files will be lost when you re-install/update the `blackstone` R package.
 
-[^rstudioapi]: The code below uses the `rstudioapi` package, if it is not installed, install it with: `install.packages("rstudioapi")`
+Run the code below to open the example project in a new `RStudio` instance and then open `report.Rmd` by copying the next line of code into the console in the new `RStudio` instance:[^rstudioapi]
 
 ```{r try_it, eval=FALSE}
 # Code to open the example `analysis` `RStudio` Project (will launch in a new `RStudio` instance):
 rstudioapi::openProject(path = fs::path_package("2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/analysis.Rproj", package = "blackstone"),
-                        newSession = FALSE)
+                        newSession = TRUE)
 
 # Code to open "report.Rmd" (must be in the `analysis` `RStudio` Project):
 rstudioapi::navigateToFile(

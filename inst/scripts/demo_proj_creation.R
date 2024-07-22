@@ -93,7 +93,7 @@ file_copy(path = path(extdata_fp, "sm_data_post.csv"), new_path = path(data_year
 file_copy(path = path(extdata_fp, "sm_data_clean.csv"), new_path = path(data_year4_fp, "clean_data"), overwrite = TRUE)
 
 # Create subfolders for "Data Analysis"/Year4_(2023-2024) for analysis:
-dir_create(path(data_analysis_year4_fp, "analysis")) # Data Analysis Year 3
+dir_create(path(data_analysis_year4_fp, "analysis")) # Data Analysis Year 4
 # This is where I will create an R project
 
 ## Creating a new RStudio Project in the `analysis` folder:
