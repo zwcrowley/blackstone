@@ -388,8 +388,9 @@ files (<code>.Rproj</code>) to create relative file paths. In
 <code>R</code> anytime we set the working directory (either by using
 <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code> or by opening an <strong><code>RStudio</code>
 Project</strong>), we can reference file paths using paths relative to
-the working directory. But if that file path changes, either by moving
-folders or by the code running on different machines</p>
+the working directory using <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd()</a></code>. But if that file path
+changes, either by moving folders or by the code running on different
+machines, this method will no longer work.</p>
 <p>The <code>here</code> packages provides a way to always reference the
 location of a specified <strong><code>RStudio</code> Project</strong>
 files (<code>.Rproj</code>) as the <em>root</em> directory for relative
@@ -405,8 +406,9 @@ build reproducible file paths.</p>
 <p>If the <code>here</code> package is not installed, install it with:
 <code>install.packages("here")</code></p>
 <p>The first step is to set the current location of the file you are
-working in using <code><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">here::i_am()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Since the &lt;code&gt;here&lt;/code&gt; package is not yet called
-by&lt;/p&gt;"><sup>6</sup></a> with a relative path
+working in using <code><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">here::i_am()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This call must be done before loading the
+&lt;code&gt;here&lt;/code&gt; package so you must attach package to the function
+using two colons like this &lt;code&gt;package::function()&lt;/code&gt;.&lt;/p&gt;"><sup>6</sup></a> with a relative path
 to the project root directory. This has to be done at the beginning of
 an <code>R</code> script (‘.R’) or first code chunk in an Rmarkdown file
 (‘.Rmd’).</p>
@@ -415,9 +417,9 @@ inside the <code>analysis</code> folder that would look like this:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">i_am</a></span><span class="op">(</span><span class="st">"report.Rmd"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; here() starts at /home/runner/work/_temp/Library/blackstone/2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis</span></span></code></pre></div>
-<p><code><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">here::i_am()</a></code> returns the project root directory. Since
-the file <code>report.Rmd</code> is contained alongside the
-<code>analysis.Rproj</code> file inside the <code>analysis</code>
+<p><code><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">here::i_am()</a></code> finds and returns the project root
+directory. Since the file <code>report.Rmd</code> is contained alongside
+the <code>analysis.Rproj</code> file inside the <code>analysis</code>
 folder, the call above returns the file path to the
 <code>analysis</code> folder.</p>
 <p>Once we have called <code><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">here::i_am()</a></code>, we can then load the
@@ -498,13 +500,30 @@ read in the clean data from Year 4:</p>
 <span><span class="co"># Reading in the clean data from Year 4 named: "sm_data_clean.csv"</span></span>
 <span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="va">data_year4_fp</span>, <span class="st">"clean_data"</span>, <span class="st">"sm_data_clean.csv"</span><span class="op">)</span>, show_col_types <span class="op">=</span> <span class="cn">FALSE</span>, n_max <span class="op">=</span> <span class="fl">3</span>, col_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
-<span><span class="co">#&gt;   respondent_id email_address       first_name last_name unique_id pre_knowledge</span></span>
-<span><span class="co">#&gt;           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001 coraima59@medhurst… Dellia     Collier    24<span style="text-decoration: underline;">290</span>001 Not knowledg…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002 mstamm@hermiston.c… Etter      Williams…  24<span style="text-decoration: underline;">290</span>002 Not knowledg…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003 precious.feil@gmai… Marin      Lind       24<span style="text-decoration: underline;">290</span>003 Not knowledg…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: pre_research_1 &lt;chr&gt;, pre_research_2 &lt;chr&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   respondent_id email_address      first_name last_name unique_id post_knowledge</span></span>
+<span><span class="co">#&gt;           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>001 coraima59@medhurs… Dellia     Collier    24<span style="text-decoration: underline;">290</span>001 A little know…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>002 mstamm@hermiston.… Etter      Williams…  24<span style="text-decoration: underline;">290</span>002 Not knowledge…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">114</span>628<span style="text-decoration: underline;">000</span>003 precious.feil@gma… Marin      Lind       24<span style="text-decoration: underline;">290</span>003 Extremely kno…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: post_research_1 &lt;chr&gt;, post_research_2 &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="try-yourself">Try Yourself<a class="anchor" aria-label="anchor" href="#try-yourself"></a>
+</h2>
+<p>Un-comment and run the code below to open the example project in a
+new <code>RStudio</code> instance and then open <code>report.Rmd</code>
+by copying the next line of code into the console in the new
+<code>RStudio</code> instance:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Code to open the example `analysis` `RStudio` Project (will launch in a new `RStudio` instance):</span></span>
+<span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu">openProject</span><span class="op">(</span>path <span class="op">=</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path_package.html" class="external-link">path_package</a></span><span class="op">(</span><span class="st">"2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/analysis.Rproj"</span>, package <span class="op">=</span> <span class="st">"blackstone"</span><span class="op">)</span>,</span>
+<span>                        newSession <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Code to open "report.Rmd" (must be in the `analysis` `RStudio` Project):</span></span>
+<span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu">navigateToFile</span><span class="op">(</span></span>
+<span>  file <span class="op">=</span> <span class="st">"report.Rmd"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="additional-resources-for-r-rstudio-and-project-workflows">Additional Resources for <code>R</code>, <code>RStudio</code>, and
