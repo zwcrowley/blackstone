@@ -96,32 +96,35 @@ file_copy(path = path(extdata_fp, "sm_data_clean.csv"), new_path = path(data_yea
 dir_create(path(data_analysis_year4_fp, "analysis")) # Data Analysis Year 3
 # This is where I will create an R project
 
-## Creating analysis.Rproj file:
-file_create(path(data_analysis_year4_fp, "analysis", "analysis.Rproj"))
+rstudioapi::initializeProject(path = fs::path(data_analysis_year4_fp, "analysis"))
 
-# Writing out all options for "analysis.Rproj"
-# Set up text to add to "analysis.Rproj":
-r_proj_text <- c("Version: 1.0",
-                 "",
-                 "RestoreWorkspace: Default",
-                 "SaveWorkspace: Default",
-                 "AlwaysSaveHistory: Default",
-                 "",
-                 "EnableCodeIndexing: Yes",
-                 "UseSpacesForTab: Yes",
-                 "NumSpacesForTab: 4",
-                 "Encoding: UTF-8",
-                 "",
-                 "RnwWeave: Sweave",
-                 "LaTeX: pdfLaTeX",
-                 "",
-                 "AutoAppendNewline: Yes",
-                 "StripTrailingWhitespace: Yes")
+# ## Creating analysis.Rproj file:
+# file_create(path(data_analysis_year4_fp, "analysis", "analysis.Rproj"))
+#
+# # Writing out all options for "analysis.Rproj"
+# # Set up text to add to "analysis.Rproj":
+# r_proj_text <- c("Version: 1.0",
+#                  "",
+#                  "RestoreWorkspace: Default",
+#                  "SaveWorkspace: Default",
+#                  "AlwaysSaveHistory: Default",
+#                  "",
+#                  "EnableCodeIndexing: Yes",
+#                  "UseSpacesForTab: Yes",
+#                  "NumSpacesForTab: 4",
+#                  "Encoding: UTF-8",
+#                  "",
+#                  "RnwWeave: Sweave",
+#                  "LaTeX: pdfLaTeX",
+#                  "",
+#                  "AutoAppendNewline: Yes",
+#                  "StripTrailingWhitespace: Yes")
+#
+# # Write out `r_proj_text` into "analysis.Rproj":
+# readr::write_lines(x = r_proj_text, path(data_analysis_year4_fp, "analysis", "analysis.Rproj"))
 
-# Write out `r_proj_text` into "analysis.Rproj":
-readr::write_lines(x = r_proj_text, path(data_analysis_year4_fp, "analysis", "analysis.Rproj"))
-
-# Create an .Rmd file in the analysis folder
+# Copy the .Rmd from `dev/demo_proj/report.Rmd` keep same name:
+file_copy(path = path("dev/demo_proj/report.Rmd"), new_path = path(data_analysis_year4_fp, "analysis"), overwrite = TRUE)
 file_create(path(data_analysis_year4_fp, "analysis", "report.Rmd"))
 
 # Return directory tree for demo project folder

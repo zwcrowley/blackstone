@@ -203,7 +203,7 @@ But that is the file path on *my* local machine, it would differ based on the lo
 
 ### Introduction to the `here` Package
 
-The [`here`](https://here.r-lib.org) package solves this issue by using **`RStudio` Project** files (`.Rproj`) to create relative file paths. In `R` anytime we set the working directory (either by using `setwd()` or by opening an **`RStudio` Project**), we can reference file paths using paths relative to the working directory. But if that file path changes, either by moving folders or by the code running on different machines
+The [`here`](https://here.r-lib.org) package solves this issue by using **`RStudio` Project** files (`.Rproj`) to create relative file paths. In `R` anytime we set the working directory (either by using `setwd()` or by opening an **`RStudio` Project**), we can reference file paths using paths relative to the working directory using `getwd()`. But if that file path changes, either by moving folders or by the code running on different machines, this method will no longer work.
 
 The `here` packages provides a way to always reference the location of a specified **`RStudio` Project** files (`.Rproj`) as the *root* directory for relative file paths, even if the working directory is switched to a subfolder of an **`RStudio` Project** folder (which is the case when knitting an .Rmd file).
 
@@ -215,7 +215,7 @@ If the `here` package is not installed, install it with: `install.packages("here
 
 The first step is to set the current location of the file you are working in using `here::i_am()`[^6] with a relative path to the project root directory. This has to be done at the beginning of an `R` script ('.R') or first code chunk in an Rmarkdown file ('.Rmd').
 
-[^6]: Since the `here` package is not yet called by
+[^6]: This call must be done before loading the `here` package so you must attach package to the function using two colons like this `package::function()`.
 
 If we were working in the file `report.Rmd` contained inside the `analysis` folder that would look like this:
 
@@ -228,7 +228,7 @@ knitr::opts_knit$set(root.dir = analysis_fp) # set up analysis file path as knit
 here::i_am("report.Rmd")
 ```
 
-`here::i_am()` returns the project root directory. Since the file `report.Rmd` is contained alongside the `analysis.Rproj` file inside the `analysis` folder, the call above returns the file path to the `analysis` folder.
+`here::i_am()` finds and returns the project root directory. Since the file `report.Rmd` is contained alongside the `analysis.Rproj` file inside the `analysis` folder, the call above returns the file path to the `analysis` folder.
 
 Once we have called `here::i_am()`, we can then load the `here` package and use the `here()` to again return the project root folder.
 
@@ -278,6 +278,23 @@ here(data_year4_fp, "clean_data", "sm_data_clean.csv")
 # Reading in the clean data from Year 4 named: "sm_data_clean.csv"
 readr::read_csv(file = here(data_year4_fp, "clean_data", "sm_data_clean.csv"), show_col_types = FALSE, n_max = 3, col_select = c(1,6:12))
 ```
+
+## Try Yourself
+
+Un-comment and run the code below to open the example project in a new `RStudio` instance and then open `report.Rmd` by copying the next line of code into the console in the new `RStudio` instance:
+
+```{r try_it, eval=FALSE}
+# Code to open the example `analysis` `RStudio` Project (will launch in a new `RStudio` instance):
+rstudioapi::openProject(path = fs::path_package("2429_DEMO/Phase2_Evaluation/Data_Analysis/Year4_(2023-2024)/analysis/analysis.Rproj", package = "blackstone"),
+                        newSession = FALSE)
+
+# Code to open "report.Rmd" (must be in the `analysis` `RStudio` Project):
+rstudioapi::navigateToFile(
+  file = "report.Rmd"
+)
+```
+    
+
 
 ## Additional Resources for `R`, `RStudio`, and Project Workflows
 
