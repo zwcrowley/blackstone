@@ -16,8 +16,20 @@ options(scipen = 999, digits = 4, # Prevents sci notation and sets the output of
 set.seed(424629) # set reproducible seed
 # Set up filepath to "demo project" folder:
 demo_proj_fp <- fs::path_package("2429_DEMO", package = "blackstone")
-# set up file path to img folder for all images:
-img_fp <- fs::path_package("img", package = "blackstone")
+# set up file path to img folder for all images, if not interactive set to vignettes/articles/img, 
+# if interacive set to inst/img from installed package like this (fs::path_package("img", package = "blackstone")):
+# if (interactive()) {
+#     img_fp <- fs::path_package("img", package = "blackstone")
+# } else if (isFALSE(interactive())) {
+#     img_fp <- fs::path("img")
+# }
+# set up file path to img folder for all images, if r project set to local blackstone use installed inst/img, if set to project file created 
+# in deployment, then set to articles/img:
+if (identical(rprojroot::find_rstudio_root_file(), "/Users/zcrowley/Library/CloudStorage/GoogleDrive-zcrowley@blackstoneevaluation.com/My Drive/r/packages/blackstone")) {
+    img_fp <- fs::path_package("img", package = "blackstone")
+} else if (identical(rprojroot::find_rstudio_root_file(), "/home/runner/work/_temp/Library/blackstone")) {
+    img_fp <- fs::path("articles/img")
+}
 ```
 
 This vignette will go over best practices and standard workflows for using `R` and `RStudio` for Blackstone Research and Evaluation (**`BRE`**).
