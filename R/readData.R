@@ -22,12 +22,15 @@ getHeaders <- function(file_path) {
         dplyr::mutate(type = c('header_1', 'header_2')) %>%
         tidyr::pivot_longer(!"type") %>%
         tidyr::pivot_wider(names_from = "type", values_from = "value") %>%
-        dplyr::select(!"name") %>%
-        dplyr::mutate(header_2 = dplyr::case_when(.data[["header_2"]] %in% c("Response", "Open-Ended Response") ~ NA_character_, TRUE ~ header_2), # turn "Response" and Open-Ended Response" to NA
-                      combined_header = dplyr::coalesce(.data[["header_2"]], .data[["header_1"]])) # combine two columns into new col, take first non-missing, header_2, then header_1
+        dplyr::select(!"name") %>% # drop first column `name`
+        tidyr::fill("header_1") %>%  # change all 'NA' in `header_1` to the previous value in the column: fills in all question prompts in the first header.
+        # turn "Response" and Open-Ended Response" to NA
+        dplyr::mutate(header_2 = dplyr::case_when(.data[["header_2"]] %in% c("Response", "Open-Ended Response") ~ NA_character_, TRUE ~ header_2),
+                      # combine two columns into new col, if header_2 is 'NA', use just header_1, otherwise combine them using paste with header_1 first then header_2
+                      combined_header = dplyr::if_else(is.na(.data[["header_2"]]), .data[["header_1"]], paste(.data[["header_1"]],.data[["header_2"]]))
+        )
     return(headers)
 }
-
 
 #' Create a codebook for SurveyMonkey data
 #'
