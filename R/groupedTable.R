@@ -22,7 +22,7 @@
 #' @export
 #'
 #' @examples
-#'  data <- dplyr::tibble(
+#' data <- dplyr::tibble(
 #'   Cohort = factor(c(1,2,1,2,1,2,1,2,1,2,1,2), levels = c(1, 2)),
 #'   gender = factor(c(
 #'              "Female", "Female","Female","Male", "Female","Male",
@@ -42,7 +42,7 @@
 #'                   ), levels = c( "Asian", "Black", "Hispanic or Latino", "white"))
 #' )
 #'
-#'# Labels for questions column of table, pass to question_labels argument:
+#' # Labels for questions column of table, pass to question_labels argument:
 #' labels <- c('Gender' = "gender",
 #'              'Ethnicity' = "ethnicity",
 #'              'Year in school' = "year",
@@ -66,12 +66,14 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
         total_n <- {{ df }} %>% nrow()
         # Use map to get a list of dfs for each column in the user supplied df and run all data manipulation:
         table <-  purrr::map(names(df), ~ df %>% dplyr::count(.data[[.x]]) %>% dplyr::arrange(.data[[.x]]) %>%
-                                 dplyr::mutate(question = colnames(df[.x][1]), # set new var as the name of the original current data
-                                               response = .data[[.x]], # copy original col var as response
-                                               percent_answers = .data$n / sum(.data$n)) %>% dplyr::relocate("question":"response", .after = .data[[.x]]) %>%
-                                 dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")")) %>%
-                                 dplyr::select(-c(1,percent_answers)) %>% # drop first original column and percent_answers
-                                 tidyr::unite(value, c(n,percent_answers_label), sep = " ")
+                        dplyr::mutate(question = colnames(df[.x][1]), # set new var as the name of the original current data
+                                      response = .data[[.x]], # copy original col var as response
+                                      percent_answers = .data$n / sum(.data$n)) %>% dplyr::relocate("question":"response", .after = .data[[.x]]) %>%
+                        dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")"),
+                                      percent_answers_label = dplyr::if_else(.data$percent_answers_label == "(0%)",
+                                                                             "(<1%)", .data$percent_answers_label)) %>% # replace 0% with <1%
+                        dplyr::select(-c(1,percent_answers)) %>% # drop first original column and percent_answers
+                        tidyr::unite(value, c(n,percent_answers_label), sep = " ")
         )  %>% purrr::list_rbind() %>% dplyr::mutate(dplyr::across(-c("question","response"), ~ dplyr::case_when(is.na(.) ~ "-", TRUE ~ .)))
         # Change question to question_labels if supplied by user and not null:
         if (is.null(question_labels)) {
@@ -115,7 +117,9 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
                                        dplyr::mutate(question = colnames(df_total[.x][1]), # set new var as the name of the original current data
                                                      response = .data[[.x]], # copy original col var as response
                                                      percent_answers = .data$n / sum(.data$n)) %>% dplyr::relocate("question":"response", .after = .data[[.x]]) %>%
-                                       dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")")) %>%
+                                       dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")"),
+                                                     percent_answers_label = dplyr::if_else(.data$percent_answers_label == "(0%)",
+                                                                                            "(<1%)", .data$percent_answers_label)) %>% # replace 0% with <1%
                                        dplyr::select(-c(percent_answers)) %>% # drop first original column and percent_answers
                                        tidyr::unite("value", c(n,percent_answers_label), sep = " ")) %>% # end of map()
             purrr::list_rbind() %>% dplyr::select(-cols) %>% # bind as rows and drop all vars in "cols"
@@ -144,7 +148,9 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
                                        dplyr::mutate(question = colnames(df[.x][1]), # set new var as the name of the original current data
                                                      response = .data[[.x]], # copy original col var as response
                                                      percent_answers = .data$n / sum(.data$n)) %>% dplyr::relocate("question":"response", .after = .data[[.x]]) %>%
-                                       dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")")) %>%
+                                       dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")"),
+                                                     percent_answers_label = dplyr::if_else(.data$percent_answers_label == "(0%)",
+                                                                                            "(<1%)", .data$percent_answers_label)) %>% # replace 0% with <1%
                                        dplyr::select(-c(percent_answers)) %>% # drop first original column and percent_answers
                                        tidyr::unite("value", c(n,percent_answers_label), sep = " ")) %>% # end of map()
             purrr::list_rbind() %>% dplyr::select(-cols) %>% # bind as rows and drop all vars in "cols"

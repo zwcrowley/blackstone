@@ -100,7 +100,9 @@ likertTable <- function(df, scale_labels, question_labels = NULL, str_width = 20
         dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers),
                       total_n = sum(.data$n_answers)) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")")) %>%
+        dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")"),
+                      percent_answers_label = dplyr::if_else(.data$percent_answers_label == "(0%)",
+                                                             "(<1%)", .data$percent_answers_label)) %>% # replace 0% with <1%
         dplyr::select(-"percent_answers") %>%
         tidyr::unite("value", c(.data$n_answers,.data$percent_answers_label), sep = " ") %>%
         tidyr::pivot_wider(names_from = .data$response,   values_from = .data$value,

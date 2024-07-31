@@ -29,7 +29,7 @@ and a total column. Colors are set to Blackstone Research and Evaluation brandin
 the data passed to it. The table shows each item and all the responses by row.
 }
 \examples{
- data <- dplyr::tibble(
+data <- dplyr::tibble(
   Cohort = factor(c(1,2,1,2,1,2,1,2,1,2,1,2), levels = c(1, 2)),
   gender = factor(c(
              "Female", "Female","Female","Male", "Female","Male",
