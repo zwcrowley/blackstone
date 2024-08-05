@@ -4,7 +4,7 @@
 #'
 #' @param df Required, a [tibble][tibble::tibble-package]/data frame that has been pre-processed with dataSumm().
 #'
-#' @param percent_label Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.
+#' @param scale_colors Required, a character vector of the colors for the scale items.
 #'
 #' @param width Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.
 #'

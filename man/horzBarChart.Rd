@@ -4,12 +4,12 @@
 \alias{horzBarChart}
 \title{Horizontal Bar Chart for Blackstone Research and Evaluation}
 \usage{
-horzBarChart(df, scale_colors, width = NULL)
+horzBarChart(df, percent_label = TRUE, width = NULL)
 }
 \arguments{
 \item{df}{Required, a \link[tibble:tibble-package]{tibble}/data frame that has been pre-processed with dataSumm().}
 
-\item{scale_colors}{Required, a character vector of the colors for the scale items.}
+\item{percent_label}{Logical, default is TRUE. If FALSE, labels the bars with the number of answers per response.}
 
 \item{width}{Input a value between 0.3 and 0.8 to set the thickness of the bars. Default is NULL.}
 }
@@ -29,12 +29,12 @@ data <- dplyr::tibble(
     "Undergraduate student", "Undergraduate student"
   )
 )
-
+# Set up the data by passing the item to chart to blackstone::dataSumm():
 role_summ <- data \%>\%
   dplyr::select(role) \%>\%
   blackstone::dataSumm()
-
-role_color <- c("#2C2C4F", "#4B9FA6", "#79AB53", "#767171")
-
-horzBarChart(df = role_summ, scale_colors = role_color, width = 0.6)
+# Calling horzBarChart() with defaults, labels for bars are percentage labels:
+horzBarChart(role_summ)
+# Calling horzBarChart() with percent_label set to FALSE will labels the bars with counts:
+horzBarChart(role_summ, percent_label = FALSE)
 }
