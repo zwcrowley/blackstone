@@ -48,7 +48,7 @@ tblSumm <- function(df, totals = TRUE) {
         flextable::fontsize(size = 10, part = "header") %>%
         flextable::fontsize(size = 9, part = "body") %>%
         flextable::hline(part = "all", border = officer::fp_border(color = "gray")) %>%
-        flextable::bg(bg = "#2C2C4F", part = "header") %>%
+        flextable::bg(bg = blackstoneColors["dark_blue"], part = "header") %>%
         flextable::color(color = "white", part = "header") %>%
         flextable::bold(part = "header", bold = TRUE) %>%
         flextable::bold(i = flextable::nrow_part(., part = "body"), bold = TRUE) %>%
@@ -64,7 +64,7 @@ tblSumm <- function(df, totals = TRUE) {
         flextable::fontsize(size = 10, part = "header") %>%
         flextable::fontsize(size = 9, part = "body") %>%
         flextable::hline(part = "all", border = officer::fp_border(color = "gray")) %>%
-        flextable::bg(bg = "#2C2C4F", part = "header") %>%
+        flextable::bg(bg = blackstoneColors["dark_blue"], part = "header") %>%
         flextable::color(color = "white", part = "header") %>%
         flextable::bold(part = "header", bold = TRUE) %>%
         flextable::autofit(part = "all")

@@ -55,7 +55,7 @@ openendedFlextable <- function(df, header_label) {
         flextable::theme_zebra() %>%
         flextable::fontsize(size = 11, part = "header") %>%
         flextable::fontsize(size = 10, part = "body") %>%
-        flextable::bg(bg = "#2C2C4F", part = "header") %>%
+        flextable::bg(bg = blackstoneColors["dark_blue"], part = "header") %>%
         flextable::color(color = "white", part = "header") %>%
         flextable::autofit(part = "all")
     return(tbl)

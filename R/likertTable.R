@@ -120,7 +120,7 @@ likertTable <- function(df, scale_labels, question_labels = NULL, str_width = 20
         flextable::fontsize(size = 10, part = "header") %>%
         flextable::fontsize(size = 9, part = "body") %>%
         flextable::hline(part = "all", border = officer::fp_border(color = "gray")) %>%
-        flextable::bg(bg = "#2C2C4F", part = "header") %>%
+        flextable::bg(bg = blackstoneColors["dark_blue"], part = "header") %>%
         flextable::color(color = "white", part = "header") %>%
         flextable::autofit(part = "all")
 

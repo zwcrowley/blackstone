@@ -95,7 +95,7 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
             flextable::fontsize(size = 10, part = "header") %>%
             flextable::fontsize(size = 9, part = "body") %>%
             flextable::hline(part = "all", border = officer::fp_border(color = "gray")) %>%
-            flextable::bg(bg = "#2C2C4F", part = "header") %>%
+            flextable::bg(bg = blackstoneColors["dark_blue"], part = "header") %>%
             flextable::color(color = "white", part = "header") %>%
             flextable::bg(i = ~ !is.na(question), bg = "#f6f6f6", part = "body") %>%
             flextable::footnote(i = 1, j = flextable::ncol_keys(.), "value" = flextable::as_paragraph(c("n (%)")),
@@ -181,7 +181,7 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
             flextable::fontsize(size = 10, part = "header") %>%
             flextable::fontsize(size = 9, part = "body") %>%
             flextable::hline(part = "all", border = officer::fp_border(color = "gray")) %>%
-            flextable::bg(bg = "#2C2C4F", part = "header") %>%
+            flextable::bg(bg = blackstoneColors["dark_blue"], part = "header") %>%
             flextable::color(color = "white", part = "header") %>%
             flextable::bg(i = ~ !is.na(question), bg = "#f6f6f6", part = "body") %>%
             flextable::footnote(i = 1, j = flextable::ncol_keys(.), "value" = flextable::as_paragraph(c("n (%)")),
