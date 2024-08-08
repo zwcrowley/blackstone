@@ -97,7 +97,7 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
             flextable::hline(part = "all", border = officer::fp_border(color = "gray")) %>%
             flextable::bg(bg = blackstoneColors["dark_blue"], part = "header") %>%
             flextable::color(color = "white", part = "header") %>%
-            flextable::bg(i = ~ !is.na(question), bg = "#f6f6f6", part = "body") %>%
+            flextable::bg(i = ~ !is.na(question), bg = blackstoneColors["light_grey"], part = "body") %>%
             flextable::footnote(i = 1, j = flextable::ncol_keys(.), "value" = flextable::as_paragraph(c("n (%)")),
                                 ref_symbols = c("1"), part = "header") %>%  # add footnote referencing last header col
             flextable::autofit(part = "all")
@@ -183,7 +183,7 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
             flextable::hline(part = "all", border = officer::fp_border(color = "gray")) %>%
             flextable::bg(bg = blackstoneColors["dark_blue"], part = "header") %>%
             flextable::color(color = "white", part = "header") %>%
-            flextable::bg(i = ~ !is.na(question), bg = "#f6f6f6", part = "body") %>%
+            flextable::bg(i = ~ !is.na(question), bg = blackstoneColors["light_grey"], part = "body") %>%
             flextable::footnote(i = 1, j = flextable::ncol_keys(.), "value" = flextable::as_paragraph(c("n (%)")),
                                 ref_symbols = c("1"),part = "header") %>%  # add footnote referencing last header col
             flextable::autofit(part = "all")

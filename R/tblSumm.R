@@ -52,7 +52,7 @@ tblSumm <- function(df, totals = TRUE) {
         flextable::color(color = "white", part = "header") %>%
         flextable::bold(part = "header", bold = TRUE) %>%
         flextable::bold(i = flextable::nrow_part(., part = "body"), bold = TRUE) %>%
-        flextable::bg(i = flextable::nrow_part(., part = "body"), bg = "#f6f6f6", part = "body") %>%
+        flextable::bg(i = flextable::nrow_part(., part = "body"), bg = blackstoneColors["light_grey"], part = "body") %>%
         flextable::hline(i = flextable::nrow_part(., part = "body") - 1, part = "body", border = officer::fp_border(color = "black")) %>%
         flextable::autofit(part = "all")
     } else {
