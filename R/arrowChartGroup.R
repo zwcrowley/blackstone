@@ -160,6 +160,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
         tidyr::separate(.data[["question"]], into = c("timing", "question"), sep = "_", extra = "merge") %>%
         dplyr::group_by(.data[["question"]], .data[["timing"]]) %>%
         dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
+        tidyr::drop_na() %>% # drops NA's
         dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
         dplyr::ungroup()
     # Join the `total` column to arrow_df
@@ -192,25 +193,29 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
       arrow_df <- arrow_df %>% dplyr::mutate(question = factor(.data[["question"]], levels = names(question_labels)))
     }
 
-
-    # Return N_df that will be an overall n for all the items, only if all totals_new_df[["total are equal"]]: ----
-    if (length(unique(totals_new_df[["total"]])) == 1) {
-      # Get overall n if it is the same for each item:
-      N_df <- totals_new_df %>%
-        dplyr::summarize(N = mean(.data[["total"]])) %>%
-        tibble::deframe()
-    }
-
     # Set up scale_labels so that they include the number as well as the likert scale item for each response:
     new_scale_labels <- sapply(seq_along(scale_labels), \(x) paste0(scale_labels[x], "\n(",x,")"))
 
     # Main calls to ggplot function arrowChartGroup_ggplot(): -----
     # If overall_n == TRUE:
     if (isTRUE(overall_n)) {
-      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors, scale_labels_gg = new_scale_labels) +
-                        addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(-0.06, 1.02)) # see 'gg_helpers.R', re-position with plot_tag_position arg
+        # Return N_df that will be an overall n for all the items, only if all totals_new_df$total are equal to each other: ----
+        N_df <- NULL
+        if (length(unique(totals_new_df[["total"]])) == 1) {
+            # Get overall n if it is the same for each item:
+            N_df <- totals_new_df %>%
+                dplyr::summarize(N = mean(.data[["total"]])) %>%
+                tibble::deframe()
+        }
+        # Error messages if N_df is null, not filled by last if statement above:
+        if (is.null(N_df)) {
+            stop("Error: Can not use `overall_n` for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
+        }
+        # Call to arrowChartGroup_ggplot():
+        arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors, scale_labels_gg = new_scale_labels) +
+                          addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(-0.06, 1.02)) # see 'gg_helpers.R', re-position with plot_tag_position arg
 
-      return(arrow_new)
+        return(arrow_new)
 
       # Otherwise, if overall_n == FALSE and, return an arrow chart with n for each question appended to the question label:
     } else if (isFALSE(overall_n)) {

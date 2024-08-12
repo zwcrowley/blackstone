@@ -33,48 +33,37 @@
 #'   dplyr::select(role) %>%
 #'   dataSumm(na.rm = FALSE, sort_n = TRUE)
 dataSumm <- function(var, na.rm = TRUE, sort_n = FALSE) {
-  clean_df <- {{ var }} %>%
-    tidyr::drop_na() %>%
-    tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
-    dplyr::group_by(.data$question, .data$response) %>%
-    dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(.data$question) %>%
-    dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1))
-  if (isTRUE(sort_n)) {
-    clean_df <- clean_df %>%
-    dplyr::arrange(dplyr::desc(.data$n_answers)) %>%
-    dplyr::mutate(response = forcats::fct_inorder(.data$response))
-  } else {
-    clean_df <- clean_df %>%
-      dplyr::arrange(.data$response)
-  }
-
-  if (isFALSE(na.rm)) {
-    clean_df <- {{ var }} %>%
-      tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
-      dplyr::group_by(.data$question, .data$response) %>%
-      dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
-      dplyr::ungroup() %>%
-      dplyr::group_by(.data$question) %>%
-      dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers)) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1))
-    if (isTRUE(sort_n)) {
-      clean_df <- clean_df %>%
-        dplyr::arrange(dplyr::desc(.data$n_answers)) %>%
-        dplyr::mutate(
-          response = addNA(.data$response),
-          response = forcats::fct_inorder(.data$response),
-          response = forcats::fct_relevel(.data$response, NA, after = Inf)
-        )
-    } else {
-      clean_df <- clean_df %>%
-        dplyr::arrange(.data$response)
+    if (isTRUE(na.rm)) { # Drop NA's
+        clean_df <- {{ var }} %>%
+          tidyr::drop_na() %>%
+          tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+          dplyr::group_by(.data$question, .data$response) %>%
+          dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
+          dplyr::ungroup() %>%
+          dplyr::group_by(.data$question) %>%
+          dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers)) %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1))
+    } else if (isFALSE(na.rm)) { # Keep NA's
+        clean_df <- {{ var }} %>%
+          tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
+          dplyr::group_by(.data$question, .data$response) %>%
+          dplyr::summarize(n_answers = dplyr::n(), .groups = "keep") %>%
+          dplyr::ungroup() %>%
+          dplyr::group_by(.data$question) %>%
+          dplyr::mutate(percent_answers = .data$n_answers / sum(.data$n_answers)) %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(percent_answers_label = scales::percent(.data$percent_answers, accuracy = 1))
     }
-  }
+    # If sort_n is TRUE sort by desc n_answers
+    if (isTRUE(sort_n)) {
+        clean_df <- clean_df %>%
+            dplyr::arrange(dplyr::desc(.data$n_answers)) %>%
+            dplyr::mutate(response = forcats::fct_inorder(.data$response))
+    } else if (isFALSE(sort_n)) { # otherwise arrange by `response`
+        clean_df <- clean_df %>%
+            dplyr::arrange(.data$response)
+    }
 
   return(clean_df)
 }

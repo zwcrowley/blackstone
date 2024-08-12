@@ -138,6 +138,7 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
             dplyr::mutate(timing = stringr::str_to_title(.data$timing), # capitalize timing
                           timing = factor(.data$timing, levels = c("Pre", "Post"))
             ) %>%
+            tidyr::drop_na() %>% # drops NA's
             dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
             dplyr::ungroup()
         # Join the `total` column to arrow_df
@@ -156,6 +157,7 @@ divBarChart  <- function(df, scale_labels, fill_colors = "seq", pre_post = FALSE
             tidyr::pivot_longer(tidyselect::everything(), names_to = "question", values_to = "response") %>%
             dplyr::mutate(question = stringr::str_remove(.data$question, "cat_")) %>%
             dplyr::group_by(.data[["question"]]) %>%
+            tidyr::drop_na() %>% # drops NA's
             dplyr::summarize(total = dplyr::n(), .groups = "keep") %>%
             dplyr::ungroup()
         # Join the `total` column to arrow_df
