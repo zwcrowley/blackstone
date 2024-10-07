@@ -144,13 +144,14 @@ groupedTable <- function(df, col_group = NULL, question_labels = NULL, str_width
         # Select all cols except groups:
         cols <- {{ df }}  %>% dplyr::select(-c(!!sym(col_group))) %>% names()
         # Create a table with two map functions, one outer that does it for each df, and inner that does all the data manipulation down the columns:
-        table_groups <- purrr::map(cols, ~ df %>% dplyr::group_by(!!sym(col_group)) %>% dplyr::count(.data[[.x]]) %>% dplyr::arrange(.data[[.x]]) %>% dplyr::ungroup() %>%
+        table_groups <- purrr::map(cols, ~ df %>% dplyr::group_by(!!sym(col_group)) %>% dplyr::count(.data[[.x]]) %>% dplyr::arrange(.data[[.x]]) %>%
                                        dplyr::mutate(question = colnames(df[.x][1]), # set new var as the name of the original current data
                                                      response = .data[[.x]], # copy original col var as response
                                                      percent_answers = .data$n / sum(.data$n)) %>% dplyr::relocate("question":"response", .after = .data[[.x]]) %>%
                                        dplyr::mutate(percent_answers_label = paste0("(",scales::percent(.data$percent_answers, accuracy = 1),")"),
                                                      percent_answers_label = dplyr::if_else(.data$percent_answers_label == "(0%)",
                                                                                             "(<1%)", .data$percent_answers_label)) %>% # replace 0% with <1%
+                                       dplyr::ungroup() %>%  # ungroup after calculations of percentages
                                        dplyr::select(-c(percent_answers)) %>% # drop first original column and percent_answers
                                        tidyr::unite("value", c(n,percent_answers_label), sep = " ")) %>% # end of map()
             purrr::list_rbind() %>% dplyr::select(-cols) %>% # bind as rows and drop all vars in "cols"
