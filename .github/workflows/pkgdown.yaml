@@ -35,13 +35,14 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
-      # - name: Install Arial Font
-      #   run: extrafont::font_import(prompt = FALSE)
-      #   shell: Rscript {0}
       - name: Install Arial Font
         run: |
           sudo apt-get update
           sudo apt-get install -y ttf-mscorefonts-installer
+
+      - name: Import Arial Font from `extrafont`
+        run: extrafont::font_import(prompt = FALSE)
+        shell: Rscript {0}
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
