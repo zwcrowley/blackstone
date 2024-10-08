@@ -36,7 +36,7 @@ jobs:
           needs: website
 
       - name: Install Arial Font
-        run: extrafont::font_import(pattern = "Arial", prompt = FALSE)
+        run: extrafont::font_import()
         shell: Rscript {0}
 
       - name: Build site
