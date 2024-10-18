@@ -13,6 +13,7 @@ arrowChartGroup(
   overall_n = TRUE,
   question_labels = NULL,
   question_order = FALSE,
+  cap_legend = TRUE,
   font_family = "Arial",
   font_size = 10
 )
@@ -46,6 +47,8 @@ desired order of appearing in the plot, first item will appear at the top of the
 \item{question_order}{Logical, default is FALSE. If TRUE, the question order will be taken from the user supplied named character vector passed to
 question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
 post score average on the top of the plot descending.}
+
+\item{cap_legend}{Logical, default is TRUE. If TRUE, legend labels are capitalized using title case, otherwise takes same labels as \code{group}.}
 
 \item{font_family}{Character value to set the font family for all text in the chart, defaults to "Arial".}
 

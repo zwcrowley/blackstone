@@ -12,13 +12,15 @@
 #' @param scale_labels_gg Required, a character vector of labels for the response scale, must be in the desired order,
 #'    e.g. if you have a 5 item scale of minimal to extensive it should look like this: `levels_min_ext <- c("Minimal", "Slight", "Moderate", "Good", "Extensive")`.
 #'
+#' @param cap_legend Logical. If TRUE, legend labels are capitalized using title case, otherwise takes same labels as `group`.
+#'
 #' @param font_family Character value to set the font family for all text in the chart, defaults to "Arial".
 #'
 #' @param font_size Numeric value to set the font size in points for all text in the chart, defaults to size 10.
 #'
 #' @return A [ggplot2][ggplot2::ggplot2-package] object that plots the items into a arrow bar chart.
 #' @noRd
-arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg, font_family = "Arial", font_size = 10) {
+arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg, cap_legend, font_family = "Arial", font_size = 10) {
 
     # Load fonts:
     extrafont::loadfonts("all", quiet = TRUE)
@@ -53,8 +55,15 @@ arrowChartGroup_ggplot <- function(df_gg, group, fill_gg, scale_labels_gg, font_
             nudge_x = nudge_x_post, hjust = hjust_post, # calculated above.
             family = font_family, size = font_size, size.unit = "pt"
         ) +
-        ggplot2::facet_wrap(~ question, ncol = 1, strip.position = "left") +
-        ggplot2::scale_color_manual(values = fill_gg, labels = ~ stringr::str_to_title(.)) + # capitalize legend labels
+        ggplot2::facet_wrap(~ question, ncol = 1, strip.position = "left")
+    if (cap_legend == TRUE) {
+        arrow <- arrow +
+            ggplot2::scale_color_manual(values = fill_gg, labels = ~ stringr::str_to_title(.))  # capitalize legend labels
+    } else if (cap_legend == FALSE) {
+        arrow <- arrow +
+            ggplot2::scale_color_manual(values = fill_gg)  # group labels
+    }
+    arrow <- arrow +
         ggplot2::scale_x_continuous(limits = c(0.75, length(scale_labels_gg)),
                                     breaks = c(1:length(scale_labels_gg)),
                                     labels = scale_labels_gg) +

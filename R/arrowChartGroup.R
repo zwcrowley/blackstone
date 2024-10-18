@@ -32,6 +32,8 @@
 #'    question_labels, where the first item will be at the top of the plot and so on. If FALSE, the question order will be the questions with highest
 #'    post score average on the top of the plot descending.
 #'
+#' @param cap_legend Logical, default is TRUE. If TRUE, legend labels are capitalized using title case, otherwise takes same labels as `group`.
+#'
 #' @param font_family Character value to set the font family for all text in the chart, defaults to "Arial".
 #'
 #' @param font_size Numeric value to set the font size in points for all text in the chart, defaults to size 10.
@@ -86,7 +88,8 @@
 #'                 question_labels = question_labels, question_order = TRUE)
 arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_levels,
                             overall_n = TRUE, question_labels = NULL,
-                            question_order = FALSE, font_family = "Arial", font_size = 10) {
+                            question_order = FALSE, cap_legend = TRUE,
+                            font_family = "Arial", font_size = 10) {
     # Load fonts:
     extrafont::loadfonts("all", quiet = TRUE)
 
@@ -103,8 +106,8 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
         new_group_colors <- c("#000000", qualFillColors(n_colors = length(group_levels)))
     }
 
-    # append `overall` to group_levels
-    group_levels <- c("overall", group_levels)
+    # append `Overall` to group_levels
+    group_levels <- c("Overall", group_levels)
     # Set the names of new_group_colors to group_levels
     names(new_group_colors) <- group_levels
 
@@ -131,7 +134,7 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
       dplyr::mutate(timing = factor(.data[["timing"]], levels = c("pre", "post"))) %>%
       dplyr::summarize(score_avg = mean(.data[["response"]], na.rm = TRUE), .groups = "keep") %>%
       dplyr::ungroup() %>%
-      dplyr::mutate({{group}} := "overall")
+      dplyr::mutate({{group}} := "Overall")
 
     # Full join the data by groups and overall, and then Rev the factor order of "group":
     arrow_df <- dplyr::full_join(arrow_df_group, arrow_df_all, by = dplyr::join_by( {{group}}, "question", "timing", "score_avg")) %>%
@@ -212,7 +215,8 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
             stop("Error: Can not use `overall_n` for this function, responses for variables are not of equal length. Use argument: `overall_n = FALSE`.")
         }
         # Call to arrowChartGroup_ggplot():
-        arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors, scale_labels_gg = new_scale_labels) +
+        arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors,
+                                            scale_labels_gg = new_scale_labels, cap_legend = cap_legend) +
                           addPlotTag(n = N_df, font_size = font_size, font_family = font_family, plot_tag_position = c(-0.06, 1.02)) # see 'gg_helpers.R', re-position with plot_tag_position arg
 
         return(arrow_new)
@@ -233,7 +237,8 @@ arrowChartGroup <- function(df, group, scale_labels, group_colors = NULL, group_
         arrow_df <- arrow_df %>%
             dplyr::mutate(question = forcats::fct_recode(.data[["question"]], !!!labels_n_questions))
       # ggplot call for overall_n == FALSE
-      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors, scale_labels_gg = new_scale_labels)
+      arrow_new <- arrowChartGroup_ggplot(df_gg = arrow_df, group = group, fill_gg = new_group_colors,
+                                          scale_labels_gg = new_scale_labels, cap_legend = cap_legend)
 
       return(arrow_new)
     }
