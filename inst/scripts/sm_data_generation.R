@@ -176,10 +176,10 @@ sm_data_post <- tibble(knowledge = sample(levels_knowledge, size = n, replace = 
 sm_data_demo <- readr::read_csv("inst/extdata/sm_data_demo.csv", show_col_types = FALSE)
 
 # Merge sm_data_pre with sm_data_demo and move demographic vars to the end of the tibble:
-sm_data_pre_cleanNames <- dplyr::bind_cols(sm_data_demo, sm_data_pre) %>% relocate(gender, ethnicity, first_gen, .after = last_col())
+sm_data_pre_cleanNames <- dplyr::bind_cols(sm_data_demo, sm_data_pre) %>% relocate(gender, role, ethnicity, first_gen, .after = last_col())
 
 # Merge sm_data_post with sm_data_demo and move demographic vars to the end of the tibble:
-sm_data_post_cleanNames <- dplyr::bind_cols(sm_data_demo, sm_data_post) %>% relocate(gender, ethnicity, first_gen, .after = last_col())
+sm_data_post_cleanNames <- dplyr::bind_cols(sm_data_demo, sm_data_post) %>% relocate(gender, role, ethnicity, first_gen, .after = last_col())
 
 
 ### Add two header rows for the names of each tibble for the pre and post data in order to emulate SurveyMonkey data export:
@@ -192,6 +192,7 @@ question_name_header_1 <- c("Respondent ID", "Collector ID", "Start Date", "End 
                             "Please rate your ability to do the following on a scale from minimal to extensive.", NA, NA, NA, NA, NA, # ability items
                             "Please rate your agreement with the following statements on a scale from strongly disagree to strongly agree.", NA, NA, NA, NA, # ethics items
                             "With which gender do you most closely identify?",  # gender
+                            "What is your current role in the program?",  # role
                             "Which race/ethnicity best describes you? (Please choose only one.)",  # ethnicity
                             "Are you a first-generation college student?") # first_gen
 
@@ -203,7 +204,7 @@ full_text_header_2 <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "Response", # sm dat
                         "Identify analogies between theories", "Eliminate extraneous variables when designing experiments", "Rephrase the arguments of others in my own words", # ability items
                         "I understand the different aspects of ethical research", "I am able to adhere to ethics in research", "I know where to find resources on ethical research conduct",
                         "I am knowledgeable in ethical research conduct", "I can conduct ethical research", # ethics items
-                        "Response", "Response", "Response") # gender # ethnicity # first_gen
+                        "Response", "Response", "Response", "Response") # gender # role # ethnicity # first_gen
 
 # Renaming pre data:
 # First add names to the vector `full_text_header_2` using `question_name_header_1`
@@ -228,6 +229,7 @@ question_name_header_1_post <- c("Respondent ID", "Collector ID", "Start Date", 
                                  "Please describe how your department could help you improve in this area- I am knowledgeable in ethical research conduct",
                                  "Please describe how your department could help you improve in this area- I can conduct ethical research", # ethics open-ended
                                  "With which gender do you most closely identify?",  # gender
+                                 "What is your current role in the program?",  # role
                                  "Which race/ethnicity best describes you? (Please choose only one.)",  # ethnicity
                                  "Are you a first-generation college student?") # first_gen
 
@@ -240,7 +242,7 @@ full_text_header_2_post <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "Response", # s
                              "I understand the different aspects of ethical research", "I am able to adhere to ethics in research", "I know where to find resources on ethical research conduct",
                              "I am knowledgeable in ethical research conduct", "I can conduct ethical research", # ethics items
                              "Open-Ended Response", "Open-Ended Response","Open-Ended Response","Open-Ended Response","Open-Ended Response", # ethics open-ended
-                             "Response", "Response", "Response") # gender # ethnicity # first_gen
+                             "Response", "Response", "Response", "Response") # gender # role # ethnicity # first_gen
 
 # Renaming post data:
 # First add names to the vector `full_text_header_2` using `question_name_header_1_post`
@@ -252,10 +254,10 @@ sm_data_post <- sm_data_post_cleanNames %>% mutate(across(everything(), as.chara
     purrr::set_names(question_name_header_1_post)
 
 
-# # Write out pre data tibble `sm_data_pre` to the `extdata` folder:
-# readr::write_csv(sm_data_pre, "inst/extdata/sm_data_pre.csv")
-# # Write out pre data tibble `sm_data_post` to the `extdata` folder:
-# readr::write_csv(sm_data_post, "inst/extdata/sm_data_post.csv")
+# Write out pre data tibble `sm_data_pre` to the `extdata` folder:
+readr::write_csv(sm_data_pre, "inst/extdata/sm_data_pre.csv")
+# Write out pre data tibble `sm_data_post` to the `extdata` folder:
+readr::write_csv(sm_data_post, "inst/extdata/sm_data_post.csv")
 
 ### Merge and write out data with clean names:
 # Add pre and post prefixes to all variables that will be merged, (i.e. the survey items that differ pre-post the SM items and demos are identical):
@@ -265,9 +267,9 @@ sm_data_pre_cleanNames <- sm_data_pre_cleanNames %>% rename_with(~ paste0("pre_"
 sm_data_post_cleanNames <- sm_data_post_cleanNames %>% rename_with(~ paste0("post_", .), .cols = c(knowledge:ethics_5_oe))
 ## Merge pre-post data:
 sm_data_clean <- sm_data_pre_cleanNames %>% dplyr::left_join(sm_data_post_cleanNames, by = join_by(respondent_id, collector_id, start_date, end_date, ip_address, email_address,
-                                                                                                   first_name, last_name, unique_id, gender, ethnicity, first_gen))
+                                                                                                   first_name, last_name, unique_id, gender, role, ethnicity, first_gen))
 
-# # Write out clean and merged pre-post sm data tibble `sm_data_clean` to the `extdata` folder:
-# readr::write_csv(sm_data_clean, "inst/extdata/sm_data_clean.csv")
+# Write out clean and merged pre-post sm data tibble `sm_data_clean` to the `extdata` folder:
+readr::write_csv(sm_data_clean, "inst/extdata/sm_data_clean.csv")
 
 

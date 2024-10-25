@@ -61,6 +61,7 @@ levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree"
 
 # Demographic levels:
 gender_levels <- c("Female","Male","Non-binary", "Do not wish to specify")
+role_levels <- c("Undergraduate student", "Graduate student", "Postdoc",  "Faculty")
 ethnicity_levels <- c("White (Non-Hispanic/Latino)", "Asian", "Black",  "Hispanic or Latino", "American Indian or Alaskan Native",
                       "Native Hawaiian or other Pacific Islander", "Do not wish to specify")
 first_gen_levels <- c("Yes", "No", "I'm not sure")
@@ -79,6 +80,7 @@ sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowle
                                      dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), as.numeric, .names = "{.col}_num"), # new numeric items for all ethics items
                                      # individually convert all demographics to factor variables:
                                      gender = factor(gender, levels = gender_levels),
+                                     role = factor(role, levels = role_levels),
                                      ethnicity = factor(ethnicity, levels = ethnicity_levels),
                                      first_gen = factor(first_gen, levels = first_gen_levels),
                                      )

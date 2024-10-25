@@ -50,10 +50,11 @@ sm_data_demo <- tibble(
     first_name = if_else(gender == "Female", sample(female_names), sample(male_names)), # sample from female names vector if gender is female, otherwise use male name vector.
     last_name = if_else(gender == "Female", sample(last_names_female), sample(last_names_male)), # sample from female last names vector if gender is female, otherwise use  male last name vector.
     unique_id = unique_id, # from above
+    role = sample(c("Undergraduate student", "Graduate student", "Postdoc",  "Faculty"), size = n, replace = TRUE, prob = c(0.4, 0.2, 0.2, 0.1)),
     ethnicity = sample(c("White (Non-Hispanic/Latino)", "Asian", "Black",  "Hispanic or Latino", "American Indian or Alaskan Native",
                          "Native Hawaiian or other Pacific Islander", "Do not wish to specify"), size = n, replace = TRUE, prob = c(0.30, 0.20, 0.15, 0.20, 0.05, 0.06, 0.03)),
     first_gen = sample(c("Yes", "No", "I'm not sure"), size = n, replace = TRUE, prob = c(0.52, 0.44, 0.03))
-) %>% select(respondent_id, collector_id, start_date, end_date, ip_address, email_address, first_name, last_name, unique_id, gender, ethnicity, first_gen) # set correct order
+) %>% dplyr::relocate(gender, .after = unique_id) # move gender to beginning of demos vars
 sm_data_demo
 
 # Write out data tibble with sm data and demos to `extdata` folder:
