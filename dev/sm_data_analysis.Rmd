@@ -105,6 +105,7 @@ codebook_pre <- codebook_pre %>% dplyr::mutate(
         'custom_data_1' ~ "unique_id", # changes 'custom_data_1' to "unique_id"
         'to_what_extent_are_you_knowledgeable_in_conducting_research_in_your_field_of_study' ~ "knowledge",
         'with_which_gender_do_you_most_closely_identify' ~ "gender",
+        'what_is_your_current_role_in_the_program' ~ "role",
         'which_race_ethnicity_best_describes_you_please_choose_only_one' ~ "ethnicity",
         'are_you_a_first_generation_college_student' ~ "first_gen",
         names(research_names) ~ research_names[variable_name], # takes the above named vector and when the name matches, applies new value in that position as replacement.
@@ -169,6 +170,7 @@ codebook_post <- codebook_post %>% dplyr::mutate(
         'custom_data_1' ~ "unique_id", # changes 'custom_data_1' to "unique_id"
         'to_what_extent_are_you_knowledgeable_in_conducting_research_in_your_field_of_study' ~ "knowledge",
         'with_which_gender_do_you_most_closely_identify' ~ "gender",
+        'what_is_your_current_role_in_the_program' ~ "role",
         'which_race_ethnicity_best_describes_you_please_choose_only_one' ~ "ethnicity",
         'are_you_a_first_generation_college_student' ~ "first_gen",
         names(research_names) ~ research_names[variable_name], # takes the above named vector and when the name matches, applies new value in that position as replacement.
@@ -212,7 +214,7 @@ our analysis on complete data.
 # (otherwise you will get a message about additional variables to be joined by):
 sm_data <- post_data %>% dplyr::left_join(pre_data, by = dplyr::join_by(respondent_id, collector_id, 
                                                                         start_date,end_date,ip_address,email_address, 
-                                                                        first_name, last_name, unique_id, gender, ethnicity, 
+                                                                        first_name, last_name, unique_id, gender, role, ethnicity, 
                                                                         first_gen))
 sm_data
 ```
@@ -237,6 +239,7 @@ levels_agree5 <- c("Strongly disagree", "Disagree", "Neither agree nor disagree"
 
 # Demographic levels:
 gender_levels <- c("Female","Male","Non-binary", "Do not wish to specify")
+role_levels <- c("Undergraduate student", "Graduate student", "Postdoc",  "Faculty")
 ethnicity_levels <- c("White (Non-Hispanic/Latino)", "Asian", "Black",  "Hispanic or Latino", "American Indian or Alaskan Native",
                       "Native Hawaiian or other Pacific Islander", "Do not wish to specify")
 first_gen_levels <- c("Yes", "No", "I'm not sure")
@@ -255,6 +258,7 @@ sm_data <- sm_data %>% dplyr::mutate(dplyr::across(tidyselect::contains("_knowle
                                      dplyr::across(tidyselect::contains("ethics_") & !tidyselect::contains("_oe"), as.numeric, .names = "{.col}_num"), # new numeric items for all ethics items
                                      # individually convert all demographics to factor variables:
                                      gender = factor(gender, levels = gender_levels),
+                                     role = factor(role, levels = role_levels),
                                      ethnicity = factor(ethnicity, levels = ethnicity_levels),
                                      first_gen = factor(first_gen, levels = first_gen_levels),
                                      )
